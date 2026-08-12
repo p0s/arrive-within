@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "status": "passed-manual-source-review",
+  "review_date": "2026-08-12",
+  "source_sha256": "92cdec60a24ec1ea416efbd2e9574700507f28dea5861895b4c84fb943b48d17",
+  "checks_total": 16,
+  "checks_passed": 16,
+  "checks_failed": 0,
+  "findings_resolved": 9,
+  "findings_open": 0,
+  "audited_dependency_snapshots": [
+    {
+      "graph": "renderer-production",
+      "lock_sha256": "76275a4e4a738deb91243eff72547d3edab4b3c4444de2a6c442ecdc01cf8ab1",
+      "vulnerabilities": 0
+    },
+    {
+      "graph": "screenshot-tool-production",
+      "lock_sha256": "292b8c0d063736b0824e74367270046bf20efc8697b048a924bc6861c59ecc8f",
+      "vulnerabilities": 0
+    }
+  ],
+  "formal_standard_scan": "owner-waived-skipped-not-passed",
+  "external_gates": [
+    "future CloudKit operation-specific deletion and stale-device proof before any reactivation",
+    "staged-tree and history secret/privacy scan after the owner authorizes Git"
+  ],
+  "claim_boundary": "This is a deterministic source review and focused regression binding for the supplied audit findings. It is not a formal Codex Security pass, runtime penetration test, exact signed-candidate proof, Git staged-tree/history proof, or publication evidence."
+}

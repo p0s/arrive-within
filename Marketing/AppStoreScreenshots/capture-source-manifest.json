@@ -1,0 +1,925 @@
+{
+  "schema_version": 1,
+  "algorithm": "SHA-256 over sorted UTF-8 relative-path, NUL, file-SHA-256, LF records",
+  "generated_at": null,
+  "generation_time_policy": "omitted-for-byte-reproducibility",
+  "project_root": ".",
+  "inputs": [
+    "project.yml",
+    "Config",
+    "ArriveWithin.xcodeproj/project.pbxproj",
+    "ArriveWithin.xcodeproj/xcshareddata/xcschemes/ArriveWithin.xcscheme",
+    "Apps/ArriveWithin/Sources",
+    "Apps/ArriveWithin/Resources",
+    "Apps/ArriveWithin/Tests/ArriveWithinUITests",
+    "Packages/ArriveWithinCore/Package.swift",
+    "Packages/ArriveWithinCore/Sources",
+    "Content/guided",
+    "Renderer/dist",
+    "scripts/run_guarded_xcode_tests.sh",
+    "scripts/xcodebuild_runtime_test_preflight.zsh"
+  ],
+  "source_revision": "720deeed8719b680ebe4359e1f572565780cc1015ce4ab0d83cb530335bfb405",
+  "files": [
+    {
+      "path": "Apps/ArriveWithin/Resources/AppIcon.icon/Assets/living-shoot.svg",
+      "bytes": 1558,
+      "sha256": "70542195a21214fbe54348e8f3fe4049020d30aae57102d4f9d1a08e12ea570b"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/AppIcon.icon/Assets/threshold-arch.svg",
+      "bytes": 1457,
+      "sha256": "bc5663eb27ce64335b22244dc184cf2686d6b161aa7a5f14b5127d3ce91bc047"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/AppIcon.icon/Assets/threshold-interior.svg",
+      "bytes": 1207,
+      "sha256": "be3bfa6ceb8db3f81863ba54c5d072d7ea482b732754c9b5404df4153d8c61bb"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/AppIcon.icon/icon.json",
+      "bytes": 669,
+      "sha256": "0fd1daab62cf9e6e5c2436253272c54b15f044df962a1581db77bc92016d1b76"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/Assets.xcassets/AccentColor.colorset/Contents.json",
+      "bytes": 618,
+      "sha256": "ff536b8c3fdc01b220bc0e96693a3e385ed8e519842bf3600540d3af7635b268"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/Assets.xcassets/Contents.json",
+      "bytes": 60,
+      "sha256": "f5fb0e1f3a8142892ed092efb5955c1c2cc537003a89ad7bbdb9dade7fe8985f"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/Assets.xcassets/LaunchBackground.colorset/Contents.json",
+      "bytes": 618,
+      "sha256": "da34190813e640de1ef33d0126fd01b42d5faf977cf46b6f99a145ffead5c75a"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/Audio/audio-assets.json",
+      "bytes": 1047,
+      "sha256": "0f23df2e701ca315ac3d058e138a3225cf8d4d87419d4cc61850f45e6d51e7bd"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/Audio/closing-bell-v1.wav",
+      "bytes": 524238,
+      "sha256": "f193545d6f5feff8bbea1da58c8cf2575cc45dde75a23cf779ce145e4b2a1f2b"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/Audio/opening-bell-v1.wav",
+      "bytes": 383118,
+      "sha256": "b94002d4a8fcbe8b916def7caede307bf846a8d2a7cb729237bd4d866f6baf44"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/Audio/still-air-v1.m4a",
+      "bytes": 190092,
+      "sha256": "bf4d184f989f98b915c299a103a58360a9d1e6c400e599884d9f1c5f404e65d0"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/Info.plist",
+      "bytes": 2124,
+      "sha256": "aca2757b61bd93c87aa1a1ea5da1a939085cd939c02fe17f70561883336fd145"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/PrivacyInfo.xcprivacy",
+      "bytes": 632,
+      "sha256": "0562b6e4331f1fcffb4d7b7e3e11c240ebbf6dbef84ec1b66318408d9f2d524b"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/de.lproj/InfoPlist.strings",
+      "bytes": 256,
+      "sha256": "0e8919604c049999ce1dda2d62f3133a47650d0ba9f0c7829a1ec853548a423c"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/de.lproj/Localizable.strings",
+      "bytes": 21936,
+      "sha256": "d0177e4f836013cc37eae854847b3ebf635027bc7ea7c5eac652baf73b9b7bc2"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/en.lproj/InfoPlist.strings",
+      "bytes": 240,
+      "sha256": "6dd438f771d1ce08ce58d0d216cc310743caa7bb8d7421f506d28d4020c91478"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/en.lproj/Localizable.strings",
+      "bytes": 20074,
+      "sha256": "50982628a09b2ecdcccf69358bc29a2ebb17076d8ba27b8f0c946106acd5c005"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/AppDependencies.swift",
+      "bytes": 12334,
+      "sha256": "dcada8b30fb9965f6ad4f45ed1192ba4e6233c5741863d735f3b1d38e177cb9f"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/AppLocalization.swift",
+      "bytes": 521,
+      "sha256": "e5ff538e728b2d19a7896dc4b9c18c2f1d17c15df334db8ca08e5758b49ff65c"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/AppModel.swift",
+      "bytes": 55581,
+      "sha256": "2703515cb7b896e8ca23885139c036f9a9a67025f3ff47460742ce2cbe7f7636"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/AppOwnedShareSheet.swift",
+      "bytes": 735,
+      "sha256": "adf6a508b01eccba6c0f1932b98a773ca075e8d8efe4d23a7dbae546e4605dc8"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/AppRootView.swift",
+      "bytes": 7168,
+      "sha256": "662a53a7991ddfe757569e0b27b9b532595e1fcdeb707070fb85fcdc3b4fa202"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/AppSection.swift",
+      "bytes": 617,
+      "sha256": "4195166ac390aebc2e5490d324482304a6a7837a4d473b9dedac58927e6da522"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/AppSettings.swift",
+      "bytes": 3091,
+      "sha256": "a2ac7b7816c5471bfff7880988334ff5e624ade2bd4a41c2f09ac5ae5825527f"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/AppTheme.swift",
+      "bytes": 6176,
+      "sha256": "c2f0f57bcf0a99c8350661391dc59a9a10949d28821ee6f6d4a84eb1c3c711e9"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/ArriveWithinApp.swift",
+      "bytes": 1053,
+      "sha256": "026f8ed30e6e16b6d7ec1e3db0645dc6781ce3a192d9afc098e04893afe31bae"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/GardenView.swift",
+      "bytes": 10388,
+      "sha256": "00b831a5b88b6350988bc9c5604309aa18c25d3535b3f568eb2c973453daa9b4"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/GardenWebView.swift",
+      "bytes": 14676,
+      "sha256": "bb725c3e4424ca435dd5d5d68a3e68a5803850115b67cfeb315014c834ae765d"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/GuidedCaptionTimeline.swift",
+      "bytes": 4644,
+      "sha256": "281a202e5e0dbca25cd2bf116126d1488805d170611a844b7a4e8d975a305181"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/GuidedLibraryView.swift",
+      "bytes": 11690,
+      "sha256": "d8745ac23cfff2ce2a89cbbc200ea1118c46a37567a8505368365c876270e0af"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/JournalAudioController.swift",
+      "bytes": 8248,
+      "sha256": "7a720cce1dd75cd7d63e2e52a34a638c7d6d65552fba9f5dde7c5236c03de360"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/JournalTranscriptionController.swift",
+      "bytes": 3162,
+      "sha256": "04e2612e5dd4e9f331c0f07b08326ea3ee8b4ce4ba2f992ce96004fc1d3be662"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/JournalView.swift",
+      "bytes": 21630,
+      "sha256": "413a1ab72e9e95f43f5fcc3f523d34e538eb4592b239e04e87eeb35b5a2b2928"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/JourneyView.swift",
+      "bytes": 14843,
+      "sha256": "5973db19e09721124812db688c0104fb7aa9d2477956f1178eb644ebd3171434"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/MeditationAudioController.swift",
+      "bytes": 21339,
+      "sha256": "9b0f893dc93c8388a2e3288a328e603d8a84cc802302c535c3c0e57f71bbc515"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/MeditationSignals.swift",
+      "bytes": 3397,
+      "sha256": "2b662734675a33190ac39392f111bb86d24c119c0d5d16be29557644117cc771"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/PracticeCalendarView.swift",
+      "bytes": 11263,
+      "sha256": "ab701e453f62bbcc96aea128539494ecf416a174de5195c0e9dac617ddd71a86"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/PracticeView.swift",
+      "bytes": 30316,
+      "sha256": "c4ac62acd699bb6cb7c0f9a2dae8c85d3b869f923dc563fd932aef8813a402c4"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/ProductShell.swift",
+      "bytes": 3916,
+      "sha256": "205ede66662d090ff81d9d4f3563d348dc74e32eaaeccba9fc1455a27f2b11bf"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/ReminderNotifications.swift",
+      "bytes": 4127,
+      "sha256": "5b01cfc2bb4d73799a5103e87c4c974b0826dfc1a61a6e7c06c189bf37e3bae8"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/ReminderSettingsView.swift",
+      "bytes": 8958,
+      "sha256": "934b38eac3c24651abbd7ceb70cbc72c957269e5310573417844774a5d225a0d"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/RendererDiagnostics.swift",
+      "bytes": 7496,
+      "sha256": "18e8279a2e3a70068101976c37e101a961001d3e9abf3dd852c51b76ece3e889"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/SettingsView.swift",
+      "bytes": 8445,
+      "sha256": "e1b1e64bff23328ffe2f21792385d649c805dd8bcbedba565e2e377420b6313e"
+    },
+    {
+      "path": "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinMarketingCaptureUITests.swift",
+      "bytes": 4386,
+      "sha256": "780f6a83b2bec7d8a1f6294342d5ee259bf55010c3bba2b4b92af6ce23042587"
+    },
+    {
+      "path": "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinUITests.swift",
+      "bytes": 52908,
+      "sha256": "51923a4d629731ff64d901c32970185fb55bd84c632fcd2a4467613dfe01295f"
+    },
+    {
+      "path": "ArriveWithin.xcodeproj/project.pbxproj",
+      "bytes": 48456,
+      "sha256": "522d0e2f18b5ea439eea44b67f2b01a2bf212965509f834f967404ce536670c8"
+    },
+    {
+      "path": "ArriveWithin.xcodeproj/xcshareddata/xcschemes/ArriveWithin.xcscheme",
+      "bytes": 5686,
+      "sha256": "96d7e356a3f3e55e11efa1b6b98bb8a4a5aaf4fed797081b5bb654a2eef9dcb9"
+    },
+    {
+      "path": "Config/ArriveWithin.entitlements.local",
+      "bytes": 677,
+      "sha256": "4da1831fe1de48ef239b200e940b737535f5911cff10c8c7476e8a1fc5d0130b"
+    },
+    {
+      "path": "Config/Base.xcconfig",
+      "bytes": 865,
+      "sha256": "9162eb29604e4b596780fb4b3a820fc56f5d0b8aa0627f7607c961056519144b"
+    },
+    {
+      "path": "Config/Local.example.xcconfig",
+      "bytes": 265,
+      "sha256": "f8b3c8d369d1d0fbbb71df66adce9498ee1a82040d74610dbf4e0df734eea23d"
+    },
+    {
+      "path": "Config/Local.xcconfig",
+      "bytes": 356,
+      "sha256": "a0f27264111d49de2bde2ec116ebdef6e340cb66350c83bdb645f3c1a1ca2d6f"
+    },
+    {
+      "path": "Content/guided/G01/script.de.md",
+      "bytes": 1465,
+      "sha256": "770c11b6aef7a84a060a57b25943309ed98ae87ee00d20d965980882a90d6b4c"
+    },
+    {
+      "path": "Content/guided/G01/script.en.md",
+      "bytes": 1242,
+      "sha256": "0512bcaa57c773cbb43f57d514effde7d194940acc64476625d06927a8a5a01a"
+    },
+    {
+      "path": "Content/guided/G02/script.de.md",
+      "bytes": 2334,
+      "sha256": "45edd4c8e27a26569689d1dbaf933ac75588162edfc72a6d3a8be241fb848b6d"
+    },
+    {
+      "path": "Content/guided/G02/script.en.md",
+      "bytes": 2160,
+      "sha256": "58f20abe4f987635fd3a519438e2b5c1e96cc04115b40fe0598c1a110abb2d83"
+    },
+    {
+      "path": "Content/guided/G03/script.de.md",
+      "bytes": 3039,
+      "sha256": "4d73443354386fc7c946c1f289360ec11952767f098e1e5c728a55fef21805b9"
+    },
+    {
+      "path": "Content/guided/G03/script.en.md",
+      "bytes": 2678,
+      "sha256": "4d92f83978f503b87c9440f4ae86a6544d8b3fa58dabb79a5b870f90e23f7245"
+    },
+    {
+      "path": "Content/guided/G04/script.de.md",
+      "bytes": 3399,
+      "sha256": "18a630a3ccce55af2c15302b1cc333fecaae523567a262f808b4b62cc92d3683"
+    },
+    {
+      "path": "Content/guided/G04/script.en.md",
+      "bytes": 2949,
+      "sha256": "eff44704e25ed8d4d0ae09fb433bf49caef7f2f547a7ac6a6614f6a075ed75af"
+    },
+    {
+      "path": "Content/guided/G05/script.de.md",
+      "bytes": 4466,
+      "sha256": "2b2c94e07e1b1d8f12d19ad121798b40e0c4525f27630faca206ba643b36d82b"
+    },
+    {
+      "path": "Content/guided/G05/script.en.md",
+      "bytes": 3956,
+      "sha256": "9103329aa750f043ae821efbe883af340555c44a0050abe36b7f46cffa1f232f"
+    },
+    {
+      "path": "Content/guided/G06/script.de.md",
+      "bytes": 3720,
+      "sha256": "96f759c7450d4585e2ba4fe07078ed81752488105e3aac55f34590f21bb07503"
+    },
+    {
+      "path": "Content/guided/G06/script.en.md",
+      "bytes": 3237,
+      "sha256": "a45ee086858f8ad62a9ededa5e1f3f09646f861e0805c7d4aef726f1614983a1"
+    },
+    {
+      "path": "Content/guided/G07/script.de.md",
+      "bytes": 3328,
+      "sha256": "bf9847809611703dc7c694e53774432bc1ce8e5a3540e8dcb33e071ed721152e"
+    },
+    {
+      "path": "Content/guided/G07/script.en.md",
+      "bytes": 2899,
+      "sha256": "dd3c88f708f4082d1c340dc70f6560e8e8a2a1f62b5d091f96545b1c08585473"
+    },
+    {
+      "path": "Content/guided/G08/script.de.md",
+      "bytes": 5119,
+      "sha256": "5e0196a2eab0ce2db8ba4ea10d298240e9fe77ef3b4a1528cf9e54c8ae4b54d9"
+    },
+    {
+      "path": "Content/guided/G08/script.en.md",
+      "bytes": 4619,
+      "sha256": "7cee88b74f918e2e80075efccc9db5a85c4438549e580bdea639ab01ffa4d363"
+    },
+    {
+      "path": "Content/guided/G09/script.de.md",
+      "bytes": 2231,
+      "sha256": "ce711dcac5671462a3f3ad1536b367da4d01a3a54c7737b032a7a04fa930bf53"
+    },
+    {
+      "path": "Content/guided/G09/script.en.md",
+      "bytes": 1937,
+      "sha256": "72641111a1cb03e15b19f4dfe6ecc4f70e2e5382474ef04c8fdd53688c68f1dd"
+    },
+    {
+      "path": "Content/guided/G10/script.de.md",
+      "bytes": 2355,
+      "sha256": "6cccece643aaa98d640524552bbb259b595ab786af6ee168b597e6d9562c9ec4"
+    },
+    {
+      "path": "Content/guided/G10/script.en.md",
+      "bytes": 2081,
+      "sha256": "aaad4476a9a5f209bd7196e3978dd3fde88ee245e2ac143cacabe2d4f168903a"
+    },
+    {
+      "path": "Content/guided/G11/script.de.md",
+      "bytes": 1640,
+      "sha256": "dc027f935def1a0bbc734ec97cacb2584012b88105ecbb3ff3fc2cb2da65f44a"
+    },
+    {
+      "path": "Content/guided/G11/script.en.md",
+      "bytes": 1445,
+      "sha256": "5408448509c00a519985b772fdf567af37ba80c04f07e182769ce22b02f59349"
+    },
+    {
+      "path": "Content/guided/G12/script.de.md",
+      "bytes": 4532,
+      "sha256": "88201de02f62812f0e9d61883e57cc5856dbd5de8e9071c3b6a0f3a08b1abee0"
+    },
+    {
+      "path": "Content/guided/G12/script.en.md",
+      "bytes": 4031,
+      "sha256": "7f1cb21a9e4bf43f6a362f2988d66795cff4e3cb8ae822a731a75f342d083f79"
+    },
+    {
+      "path": "Content/guided/G13/script.de.md",
+      "bytes": 5860,
+      "sha256": "a974bf2a117c9c32f469190ba01f3255355051c13fe8123843378074e805102c"
+    },
+    {
+      "path": "Content/guided/G13/script.en.md",
+      "bytes": 5161,
+      "sha256": "71cdaecdfbb356cf9d1e61efc06e37a9a6f8379aa7fa63da119aaafee072a7c8"
+    },
+    {
+      "path": "Content/guided/G14/script.de.md",
+      "bytes": 4162,
+      "sha256": "7da36fca2789bd0c9599b90b8e0616b8f95f89934e1cb0fe5ebb49ecd42f22fa"
+    },
+    {
+      "path": "Content/guided/G14/script.en.md",
+      "bytes": 3619,
+      "sha256": "7872ed1961c2c2387c4c25c426cf011cff471f2ba9a5c4255548a6b2e260aaf4"
+    },
+    {
+      "path": "Content/guided/G15/script.de.md",
+      "bytes": 6837,
+      "sha256": "3f0493557bb5e9e4b59ba38d5fc20d6b7165ef1551db2d2d9f88efd66fde26c7"
+    },
+    {
+      "path": "Content/guided/G15/script.en.md",
+      "bytes": 5863,
+      "sha256": "552a6305c049fafbf8ad8a15a2fd7eea18302025454e83fe0490eb68a491a925"
+    },
+    {
+      "path": "Content/guided/G16/script.de.md",
+      "bytes": 2492,
+      "sha256": "28f415da9b37aca19564aeff9716689bbdc8ebafd57181453a11a1fc1b071560"
+    },
+    {
+      "path": "Content/guided/G16/script.en.md",
+      "bytes": 2207,
+      "sha256": "63882150ea3dccc5189b7d916b3eda968f4f472ea9715f374dc1ec4857548db7"
+    },
+    {
+      "path": "Content/guided/G17/script.de.md",
+      "bytes": 6792,
+      "sha256": "df95da270420b35c48651b3c5c2dd468aaf442c92df9912a75e878446b96fbbc"
+    },
+    {
+      "path": "Content/guided/G17/script.en.md",
+      "bytes": 6064,
+      "sha256": "759dcbcaab666291554de6c21483b7f55775456d70711186b419cf5a3b9294f5"
+    },
+    {
+      "path": "Content/guided/G18/script.de.md",
+      "bytes": 3564,
+      "sha256": "252ce95d76163691ee65d1c4ec40e0a795464d3bd721c8c3c5be9de6f0fe0ad2"
+    },
+    {
+      "path": "Content/guided/G18/script.en.md",
+      "bytes": 3107,
+      "sha256": "24cc109c161f919756b3432a361dabbb16090a0cf249d174d805d23079e3abe3"
+    },
+    {
+      "path": "Content/guided/G19/script.de.md",
+      "bytes": 5396,
+      "sha256": "20636a18af34cab8281b74e36f1102c8c33e93f39b39b03d9f17aad8fecddef2"
+    },
+    {
+      "path": "Content/guided/G19/script.en.md",
+      "bytes": 4515,
+      "sha256": "cc8efa464629bd42ccc60c46013f51be4b09475eac76fc768d720f3906770b46"
+    },
+    {
+      "path": "Content/guided/G20/script.de.md",
+      "bytes": 4543,
+      "sha256": "ba7041c29f5744da39db77f96d8a30f8d90ecc1ae8525cf6ebe43e180d0e5bbf"
+    },
+    {
+      "path": "Content/guided/G20/script.en.md",
+      "bytes": 3894,
+      "sha256": "ab861cf41d4c7c9978c027ec317d4199b3e8e6ab8d45ed98b845cb15917b82da"
+    },
+    {
+      "path": "Content/guided/G21/script.de.md",
+      "bytes": 3716,
+      "sha256": "59f2fac6628f3fdd43e6112b53daef8f479aeb5b1652969aeda3648ee34adcf5"
+    },
+    {
+      "path": "Content/guided/G21/script.en.md",
+      "bytes": 3253,
+      "sha256": "2dc7e85762aa2ae0534c0927d003e26a4a74e2dd6847fce3326a70056153bfe0"
+    },
+    {
+      "path": "Content/guided/G22/script.de.md",
+      "bytes": 2478,
+      "sha256": "1787db0a365411e359393298970a88497a487a127d1eac8438532577a2e2f460"
+    },
+    {
+      "path": "Content/guided/G22/script.en.md",
+      "bytes": 2150,
+      "sha256": "4eb8a4cfd08a20a698a93cd205646418c5e141e29e99971441ab0c4cbd56dd99"
+    },
+    {
+      "path": "Content/guided/G23/script.de.md",
+      "bytes": 4152,
+      "sha256": "3967bde13f5eed18251031c2da535cf40eec107722de840103a2c43971e8b2f0"
+    },
+    {
+      "path": "Content/guided/G23/script.en.md",
+      "bytes": 3689,
+      "sha256": "a297f7dfd782d08b690dfab582ee68f4ab8d19ee3867208230680c3cdf5e9e09"
+    },
+    {
+      "path": "Content/guided/G24/script.de.md",
+      "bytes": 2225,
+      "sha256": "486c1cb4463ab2c1a98a639bc2d2f63b0f6e3e93c0a40697f7540b395b54f6c7"
+    },
+    {
+      "path": "Content/guided/G24/script.en.md",
+      "bytes": 1971,
+      "sha256": "cb4d12387e219095436d4bdf0e2cd32cf6baed4b1362d9c5398c94da78efc4a1"
+    },
+    {
+      "path": "Content/guided/G25/script.de.md",
+      "bytes": 1603,
+      "sha256": "da6fd1d133f76448bb3ccd0244aeccc37665ac700a4945e18acc008948c524a7"
+    },
+    {
+      "path": "Content/guided/G25/script.en.md",
+      "bytes": 1379,
+      "sha256": "6cdcdc293589425179eacd9661fa61541afc74a8cd4df8041d42f562f6dacf03"
+    },
+    {
+      "path": "Content/guided/G26/script.de.md",
+      "bytes": 4530,
+      "sha256": "b981567d9993aaf2e7b655d21b85d2b56288dbae028bdbb6fd338266480e7ffe"
+    },
+    {
+      "path": "Content/guided/G26/script.en.md",
+      "bytes": 4002,
+      "sha256": "4f3326845b7e5a296ae0c130d017228579ce2fca16f400d5a6f0f71ccc7b878d"
+    },
+    {
+      "path": "Content/guided/G27/script.de.md",
+      "bytes": 3936,
+      "sha256": "7e76a8ea996511316831152036bc6ec1cd2254e3d4a9f0ac8f4337f561ea6824"
+    },
+    {
+      "path": "Content/guided/G27/script.en.md",
+      "bytes": 3478,
+      "sha256": "69f9e8d380b952de5d8f85e8d00330f93211f8d6f0a91512228795c22c6c1904"
+    },
+    {
+      "path": "Content/guided/G28/script.de.md",
+      "bytes": 4464,
+      "sha256": "a6d0055a29a9f4c84866a9a82044e4e70b042b8c6a5fbbd88a48f97f00f6f02d"
+    },
+    {
+      "path": "Content/guided/G28/script.en.md",
+      "bytes": 3879,
+      "sha256": "ee2c981073b58903653edbeae7ad54c08ab7607491c17c5a1a40df6c9a114317"
+    },
+    {
+      "path": "Content/guided/G29/script.de.md",
+      "bytes": 4066,
+      "sha256": "2c65b4e32679985ec203229167ae462f1e9993ef4f4586c5a2afd3f06587ceb6"
+    },
+    {
+      "path": "Content/guided/G29/script.en.md",
+      "bytes": 3565,
+      "sha256": "bfb545211c61fd47fac76827c07b95acaeb82c3a6c881c751a8ef72511796da9"
+    },
+    {
+      "path": "Content/guided/G30/script.de.md",
+      "bytes": 4674,
+      "sha256": "ca28bc289f223787dfbf5c314f204b76ec5023e132f3037a931e91cfe602caf3"
+    },
+    {
+      "path": "Content/guided/G30/script.en.md",
+      "bytes": 4043,
+      "sha256": "39ed104343e2718df6d1e812954d11a835dd1371e6950827bc99f43ef2a00361"
+    },
+    {
+      "path": "Content/guided/G31/script.de.md",
+      "bytes": 3333,
+      "sha256": "700db689eaa9d454060abdd2911c4657786f596c4c44b851d381dd34ca63fe9c"
+    },
+    {
+      "path": "Content/guided/G31/script.en.md",
+      "bytes": 2909,
+      "sha256": "754a7f2bf7bf8686a63d01e076a7589912fb41a64cb61c02c2809dc5d271afee"
+    },
+    {
+      "path": "Content/guided/G32/script.de.md",
+      "bytes": 2880,
+      "sha256": "aa960947a6e5e21c9cd4d5c56b5670582bb3f41d9601ce65645f33ead49f8dee"
+    },
+    {
+      "path": "Content/guided/G32/script.en.md",
+      "bytes": 2507,
+      "sha256": "578a4ebb700a22320a7afff5a0c1de05d3ff9fa39d7cee74a18aa9693e3994f4"
+    },
+    {
+      "path": "Content/guided/G33/script.de.md",
+      "bytes": 2497,
+      "sha256": "c6cba18e3dec7d6bbabd6bccffad242d6fca5ed68547047713854520ccd03a67"
+    },
+    {
+      "path": "Content/guided/G33/script.en.md",
+      "bytes": 2174,
+      "sha256": "4cf1c57f93041e93af908a768d71a8c64376881b358238e248a26cd19cb8f59f"
+    },
+    {
+      "path": "Content/guided/G34/script.de.md",
+      "bytes": 3463,
+      "sha256": "2db1ef8e2a234e96ab9f28dc856951701a850f7535ce8b44562adf629e15defd"
+    },
+    {
+      "path": "Content/guided/G34/script.en.md",
+      "bytes": 3051,
+      "sha256": "d89beb120222f16df37b62bed2a577b8a6fc316d0a7eabe05d519f118dc2a21c"
+    },
+    {
+      "path": "Content/guided/G35/script.de.md",
+      "bytes": 3781,
+      "sha256": "85959373ece143a0860bf4d8e6ccb8b4758c37ff8c9a52c03d4bbba368e2dc1c"
+    },
+    {
+      "path": "Content/guided/G35/script.en.md",
+      "bytes": 3299,
+      "sha256": "5e41bda05acfbf429a0b6c9e10067412c6ec6d27df810b86a0526eeee533e87e"
+    },
+    {
+      "path": "Content/guided/G36/script.de.md",
+      "bytes": 1659,
+      "sha256": "8956f32178c7c0c1e186d301102f4c925aa62ce13fd0d6be381767df0f706a80"
+    },
+    {
+      "path": "Content/guided/G36/script.en.md",
+      "bytes": 1449,
+      "sha256": "aa7df818b1388bbb366e0dc7e09e27dcf91a7a2bbb4ff2bdd55755a9df99c92f"
+    },
+    {
+      "path": "Content/guided/G37/script.de.md",
+      "bytes": 3803,
+      "sha256": "3bb22152280b9448114417aaf0b171a09f6e34a30335ae8b651e5899c4ec0661"
+    },
+    {
+      "path": "Content/guided/G37/script.en.md",
+      "bytes": 3319,
+      "sha256": "0ea2171d88b982a746c013a590c39d9822d207d14d5ecda1d5bb8317cf62f35a"
+    },
+    {
+      "path": "Content/guided/G38/script.de.md",
+      "bytes": 5309,
+      "sha256": "9315973709fb9dc29f53590d66ccd4cae36644a7cf98de5b1bf4ba85807614ae"
+    },
+    {
+      "path": "Content/guided/G38/script.en.md",
+      "bytes": 4681,
+      "sha256": "fd11846a27001c65fdb70f5c75cf1802632e9c3590abff925d2e5cee60f7eff0"
+    },
+    {
+      "path": "Content/guided/G39/script.de.md",
+      "bytes": 3242,
+      "sha256": "d2d1603a1ce5cf4ce42d32f0c147e48da9b19f5b1fae1baf8805bfbb6432bf76"
+    },
+    {
+      "path": "Content/guided/G39/script.en.md",
+      "bytes": 2890,
+      "sha256": "923b3db640cbc70ff074943f8c97d7ecc412893105b868c8062d1e51a3098d9d"
+    },
+    {
+      "path": "Content/guided/G40/script.de.md",
+      "bytes": 4650,
+      "sha256": "fab4f56f20ca3980c0941d487b7fec3ac783535e8ae99914a01ff29948d0d933"
+    },
+    {
+      "path": "Content/guided/G40/script.en.md",
+      "bytes": 4019,
+      "sha256": "c1069220508c12d65ec6cf6adfa5bd036e0c94449b7ba62cb23769a541eaa369"
+    },
+    {
+      "path": "Content/guided/G41/script.de.md",
+      "bytes": 3217,
+      "sha256": "a3febf36465cc2a5dd2930dfd417e1d51aa8c10116c7a6ed81650e938019feba"
+    },
+    {
+      "path": "Content/guided/G41/script.en.md",
+      "bytes": 2888,
+      "sha256": "de98000de5863c660e2ab3b1506dda196003e51dbceea035a95a6cbb67ffab84"
+    },
+    {
+      "path": "Content/guided/G42/script.de.md",
+      "bytes": 7298,
+      "sha256": "94e917ef1502dfa7f09b8f7651343147d78922f31310dc97d1cc90557050ff97"
+    },
+    {
+      "path": "Content/guided/G42/script.en.md",
+      "bytes": 6436,
+      "sha256": "d73a80d3980db8060509e600536a0df8cb258ffb46c472fa3b4df05d38fcb684"
+    },
+    {
+      "path": "Content/guided/catalog.json",
+      "bytes": 46602,
+      "sha256": "d143c160798ba59c2fd26cb986017d0bc271ca1d2b85f79b6c05496875ef7989"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Package.swift",
+      "bytes": 2421,
+      "sha256": "66e254fbe734f3a722ec363a60ebf75724cbdabab9ae12605967dc8a233b83d1"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinContent/GuidedFavoritesRepository.swift",
+      "bytes": 594,
+      "sha256": "114366d01fdcbb2cd353b5531ca947cbc6f3e7e00775910e32f23601e837edc4"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinContent/GuidedPractice.swift",
+      "bytes": 5774,
+      "sha256": "e04a3244497a126407868549ade3525469cb3c897537cbb9700ed946ff926c25"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/GardenMilestone.swift",
+      "bytes": 5727,
+      "sha256": "52b2e828ca97ff136f8722cda519176560912ef0ef823a535dc62a802b09f237"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/GardenState.swift",
+      "bytes": 5144,
+      "sha256": "2bab6da1a9899422826049b180fba24be3e549975b971ddb9a7261a4ddf0a399"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/JournalEntry.swift",
+      "bytes": 12737,
+      "sha256": "ad57f1531b63c6cf04dc913ff2045851695c7e31043c3b8c655a52deff52c23c"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/JournalSearch.swift",
+      "bytes": 1238,
+      "sha256": "1417cf731599f0ebc5f7c00c3020573b88dba01352df81f2d3763e46c8920923"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/JourneyProjection.swift",
+      "bytes": 10142,
+      "sha256": "c95cd56fc7b95172f6287b0b4e64e6ebc446f65b43621be1a9d88ce99acf3377"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/LocalProfile.swift",
+      "bytes": 2399,
+      "sha256": "a48f42cad31c4822412e4fe15d4a2ee608cdfb8b7bdf9d87197a84a6d3b17177"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/MonthlyPracticeCalendar.swift",
+      "bytes": 5675,
+      "sha256": "b50a5dd3fffe09c161e1ef447d0131da29c0df28c32c4071279ca37933a1f3f5"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/PracticeEvent.swift",
+      "bytes": 6248,
+      "sha256": "0f6f6ece5726d04a0dc557f7a5c437f4848ea01dc5a9405f5f0db9fdeb189c3b"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/ProgressionReducer.swift",
+      "bytes": 3600,
+      "sha256": "92fe89257075982c7201e7653dc03141735977f5aa7ad64f482fec84e57828f1"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/WeeklyReminderSchedule.swift",
+      "bytes": 2799,
+      "sha256": "ba79dfc1cdbfd2394b990f923a336cc815bce0c56819f79fe2efc3c4f9cf98a7"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinFeedback/FeedbackClient.swift",
+      "bytes": 8610,
+      "sha256": "11d5f9da692e6af7f08e02d7729e081dd77ffe56d77d2c5d22a035c60d0357e1"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinFeedback/FeedbackComposerModel.swift",
+      "bytes": 2887,
+      "sha256": "841df2a836081080549a6d734698c6e66dbeb8610680f83c255a1f9389d63908"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinFeedback/FeedbackModels.swift",
+      "bytes": 4633,
+      "sha256": "fae250b198066ec0be9ca8bf531c67dfbbe8add5a2425b1e70e6a96a37ce678d"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinGardenBridge/GardenBridgeContract.swift",
+      "bytes": 2812,
+      "sha256": "54b490c32a769e9acc4395efc50d14ba72d9afee2f341159ba8ad0c338fd867a"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinGardenBridge/GardenDescription.swift",
+      "bytes": 1489,
+      "sha256": "6ba55d901e48a79d425a5bbd2f21e8ec5982977aec3447d8c223487248f19dc4"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinMeditation/AudioLifecyclePolicy.swift",
+      "bytes": 1173,
+      "sha256": "5c5052f9db54aa23d67f1596077265cc7eae3122acdcf9b28be42d8fd7d02fc8"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinMeditation/MeditationConfiguration.swift",
+      "bytes": 6233,
+      "sha256": "97cd1aa0a4fa6082a4f61dd3089bcb9c6d92df45484632f0a559713301b90550"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinMeditation/MeditationSession.swift",
+      "bytes": 12588,
+      "sha256": "c32a445496bccde63a3baf701b6f5af42d6ad48be7c4d0152b7ff3de63b2ec20"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinMeditation/MeditationSessionRepository.swift",
+      "bytes": 286,
+      "sha256": "7f040326114346b69ed59c9882f1ecc2ce6dca99e994f0f23c54e401ebb986ca"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinMeditation/SessionCompletionCoordinator.swift",
+      "bytes": 2754,
+      "sha256": "99c64cef5f8ecce69606670d717929d237be61145911abc048a81f1fe0bf9b6c"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/CloudKitSafePersistence.swift",
+      "bytes": 44271,
+      "sha256": "10521fd039eb6f28fd4312a7ec87a59b4bf5db21199c3dbd060f4d090f572ee4"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/ExportStagingManager.swift",
+      "bytes": 5573,
+      "sha256": "96ff603e756017ff8001bebdb527083f379c9d01175c592305523f753645226f"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/FileGardenCustomizationRepository.swift",
+      "bytes": 3342,
+      "sha256": "f1a493a33cf61120d009944f403082e56eb52fe8b4c5c0fe9421c9bf3a185683"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/FileGuidedFavoritesRepository.swift",
+      "bytes": 1966,
+      "sha256": "8f07b9d8d66048c29b0f2bdfff818898d49fe9d3b48c0a5c2ef917d2ba8b79ae"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/FileJournalEntryRepository.swift",
+      "bytes": 3761,
+      "sha256": "5270c4bb9572ce3a40f9afcfc45556f6b5bf5041bedead1f4dd008cb9495bfe5"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/FileLocalProfileRepository.swift",
+      "bytes": 1935,
+      "sha256": "045498290b4c27dc1d69a0ff52dc2c5b5a2ca14da7687a218fc9bfd01281f3af"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/FileMeditationPreferencesRepository.swift",
+      "bytes": 1493,
+      "sha256": "e53bec188fe01e6fe1d6c9d45429c18d21a56ffc0368956ee2d7088104e1855c"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/FileMeditationSessionRepository.swift",
+      "bytes": 2964,
+      "sha256": "353377d18fcef72921c7ebc5e6b8d2dd4282c6be745aa054746316050e4eb150"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/FilePracticeEventRepository.swift",
+      "bytes": 3608,
+      "sha256": "3bb4af6bbe3681d64fe72c140030d79696ff442aba95bb32ab36bdda00412827"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/FileWeeklyReminderScheduleRepository.swift",
+      "bytes": 4450,
+      "sha256": "ace3fbd793ce35272b611fb99d32c2f31a5638634ecd5e38b8afc8ca4e9b8f6d"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/JournalEntryExporter.swift",
+      "bytes": 8978,
+      "sha256": "dcb8611f83af30d006e74a05b26dc614c6ee6ed6051169f3bc34e7913c23f483"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/ProductDataController.swift",
+      "bytes": 10646,
+      "sha256": "07f3b4dc1577d55694b4575801db8221babf7f775e5d566b89d40cbd1bfaffea"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/WholeProductExporter.swift",
+      "bytes": 8588,
+      "sha256": "bd1be665dd10008b3af8ab4f972cb1960a29166c2be62b3b29ade42b392b044a"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinTestSupport/Fixtures.swift",
+      "bytes": 3472,
+      "sha256": "b3d993a4a2ba301fb855df61e27430766633fea73241552357b6d71381ff1f33"
+    },
+    {
+      "path": "Renderer/dist/garden.css",
+      "bytes": 889,
+      "sha256": "c0fac88584c03d2be9b92c8a9dd5877a07b94f49b4feeabd1eb482d51040d4f0"
+    },
+    {
+      "path": "Renderer/dist/index.html",
+      "bytes": 787,
+      "sha256": "359463af29f8ecdc6b403560efb206185f0a61683fc9bff1dcca11a187bcc95e"
+    },
+    {
+      "path": "Renderer/dist/renderer-manifest.json",
+      "bytes": 284,
+      "sha256": "76dd228b74ecc596a1af95cd580521bc9f29a3374c713d561271d60a0fe959bc"
+    },
+    {
+      "path": "Renderer/dist/renderer.js",
+      "bytes": 715328,
+      "sha256": "533c0d5bafe22766f761c9833b105f584a92d5b09de12703f70683efd4e57238"
+    },
+    {
+      "path": "project.yml",
+      "bytes": 4227,
+      "sha256": "cf2f81bbcc7ed8d1c9fa30d4b9bc34e23ec78048c02d484f7fdd5bb8a47b6414"
+    },
+    {
+      "path": "scripts/run_guarded_xcode_tests.sh",
+      "bytes": 4037,
+      "sha256": "a86409044f2c008e60ac00588c3393015171d84f987d9602b4869710fd2f2ca7"
+    },
+    {
+      "path": "scripts/xcodebuild_runtime_test_preflight.zsh",
+      "bytes": 1508,
+      "sha256": "b576872a4a8cbfad5bd05417fd1a36a900a3e9a52f12f9ec66de761ebf41bac2"
+    }
+  ]
+}

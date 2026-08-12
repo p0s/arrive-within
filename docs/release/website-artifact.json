@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "status": "refreshed-production-deployed-and-read-back",
+  "name": "arrive-within-website",
+  "kind": "static-website",
+  "canonical_source": "Website/",
+  "host": {
+    "provider": "Vercel",
+    "plan": "Hobby",
+    "intended_project": "arrive-within",
+    "project_binding": "verified-external-readback-2026-08-12",
+    "custom_domain": "arrivewithin.com",
+    "local_build_origin": "https://arrivewithin.com"
+  },
+  "routes": [
+    "/",
+    "/de",
+    "/support",
+    "/de/support",
+    "/privacy",
+    "/de/privacy",
+    "/open-source",
+    "/de/open-source"
+  ],
+  "public_urls": {
+    "home": "https://arrivewithin.com/",
+    "support": "https://arrivewithin.com/support",
+    "privacy": "https://arrivewithin.com/privacy"
+  },
+  "required_public_paths": {
+    "home": "/",
+    "support": "/support",
+    "privacy": "/privacy"
+  },
+  "source_sha256": "f87034ba7bbad7e9fdd51485a2f9ed02a2f4f103fa15e9632fab42950d6a237d",
+  "content_sha256": "c0facf9f554a2690b01d3575456c02a44d72f4f3b7b75d348b4b9fba43ebc812",
+  "build_output_sha256": "59430428d7124fc08b6fb3d155f22eb8e63d56aafd1c9240cb0bfcb3486cc951",
+  "capture_source_revision": "720deeed8719b680ebe4359e1f572565780cc1015ce4ab0d83cb530335bfb405",
+  "build": {
+    "command": "node scripts/build.mjs; node scripts/validate.mjs",
+    "node": "26.7.0",
+    "package_manager_contract": "pnpm 11.20.0; no dependency resolution occurred in this direct-script verification",
+    "source_files": 27,
+    "output_files": 25,
+    "external_network_dependencies": 0,
+    "clean_builds_compared": 2,
+    "byte_reproducible": true
+  },
+  "local_rendered_review": {
+    "state": "current-source-browser-and-byte-exact-production-readback",
+    "date": "2026-08-12",
+    "route_viewport_combinations": 16,
+    "viewports": [
+      "1440x1000",
+      "390x844"
+    ],
+    "horizontal_overflow_failures": 0,
+    "browser_warnings_or_errors": 0,
+    "external_requests": 0,
+    "garden_video_load_and_seek_cases": "4/4 passed",
+    "language_switch_round_trip": "passed",
+    "report": "docs/qa/website/browser-matrix.json",
+    "narrative": "docs/qa/website/local-static-site.md",
+    "current_source_rerun": "passed before the terminal frozen-source gate"
+  },
+  "deployment_id": "dpl_DdCw74n9x8f862DJBLYynnSztA1e",
+  "public_readback": {
+    "date": "2026-08-13",
+    "state": "passed",
+    "routes": "8/8 HTTP 200 and byte-identical to local production-origin output; 3/3 refreshed Twilight media assets byte-identical",
+    "canonical_tags": "8/8 use https://arrivewithin.com",
+    "security_headers": "CSP, Permissions-Policy, Referrer-Policy, HSTS, nosniff, and DENY verified on all routes",
+    "method": "credential-free HTTP readback of every canonical public URL against the deterministic local artifact"
+  },
+  "current_local_successor": {
+    "state": "deployed-and-read-back-as-current-production",
+    "source_sha256": "f87034ba7bbad7e9fdd51485a2f9ed02a2f4f103fa15e9632fab42950d6a237d",
+    "content_sha256": "c0facf9f554a2690b01d3575456c02a44d72f4f3b7b75d348b4b9fba43ebc812",
+    "build_output_sha256": "59430428d7124fc08b6fb3d155f22eb8e63d56aafd1c9240cb0bfcb3486cc951",
+    "output_files": 25,
+    "static_validation": "passed",
+    "browser_matrix": "16/16 passed",
+    "garden_video_load_and_seek_cases": "4/4 passed",
+    "difference_from_deployed_artifact": "refreshed deterministic Twilight Garden video, poster, social preview, and their provenance",
+    "production_readback": "8/8 routes and 3/3 refreshed media passed byte-identical readback"
+  },
+  "rollback": "Redeploy the immediately previous verified source/output hash to the same project, then read back all canonical routes.",
+  "verification": [
+    "bilingual route and link checks",
+    "no analytics, ads, cookies, newsletter, account, or remote user database",
+    "support/privacy/license content matches the candidate",
+    "public HTTP readback for every canonical route"
+  ],
+  "mutation_authorization": "completed-only-for-the-verified-existing-hobby-project-and-owner-authorized-domain",
+  "prohibited_mutations": [
+    "domain purchase or registration",
+    "custom-domain or DNS changes",
+    "unrelated Vercel project or account changes"
+  ]
+}

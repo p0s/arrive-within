@@ -1,0 +1,7 @@
+packages:
+  - .
+
+allowBuilds:
+  # Required locally by the pinned Next.js/Playwright export toolchain.
+  esbuild: true
+  sharp: true

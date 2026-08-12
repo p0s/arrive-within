@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <filter id="archDepth" x="-15%" y="-15%" width="130%" height="145%">
+      <feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#17271F" flood-opacity="0.34"/>
+    </filter>
+    <filter id="archTexture" x="-8%" y="-8%" width="116%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.052" numOctaves="2" seed="23" result="noise"/>
+      <feColorMatrix in="noise" type="saturate" values="0" result="monochromeNoise"/>
+      <feComponentTransfer in="monochromeNoise" result="softNoise">
+        <feFuncA type="table" tableValues="0 0.16"/>
+      </feComponentTransfer>
+      <feComposite in="softNoise" in2="SourceGraphic" operator="in" result="texture"/>
+      <feBlend in="SourceGraphic" in2="texture" mode="soft-light"/>
+    </filter>
+  </defs>
+  <path fill="#123F30" fill-rule="evenodd" filter="url(#archDepth)"
+        d="M202 828V445C202 274 341 136 512 136s310 138 310 309v383H672V445c0-88-72-159-160-159s-160 71-160 159v383Zm0 0h150v34H202Zm470 0h150v34H672Z"/>
+  <path fill="#1A503D" fill-rule="evenodd" filter="url(#archTexture)"
+        d="M210 820V445C210 279 346 144 512 144s302 135 302 301v375H680V445c0-93-75-167-168-167s-168 74-168 167v375Zm0 0h134v28H210Zm470 0h134v28H680Z"/>
+  <path d="M222 447c0-157 130-286 290-286s290 129 290 286" fill="none"
+        stroke="#557B5E" stroke-width="5" stroke-linecap="round" opacity="0.46"/>
+</svg>

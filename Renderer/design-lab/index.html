@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Garden Design Lab</title>
+    <link rel="stylesheet" href="./lab.css" />
+  </head>
+  <body>
+    <main id="lab">
+      <header id="lab-header">
+        <div>
+          <p id="direction-kicker">Garden direction</p>
+          <h1 id="direction-name"></h1>
+        </div>
+        <p id="state-name"></p>
+      </header>
+      <section id="garden" aria-label="Garden design candidate">
+        <canvas id="garden-canvas" aria-hidden="true"></canvas>
+        <p id="renderer-status" role="status"></p>
+      </section>
+      <footer id="lab-footer">
+        <p id="direction-meaning"></p>
+        <p id="lab-boundary">Local design comparison · One deterministic GardenState</p>
+      </footer>
+    </main>
+    <script type="module" src="./lab.ts"></script>
+  </body>
+</html>

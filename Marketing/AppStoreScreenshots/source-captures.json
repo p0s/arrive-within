@@ -1,0 +1,239 @@
+{
+  "schema_version": 2,
+  "state": "candidate-ready",
+  "capture_method": "Guarded XCUITest using a pooled iPhone 17 Pro simulator on iOS 26.5 and the authorized physical iPad Pro 13-inch (M4) on iOS 26.6, with deterministic safe synthetic product state",
+  "capture_test": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish and testCaptureAllRequiredMarketingStatesGerman — selected Garden/growth shipping states only",
+  "status_bar_profile": "Actual visible system status from each exact passed capture run; no synthetic status-bar overlay. The iPhone simulator and physical iPad capture timestamps differ, and the final marketing compositions preserve those source status bars.",
+  "source_revision": "720deeed8719b680ebe4359e1f572565780cc1015ce4ab0d83cb530335bfb405",
+  "source_revision_kind": "sha256-capture-source-manifest",
+  "source_manifest_path": "capture-source-manifest.json",
+  "post_capture_nonvisual_change": {
+    "classification": "nonvisual-packaging-and-diagnostics-change",
+    "current_source_revision": "71a9fc5d7ccd3a6d35738ae27c934c8cad1f5e1c55d69c8eab4be51e146c9141",
+    "changed_paths": [
+      "Apps/ArriveWithin/Sources/GuidedLibraryView.swift",
+      "Apps/ArriveWithin/Sources/MeditationAudioController.swift",
+      "Apps/ArriveWithin/Sources/PracticeView.swift",
+      "Apps/ArriveWithin/Sources/RendererDiagnostics.swift",
+      "ArriveWithin.xcodeproj/project.pbxproj",
+      "Config/ArriveWithin.entitlements.local",
+      "Config/Base.xcconfig",
+      "Config/Local.xcconfig",
+      "Packages/ArriveWithinCore/Package.swift",
+      "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/WeeklyReminderSchedule.swift",
+      "Renderer/dist/renderer-manifest.json",
+      "Renderer/dist/renderer.js",
+      "project.yml"
+    ],
+    "rationale": "After capture, THIRD_PARTY_NOTICES.md was added as a bundled resource and the release build number advanced from 6 to build 7. The renderer and Swift decoder were then corrected to carry bounded inventory diagnostics instead of silently discarding that nonvisual event. The package manifest later added only a test-only baseline-upgrade fixture resource to prove build-1 persistence compatibility; the resource is not linked into the app. Three audio-facing Swift files now separate lightweight packaged-asset availability from fail-closed narration provenance verification at playback; the zero-narration build 7 remains fail closed before and after this change. One domain source received only end-of-file whitespace normalization. Current capture-source recomputation excludes ignored local signing overlays so tracked-only clones are deterministic; their historical hashes remain only in the frozen capture manifest. These are packaging, observability, test-only, whitespace-only, provenance-scope, and fail-closed narration provenance changes: there is no rendering, layout, camera, lighting, animation, or product-state change, and the approved captured pixels remain representative of the attached build 7 UI."
+  },
+  "result_bundles": [
+    {
+      "device": "iphone-6.9",
+      "name": "final-b6-current-source-720deeed-iphone.xcresult",
+      "xcresult_tree_sha256": "83b7403653c16a8fa43ca700fd5d5f0cedd7b7bc844c07a39d2e072af368878b",
+      "passed_tests": 2,
+      "failed_tests": 0,
+      "skipped_tests": 0
+    },
+    {
+      "device": "ipad-13",
+      "name": "final-b6-current-source-720deeed-ipad.xcresult",
+      "xcresult_tree_sha256": "c02bf3fddf084174f47b1af92865e32442f0c5a31c4cffe20f837af6b06d16c7",
+      "passed_tests": 2,
+      "failed_tests": 0,
+      "skipped_tests": 0
+    }
+  ],
+  "safe_synthetic_data": true,
+  "sets": [
+    {
+      "locale": "en-US",
+      "device": "iphone-6.9",
+      "model": "iPhone 17 Pro",
+      "os": "iOS 26.5 Simulator",
+      "width": 1206,
+      "height": 2622,
+      "result_bundle": {
+        "name": "final-b6-current-source-720deeed-iphone.xcresult",
+        "xcresult_tree_sha256": "83b7403653c16a8fa43ca700fd5d5f0cedd7b7bc844c07a39d2e072af368878b",
+        "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()"
+      },
+      "captures": {
+        "garden-hero": {
+          "path": "public/runtime-ui/en-US/iphone-6.9/garden-hero.png",
+          "sha256": "4423e5eb2e605c00ca9d25056b301d65ee0ecc91421f79f2417da6827d368e81"
+        },
+        "garden-seed": {
+          "path": "public/runtime-ui/en-US/iphone-6.9/garden-seed.png",
+          "sha256": "6d36e82b1eda663949213b51e142a7f2ea20b6e63c75cc8560b17b6b3f98b08f"
+        },
+        "guided-library": {
+          "path": "public/runtime-ui/en-US/iphone-6.9/guided-library.png",
+          "sha256": "b6d3e0be447d38de763840ea3274b8d2f1cb82f0febf684595dbd70c248de047"
+        },
+        "practice-chooser": {
+          "path": "public/runtime-ui/en-US/iphone-6.9/practice-chooser.png",
+          "sha256": "9622991317f62a5ec493e576c27cf5d953a430549d84b934689d575cbb2d93d8"
+        },
+        "journal": {
+          "path": "public/runtime-ui/en-US/iphone-6.9/journal.png",
+          "sha256": "53b6651825bf57b8c24a9c6618bf8249d5366d50fe2d99ed075155b74d5eb91f"
+        },
+        "data-sync": {
+          "path": "public/runtime-ui/en-US/iphone-6.9/data-sync.png",
+          "sha256": "87b274314f4a3790a1df671ef46b7c8aabe6dcf06228d77b83e9bf8cd1c7cd18"
+        },
+        "journey-calendar": {
+          "path": "public/runtime-ui/en-US/iphone-6.9/journey-calendar.png",
+          "sha256": "7b62e8ebc4448461b4733328a2e483710c789d895a45d30e413a28888ce0841d"
+        },
+        "journey-milestones": {
+          "path": "public/runtime-ui/en-US/iphone-6.9/journey-milestones.png",
+          "sha256": "1d0e3679d934c252719625d15e69bfaf248ab292f224fe2716003e9c4c43fbbd"
+        }
+      }
+    },
+    {
+      "locale": "de-DE",
+      "device": "iphone-6.9",
+      "model": "iPhone 17 Pro",
+      "os": "iOS 26.5 Simulator",
+      "width": 1206,
+      "height": 2622,
+      "result_bundle": {
+        "name": "final-b6-current-source-720deeed-iphone.xcresult",
+        "xcresult_tree_sha256": "83b7403653c16a8fa43ca700fd5d5f0cedd7b7bc844c07a39d2e072af368878b",
+        "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
+      },
+      "captures": {
+        "garden-hero": {
+          "path": "public/runtime-ui/de-DE/iphone-6.9/garden-hero.png",
+          "sha256": "770c1f44a3f88b7e5a2ae9c8c3f0b1fca75dc932bf16b3d21309e80d72d0642a"
+        },
+        "garden-seed": {
+          "path": "public/runtime-ui/de-DE/iphone-6.9/garden-seed.png",
+          "sha256": "fb442568c7f7f454450be8f5b323074ecd33f47a30d4beac30fbea8a1d953b5d"
+        },
+        "guided-library": {
+          "path": "public/runtime-ui/de-DE/iphone-6.9/guided-library.png",
+          "sha256": "2313b9653ddc7fab09a23499608d0380ccffa2b90413358b8f0d9a81a1267f42"
+        },
+        "practice-chooser": {
+          "path": "public/runtime-ui/de-DE/iphone-6.9/practice-chooser.png",
+          "sha256": "6aa93ba5571ae5c0016b26ba64306a7b6906633489b6890ef483be2000708329"
+        },
+        "journal": {
+          "path": "public/runtime-ui/de-DE/iphone-6.9/journal.png",
+          "sha256": "24cb9dc0e2b221e5bf58f98225f44f0687c0b17781c21817a012f40325eb614d"
+        },
+        "data-sync": {
+          "path": "public/runtime-ui/de-DE/iphone-6.9/data-sync.png",
+          "sha256": "df98ba8ff87dde53e7306741ad331066afba0325ff4c0ef6bc3cab7a71a6a0ff"
+        },
+        "journey-calendar": {
+          "path": "public/runtime-ui/de-DE/iphone-6.9/journey-calendar.png",
+          "sha256": "65fa9e9cc76ae46d89b53e7443451465a00f247935834bc24d18e5f6dfbdafc1"
+        },
+        "journey-milestones": {
+          "path": "public/runtime-ui/de-DE/iphone-6.9/journey-milestones.png",
+          "sha256": "c82a7970d70984bde49e7cd55c201a6015f854f1a4457426051b7f1111ba19bb"
+        }
+      }
+    },
+    {
+      "locale": "en-US",
+      "device": "ipad-13",
+      "model": "iPad Pro 13-inch (M5)",
+      "os": "iOS 26.5 Simulator",
+      "width": 2064,
+      "height": 2752,
+      "result_bundle": {
+        "name": "final-b6-current-source-720deeed-ipad.xcresult",
+        "xcresult_tree_sha256": "c02bf3fddf084174f47b1af92865e32442f0c5a31c4cffe20f837af6b06d16c7",
+        "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()"
+      },
+      "captures": {
+        "garden-hero": {
+          "path": "public/runtime-ui/en-US/ipad-13/garden-hero.png",
+          "sha256": "c119d6b1380a9437cfc8f883fba4d1d3df02d0170ddf7e000a8b7c54e50eeebc"
+        },
+        "garden-seed": {
+          "path": "public/runtime-ui/en-US/ipad-13/garden-seed.png",
+          "sha256": "7041d0db34a15865ed30d9f153237d013fe054e36e268b7d545414c8e659f431"
+        },
+        "guided-library": {
+          "path": "public/runtime-ui/en-US/ipad-13/guided-library.png",
+          "sha256": "9c0be5f0cfebcce83dc4d4d20ed6a4f7947f40dff2554a90c71b6060c3428c30"
+        },
+        "practice-chooser": {
+          "path": "public/runtime-ui/en-US/ipad-13/practice-chooser.png",
+          "sha256": "15452b3d6f32d3131f23afdb53d1fea4d1d3ec157b97bbd907e127c2c897d1d0"
+        },
+        "journal": {
+          "path": "public/runtime-ui/en-US/ipad-13/journal.png",
+          "sha256": "8788778ae2534245c1860035979b12afe15fc3cc8c9679718b6603d85161fbe5"
+        },
+        "data-sync": {
+          "path": "public/runtime-ui/en-US/ipad-13/data-sync.png",
+          "sha256": "e758e0bfd433549539a6d339d3485ef351b4e598e9897b40620986283fe70138"
+        },
+        "journey-calendar": {
+          "path": "public/runtime-ui/en-US/ipad-13/journey-calendar.png",
+          "sha256": "98b3a306f23943b1c12f92ac8382811e6f0e0596a5fd1b918f10c7d123be556b"
+        },
+        "journey-milestones": {
+          "path": "public/runtime-ui/en-US/ipad-13/journey-milestones.png",
+          "sha256": "a97a998fed1d281ef030bef2dc80c9c0052a4c8a0ce33393a173b72732d2967c"
+        }
+      }
+    },
+    {
+      "locale": "de-DE",
+      "device": "ipad-13",
+      "model": "iPad Pro 13-inch (M5)",
+      "os": "iOS 26.5 Simulator",
+      "width": 2064,
+      "height": 2752,
+      "result_bundle": {
+        "name": "final-b6-current-source-720deeed-ipad.xcresult",
+        "xcresult_tree_sha256": "c02bf3fddf084174f47b1af92865e32442f0c5a31c4cffe20f837af6b06d16c7",
+        "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
+      },
+      "captures": {
+        "garden-hero": {
+          "path": "public/runtime-ui/de-DE/ipad-13/garden-hero.png",
+          "sha256": "7044580688b2ccb34c1999401457d005c9d90b724fd5b0abaf66573508e486f5"
+        },
+        "garden-seed": {
+          "path": "public/runtime-ui/de-DE/ipad-13/garden-seed.png",
+          "sha256": "72ef40da0c39cf9c93c5a1d9b91ed7bc6d0d0f2eea6cb54f35d209414d381492"
+        },
+        "guided-library": {
+          "path": "public/runtime-ui/de-DE/ipad-13/guided-library.png",
+          "sha256": "faae6c9861c299ec3fc9054a8720d70e6a76460289b962fa4453ba7bdcdda222"
+        },
+        "practice-chooser": {
+          "path": "public/runtime-ui/de-DE/ipad-13/practice-chooser.png",
+          "sha256": "363f21b9f31738f81da68d34865a71df348e0892361820ee9ea78789343a58cb"
+        },
+        "journal": {
+          "path": "public/runtime-ui/de-DE/ipad-13/journal.png",
+          "sha256": "e300c8eca8effaf46475645b88a6c66a21210581f2fe4eb5a10370e803d41542"
+        },
+        "data-sync": {
+          "path": "public/runtime-ui/de-DE/ipad-13/data-sync.png",
+          "sha256": "720b8e0be2b244491416b4f0b4d04b03b56d9c1fa3b51677a61db3d4ccfe1a61"
+        },
+        "journey-calendar": {
+          "path": "public/runtime-ui/de-DE/ipad-13/journey-calendar.png",
+          "sha256": "013456507e18496c2bfe5f0c302566b5732d5978a6226e3ff4c46977e34d32d1"
+        },
+        "journey-milestones": {
+          "path": "public/runtime-ui/de-DE/ipad-13/journey-milestones.png",
+          "sha256": "013456507e18496c2bfe5f0c302566b5732d5978a6226e3ff4c46977e34d32d1"
+        }
+      }
+    }
+  ]
+}

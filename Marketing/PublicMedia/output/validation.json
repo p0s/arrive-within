@@ -1,0 +1,267 @@
+{
+  "schema_version": 1,
+  "status": "passed-local-public-media-contract",
+  "checks_passed": 51,
+  "checks_failed": 0,
+  "human_review": "pending",
+  "release_ready": false,
+  "manifest_sha256": "a464f276f47d64316de456b747bc52f20349267add42f06f13f1d6f141e6bede",
+  "failures": [],
+  "checks": [
+    {
+      "id": "state",
+      "passed": true,
+      "detail": "media must remain human-review pending"
+    },
+    {
+      "id": "release-boundary",
+      "passed": true,
+      "detail": "media must not claim release or human approval"
+    },
+    {
+      "id": "plan",
+      "passed": true,
+      "detail": "six locked progression stages are required"
+    },
+    {
+      "id": "network",
+      "passed": true,
+      "detail": "capture must block and observe zero external requests"
+    },
+    {
+      "id": "capture-mode",
+      "passed": true,
+      "detail": "capture must be motion-stable and disclose its isolated-world CSP execution model"
+    },
+    {
+      "id": "rights",
+      "passed": true,
+      "detail": "only original product visuals may appear"
+    },
+    {
+      "id": "generator-hash",
+      "passed": true,
+      "detail": "generator hash must match"
+    },
+    {
+      "id": "plan-hash",
+      "passed": true,
+      "detail": "plan hash must match"
+    },
+    {
+      "id": "schema-hash",
+      "passed": true,
+      "detail": "GardenState schema hash must match"
+    },
+    {
+      "id": "renderer-source-hash",
+      "passed": true,
+      "detail": "renderer source hash must match the manifest"
+    },
+    {
+      "id": "frame-1-mapping",
+      "passed": true,
+      "detail": "frame must map exactly to its plan stage"
+    },
+    {
+      "id": "frame-1-order",
+      "passed": true,
+      "detail": "journey and milestone progression must be monotonic and contract-valid at one milestone per two practice days"
+    },
+    {
+      "id": "frame-1-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "frame-1-image",
+      "passed": true,
+      "detail": "frame must be opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "frame-2-mapping",
+      "passed": true,
+      "detail": "frame must map exactly to its plan stage"
+    },
+    {
+      "id": "frame-2-order",
+      "passed": true,
+      "detail": "journey and milestone progression must be monotonic and contract-valid at one milestone per two practice days"
+    },
+    {
+      "id": "frame-2-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "frame-2-image",
+      "passed": true,
+      "detail": "frame must be opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "frame-3-mapping",
+      "passed": true,
+      "detail": "frame must map exactly to its plan stage"
+    },
+    {
+      "id": "frame-3-order",
+      "passed": true,
+      "detail": "journey and milestone progression must be monotonic and contract-valid at one milestone per two practice days"
+    },
+    {
+      "id": "frame-3-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "frame-3-image",
+      "passed": true,
+      "detail": "frame must be opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "frame-4-mapping",
+      "passed": true,
+      "detail": "frame must map exactly to its plan stage"
+    },
+    {
+      "id": "frame-4-order",
+      "passed": true,
+      "detail": "journey and milestone progression must be monotonic and contract-valid at one milestone per two practice days"
+    },
+    {
+      "id": "frame-4-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "frame-4-image",
+      "passed": true,
+      "detail": "frame must be opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "frame-5-mapping",
+      "passed": true,
+      "detail": "frame must map exactly to its plan stage"
+    },
+    {
+      "id": "frame-5-order",
+      "passed": true,
+      "detail": "journey and milestone progression must be monotonic and contract-valid at one milestone per two practice days"
+    },
+    {
+      "id": "frame-5-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "frame-5-image",
+      "passed": true,
+      "detail": "frame must be opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "frame-6-mapping",
+      "passed": true,
+      "detail": "frame must map exactly to its plan stage"
+    },
+    {
+      "id": "frame-6-order",
+      "passed": true,
+      "detail": "journey and milestone progression must be monotonic and contract-valid at one milestone per two practice days"
+    },
+    {
+      "id": "frame-6-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "frame-6-image",
+      "passed": true,
+      "detail": "frame must be opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "output-output/garden-growth-v1.mp4-hash",
+      "passed": true,
+      "detail": "output hash must match"
+    },
+    {
+      "id": "output-output/garden-growth-v1.mp4-bytes",
+      "passed": true,
+      "detail": "output byte count must match"
+    },
+    {
+      "id": "output-output/garden-growth-poster.png-hash",
+      "passed": true,
+      "detail": "output hash must match"
+    },
+    {
+      "id": "output-output/garden-growth-poster.png-bytes",
+      "passed": true,
+      "detail": "output byte count must match"
+    },
+    {
+      "id": "output-output/social-preview.png-hash",
+      "passed": true,
+      "detail": "output hash must match"
+    },
+    {
+      "id": "output-output/social-preview.png-bytes",
+      "passed": true,
+      "detail": "output byte count must match"
+    },
+    {
+      "id": "output-output/growth-contact-sheet.jpg-hash",
+      "passed": true,
+      "detail": "output hash must match"
+    },
+    {
+      "id": "output-output/growth-contact-sheet.jpg-bytes",
+      "passed": true,
+      "detail": "output byte count must match"
+    },
+    {
+      "id": "poster",
+      "passed": true,
+      "detail": "poster must be opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "social",
+      "passed": true,
+      "detail": "social preview must be opaque 1280 x 640 PNG"
+    },
+    {
+      "id": "contact-sheet",
+      "passed": true,
+      "detail": "contact sheet must be 960 x 410 JPEG"
+    },
+    {
+      "id": "video-stream-count",
+      "passed": true,
+      "detail": "video must contain one video stream and no audio"
+    },
+    {
+      "id": "video-format",
+      "passed": true,
+      "detail": "video must be 1280 x 720 H.264 yuv420p at 30 fps"
+    },
+    {
+      "id": "video-duration",
+      "passed": true,
+      "detail": "video duration must remain in the 9.6–9.8 second window"
+    },
+    {
+      "id": "video-manifest",
+      "passed": true,
+      "detail": "video probe must match the manifest"
+    },
+    {
+      "id": "toolchain",
+      "passed": true,
+      "detail": "toolchain versions must be explicit"
+    },
+    {
+      "id": "validation-text",
+      "passed": true,
+      "detail": "plain-text validation must preserve human and release boundaries"
+    }
+  ]
+}

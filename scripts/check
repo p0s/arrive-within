@@ -1,0 +1,121 @@
+#!/bin/zsh
+set -euo pipefail
+
+script_directory="${0:A:h}"
+project_root="${script_directory:h}"
+cd "$project_root"
+
+expected_node="v26.7.0"
+expected_pnpm="11.20.0"
+preferred_node_bin="${ARRIVE_WITHIN_NODE_BIN_DIR:-/opt/homebrew/Cellar/node/26.7.0/bin}"
+preferred_pnpm_bin="${ARRIVE_WITHIN_PNPM_BIN_DIR:-/opt/homebrew/Cellar/pnpm/11.20.0/bin}"
+if [[ -x "$preferred_node_bin/node" && -x "$preferred_pnpm_bin/pnpm" ]]; then
+  export PATH="$preferred_pnpm_bin:$preferred_node_bin:$PATH"
+fi
+if [[ "$(node --version)" != "$expected_node" ]]; then
+  print -u2 "Node $expected_node is required; selected $(node --version). Set ARRIVE_WITHIN_NODE_BIN_DIR to its bin directory."
+  exit 69
+fi
+if [[ "$(pnpm --version)" != "$expected_pnpm" ]]; then
+  print -u2 "pnpm $expected_pnpm is required; selected $(pnpm --version). Set ARRIVE_WITHIN_PNPM_BIN_DIR to its bin directory."
+  exit 69
+fi
+
+print "Toolchain: Node $(node --version), pnpm $(pnpm --version)"
+
+print "== Guarded XCTest command classification =="
+zsh scripts/test_xcodebuild_runtime_test_preflight.zsh
+
+print "== Public repository boundary =="
+node scripts/validate_public_repository.mjs
+
+print "== Privacy and data-flow boundary =="
+node scripts/validate_privacy_data_flows.mjs
+
+print "== Manual security review boundary =="
+node scripts/validate_manual_security_review.mjs
+
+print "== Guided content and localization =="
+guided_gate="${ARRIVE_WITHIN_GUIDED_GATE:-source}"
+case "$guided_gate" in
+  source|device-candidate) ;;
+  *)
+    print -u2 "ARRIVE_WITHIN_GUIDED_GATE must be source or device-candidate. Final release approval is a separate private exact-TestFlight seal."
+    exit 64
+    ;;
+esac
+python3 scripts/validate_guided_content.py "$guided_gate"
+if [[ "$guided_gate" == "source" ]]; then
+  print "BOUNDARY guided source complete; 84-track device-candidate media requires ARRIVE_WITHIN_GUIDED_GATE=device-candidate after human approvals; final release requires the private exact-TestFlight seal"
+fi
+python3 scripts/test_narration_memory_guard.py
+python3 scripts/test_narration_review_packet.py
+python3 scripts/test_narration_review_approval.py
+python3 scripts/test_narration_release_approval.py
+python3 scripts/test_guided_content_release_boundary.py
+node scripts/validate_localizations.mjs
+
+print "== Swift domain, persistence, meditation, content, and bridge =="
+swift test --package-path Packages/ArriveWithinCore --no-parallel
+
+print "== Renderer =="
+pnpm --dir Renderer verify
+
+print "== Product identity and release-source contracts =="
+node scripts/validate_icon_concepts.mjs
+node scripts/generate_app_icon_assets.mjs --check
+node scripts/validate_app_icon.mjs
+node scripts/validate_release_sources.mjs
+
+print "== App Store screenshot source and output matrix =="
+(
+  cd Marketing/AppStoreScreenshots
+  node node_modules/typescript/bin/tsc --noEmit
+  node --import tsx scripts/validate-plan.ts
+  node --import tsx scripts/validate-narrative-alternatives.ts
+  node --import tsx scripts/validate-captures.ts
+  node --import tsx scripts/validate-export-matrix.ts
+  node --import tsx scripts/verify-reproducibility.ts --check
+)
+
+print "== Public media =="
+node Marketing/PublicMedia/scripts/validate-public-media.mjs
+
+print "== Renderer milestone and variant visual matrix =="
+node Marketing/RendererVisualMatrix/scripts/validate-renderer-visual-matrix.mjs
+
+print "== Selectable Garden and sound design labs =="
+node Marketing/GardenDesignLab/scripts/validate-garden-design-lab.mjs
+zsh scripts/generate_sound_design_lab.sh
+node Marketing/SoundDesignLab/scripts/validate-sound-design-lab.mjs
+node scripts/validate_selected_garden.mjs --require-selected
+
+print "== Bilingual website =="
+(
+  cd Website
+  node scripts/build.mjs
+  node scripts/validate.mjs
+)
+if [[ "${ARRIVE_WITHIN_SKIP_BROWSER:-0}" == "1" ]]; then
+  print "SKIP website real-browser matrix (ARRIVE_WITHIN_SKIP_BROWSER=1)"
+else
+  (cd Website && node scripts/validate-browser.mjs)
+fi
+
+if [[ "${ARRIVE_WITHIN_SKIP_XCODE:-0}" == "1" ]]; then
+  print "SKIP unsigned Release simulator build (ARRIVE_WITHIN_SKIP_XCODE=1)"
+else
+  derived_data_path="$(mktemp -d "${TMPDIR:-/tmp}/arrive-within-check.XXXXXX")"
+  print "== Unsigned universal Release simulator build =="
+  xcodebuild \
+    -quiet \
+    -project ArriveWithin.xcodeproj \
+    -scheme ArriveWithin \
+    -configuration Release \
+    -destination "generic/platform=iOS Simulator" \
+    -derivedDataPath "$derived_data_path" \
+    CODE_SIGNING_ALLOWED=NO \
+    build
+fi
+
+print "PASS Arrive Within public local gate"

@@ -1,0 +1,42 @@
+{
+  "name": "@arrive-within/app-store-screenshots",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@11.20.0",
+  "engines": {
+    "node": "26.7.0"
+  },
+  "scripts": {
+    "build": "NEXT_TELEMETRY_DISABLED=1 next build",
+    "dev": "NEXT_TELEMETRY_DISABLED=1 next dev -H 127.0.0.1",
+    "start": "NEXT_TELEMETRY_DISABLED=1 next start -H 127.0.0.1",
+    "typecheck": "tsc --noEmit",
+    "validate:plan": "tsx scripts/validate-plan.ts",
+    "validate:narratives": "tsx scripts/validate-narrative-alternatives.ts",
+    "validate:captures": "tsx scripts/validate-captures.ts",
+    "validate:exports": "tsx scripts/validate-export-matrix.ts",
+    "validate:reproducibility": "tsx scripts/verify-reproducibility.ts --check",
+    "verify:reproducibility": "tsx scripts/verify-reproducibility.ts --url http://127.0.0.1:3000",
+    "ingest:captures": "tsx scripts/ingest-xcresult-captures.ts",
+    "export:narrative": "tsx scripts/export-playwright.ts",
+    "export:en:iphone": "tsx scripts/export-playwright.ts --url http://127.0.0.1:3000/?device=iphone-6.9\\&locale=en-US --width 1320 --height 2868 --locale en-US --device iphone-6.9 --theme forest-twilight --out exports/en-US/iphone-6.9",
+    "export:de:iphone": "tsx scripts/export-playwright.ts --url http://127.0.0.1:3000/?device=iphone-6.9\\&locale=de-DE --width 1320 --height 2868 --locale de-DE --device iphone-6.9 --theme forest-twilight --out exports/de-DE/iphone-6.9",
+    "export:en:ipad": "tsx scripts/export-playwright.ts --url http://127.0.0.1:3000/?device=ipad-13\\&locale=en-US --width 2064 --height 2752 --locale en-US --device ipad-13 --theme forest-twilight --out exports/en-US/ipad-13",
+    "export:de:ipad": "tsx scripts/export-playwright.ts --url http://127.0.0.1:3000/?device=ipad-13\\&locale=de-DE --width 2064 --height 2752 --locale de-DE --device ipad-13 --theme forest-twilight --out exports/de-DE/ipad-13"
+  },
+  "dependencies": {
+    "jszip": "3.10.1",
+    "next": "16.3.0",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "sharp": "0.35.3"
+  },
+  "devDependencies": {
+    "@types/node": "26.1.1",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "playwright": "1.61.1",
+    "tsx": "4.23.0",
+    "typescript": "5.9.3"
+  }
+}

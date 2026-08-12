@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "status": "owner-selection-pending",
+  "ambience_selection": null,
+  "bell_family_selection": null,
+  "eligible_ambience_ids": [
+    "ambience-a-still-air",
+    "ambience-b-forest-breath",
+    "ambience-c-water-light"
+  ],
+  "eligible_bell_family_ids": ["bell-a-clear", "bell-b-warm", "bell-c-airy"],
+  "selection_effect": "A selection authorizes a separate mastering and shipping-asset integration pass; it does not pass human listening, route balance, rights, archive, TestFlight, or App Store gates.",
+  "release_exclusion": "Until an owner selection is recorded, every lab candidate remains outside the app bundle."
+}

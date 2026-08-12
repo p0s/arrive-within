@@ -1,0 +1,21 @@
+PRODUCT_NAME = ArriveWithin
+PRODUCT_BUNDLE_IDENTIFIER = com.philipps.arrivewithin.ios
+MARKETING_VERSION = 1.0
+CURRENT_PROJECT_VERSION = 7
+IPHONEOS_DEPLOYMENT_TARGET = 18.0
+SWIFT_VERSION = 6.0
+SWIFT_STRICT_CONCURRENCY = complete
+SWIFT_TREAT_WARNINGS_AS_ERRORS = YES
+GCC_TREAT_WARNINGS_AS_ERRORS = YES
+CODE_SIGN_STYLE = Automatic
+ARRIVE_WITHIN_APP_CODE_SIGN_STYLE = Automatic
+ARRIVE_WITHIN_PROVISIONING_PROFILE_SPECIFIER =
+DEVELOPMENT_TEAM =
+ARRIVE_WITHIN_CODE_SIGN_ENTITLEMENTS =
+ARRIVE_WITHIN_CLOUDKIT_CONTAINER_IDENTIFIER =
+ARRIVE_WITHIN_CLOUDKIT_CONTAINER_ENVIRONMENT =
+ARRIVE_WITHIN_APS_ENVIRONMENT =
+// Maintainers may create ignored Config/Local.xcconfig for exact signing.
+// Version 1.0 is intentionally local-only; CloudKit runtime activation remains
+// unavailable until operation-specific deletion and stale-device proof exist.
+#include? "Local.xcconfig"

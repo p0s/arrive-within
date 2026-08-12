@@ -1,0 +1,432 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "generated_at": null,
+  "generation_time_policy": "omitted-for-byte-reproducibility",
+  "browser": "Playwright Chromium 1.61.1",
+  "served_from": "127.0.0.1 ephemeral port",
+  "external_network_policy": "blocked and treated as failure",
+  "routes": [
+    "/",
+    "/de",
+    "/support",
+    "/de/support",
+    "/privacy",
+    "/de/privacy",
+    "/open-source",
+    "/de/open-source"
+  ],
+  "viewports": [
+    {
+      "id": "desktop",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "id": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "cases": [
+    {
+      "route": "/",
+      "viewport": "desktop",
+      "dimensions": "1440x1000",
+      "status": "passed",
+      "failures": [],
+      "facts": {
+        "documentLanguage": "en",
+        "footerVisible": true,
+        "h1Count": 1,
+        "imageCount": 4,
+        "imagesMissingAlt": 0,
+        "mainCount": 1,
+        "overflowPixels": 0,
+        "title": "Arrive Within — Meditation that grows",
+        "videoCount": 1
+      },
+      "video": {
+        "autoplay": false,
+        "controls": true,
+        "currentTime": 5,
+        "duration": 9.733,
+        "paused": true,
+        "poster": "/assets/garden-growth-poster.png",
+        "readyState": 4,
+        "videoHeight": 720,
+        "videoWidth": 1280
+      },
+      "browser_messages": [],
+      "external_requests": []
+    },
+    {
+      "route": "/de",
+      "viewport": "desktop",
+      "dimensions": "1440x1000",
+      "status": "passed",
+      "failures": [],
+      "facts": {
+        "documentLanguage": "de",
+        "footerVisible": true,
+        "h1Count": 1,
+        "imageCount": 4,
+        "imagesMissingAlt": 0,
+        "mainCount": 1,
+        "overflowPixels": 0,
+        "title": "Arrive Within — Meditation, die wächst",
+        "videoCount": 1
+      },
+      "video": {
+        "autoplay": false,
+        "controls": true,
+        "currentTime": 5,
+        "duration": 9.733,
+        "paused": true,
+        "poster": "/assets/garden-growth-poster.png",
+        "readyState": 4,
+        "videoHeight": 720,
+        "videoWidth": 1280
+      },
+      "browser_messages": [],
+      "external_requests": []
+    },
+    {
+      "route": "/support",
+      "viewport": "desktop",
+      "dimensions": "1440x1000",
+      "status": "passed",
+      "failures": [],
+      "facts": {
+        "documentLanguage": "en",
+        "footerVisible": true,
+        "h1Count": 1,
+        "imageCount": 0,
+        "imagesMissingAlt": 0,
+        "mainCount": 1,
+        "overflowPixels": 0,
+        "title": "Support — Arrive Within",
+        "videoCount": 0
+      },
+      "video": null,
+      "browser_messages": [],
+      "external_requests": []
+    },
+    {
+      "route": "/de/support",
+      "viewport": "desktop",
+      "dimensions": "1440x1000",
+      "status": "passed",
+      "failures": [],
+      "facts": {
+        "documentLanguage": "de",
+        "footerVisible": true,
+        "h1Count": 1,
+        "imageCount": 0,
+        "imagesMissingAlt": 0,
+        "mainCount": 1,
+        "overflowPixels": 0,
+        "title": "Hilfe — Arrive Within",
+        "videoCount": 0
+      },
+      "video": null,
+      "browser_messages": [],
+      "external_requests": []
+    },
+    {
+      "route": "/privacy",
+      "viewport": "desktop",
+      "dimensions": "1440x1000",
+      "status": "passed",
+      "failures": [],
+      "facts": {
+        "documentLanguage": "en",
+        "footerVisible": true,
+        "h1Count": 1,
+        "imageCount": 0,
+        "imagesMissingAlt": 0,
+        "mainCount": 1,
+        "overflowPixels": 0,
+        "title": "Privacy — Arrive Within",
+        "videoCount": 0
+      },
+      "video": null,
+      "browser_messages": [],
+      "external_requests": []
+    },
+    {
+      "route": "/de/privacy",
+      "viewport": "desktop",
+      "dimensions": "1440x1000",
+      "status": "passed",
+      "failures": [],
+      "facts": {
+        "documentLanguage": "de",
+        "footerVisible": true,
+        "h1Count": 1,
+        "imageCount": 0,
+        "imagesMissingAlt": 0,
+        "mainCount": 1,
+        "overflowPixels": 0,
+        "title": "Datenschutz — Arrive Within",
+        "videoCount": 0
+      },
+      "video": null,
+      "browser_messages": [],
+      "external_requests": []
+    },
+    {
+      "route": "/open-source",
+      "viewport": "desktop",
+      "dimensions": "1440x1000",
+      "status": "passed",
+      "failures": [],
+      "facts": {
+        "documentLanguage": "en",
+        "footerVisible": true,
+        "h1Count": 1,
+        "imageCount": 0,
+        "imagesMissingAlt": 0,
+        "mainCount": 1,
+        "overflowPixels": 0,
+        "title": "Open source — Arrive Within",
+        "videoCount": 0
+      },
+      "video": null,
+      "browser_messages": [],
+      "external_requests": []
+    },
+    {
+      "route": "/de/open-source",
+      "viewport": "desktop",
+      "dimensions": "1440x1000",
+      "status": "passed",
+      "failures": [],
+      "facts": {
+        "documentLanguage": "de",
+        "footerVisible": true,
+        "h1Count": 1,
+        "imageCount": 0,
+        "imagesMissingAlt": 0,
+        "mainCount": 1,
+        "overflowPixels": 0,
+        "title": "Open Source — Arrive Within",
+        "videoCount": 0
+      },
+      "video": null,
+      "browser_messages": [],
+      "external_requests": []
+    },
+    {
+      "route": "/",
+      "viewport": "mobile",
+      "dimensions": "390x844",
+      "status": "passed",
+      "failures": [],
+      "facts": {
+        "documentLanguage": "en",
+        "footerVisible": true,
+        "h1Count": 1,
+        "imageCount": 4,
+        "imagesMissingAlt": 0,
+        "mainCount": 1,
+        "overflowPixels": 0,
+        "title": "Arrive Within — Meditation that grows",
+        "videoCount": 1
+      },
+      "video": {
+        "autoplay": false,
+        "controls": true,
+        "currentTime": 5,
+        "duration": 9.733,
+        "paused": true,
+        "poster": "/assets/garden-growth-poster.png",
+        "readyState": 4,
+        "videoHeight": 720,
+        "videoWidth": 1280
+      },
+      "browser_messages": [],
+      "external_requests": []
+    },
+    {
+      "route": "/de",
+      "viewport": "mobile",
+      "dimensions": "390x844",
+      "status": "passed",
+      "failures": [],
+      "facts": {
+        "documentLanguage": "de",
+        "footerVisible": true,
+        "h1Count": 1,
+        "imageCount": 4,
+        "imagesMissingAlt": 0,
+        "mainCount": 1,
+        "overflowPixels": 0,
+        "title": "Arrive Within — Meditation, die wächst",
+        "videoCount": 1
+      },
+      "video": {
+        "autoplay": false,
+        "controls": true,
+        "currentTime": 5,
+        "duration": 9.733,
+        "paused": true,
+        "poster": "/assets/garden-growth-poster.png",
+        "readyState": 4,
+        "videoHeight": 720,
+        "videoWidth": 1280
+      },
+      "browser_messages": [],
+      "external_requests": []
+    },
+    {
+      "route": "/support",
+      "viewport": "mobile",
+      "dimensions": "390x844",
+      "status": "passed",
+      "failures": [],
+      "facts": {
+        "documentLanguage": "en",
+        "footerVisible": true,
+        "h1Count": 1,
+        "imageCount": 0,
+        "imagesMissingAlt": 0,
+        "mainCount": 1,
+        "overflowPixels": 0,
+        "title": "Support — Arrive Within",
+        "videoCount": 0
+      },
+      "video": null,
+      "browser_messages": [],
+      "external_requests": []
+    },
+    {
+      "route": "/de/support",
+      "viewport": "mobile",
+      "dimensions": "390x844",
+      "status": "passed",
+      "failures": [],
+      "facts": {
+        "documentLanguage": "de",
+        "footerVisible": true,
+        "h1Count": 1,
+        "imageCount": 0,
+        "imagesMissingAlt": 0,
+        "mainCount": 1,
+        "overflowPixels": 0,
+        "title": "Hilfe — Arrive Within",
+        "videoCount": 0
+      },
+      "video": null,
+      "browser_messages": [],
+      "external_requests": []
+    },
+    {
+      "route": "/privacy",
+      "viewport": "mobile",
+      "dimensions": "390x844",
+      "status": "passed",
+      "failures": [],
+      "facts": {
+        "documentLanguage": "en",
+        "footerVisible": true,
+        "h1Count": 1,
+        "imageCount": 0,
+        "imagesMissingAlt": 0,
+        "mainCount": 1,
+        "overflowPixels": 0,
+        "title": "Privacy — Arrive Within",
+        "videoCount": 0
+      },
+      "video": null,
+      "browser_messages": [],
+      "external_requests": []
+    },
+    {
+      "route": "/de/privacy",
+      "viewport": "mobile",
+      "dimensions": "390x844",
+      "status": "passed",
+      "failures": [],
+      "facts": {
+        "documentLanguage": "de",
+        "footerVisible": true,
+        "h1Count": 1,
+        "imageCount": 0,
+        "imagesMissingAlt": 0,
+        "mainCount": 1,
+        "overflowPixels": 0,
+        "title": "Datenschutz — Arrive Within",
+        "videoCount": 0
+      },
+      "video": null,
+      "browser_messages": [],
+      "external_requests": []
+    },
+    {
+      "route": "/open-source",
+      "viewport": "mobile",
+      "dimensions": "390x844",
+      "status": "passed",
+      "failures": [],
+      "facts": {
+        "documentLanguage": "en",
+        "footerVisible": true,
+        "h1Count": 1,
+        "imageCount": 0,
+        "imagesMissingAlt": 0,
+        "mainCount": 1,
+        "overflowPixels": 0,
+        "title": "Open source — Arrive Within",
+        "videoCount": 0
+      },
+      "video": null,
+      "browser_messages": [],
+      "external_requests": []
+    },
+    {
+      "route": "/de/open-source",
+      "viewport": "mobile",
+      "dimensions": "390x844",
+      "status": "passed",
+      "failures": [],
+      "facts": {
+        "documentLanguage": "de",
+        "footerVisible": true,
+        "h1Count": 1,
+        "imageCount": 0,
+        "imagesMissingAlt": 0,
+        "mainCount": 1,
+        "overflowPixels": 0,
+        "title": "Open Source — Arrive Within",
+        "videoCount": 0
+      },
+      "video": null,
+      "browser_messages": [],
+      "external_requests": []
+    }
+  ],
+  "language_round_trip": {
+    "status": "passed",
+    "german": {
+      "path": "/de",
+      "language": "de",
+      "h1": "Ein stiller Ort zum Ankommen."
+    },
+    "english": {
+      "path": "/",
+      "language": "en",
+      "h1": "A quiet place to arrive."
+    }
+  },
+  "summary": {
+    "cases_total": 16,
+    "cases_passed": 16,
+    "cases_failed": 0,
+    "browser_warnings_or_errors": 0,
+    "external_requests": 0,
+    "horizontal_overflow_failures": 0,
+    "home_video_cases": 4,
+    "home_video_cases_passed": 4
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "locale": "en-US",
+  "state": "draft-unbound",
+  "release_attachable": false,
+  "name": "Arrive Within: Meditation",
+  "subtitle": "Meditation that grows",
+  "promotional_text": "Meditate in your own way and return to a living garden that truthfully reflects every completed practice.",
+  "description_paragraphs": [
+    "Arrive Within is a private, offline-first meditation garden. Begin with a dependable timer or an open-ended stopwatch. Every qualifying practice permanently grows one living tree and the world around it.",
+    "Choose a flexible timer or an open-ended stopwatch, with optional bells, quiet ambience, haptics, and truthful session recovery after an interruption or relaunch.",
+    "Write or record an optional private reflection, review your journey and simple statistics, create calm local reminders, and export a readable copy of your data whenever you choose.",
+    "Your privacy stays yours. Arrive Within collects no user information. There are no ads, analytics, tracking, subscriptions, purchases, accounts, cloud sync, or social comparisons. Practice, preferences, progress, and journal data stay on your device unless you explicitly export them through Apple's system share sheet. Missed days never remove growth. Your journal is never analyzed."
+  ],
+  "keywords": "meditation,timer,stopwatch,mindfulness,breathing,journal,relax,focus,sleep,offline",
+  "whats_new": "Welcome to Arrive Within.",
+  "whats_new_applicability": "not-applicable-to-first-version-retained-as-first-update-source",
+  "screenshot_headlines": [
+    "Arrive in the moment",
+    "Let practice take root",
+    "See your practice rhythm",
+    "Growth that stays",
+    "Notice what changed",
+    "A refuge that remembers"
+  ],
+  "tester_instructions": "Start from a clean install. Begin the three-minute timer practice from first use, complete it, confirm one permanent Garden change, relaunch, then exercise timer, stopwatch, renderer fallback, Journal, Journey, Settings, English/German switching, and offline behavior. Do not enter personal journal content.",
+  "review_notes": "This free app works without an account. The primary review path is Begin a 3-minute timer practice on first launch. Timer, stopwatch, Journal, Journey, and Settings are available from native navigation. Guided narration is not part of this version and no narration tracks are packaged. All activity preferences and progress are stored locally on the device. The app has no analytics SDKs, advertising SDKs, third-party analytics, tracking, account system, backend, or cloud sync. No data is automatically shared with us or any third party. A user may explicitly export local data through Apple's system share sheet. The app does not collect names, email addresses, location, photos, audio, advertising identifiers, or other personal or device data. No purchase or subscription exists. Exact candidate IDs and evidence are injected only when the immutable release manifest is frozen.",
+  "claim_dependencies": [
+    "timer-and-stopwatch-only release wording and zero packaged narration",
+    "exact local-only candidate with no CloudKit runtime or signing entitlement",
+    "immutable candidate manifest and exact review notes"
+  ]
+}

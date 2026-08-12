@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "status": "source-ready-final-build-footage-pending",
+  "source_policy": "Only real interaction footage from the selected exact build; no simulated taps, fake UI, stock video, or unsupported state.",
+  "concepts": [
+    {
+      "id": "practice-becomes-place",
+      "title": "Practice becomes place",
+      "intent": "Show one complete causal thread from immediate practice to permanent Garden growth.",
+      "beats": [
+        {"order": 1, "surface": "Practice chooser", "action": "Choose a three-minute guided practice", "caption_key": "preview.practice.start"},
+        {"order": 2, "surface": "Active practice", "action": "Show the calm timer and synchronized caption", "caption_key": "preview.practice.stay"},
+        {"order": 3, "surface": "Completion", "action": "Complete once and reveal qualifying growth", "caption_key": "preview.practice.grow"},
+        {"order": 4, "surface": "Garden", "action": "Orbit the selected living Garden and reset the view", "caption_key": "preview.practice.remember"},
+        {"order": 5, "surface": "Journey calendar", "action": "Reveal the practiced day and its existing sessions", "caption_key": "preview.practice.rhythm"}
+      ],
+      "localized_captions": {
+        "en-US": {
+          "preview.practice.start": "Begin where you are",
+          "preview.practice.stay": "Stay with one gentle cue",
+          "preview.practice.grow": "Let practice take root",
+          "preview.practice.remember": "Return to a refuge that remembers",
+          "preview.practice.rhythm": "See your rhythm without pressure"
+        },
+        "de-DE": {
+          "preview.practice.start": "Beginne genau hier",
+          "preview.practice.stay": "Bleib bei einem sanften Hinweis",
+          "preview.practice.grow": "Lass deine Praxis Wurzeln schlagen",
+          "preview.practice.remember": "Kehre zu einem Ort zurück, der sich erinnert",
+          "preview.practice.rhythm": "Sieh deinen Rhythmus ohne Druck"
+        }
+      },
+      "audio": "Real app audio only if the selected candidate has passed the applicable listening gate; otherwise use a silent preview with localized captions.",
+      "decision": "pending-final-build-footage-and-human-quality-review"
+    },
+    {
+      "id": "private-daily-refuge",
+      "title": "A private daily refuge",
+      "intent": "Demonstrate offline depth, private reflection, bilingual access, and optional continuity without inflating claims.",
+      "beats": [
+        {"order": 1, "surface": "Guided library", "action": "Browse downloaded practices without an account", "caption_key": "preview.private.offline"},
+        {"order": 2, "surface": "Language settings", "action": "Switch the complete interface from English to German", "caption_key": "preview.private.bilingual"},
+        {"order": 3, "surface": "Journal", "action": "Save a safe synthetic text reflection", "caption_key": "preview.private.reflect"},
+        {"order": 4, "surface": "Data and Sync", "action": "Show local-only mode and the explicit private-iCloud option", "caption_key": "preview.private.choice"},
+        {"order": 5, "surface": "Garden native description", "action": "Show the nonvisual Garden equivalent", "caption_key": "preview.private.accessible"}
+      ],
+      "localized_captions": {
+        "en-US": {
+          "preview.private.offline": "Your practice stays available offline",
+          "preview.private.bilingual": "English or German, whenever you choose",
+          "preview.private.reflect": "Reflection stays private",
+          "preview.private.choice": "Local by default. Private iCloud by choice.",
+          "preview.private.accessible": "The Garden is more than what you see"
+        },
+        "de-DE": {
+          "preview.private.offline": "Deine Praxis bleibt offline verfügbar",
+          "preview.private.bilingual": "Deutsch oder Englisch – du entscheidest",
+          "preview.private.reflect": "Gedanken bleiben privat",
+          "preview.private.choice": "Standardmäßig lokal. Auf Wunsch privat in iCloud.",
+          "preview.private.accessible": "Der Garten ist mehr als das, was du siehst"
+        }
+      },
+      "audio": "Silent with localized captions unless exact-candidate audio has passed the applicable listening and rights gates.",
+      "decision": "pending-final-build-footage-and-human-quality-review"
+    }
+  ],
+  "locales": ["en-US", "de-DE"],
+  "release_rule": "Upload no preview unless final exact-build footage, localized copy fit, current App Store technical rules, encoding, and human quality review all pass. Omitting a weak preview is acceptable.",
+  "claim_boundary": "Storyboard source only; no App Preview has been rendered, validated, uploaded, or approved."
+}

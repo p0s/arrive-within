@@ -1,0 +1,103 @@
+{
+  "catalogSHA256": "d143c160798ba59c2fd26cb986017d0bc271ca1d2b85f79b6c05496875ef7989",
+  "directions": {
+    "de": {
+      "id": "de-c2-accent-stability",
+      "ownerState": "selected"
+    },
+    "en": {
+      "id": "en-f2-spacious-slow",
+      "ownerState": "selected"
+    }
+  },
+  "finishedLibraryApproval": false,
+  "generatedAt": "2026-08-10T05:55:13.634429+00:00",
+  "humanGates": {
+    "finishedLibraryApproval": "pending",
+    "fluentEnglishListening": "pending",
+    "fluentGermanListening": "pending",
+    "physicalDeviceAudio": "pending",
+    "pronunciationAndArtifactReview": "pending",
+    "publicRedistributionSignoff": "pending",
+    "scriptAndEditorialReview": "pending",
+    "vttAlignmentReview": "pending"
+  },
+  "languages": [
+    "en",
+    "de"
+  ],
+  "model": {
+    "germanT3Model": "t3_mtl23ls_v3.safetensors",
+    "referenceVoiceUsed": false,
+    "repository": "ResembleAI/chatterbox",
+    "revision": "5bb1f6ee58e50c3b8d408bc82a6d3740c2db6e18"
+  },
+  "objectiveValidation": "passed",
+  "planSHA256": "93b2258793f3b2f4b496c6fa6ab44bcd5136fb67b9b0afda1dafb7401e91d7fd",
+  "practiceIDs": [
+    "G01"
+  ],
+  "productionMasterApproval": false,
+  "productionVersion": "chatterbox-production-candidates-v1",
+  "schemaVersion": 1,
+  "scope": "bounded-proof",
+  "source": {
+    "commit": "5de7a54aa4e5e2baadb0182dde554908b48b85c2",
+    "license": "MIT",
+    "packageVersion": "0.1.7",
+    "perthCommit": "ce86c49d029f42272c1902eccb675556b9ed2330",
+    "repository": "https://github.com/resemble-ai/chatterbox"
+  },
+  "totals": {
+    "deliveryBytes": 2917548,
+    "durationSeconds": 360.022,
+    "packageMaximumBytes": 419430400,
+    "tracks": 2
+  },
+  "tracks": [
+    {
+      "automatedState": "passed",
+      "deliveryBitrateBPS": 64012,
+      "deliveryBytes": 1458774,
+      "deliverySHA256": "33e5ddcc5fcc66c275cf85b2da3d157d08150f292e878577932cebc8c9d1d970",
+      "direction": "en-f2-spacious-slow",
+      "dropoutAttention": false,
+      "durationSeconds": 180.011,
+      "humanApproval": false,
+      "id": "G01",
+      "integratedLUFS": -19.06,
+      "language": "en",
+      "manifestSHA256": "4245543fe1ca173d993e8e710628bd6161a18584cdcff014f9f6dded83c9c094",
+      "masterSHA256": "89e6c9870c124329217fe5ba99e61fe69454ae7b864998aa67f43fbf373a9fcd",
+      "overallWordsPerMinute": 63.66,
+      "rawClippingAttention": true,
+      "scriptRevision": 1,
+      "scriptSHA256": "0512bcaa57c773cbb43f57d514effde7d194940acc64476625d06927a8a5a01a",
+      "speechOnlyWordsPerMinute": 145.24,
+      "transcriptSHA256": "656933db641ca96d400737558944c8222d1bf1c261fb0bf03aeaacf455fdc5ae",
+      "truePeakDBTP": -1.81
+    },
+    {
+      "automatedState": "passed",
+      "deliveryBitrateBPS": 64012,
+      "deliveryBytes": 1458774,
+      "deliverySHA256": "487f5f0dad522fae45ab023c79924799efb7589c3fe51f5b15129cd4f78842dd",
+      "direction": "de-c2-accent-stability",
+      "dropoutAttention": false,
+      "durationSeconds": 180.011,
+      "humanApproval": false,
+      "id": "G01",
+      "integratedLUFS": -19.11,
+      "language": "de",
+      "manifestSHA256": "416b86e8fffdb0c90cce5b9c22adfaa1a14f1dced2fb54ccad47cff98436a237",
+      "masterSHA256": "0174c6f697d69bc8bf52c20d4ab91ddc1352a42fe6b34b84ef1c11c0365efd53",
+      "overallWordsPerMinute": 66.33,
+      "rawClippingAttention": true,
+      "scriptRevision": 1,
+      "scriptSHA256": "770c11b6aef7a84a060a57b25943309ed98ae87ee00d20d965980882a90d6b4c",
+      "speechOnlyWordsPerMinute": 183.24,
+      "transcriptSHA256": "7cf4f6f3a28cf9bdd8cfbf74976c3da7a990aef43d5b07a176e3e4e4dd5ec629",
+      "truePeakDBTP": -1.9
+    }
+  ]
+}

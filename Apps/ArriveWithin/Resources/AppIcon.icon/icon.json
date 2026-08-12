@@ -1,0 +1,38 @@
+{
+  "fill": {
+    "solid": "display-p3:0.84,0.89,0.70,1.0"
+  },
+  "groups": [
+    {
+      "layers": [
+        {
+          "image-name": "threshold-interior.svg",
+          "name": "Warm interior"
+        }
+      ],
+      "name": "Inner sanctuary"
+    },
+    {
+      "layers": [
+        {
+          "image-name": "threshold-arch.svg",
+          "name": "Forest threshold"
+        }
+      ],
+      "name": "Quiet threshold"
+    },
+    {
+      "layers": [
+        {
+          "image-name": "living-shoot.svg",
+          "name": "Living shoot"
+        }
+      ],
+      "name": "Growth"
+    }
+  ],
+  "supported-platforms": {
+    "circles": [],
+    "squares": "shared"
+  }
+}

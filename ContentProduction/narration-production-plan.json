@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "productionVersion": "chatterbox-production-candidates-v2",
+  "status": "owner-selected-directions-private-production-candidate-generation",
+  "rights": {
+    "privateGeneration": "approved-for-private-default-voice-production-candidates",
+    "publicRedistribution": "pending-owner-cc-by-4.0-signoff",
+    "referenceVoice": null
+  },
+  "source": {
+    "repository": "https://github.com/resemble-ai/chatterbox",
+    "commit": "5de7a54aa4e5e2baadb0182dde554908b48b85c2",
+    "packageVersion": "0.1.7",
+    "license": "MIT",
+    "perthCommit": "ce86c49d029f42272c1902eccb675556b9ed2330"
+  },
+  "model": {
+    "repository": "ResembleAI/chatterbox",
+    "revision": "5bb1f6ee58e50c3b8d408bc82a6d3740c2db6e18",
+    "englishModel": "ChatterboxTTS",
+    "germanModel": "ChatterboxMultilingualTTS",
+    "germanT3Model": "t3_mtl23ls_v3.safetensors",
+    "voiceReference": null
+  },
+  "modelFileSHA256": {
+    "Cangjie5_TC.json": "7073fd9de919443ae88e0bd2449917a65fe54898a4413ed1edcc4b67f28bce8c",
+    "conds.pt": "6552d70568833628ba019c6b03459e77fe71ca197d5c560cef9411bee9d87f4e",
+    "grapheme_mtl_merged_expanded_v1.json": "69632f47220a788a52ce2661d096453c5655e9bf25289d89a8d832c46ee07dbf",
+    "s3gen.pt": "9b9ff07e60b20c136e2b1b3d7563a24604e8d2c4c267888d1ee929dd0151d2a3",
+    "s3gen.safetensors": "2b78103c654207393955e4900aac14a12de8ef25f4b09424f1ef91941f161d4e",
+    "t3_cfg.safetensors": "914cb1696f47527fe8852ca8f1fe1fa63cb34f76f9c715e84e067b744dd0da81",
+    "t3_mtl23ls_v3.safetensors": "5abca8321ede76f8e61f1cc0d19aea6c946b28871017ce8726f8a69203f05953",
+    "tokenizer.json": "d71e3a44eabb1784df9a68e9f95b251ecbf1a7af6a9f50835856b2ca9d8c14a5",
+    "ve.pt": "4b16d836bc598509860f6fa068165a8bb5e9ac84f05582dfcf278a5a372879f1",
+    "ve.safetensors": "f0921cab452fa278bc25cd23ffd59d36f816d7dc5181dd1bef9751a7fb61f63c"
+  },
+  "generation": {
+    "sampleRate": 24000,
+    "channels": 1,
+    "repetitionPenalty": 1.25,
+    "minP": 0.05,
+    "topP": 0.95,
+    "normalization": "whole-track-only-after-complete-assembly",
+    "timeStretch": "none",
+    "runtimeNetwork": "forbidden-local-files-only",
+    "scriptPauseAllocation": "preserve-relative-authored-weights-and-hit-catalog-target-duration",
+    "durationTargetToleranceSeconds": 1.0,
+    "aggregateSpeechWPMTolerance": 0.5
+  },
+  "directions": {
+    "en": {
+      "id": "en-f2-spacious-slow",
+      "ownerState": "selected",
+      "voiceLabel": "default-en",
+      "seedBase": 20260860,
+      "speechOnlyWPMRange": [
+        105,
+        120
+      ],
+      "listPauseMs": 650,
+      "clausePauseMs": 1500,
+      "sentenceGapMs": 1700,
+      "paragraphGapMs": 2400,
+      "exaggeration": 0.18,
+      "cfgWeight": 0.03,
+      "temperature": 0.62,
+      "languageID": null,
+      "assembly": "context-aware-sentence-clause-units-with-bounded-semantic-pauses"
+    },
+    "de": {
+      "id": "de-c2-accent-stability",
+      "ownerState": "selected",
+      "voiceLabel": "default-de-v3",
+      "seedBase": 20260831,
+      "speechOnlyWPMRange": [
+        95,
+        210
+      ],
+      "listPauseMs": 450,
+      "clausePauseMs": 500,
+      "sentenceGapMs": 750,
+      "paragraphGapMs": 1200,
+      "exaggeration": 0.26,
+      "cfgWeight": 0.30,
+      "temperature": 0.72,
+      "languageID": "de",
+      "assembly": "fresh-German-only-process-with-explicit-language-id-per-generation-call"
+    }
+  },
+  "mastering": {
+    "integratedLUFSTarget": -19.0,
+    "integratedLUFSMinimum": -20.0,
+    "integratedLUFSMaximum": -18.0,
+    "masterTruePeakTargetDBTP": -2.0,
+    "deliveryTruePeakMaximumDBTP": -1.5,
+    "loudnessRangeTargetLU": 7.0,
+    "masterCodec": "pcm_s24le",
+    "deliveryCodec": "aac",
+    "deliveryEncoder": "aac_at",
+    "deliveryRateControl": "cbr",
+    "deliverySampleRate": 24000,
+    "deliveryBitrateBPS": 64000,
+    "deliveryBitrateMinimumBPS": 56000,
+    "deliveryBitrateMaximumBPS": 66000,
+    "packageMaximumBytes": 419430400
+  },
+  "humanGates": {
+    "fluentEnglishListening": "pending",
+    "fluentGermanListening": "pending",
+    "scriptAndEditorialReview": "pending",
+    "pronunciationAndArtifactReview": "pending",
+    "publicRedistributionSignoff": "pending",
+    "vttAlignmentReview": "pending",
+    "physicalDeviceAudio": "pending",
+    "finishedLibraryApproval": "pending"
+  }
+}

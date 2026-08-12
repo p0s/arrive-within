@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "artifacts": [
+    {
+      "name": "arrive-within-website",
+      "kind": "static-website",
+      "status": "refreshed-production-deployed-and-read-back",
+      "version": "1.0",
+      "source_path": "Website/",
+      "source_sha256": "f87034ba7bbad7e9fdd51485a2f9ed02a2f4f103fa15e9632fab42950d6a237d",
+      "build_output_sha256": "59430428d7124fc08b6fb3d155f22eb8e63d56aafd1c9240cb0bfcb3486cc951",
+      "distribution": "Verified existing Vercel Hobby project arrive-within at owner-controlled arrivewithin.com; eight routes and three refreshed Twilight media assets read back byte-identical",
+      "compatible_app_versions": "Arrive Within 1.0 candidate only after metadata and privacy content match the exact binary",
+      "deployment_order": 1,
+      "rollback": "Redeploy the immediately previous verified source/output hash and read back every canonical route.",
+      "manual_steps": [
+        "For a later content change, rebuild with the exact production origin and pinned local toolchain.",
+        "Deploy only the validated static output to the already-bound Hobby project.",
+        "Read back all eight canonical routes and changed media against their local hashes."
+      ],
+      "verification": {
+        "local_build": "passed",
+        "byte_reproducible": true,
+        "routes": 8,
+        "route_viewport_combinations": 16,
+        "actual_ui_assets": 8,
+        "report": "docs/qa/website/local-static-site.md",
+        "public_readback": "passed-8-of-8-routes-and-3-of-3-refreshed-media"
+      },
+      "current_local_successor": {
+        "source_sha256": "f87034ba7bbad7e9fdd51485a2f9ed02a2f4f103fa15e9632fab42950d6a237d",
+        "build_output_sha256": "59430428d7124fc08b6fb3d155f22eb8e63d56aafd1c9240cb0bfcb3486cc951",
+        "local_validation": "passed",
+        "public_readback": "passed-and-current-production"
+      }
+    }
+  ]
+}

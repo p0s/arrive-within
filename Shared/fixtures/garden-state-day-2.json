@@ -1,0 +1,29 @@
+{
+  "activeCustomization": {
+    "1": "m01-a"
+  },
+  "gardenID": "10000000-0000-4000-8000-000000000001",
+  "gardenSeed": 424242,
+  "highestMilestone": 1,
+  "journeyDay": 2,
+  "latestGrowthEvent": {
+    "afterJourneyDay": 2,
+    "afterMicroGrowthOrdinal": 2,
+    "beforeJourneyDay": 1,
+    "beforeMicroGrowthOrdinal": 1,
+    "practiceEventID": "30000000-0000-4000-8000-000000000002",
+    "sessionID": "20000000-0000-4000-8000-000000000002"
+  },
+  "localTimePresentation": "2026-08-10",
+  "microGrowthOrdinal": 2,
+  "profileGenerationID": "40000000-0000-4000-8000-000000000001",
+  "qualifyingSessionCount": 2,
+  "qualityHint": "balanced",
+  "reduceMotion": false,
+  "schemaVersion": 1,
+  "totalQualifyingSeconds": 480,
+  "unlockedVariants": [
+    "m01-a",
+    "m01-b"
+  ]
+}

@@ -1,0 +1,220 @@
+{
+  "schema_version": 1,
+  "status": "source-reference-non-shipping",
+  "owner_selection": "garden-growth",
+  "source_policy": "Current deterministic rendered app UI with safe synthetic data only",
+  "locales": ["en-US", "de-DE"],
+  "devices": ["iphone-6.9", "ipad-13"],
+  "slides_per_set": 6,
+  "images_per_narrative": 24,
+  "alternative_image_total": 72,
+  "narratives": [
+    {
+      "id": "garden-growth",
+      "title": "Garden, growth, and emotional transformation",
+      "slides": [
+        {
+          "index": 1,
+          "id": "growth-arrive",
+          "idea": "Arrive in the present through the living Garden",
+          "headline": {"en-US": ["Arrive in", "the moment"], "de-DE": ["Komm ganz", "hier an"]},
+          "supporting_copy": {"en-US": "A quiet place that changes when you show up.", "de-DE": "Ein stiller Ort, der mit deiner Praxis wächst."},
+          "runtime_surface": "Selected mature Garden composition",
+          "composition": "garden-single",
+          "capture_ids": ["garden-hero"]
+        },
+        {
+          "index": 2,
+          "id": "growth-take-root",
+          "idea": "A qualifying practice becomes lasting visible growth",
+          "headline": {"en-US": ["Let practice", "take root"], "de-DE": ["Lass deine Praxis", "Wurzeln schlagen"]},
+          "supporting_copy": {"en-US": "Every qualifying practice becomes permanent growth.", "de-DE": "Jede qualifizierende Praxis wird zu bleibendem Wachstum."},
+          "runtime_surface": "Deterministic Garden before and after growth",
+          "composition": "garden-growth",
+          "capture_ids": ["garden-seed", "garden-hero"]
+        },
+        {
+          "index": 3,
+          "id": "growth-rhythm",
+          "idea": "Browse a private monthly practice rhythm without pressure",
+          "headline": {"en-US": ["See your", "practice rhythm"], "de-DE": ["Dein Rhythmus", "im Blick"]},
+          "supporting_copy": {"en-US": "Browse qualifying, shorter, and empty days without judgment.", "de-DE": "Sieh volle, kürzere und freie Praxistage ohne Bewertung."},
+          "runtime_surface": "Journey monthly practice calendar",
+          "composition": "journey-calendar",
+          "capture_ids": ["journey-calendar"]
+        },
+        {
+          "index": 4,
+          "id": "growth-stays",
+          "idea": "Milestones remain as a nonpunitive record of practice",
+          "headline": {"en-US": ["Growth", "that stays"], "de-DE": ["Wachstum,", "das bleibt"]},
+          "supporting_copy": {"en-US": "Fifteen milestones reveal a refuge without points or loss warnings.", "de-DE": "Fünfzehn Meilensteine entfalten einen Ort ohne Punkte oder Verlustwarnungen."},
+          "runtime_surface": "Journey milestone history and variants",
+          "composition": "journey-milestones",
+          "capture_ids": ["journey-milestones"]
+        },
+        {
+          "index": 5,
+          "id": "growth-reflect",
+          "idea": "Private reflection gives practice personal meaning",
+          "headline": {"en-US": ["Notice", "what changed"], "de-DE": ["Spür nach,", "was sich verändert"]},
+          "supporting_copy": {"en-US": "Write or record a private reflection after practice.", "de-DE": "Schreib oder sprich nach der Praxis eine private Reflexion."},
+          "runtime_surface": "Journal editor with safe synthetic reflection",
+          "composition": "journal",
+          "capture_ids": ["journal"]
+        },
+        {
+          "index": 6,
+          "id": "growth-refuge",
+          "idea": "The mature Garden remembers consistent practice",
+          "headline": {"en-US": ["A refuge", "that remembers"], "de-DE": ["Ein Ort,", "der sich erinnert"]},
+          "supporting_copy": {"en-US": "The same living tree carries your practice forward.", "de-DE": "Derselbe lebendige Baum trägt deine Praxis weiter."},
+          "runtime_surface": "Selected mature Garden with milestone detail",
+          "composition": "garden-single",
+          "capture_ids": ["garden-hero"]
+        }
+      ]
+    },
+    {
+      "id": "daily-practice",
+      "title": "Immediate practice, reliability, and daily utility",
+      "slides": [
+        {
+          "index": 1,
+          "id": "practice-start",
+          "idea": "Begin from an uncluttered first Garden state",
+          "headline": {"en-US": ["Begin with", "what is here"], "de-DE": ["Beginne mit dem,", "was da ist"]},
+          "supporting_copy": {"en-US": "Open into a quiet Garden without an account or questionnaire.", "de-DE": "Öffne einen stillen Garten ohne Konto oder Fragebogen."},
+          "runtime_surface": "Selected first-use Garden composition",
+          "composition": "garden-seed-single",
+          "capture_ids": ["garden-seed"]
+        },
+        {
+          "index": 2,
+          "id": "practice-ready",
+          "idea": "The next practice remains immediately available from the Garden",
+          "headline": {"en-US": ["Practice is", "one tap away"], "de-DE": ["Nur ein Tippen", "bis zur Praxis"]},
+          "supporting_copy": {"en-US": "The living Garden keeps the next meditation close.", "de-DE": "Im lebendigen Garten ist die nächste Meditation ganz nah."},
+          "runtime_surface": "Selected mature Garden with primary Meditate action",
+          "composition": "garden-single",
+          "capture_ids": ["garden-hero"]
+        },
+        {
+          "index": 3,
+          "id": "practice-growth",
+          "idea": "Qualifying practice becomes a permanent visible change",
+          "headline": {"en-US": ["See each", "practice grow"], "de-DE": ["Sieh deine Praxis", "wachsen"]},
+          "supporting_copy": {"en-US": "Every qualifying session adds lasting growth to the same Garden.", "de-DE": "Jede qualifizierende Sitzung lässt denselben Garten dauerhaft wachsen."},
+          "runtime_surface": "Deterministic Garden before and after growth",
+          "composition": "garden-growth",
+          "capture_ids": ["garden-seed", "garden-hero"]
+        },
+        {
+          "index": 4,
+          "id": "practice-gentle-progress",
+          "idea": "Milestones preserve practice without loss pressure",
+          "headline": {"en-US": ["Progress that", "doesn't judge"], "de-DE": ["Fortschritt", "ohne Druck"]},
+          "supporting_copy": {"en-US": "Gaps never remove a completed milestone or Garden change.", "de-DE": "Pausen nehmen dir keinen Meilenstein und kein Wachstum."},
+          "runtime_surface": "Journey milestone history and variants",
+          "composition": "journey-milestones",
+          "capture_ids": ["journey-milestones"]
+        },
+        {
+          "index": 5,
+          "id": "practice-reflect",
+          "idea": "A private reflection can close each practice",
+          "headline": {"en-US": ["Make space", "to notice"], "de-DE": ["Nimm dir Raum", "zum Nachspüren"]},
+          "supporting_copy": {"en-US": "Write or record what you noticed, or simply move on.", "de-DE": "Schreib oder sprich, was du bemerkt hast – oder geh einfach weiter."},
+          "runtime_surface": "Journal editor with safe synthetic reflection",
+          "composition": "journal",
+          "capture_ids": ["journal"]
+        },
+        {
+          "index": 6,
+          "id": "practice-return",
+          "idea": "The same living refuge remains ready for the next day",
+          "headline": {"en-US": ["Return when", "it suits you"], "de-DE": ["Kehre zurück,", "wenn es passt"]},
+          "supporting_copy": {"en-US": "Your Garden waits without penalties, public scores, or pressure.", "de-DE": "Dein Garten wartet ohne Strafen, öffentliche Punkte oder Druck."},
+          "runtime_surface": "Selected mature Garden composition",
+          "composition": "garden-single",
+          "capture_ids": ["garden-hero"]
+        }
+      ]
+    },
+    {
+      "id": "private-depth",
+      "title": "Privacy-first, offline-capable, bilingual local depth and accessibility",
+      "slides": [
+        {
+          "index": 1,
+          "id": "private-no-account",
+          "idea": "Meditation starts without an Arrive Within account",
+          "headline": {"en-US": ["No account", "required"], "de-DE": ["Kein Konto", "nötig"]},
+          "supporting_copy": {"en-US": "Open the app and begin without ads, tracking, or a profile server.", "de-DE": "Öffne die App und beginne ohne Werbung, Tracking oder Profilserver."},
+          "runtime_surface": "Selected first-use Garden composition",
+          "composition": "garden-seed-single",
+          "capture_ids": ["garden-seed"]
+        },
+        {
+          "index": 2,
+          "id": "private-offline",
+          "idea": "The complete core product works locally without network access",
+          "headline": {"en-US": ["Fully useful", "offline"], "de-DE": ["Vollständig", "offline nutzbar"]},
+          "supporting_copy": {"en-US": "Practice, Garden, Journey, and Journal stay available locally.", "de-DE": "Praxis, Garten, Weg und Journal bleiben lokal verfügbar."},
+          "runtime_surface": "Deterministic local Garden progression",
+          "composition": "garden-growth",
+          "capture_ids": ["garden-seed", "garden-hero"]
+        },
+        {
+          "index": 3,
+          "id": "private-journal",
+          "idea": "Text and voice reflections are never analyzed",
+          "headline": {"en-US": ["Reflection stays", "private"], "de-DE": ["Gedanken bleiben", "privat"]},
+          "supporting_copy": {"en-US": "Write or record without analytics, scoring, or background upload.", "de-DE": "Schreib oder sprich ohne Analyse, Bewertung oder Hintergrund-Upload."},
+          "runtime_surface": "Journal editor with safe synthetic reflection",
+          "composition": "journal",
+          "capture_ids": ["journal"]
+        },
+        {
+          "index": 4,
+          "id": "private-language",
+          "idea": "English and German are equal product languages",
+          "headline": {"en-US": ["English", "or German"], "de-DE": ["Deutsch", "oder Englisch"]},
+          "supporting_copy": {"en-US": "Switch the complete interface whenever you choose.", "de-DE": "Wechsle jederzeit die vollständige Oberfläche."},
+          "runtime_surface": "Localized mature Garden captured independently in each language",
+          "composition": "garden-single",
+          "capture_ids": ["garden-hero"]
+        },
+        {
+          "index": 5,
+          "id": "private-no-ranking",
+          "idea": "Journey history remains native, legible, and noncompetitive",
+          "headline": {"en-US": ["Your journey,", "not a ranking"], "de-DE": ["Dein Weg,", "kein Wettbewerb"]},
+          "supporting_copy": {"en-US": "Review lasting milestones without social comparison or public scores.", "de-DE": "Sieh bleibende Meilensteine ohne Vergleich oder öffentliche Punkte."},
+          "runtime_surface": "Journey milestone history and variants",
+          "composition": "journey-milestones",
+          "capture_ids": ["journey-milestones"]
+        },
+        {
+          "index": 6,
+          "id": "private-voice-choice",
+          "idea": "Voice reflection begins only by explicit choice and stays local",
+          "headline": {"en-US": ["Record only", "when you choose"], "de-DE": ["Nur aufnehmen,", "wenn du willst"]},
+          "supporting_copy": {"en-US": "Voice reflection starts deliberately and stays on the device unless exported.", "de-DE": "Sprachreflexion startet bewusst und bleibt ohne Export auf dem Gerät."},
+          "runtime_surface": "Journal editor with explicit local voice-reflection control",
+          "composition": "journal",
+          "capture_ids": ["journal"]
+        }
+      ]
+    }
+  ],
+  "required_capture_ids": [
+    "garden-hero",
+    "garden-seed",
+    "journey-calendar",
+    "journey-milestones",
+    "journal"
+  ],
+  "selection_policy": "The owner selects one coherent narrative or compatible slide concepts; only one freshly recaptured 24-image final-build matrix may be uploaded.",
+  "claim_boundary": "Candidate copy and layout sources only. Final images require selected-build captures, objective export validation, and human visual review."
+}

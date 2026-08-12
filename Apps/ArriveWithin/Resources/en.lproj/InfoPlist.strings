@@ -1,0 +1,3 @@
+"CFBundleDisplayName" = "Arrive Within";
+"NSMicrophoneUsageDescription" = "Record a private voice reflection when you choose.";
+"NSSpeechRecognitionUsageDescription" = "Transcribe a private voice reflection on this device when available.";

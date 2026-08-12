@@ -1,0 +1,12 @@
+# Selected renderer resilience
+
+Date: 2026-08-13
+Status: selected-source deterministic, focused hosted, and genuine 20-minute local-browser soak evidence passed; app-hosted and physical budgets remain pending
+
+The C — Twilight Refuge shipping renderer passes 26 TypeScript tests, including twenty byte-equivalent selected-plan recreations, twenty complete context-loss/restoration state cycles, sustained-quality hysteresis, and exactly-once disposal of shared geometry, material, and texture resources. A focused current-source iOS UI run exercised a real `WEBGL_lose_context` loss/restoration cycle in the bundled renderer, restored the same seed-stage Garden without native fallback, and preserved the Meditate path.
+
+During this audit, the renderer's resource inventory was found to be emitted as a `diagnostic` payload that Swift correctly rejected for carrying undeclared fields. The bridge now uses a dedicated `inventory` type whose exact bounded Swift validator accepts only Twilight Refuge, nonnegative capped resource counts, an allowed context state, and a bounded pixel ratio. The redacted recorder retains only the latest inventory outside its 32-record event ring. Five focused hosted tests pass, including invalid-count rejection and twenty recovery inventories returning to one selected world; the rebuilt local renderer bundle passes its three exact resource tests.
+
+The public `scripts/soak_selected_renderer.mjs` also ran the selected local renderer for 1,205.536 wall-clock seconds in headless Chromium, sampling every 10 seconds for 120 samples while blocking non-loopback requests. Initial and final inventory remained exactly 33 draw calls, 18,770 triangles, 32 geometries, 5 textures, and 18 programs; the rebuild count remained 1, the WebGL context remained available, and no browser error or external request was observed. The script writes the exact mode-0600 measurement to ignored local evidence and fails unless those bounded checks pass.
+
+This evidence closes selected-source recreation, context-cycle, diagnostic-observability, and genuine local-browser soak gaps. The sampled diagnostic render cost is not browser frame pacing, and this result does not claim SwiftUI/app-hosted working memory, cold/warm launch, repeated Garden open/close, oldest/recent-device frame pacing, thermal, energy, battery, audio interaction, upgrade behavior, App Review behavior, or storefront performance. Those remain separate gates.

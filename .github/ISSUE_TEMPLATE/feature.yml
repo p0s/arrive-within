@@ -1,0 +1,45 @@
+name: Feature proposal
+description: Propose a product change with user need, boundaries, and tradeoffs.
+title: "[Proposal]: "
+labels: [proposal]
+body:
+  - type: markdown
+    attributes:
+      value: Share only redacted evidence. Never include journal content, voice recordings, credentials, device identifiers, or signing/configuration values.
+  - type: textarea
+    id: need
+    attributes:
+      label: User and unmet need
+      description: Describe the person, context, and observable problem without starting from a solution.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Smallest coherent proposal
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: true
+  - type: checkboxes
+    id: boundaries
+    attributes:
+      label: Product boundaries
+      options:
+        - label: I considered offline use, privacy, accessibility, iPad, and English/German parity.
+          required: true
+        - label: I identified any cost, rights, identity, CloudKit, StoreKit, or public-commitment change.
+          required: true
+        - label: This does not propose paid garden progress, streak pressure, ads, tracking, or a custom journal backend.
+          required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Verifiable success and evidence
+      description: State how a reviewer can know the change works and which physical/external gates remain.
+    validations:
+      required: true

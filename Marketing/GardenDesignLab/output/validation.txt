@@ -1,0 +1,8 @@
+status: passed-objective-generation
+directions: 3
+stills: 30
+milestone_stills: 45
+motion_clips: 6
+external_requests_observed: 0
+owner_selection: pending
+physical_performance: pending

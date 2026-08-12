@@ -1,0 +1,499 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "generated_at": null,
+  "generation_time_policy": "omitted-for-byte-reproducibility",
+  "product": "Arrive Within",
+  "source_revision": "720deeed8719b680ebe4359e1f572565780cc1015ce4ab0d83cb530335bfb405",
+  "passes": 2,
+  "sets_per_pass": 4,
+  "images_per_pass": 24,
+  "external_network_policy": "Each exporter blocks non-local requests and fails if any are attempted.",
+  "human_visual_review": {
+    "state": "approved",
+    "basis": "English and German iPhone/iPad contact sheets inspected after enforcing one headline, no subtitle layers, and a tight headline-to-product gap."
+  },
+  "upload_authorization": "authorized-for-app-store-version-1.0-after-current-source-validation",
+  "pass_1": {
+    "files": 47,
+    "sha256": "dc1c5ffad75333d12aab2f0b520299d12ed7c078cd2bea82506c457634236c28",
+    "artifacts": [
+      {
+        "file": "_matrix-manifest.json",
+        "bytes": 11599,
+        "sha256": "8eb7bb0f6b96e43da373c1c97658714d68d25869fe69465ef44ca20de5cffdb2"
+      },
+      {
+        "file": "_matrix-validation.json",
+        "bytes": 643,
+        "sha256": "e7d8824c1d1dd2f6cc60458f32548a91dddd60116f5633b99d118e60e89bb9c8"
+      },
+      {
+        "file": "_matrix-validation.txt",
+        "bytes": 170,
+        "sha256": "996c3a0ee9edb89f285567546474f5172e368a8ba02646d0a4faf248a0f6cddf"
+      },
+      {
+        "file": "de-DE/ipad-13/_contact-sheet.jpg",
+        "bytes": 303815,
+        "sha256": "27292d59c14ae482bbd625f79a263e99c855b7f4ddef052bec05f7ebf39ceb40"
+      },
+      {
+        "file": "de-DE/ipad-13/_manifest.json",
+        "bytes": 7492,
+        "sha256": "13435fa256b0dd0c053e34ad90ce7023da3827f92ec886200fd124ac5f61abd9"
+      },
+      {
+        "file": "de-DE/ipad-13/_validation.json",
+        "bytes": 1522,
+        "sha256": "67ae6a2494e66a3948709f1ab85f9bdd2f475d218de7f046395cc3b7fa4e3e9f"
+      },
+      {
+        "file": "de-DE/ipad-13/_validation.txt",
+        "bytes": 429,
+        "sha256": "573553383a75392ccf34fff9b5f92590d3c1378e0bf5e7381e3c14f231c71733"
+      },
+      {
+        "file": "de-DE/ipad-13/01-growth-arrive-de-de-ipad-13-2064x2752.png",
+        "bytes": 768364,
+        "sha256": "383a1a2fabc4a1ef5a37e0fd5de1d485623891e4e9f69295ee2f7302f0bc7191"
+      },
+      {
+        "file": "de-DE/ipad-13/02-growth-take-root-de-de-ipad-13-2064x2752.png",
+        "bytes": 822384,
+        "sha256": "d1d356aa3354861c76b23043f0804a7996f710590b7d2c9cde9e4314f4dfd219"
+      },
+      {
+        "file": "de-DE/ipad-13/03-growth-rhythm-de-de-ipad-13-2064x2752.png",
+        "bytes": 629884,
+        "sha256": "e045e9bfe43463fe421d6cdc6567c480018d366547bc6a98d0b2172da338361a"
+      },
+      {
+        "file": "de-DE/ipad-13/04-growth-stays-de-de-ipad-13-2064x2752.png",
+        "bytes": 563250,
+        "sha256": "5056902b4fc1aa5e90390a8099182adc473531bee7dbd20f9a1b51e90aab1b41"
+      },
+      {
+        "file": "de-DE/ipad-13/05-growth-reflect-de-de-ipad-13-2064x2752.png",
+        "bytes": 514579,
+        "sha256": "5ea756b8280d845b753f55cbc0165f58f965dd5aa332ea4bcbb442ad8a13e9ac"
+      },
+      {
+        "file": "de-DE/ipad-13/06-growth-refuge-de-de-ipad-13-2064x2752.png",
+        "bytes": 680497,
+        "sha256": "93e308543e7ee8a45209061215e48a4c9468f981f2eda7fb7ea0173b7a5ae277"
+      },
+      {
+        "file": "de-DE/ipad-13/arrive-within-app-store-de-de-ipad-13.zip",
+        "bytes": 4151915,
+        "sha256": "44ed4eb162a0ec275fc7369c597554baf8e5fd5f69357363da5f4459b596945c"
+      },
+      {
+        "file": "de-DE/iphone-6.9/_contact-sheet.jpg",
+        "bytes": 410444,
+        "sha256": "35e4f31361311014c9af4aae0c7dad9b7cd7c0ac4c2f90358357cd634624763f"
+      },
+      {
+        "file": "de-DE/iphone-6.9/_manifest.json",
+        "bytes": 7538,
+        "sha256": "b29c8d0b16c7dd98f5ebe9ae57c407a00b2d50319b00e8be89c1a0891faf870a"
+      },
+      {
+        "file": "de-DE/iphone-6.9/_validation.json",
+        "bytes": 1540,
+        "sha256": "45eb9952c06755172afd47222cd212e0515ffbcf8b9afe75dfb560b4bff6090c"
+      },
+      {
+        "file": "de-DE/iphone-6.9/_validation.txt",
+        "bytes": 447,
+        "sha256": "98bfd222eb7c79244685c61ebc70f5f2d5afd098a49c12b17d2f2959bb8f966c"
+      },
+      {
+        "file": "de-DE/iphone-6.9/01-growth-arrive-de-de-iphone-6.9-1320x2868.png",
+        "bytes": 482547,
+        "sha256": "c29539467b00be9a1ecb9ed40536c9b53e7f312d95b846967c2ec94ad586d52e"
+      },
+      {
+        "file": "de-DE/iphone-6.9/02-growth-take-root-de-de-iphone-6.9-1320x2868.png",
+        "bytes": 576843,
+        "sha256": "442c3a1004d8ace6d9bc9de75dd887ec7c04a194300e8abca9c78efaf173b00c"
+      },
+      {
+        "file": "de-DE/iphone-6.9/03-growth-rhythm-de-de-iphone-6.9-1320x2868.png",
+        "bytes": 487552,
+        "sha256": "5ff27392ba4785a36f9f49bb7725b7a3793034b145e90252da060be474d63c6a"
+      },
+      {
+        "file": "de-DE/iphone-6.9/04-growth-stays-de-de-iphone-6.9-1320x2868.png",
+        "bytes": 456411,
+        "sha256": "0abe3af15d06254af57d0b447cc4a17ea67d3932505fdcde5d4da57612dd5534"
+      },
+      {
+        "file": "de-DE/iphone-6.9/05-growth-reflect-de-de-iphone-6.9-1320x2868.png",
+        "bytes": 365332,
+        "sha256": "6135b998a3a7dc990411e0f2cf224ccb003248942e82185d37f9d1851942650f"
+      },
+      {
+        "file": "de-DE/iphone-6.9/06-growth-refuge-de-de-iphone-6.9-1320x2868.png",
+        "bytes": 441683,
+        "sha256": "b4adc186353579bb2518af4c58d15e1bc9b923b47faebad923d244c34e3c5faa"
+      },
+      {
+        "file": "de-DE/iphone-6.9/arrive-within-app-store-de-de-iphone-6.9.zip",
+        "bytes": 3133126,
+        "sha256": "57ea32b36c4220dd913d524a866ce62cf72263b3a1c06ed190434af82892854b"
+      },
+      {
+        "file": "en-US/ipad-13/_contact-sheet.jpg",
+        "bytes": 296718,
+        "sha256": "36cb4fd20239e289250f3e0d64d26a110ae29956728a4d98a48282b6106fc0c6"
+      },
+      {
+        "file": "en-US/ipad-13/_manifest.json",
+        "bytes": 7494,
+        "sha256": "9efd0e54208e42f3a242e43f4e417c4cc83cec7d08bda9cb82067b20f4204fc0"
+      },
+      {
+        "file": "en-US/ipad-13/_validation.json",
+        "bytes": 1522,
+        "sha256": "63533337652d3290714e3eaf43158266d93b2c87911fc1e85e7e5d2bd2e9a162"
+      },
+      {
+        "file": "en-US/ipad-13/_validation.txt",
+        "bytes": 429,
+        "sha256": "7484870ef54969e86a37079ac8b3ce1e051c2ce410656290ce4bae4f6ec9510f"
+      },
+      {
+        "file": "en-US/ipad-13/01-growth-arrive-en-us-ipad-13-2064x2752.png",
+        "bytes": 766868,
+        "sha256": "ad2763fd626737041a2653178779482db1a4c564d019c8110f0cd1c92de72d1c"
+      },
+      {
+        "file": "en-US/ipad-13/02-growth-take-root-en-us-ipad-13-2064x2752.png",
+        "bytes": 802036,
+        "sha256": "ab8a83e9b96feee0bcfcb67a61d4da17835dcaaa49e6a2bd655367299d54e83c"
+      },
+      {
+        "file": "en-US/ipad-13/03-growth-rhythm-en-us-ipad-13-2064x2752.png",
+        "bytes": 624368,
+        "sha256": "e0961ba0ef1d8690a7166e71fd26430a504e652cca81945ac50b5c66348688d8"
+      },
+      {
+        "file": "en-US/ipad-13/04-growth-stays-en-us-ipad-13-2064x2752.png",
+        "bytes": 548912,
+        "sha256": "1a12898ddda2cae259d9b2bddaf362ace8bf5382dab531b49d7d959c3256efef"
+      },
+      {
+        "file": "en-US/ipad-13/05-growth-reflect-en-us-ipad-13-2064x2752.png",
+        "bytes": 488950,
+        "sha256": "0104042314a62d237c00200608936aee853147afad3ddc9dfe61b32aa5e3722c"
+      },
+      {
+        "file": "en-US/ipad-13/06-growth-refuge-en-us-ipad-13-2064x2752.png",
+        "bytes": 684016,
+        "sha256": "50f787c447d3732ec45f5ff23107e98e252cab15cc80e8216844cd82fc0373a0"
+      },
+      {
+        "file": "en-US/ipad-13/arrive-within-app-store-en-us-ipad-13.zip",
+        "bytes": 4077134,
+        "sha256": "505b4b00b73031415897faa871c798a709a594d1a1d92e0fc26e195411693b34"
+      },
+      {
+        "file": "en-US/iphone-6.9/_contact-sheet.jpg",
+        "bytes": 389293,
+        "sha256": "f236d984e5b2b74c516a875d61c0b2591064e2bc82a3e3f792989df5d4366aa3"
+      },
+      {
+        "file": "en-US/iphone-6.9/_manifest.json",
+        "bytes": 7540,
+        "sha256": "44ceaceb4671873a1031799569a6285bfa2e7ee7145aefec16ac54e5bc1980a3"
+      },
+      {
+        "file": "en-US/iphone-6.9/_validation.json",
+        "bytes": 1540,
+        "sha256": "104ba278761976baaef99b9f30bb66606f82c3504446f66ac4df41b5334def6b"
+      },
+      {
+        "file": "en-US/iphone-6.9/_validation.txt",
+        "bytes": 447,
+        "sha256": "6bbde0d9162c974794453e62654e07c8d376e4134e7be4526845a63c7d080fa2"
+      },
+      {
+        "file": "en-US/iphone-6.9/01-growth-arrive-en-us-iphone-6.9-1320x2868.png",
+        "bytes": 480417,
+        "sha256": "f4e331b87005175bcabcbd330d320cd356fc3b6f785e03031552e9cffb19bf7b"
+      },
+      {
+        "file": "en-US/iphone-6.9/02-growth-take-root-en-us-iphone-6.9-1320x2868.png",
+        "bytes": 547213,
+        "sha256": "847b69358d2a2043231c901244defa886d7dd6bdc566859c2ff6d410a8d77c5d"
+      },
+      {
+        "file": "en-US/iphone-6.9/03-growth-rhythm-en-us-iphone-6.9-1320x2868.png",
+        "bytes": 479145,
+        "sha256": "ae156585f78d1c4e527414230c75d17c423b3269ae9a0826a948d40d76c652ce"
+      },
+      {
+        "file": "en-US/iphone-6.9/04-growth-stays-en-us-iphone-6.9-1320x2868.png",
+        "bytes": 439171,
+        "sha256": "1d934a3c1a31e5b1a3d9a4eeb310aaf013ad6a39832216d4032df0cdb8edc1c2"
+      },
+      {
+        "file": "en-US/iphone-6.9/05-growth-reflect-en-us-iphone-6.9-1320x2868.png",
+        "bytes": 336681,
+        "sha256": "be7c57736c43034d84359e321886310941ca3a9b0247a9fa20644b23469122db"
+      },
+      {
+        "file": "en-US/iphone-6.9/06-growth-refuge-en-us-iphone-6.9-1320x2868.png",
+        "bytes": 442580,
+        "sha256": "84b8142301922926eeeca249025ce6da1a6b67b54bbe5269385b03b3a508ac4d"
+      },
+      {
+        "file": "en-US/iphone-6.9/arrive-within-app-store-en-us-iphone-6.9.zip",
+        "bytes": 3027625,
+        "sha256": "1b69b8305ed5d1528ee0fd28bed9ed5249ea849ed5d1712074e0092d3eee827e"
+      }
+    ]
+  },
+  "pass_2": {
+    "files": 47,
+    "sha256": "dc1c5ffad75333d12aab2f0b520299d12ed7c078cd2bea82506c457634236c28",
+    "artifacts": [
+      {
+        "file": "_matrix-manifest.json",
+        "bytes": 11599,
+        "sha256": "8eb7bb0f6b96e43da373c1c97658714d68d25869fe69465ef44ca20de5cffdb2"
+      },
+      {
+        "file": "_matrix-validation.json",
+        "bytes": 643,
+        "sha256": "e7d8824c1d1dd2f6cc60458f32548a91dddd60116f5633b99d118e60e89bb9c8"
+      },
+      {
+        "file": "_matrix-validation.txt",
+        "bytes": 170,
+        "sha256": "996c3a0ee9edb89f285567546474f5172e368a8ba02646d0a4faf248a0f6cddf"
+      },
+      {
+        "file": "de-DE/ipad-13/_contact-sheet.jpg",
+        "bytes": 303815,
+        "sha256": "27292d59c14ae482bbd625f79a263e99c855b7f4ddef052bec05f7ebf39ceb40"
+      },
+      {
+        "file": "de-DE/ipad-13/_manifest.json",
+        "bytes": 7492,
+        "sha256": "13435fa256b0dd0c053e34ad90ce7023da3827f92ec886200fd124ac5f61abd9"
+      },
+      {
+        "file": "de-DE/ipad-13/_validation.json",
+        "bytes": 1522,
+        "sha256": "67ae6a2494e66a3948709f1ab85f9bdd2f475d218de7f046395cc3b7fa4e3e9f"
+      },
+      {
+        "file": "de-DE/ipad-13/_validation.txt",
+        "bytes": 429,
+        "sha256": "573553383a75392ccf34fff9b5f92590d3c1378e0bf5e7381e3c14f231c71733"
+      },
+      {
+        "file": "de-DE/ipad-13/01-growth-arrive-de-de-ipad-13-2064x2752.png",
+        "bytes": 768364,
+        "sha256": "383a1a2fabc4a1ef5a37e0fd5de1d485623891e4e9f69295ee2f7302f0bc7191"
+      },
+      {
+        "file": "de-DE/ipad-13/02-growth-take-root-de-de-ipad-13-2064x2752.png",
+        "bytes": 822384,
+        "sha256": "d1d356aa3354861c76b23043f0804a7996f710590b7d2c9cde9e4314f4dfd219"
+      },
+      {
+        "file": "de-DE/ipad-13/03-growth-rhythm-de-de-ipad-13-2064x2752.png",
+        "bytes": 629884,
+        "sha256": "e045e9bfe43463fe421d6cdc6567c480018d366547bc6a98d0b2172da338361a"
+      },
+      {
+        "file": "de-DE/ipad-13/04-growth-stays-de-de-ipad-13-2064x2752.png",
+        "bytes": 563250,
+        "sha256": "5056902b4fc1aa5e90390a8099182adc473531bee7dbd20f9a1b51e90aab1b41"
+      },
+      {
+        "file": "de-DE/ipad-13/05-growth-reflect-de-de-ipad-13-2064x2752.png",
+        "bytes": 514579,
+        "sha256": "5ea756b8280d845b753f55cbc0165f58f965dd5aa332ea4bcbb442ad8a13e9ac"
+      },
+      {
+        "file": "de-DE/ipad-13/06-growth-refuge-de-de-ipad-13-2064x2752.png",
+        "bytes": 680497,
+        "sha256": "93e308543e7ee8a45209061215e48a4c9468f981f2eda7fb7ea0173b7a5ae277"
+      },
+      {
+        "file": "de-DE/ipad-13/arrive-within-app-store-de-de-ipad-13.zip",
+        "bytes": 4151915,
+        "sha256": "44ed4eb162a0ec275fc7369c597554baf8e5fd5f69357363da5f4459b596945c"
+      },
+      {
+        "file": "de-DE/iphone-6.9/_contact-sheet.jpg",
+        "bytes": 410444,
+        "sha256": "35e4f31361311014c9af4aae0c7dad9b7cd7c0ac4c2f90358357cd634624763f"
+      },
+      {
+        "file": "de-DE/iphone-6.9/_manifest.json",
+        "bytes": 7538,
+        "sha256": "b29c8d0b16c7dd98f5ebe9ae57c407a00b2d50319b00e8be89c1a0891faf870a"
+      },
+      {
+        "file": "de-DE/iphone-6.9/_validation.json",
+        "bytes": 1540,
+        "sha256": "45eb9952c06755172afd47222cd212e0515ffbcf8b9afe75dfb560b4bff6090c"
+      },
+      {
+        "file": "de-DE/iphone-6.9/_validation.txt",
+        "bytes": 447,
+        "sha256": "98bfd222eb7c79244685c61ebc70f5f2d5afd098a49c12b17d2f2959bb8f966c"
+      },
+      {
+        "file": "de-DE/iphone-6.9/01-growth-arrive-de-de-iphone-6.9-1320x2868.png",
+        "bytes": 482547,
+        "sha256": "c29539467b00be9a1ecb9ed40536c9b53e7f312d95b846967c2ec94ad586d52e"
+      },
+      {
+        "file": "de-DE/iphone-6.9/02-growth-take-root-de-de-iphone-6.9-1320x2868.png",
+        "bytes": 576843,
+        "sha256": "442c3a1004d8ace6d9bc9de75dd887ec7c04a194300e8abca9c78efaf173b00c"
+      },
+      {
+        "file": "de-DE/iphone-6.9/03-growth-rhythm-de-de-iphone-6.9-1320x2868.png",
+        "bytes": 487552,
+        "sha256": "5ff27392ba4785a36f9f49bb7725b7a3793034b145e90252da060be474d63c6a"
+      },
+      {
+        "file": "de-DE/iphone-6.9/04-growth-stays-de-de-iphone-6.9-1320x2868.png",
+        "bytes": 456411,
+        "sha256": "0abe3af15d06254af57d0b447cc4a17ea67d3932505fdcde5d4da57612dd5534"
+      },
+      {
+        "file": "de-DE/iphone-6.9/05-growth-reflect-de-de-iphone-6.9-1320x2868.png",
+        "bytes": 365332,
+        "sha256": "6135b998a3a7dc990411e0f2cf224ccb003248942e82185d37f9d1851942650f"
+      },
+      {
+        "file": "de-DE/iphone-6.9/06-growth-refuge-de-de-iphone-6.9-1320x2868.png",
+        "bytes": 441683,
+        "sha256": "b4adc186353579bb2518af4c58d15e1bc9b923b47faebad923d244c34e3c5faa"
+      },
+      {
+        "file": "de-DE/iphone-6.9/arrive-within-app-store-de-de-iphone-6.9.zip",
+        "bytes": 3133126,
+        "sha256": "57ea32b36c4220dd913d524a866ce62cf72263b3a1c06ed190434af82892854b"
+      },
+      {
+        "file": "en-US/ipad-13/_contact-sheet.jpg",
+        "bytes": 296718,
+        "sha256": "36cb4fd20239e289250f3e0d64d26a110ae29956728a4d98a48282b6106fc0c6"
+      },
+      {
+        "file": "en-US/ipad-13/_manifest.json",
+        "bytes": 7494,
+        "sha256": "9efd0e54208e42f3a242e43f4e417c4cc83cec7d08bda9cb82067b20f4204fc0"
+      },
+      {
+        "file": "en-US/ipad-13/_validation.json",
+        "bytes": 1522,
+        "sha256": "63533337652d3290714e3eaf43158266d93b2c87911fc1e85e7e5d2bd2e9a162"
+      },
+      {
+        "file": "en-US/ipad-13/_validation.txt",
+        "bytes": 429,
+        "sha256": "7484870ef54969e86a37079ac8b3ce1e051c2ce410656290ce4bae4f6ec9510f"
+      },
+      {
+        "file": "en-US/ipad-13/01-growth-arrive-en-us-ipad-13-2064x2752.png",
+        "bytes": 766868,
+        "sha256": "ad2763fd626737041a2653178779482db1a4c564d019c8110f0cd1c92de72d1c"
+      },
+      {
+        "file": "en-US/ipad-13/02-growth-take-root-en-us-ipad-13-2064x2752.png",
+        "bytes": 802036,
+        "sha256": "ab8a83e9b96feee0bcfcb67a61d4da17835dcaaa49e6a2bd655367299d54e83c"
+      },
+      {
+        "file": "en-US/ipad-13/03-growth-rhythm-en-us-ipad-13-2064x2752.png",
+        "bytes": 624368,
+        "sha256": "e0961ba0ef1d8690a7166e71fd26430a504e652cca81945ac50b5c66348688d8"
+      },
+      {
+        "file": "en-US/ipad-13/04-growth-stays-en-us-ipad-13-2064x2752.png",
+        "bytes": 548912,
+        "sha256": "1a12898ddda2cae259d9b2bddaf362ace8bf5382dab531b49d7d959c3256efef"
+      },
+      {
+        "file": "en-US/ipad-13/05-growth-reflect-en-us-ipad-13-2064x2752.png",
+        "bytes": 488950,
+        "sha256": "0104042314a62d237c00200608936aee853147afad3ddc9dfe61b32aa5e3722c"
+      },
+      {
+        "file": "en-US/ipad-13/06-growth-refuge-en-us-ipad-13-2064x2752.png",
+        "bytes": 684016,
+        "sha256": "50f787c447d3732ec45f5ff23107e98e252cab15cc80e8216844cd82fc0373a0"
+      },
+      {
+        "file": "en-US/ipad-13/arrive-within-app-store-en-us-ipad-13.zip",
+        "bytes": 4077134,
+        "sha256": "505b4b00b73031415897faa871c798a709a594d1a1d92e0fc26e195411693b34"
+      },
+      {
+        "file": "en-US/iphone-6.9/_contact-sheet.jpg",
+        "bytes": 389293,
+        "sha256": "f236d984e5b2b74c516a875d61c0b2591064e2bc82a3e3f792989df5d4366aa3"
+      },
+      {
+        "file": "en-US/iphone-6.9/_manifest.json",
+        "bytes": 7540,
+        "sha256": "44ceaceb4671873a1031799569a6285bfa2e7ee7145aefec16ac54e5bc1980a3"
+      },
+      {
+        "file": "en-US/iphone-6.9/_validation.json",
+        "bytes": 1540,
+        "sha256": "104ba278761976baaef99b9f30bb66606f82c3504446f66ac4df41b5334def6b"
+      },
+      {
+        "file": "en-US/iphone-6.9/_validation.txt",
+        "bytes": 447,
+        "sha256": "6bbde0d9162c974794453e62654e07c8d376e4134e7be4526845a63c7d080fa2"
+      },
+      {
+        "file": "en-US/iphone-6.9/01-growth-arrive-en-us-iphone-6.9-1320x2868.png",
+        "bytes": 480417,
+        "sha256": "f4e331b87005175bcabcbd330d320cd356fc3b6f785e03031552e9cffb19bf7b"
+      },
+      {
+        "file": "en-US/iphone-6.9/02-growth-take-root-en-us-iphone-6.9-1320x2868.png",
+        "bytes": 547213,
+        "sha256": "847b69358d2a2043231c901244defa886d7dd6bdc566859c2ff6d410a8d77c5d"
+      },
+      {
+        "file": "en-US/iphone-6.9/03-growth-rhythm-en-us-iphone-6.9-1320x2868.png",
+        "bytes": 479145,
+        "sha256": "ae156585f78d1c4e527414230c75d17c423b3269ae9a0826a948d40d76c652ce"
+      },
+      {
+        "file": "en-US/iphone-6.9/04-growth-stays-en-us-iphone-6.9-1320x2868.png",
+        "bytes": 439171,
+        "sha256": "1d934a3c1a31e5b1a3d9a4eeb310aaf013ad6a39832216d4032df0cdb8edc1c2"
+      },
+      {
+        "file": "en-US/iphone-6.9/05-growth-reflect-en-us-iphone-6.9-1320x2868.png",
+        "bytes": 336681,
+        "sha256": "be7c57736c43034d84359e321886310941ca3a9b0247a9fa20644b23469122db"
+      },
+      {
+        "file": "en-US/iphone-6.9/06-growth-refuge-en-us-iphone-6.9-1320x2868.png",
+        "bytes": 442580,
+        "sha256": "84b8142301922926eeeca249025ce6da1a6b67b54bbe5269385b03b3a508ac4d"
+      },
+      {
+        "file": "en-US/iphone-6.9/arrive-within-app-store-en-us-iphone-6.9.zip",
+        "bytes": 3027625,
+        "sha256": "1b69b8305ed5d1528ee0fd28bed9ed5249ea849ed5d1712074e0092d3eee827e"
+      }
+    ]
+  }
+}

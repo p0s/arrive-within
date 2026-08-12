@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "date": "2026-08-13",
+  "status": "passed-byte-reproducibility",
+  "generation_passes": 2,
+  "compared_artifacts": {
+    "opaque_png_frames": 30,
+    "jpeg_contact_sheets": 2,
+    "all_hashes_identical": true,
+    "artifact_vector_sha256": "5673a3f1f2d700ae77beb9b1c0082914dc0877ddb9ad9e3a6091959a87aeb7da"
+  },
+  "manifest_sha256": "d7d25321b34ab04a60773a0fea97ff2a375c6623851582e92a80ffb450961b8c",
+  "output_tree_sha256": "6bc0fa52d935d4c750782a97fdafeeb6768d79de75b54d8f37ff0767cf8e1db3",
+  "toolchain": {
+    "node": "26.7.0",
+    "playwright": "1.61.1",
+    "sharp": "0.35.3"
+  },
+  "external_requests_observed_per_pass": 0,
+  "human_review": "pending",
+  "release_ready": false,
+  "claim_boundary": "Byte reproducibility and objective pixel distinction do not establish owner art approval or physical-device performance."
+}

@@ -1,0 +1,149 @@
+{
+  "schema_version": 2,
+  "status": "template",
+  "frozen_at": null,
+  "manifest_sha256": null,
+  "release_intent": "baseline-internal-testflight-then-selected-public",
+  "platform": "iOS",
+  "marketing_version": "1.0",
+  "build_number": null,
+  "source": {
+    "provenance_mode": "prospective-public-tree",
+    "git_lineage_available": false,
+    "prospective_public_manifest_sha256": null,
+    "prospective_public_tree_sha256": null,
+    "prospective_public_file_count": null,
+    "generated_project_policy_sha256": null,
+    "public_boundary_report_sha256": null,
+    "full_commit": null,
+    "branch": null,
+    "annotated_build_tag": null,
+    "previous_live_commit": null,
+    "previous_live_snapshot_sha256": null,
+    "git_clean": null,
+    "origin_main_equal": null
+  },
+  "approved_deviations": {
+    "pre_git_candidate": {
+      "status": "owner-approved",
+      "git_lineage_claimed": false
+    },
+    "formal_security_and_public_history": {
+      "status": "deferred-until-before-future-first-commit",
+      "passed": false
+    },
+    "human_audio_and_rights_review": {
+      "status": "owner-deferred-not-passed",
+      "passed": false,
+      "nonwaivable_license_blocker": null
+    }
+  },
+  "media_state": {
+    "narration_packaging": null,
+    "narration_track_count": null,
+    "narration_manifest_sha256": null,
+    "narration_incomplete_baseline": null,
+    "missing_narration_fails_closed": null,
+    "human_audio_and_rights_review_passed": false,
+    "testflight_note_states_narration_boundary": null
+  },
+  "asc": {
+    "app_id": null,
+    "version_id": null,
+    "build_id": null,
+    "submission_id": null,
+    "release_mode": "AFTER_APPROVAL"
+  },
+  "binary": {
+    "archive_path": null,
+    "archive_sha256": null,
+    "ipa_path": null,
+    "ipa_sha256": null,
+    "built_info_plist_sha256": null,
+    "entitlements_sha256": null,
+    "privacy_manifest_sha256": null,
+    "built_info": {
+      "bundle_id": null,
+      "marketing_version": null,
+      "build_number": null,
+      "minimum_os": null,
+      "uses_non_exempt_encryption": null
+    },
+    "linked_frameworks_sha256": null,
+    "endpoint_inventory_sha256": null
+  },
+  "signing": {
+    "team_id": null,
+    "signing_identity_sha256": null,
+    "profile_uuid": null,
+    "profile_name": null,
+    "profile_expiry": null,
+    "profile_sha256": null,
+    "get_task_allow": null,
+    "aps_environment": null
+  },
+  "cloudkit": {
+    "container": null,
+    "environment": null,
+    "schema_version": null,
+    "production_schema_deployed": null,
+    "entitlement_container_matches": null
+  },
+  "public_asset_hashes": {
+    "app_icon": null,
+    "guided_content_manifest": null,
+    "narration_manifest": null,
+    "screenshots_manifest": null,
+    "website_output": null,
+    "garden_growth_video": null,
+    "social_preview": null
+  },
+  "gates": {
+    "scripts_check": null,
+    "clean_clone": "unavailable-pre-git",
+    "prospective_public_manifest": null,
+    "persona_wave": null,
+    "localization_accessibility": null,
+    "privacy_storekit_absence": null,
+    "physical_candidate": null,
+    "audio_human_qa": null,
+    "metadata_claims_bound": null,
+    "storekit_asc_absence": null
+  },
+  "physical_evidence": {
+    "iphone": {
+      "public_safe_device_id": null,
+      "hardware_model": null,
+      "os_version": null,
+      "distribution_channel": null,
+      "marketing_version": null,
+      "build_number": null,
+      "source_manifest_sha256": null,
+      "scenario_ids": [],
+      "side_effects_observed": [],
+      "result": null,
+      "report_sha256": null
+    },
+    "ipad": {
+      "public_safe_device_id": null,
+      "hardware_model": null,
+      "os_version": null,
+      "distribution_channel": null,
+      "marketing_version": null,
+      "build_number": null,
+      "source_manifest_sha256": null,
+      "scenario_ids": [],
+      "side_effects_observed": [],
+      "result": null,
+      "report_sha256": null
+    }
+  },
+  "release_notes": {
+    "en-US": null,
+    "de-DE": null
+  },
+  "review_notes": {
+    "en-US": null,
+    "de-DE": null
+  }
+}

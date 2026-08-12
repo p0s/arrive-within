@@ -1,0 +1,185 @@
+:root {
+  --forest-950: #071b14;
+  --forest-900: #0d2d22;
+  --forest-800: #174636;
+  --moss-600: #507d57;
+  --sage-400: #99b88d;
+  --sage-200: #d3dfc9;
+  --cream-100: #f8f1df;
+  --cream-200: #eee1c3;
+  --amber-400: #d7a64e;
+  --ink: #10231b;
+  color-scheme: dark;
+  font-family: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  background: #111b17;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body { background: #111b17; }
+main {
+  display: grid;
+  gap: 40px;
+  justify-content: center;
+  padding: 40px;
+}
+
+.slide {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  color: var(--cream-100);
+  background:
+    radial-gradient(circle at 80% 16%, rgb(153 184 141 / 22%) 0 11%, transparent 31%),
+    linear-gradient(158deg, var(--forest-800) 0%, var(--forest-950) 68%);
+}
+.slide-2,
+.slide-4,
+.slide-6 {
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 12% 86%, rgb(80 125 87 / 24%) 0 12%, transparent 33%),
+    linear-gradient(154deg, var(--cream-100) 0%, #e4ecd9 100%);
+}
+.slide-3 {
+  background:
+    radial-gradient(circle at 10% 74%, rgb(215 166 78 / 18%) 0 12%, transparent 30%),
+    linear-gradient(160deg, #102d28 0%, #183c35 48%, #071b14 100%);
+}
+.slide-5 {
+  background:
+    radial-gradient(circle at 86% 74%, rgb(215 166 78 / 16%) 0 12%, transparent 30%),
+    linear-gradient(160deg, #24293d 0%, #182d2a 58%, #071b14 100%);
+}
+
+header {
+  position: relative;
+  z-index: 3;
+  width: 86%;
+  margin: 6.5% auto 0;
+  text-align: center;
+}
+h1 {
+  margin: 0;
+  font-size: 146px;
+  font-weight: 820;
+  letter-spacing: -.062em;
+  line-height: .92;
+  text-wrap: balance;
+}
+h1 span { display: block; }
+
+.composition {
+  position: absolute;
+  z-index: 2;
+  top: 16%;
+  right: 5%;
+  bottom: auto;
+  left: 5%;
+  height: 84%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+.device-frame {
+  position: relative;
+  overflow: hidden;
+  flex: none;
+  padding: 18px;
+  border: 12px solid #07110d;
+  border-radius: 86px 86px 0 0;
+  background: #07110d;
+}
+.device-frame.phone { width: 82%; }
+.device-frame.tablet { width: 87%; border-radius: 70px 70px 0 0; }
+.device-screen {
+  overflow: hidden;
+  width: 100%;
+  border-radius: 58px 58px 0 0;
+  background: var(--forest-950);
+}
+.tablet .device-screen { border-radius: 48px 48px 0 0; }
+.device-screen img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+.composition-garden-growth { top: 14%; right: 0; bottom: auto; left: 0; height: 86%; }
+.composition-garden-growth .device-frame {
+  position: absolute;
+  width: 73%;
+  padding: 14px;
+  border: 14px solid #050a08;
+  border-radius: 104px;
+  background: #050a08;
+  box-shadow: 0 44px 72px rgb(7 27 20 / 28%);
+}
+.composition-garden-growth .device-screen { border-radius: 76px; }
+.composition-garden-growth .device-frame::after {
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  width: 29%;
+  height: 34px;
+  border-radius: 999px;
+  background: #050a08;
+  content: "";
+  transform: translateX(-50%);
+}
+.composition-garden-growth .before { z-index: 2; top: 5%; left: -15%; transform: rotate(-5deg); }
+.composition-garden-growth .after { z-index: 3; top: 1%; right: -15%; transform: rotate(5deg); }
+.growth-line {
+  position: absolute;
+  z-index: 1;
+  top: 36%;
+  left: 34%;
+  width: 32%;
+  height: 32%;
+  border: 18px solid var(--amber-400);
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  opacity: .72;
+  transform: rotate(18deg);
+}
+.composition-data-sync-pair { align-items: center; bottom: -2%; height: 60%; }
+.composition-data-sync-pair .primary-device { position: absolute; z-index: 2; left: 2%; width: 66%; }
+.composition-data-sync-pair .companion-device { position: absolute; z-index: 3; right: 0; bottom: 4%; width: 42%; border-radius: 58px; }
+.composition-data-sync-pair .companion-device .device-screen { border-radius: 36px; }
+.composition-journey-calendar .device-frame,
+.composition-active-practice .device-frame,
+.composition-data-local .device-frame { width: 82%; transform: rotate(-1.4deg) translateY(2%); }
+.composition-journey-milestones .device-frame,
+.composition-journey-history .device-frame,
+.composition-reminders .device-frame { width: 81%; transform: rotate(1.2deg) translateY(3%); }
+.composition-active-captions .device-frame,
+.composition-journal-voice .device-frame,
+.composition-language-settings .device-frame,
+.composition-accessibility-large-text .device-frame,
+.composition-journal .device-frame { width: 84%; }
+.continuity-thread {
+  position: absolute;
+  z-index: 4;
+  top: 38%;
+  right: 30%;
+  width: 18%;
+  height: 18%;
+  border-top: 12px solid var(--amber-400);
+  border-right: 12px solid var(--amber-400);
+  border-radius: 0 52px 0 0;
+}
+
+.ipad header { margin-top: 4.5%; }
+.ipad h1 { font-size: 154px; }
+.ipad .composition { top: 15%; right: 3%; bottom: auto; left: 3%; height: 85%; }
+.ipad .device-frame.tablet { width: 90%; }
+.slide.ipad .composition.composition-garden-growth { top: 35%; right: 0; bottom: auto; left: 0; height: 65%; }
+.ipad .composition-garden-growth .device-frame { width: 69%; border-radius: 86px; }
+.ipad .composition-garden-growth .device-screen { border-radius: 60px; }
+.ipad .composition-garden-growth .before { top: 8%; left: -10%; transform: rotate(-4.5deg); }
+.ipad .composition-garden-growth .after { top: 2%; right: -10%; transform: rotate(4.5deg); }
+.ipad .composition-data-sync-pair { bottom: -8%; height: 65%; }
+.ipad .composition-data-sync-pair .primary-device { width: 65%; }
+.ipad .composition-data-sync-pair .companion-device { width: 31%; }

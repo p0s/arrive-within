@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "auditionVersion": "chatterbox-default-v1",
+  "rightsState": "approved-for-private-default-voice-audition",
+  "releaseRightsState": "pending-owner-cc-by-4.0-signoff",
+  "source": {
+    "repository": "https://github.com/resemble-ai/chatterbox",
+    "commit": "5de7a54aa4e5e2baadb0182dde554908b48b85c2",
+    "packageVersion": "0.1.7",
+    "license": "MIT",
+    "perthCommit": "ce86c49d029f42272c1902eccb675556b9ed2330"
+  },
+  "model": {
+    "repository": "ResembleAI/chatterbox",
+    "revision": "5bb1f6ee58e50c3b8d408bc82a6d3740c2db6e18",
+    "englishModel": "ChatterboxTTS",
+    "germanModel": "ChatterboxMultilingualTTS",
+    "germanT3Model": "t3_mtl23ls_v3.safetensors",
+    "voiceReference": null,
+    "voiceLabels": {"en": "default-en", "de": "default-de-v3"}
+  },
+  "generation": {
+    "sampleRate": 24000,
+    "channels": 1,
+    "seed": 20260809,
+    "repetitionPenalty": 1.25,
+    "minP": 0.05,
+    "topP": 0.95,
+    "exaggeration": 0.30,
+    "cfgWeight": 0.45,
+    "temperature": 0.70,
+    "normalization": "none-raw-audition"
+  },
+  "excerpts": [
+    {
+      "id": "G01", "language": "en",
+      "scriptSHA256": "0512bcaa57c773cbb43f57d514effde7d194940acc64476625d06927a8a5a01a",
+      "text": "Notice that the ground is already meeting you. Feel one or two places where your body is supported: feet on the floor, the seat beneath you, or the surface under your back."
+    },
+    {
+      "id": "G01", "language": "de",
+      "scriptSHA256": "770c11b6aef7a84a060a57b25943309ed98ae87ee00d20d965980882a90d6b4c",
+      "text": "Bemerke, dass der Boden dir bereits entgegenkommt. Spüre ein oder zwei Stellen, an denen dein Körper getragen wird: die Füße auf dem Boden, die Sitzfläche unter dir oder die Unterlage unter deinem Rücken."
+    },
+    {
+      "id": "G10", "language": "en",
+      "scriptSHA256": "aaad4476a9a5f209bd7196e3978dd3fde88ee245e2ac143cacabe2d4f168903a",
+      "text": "Pressure can make everything seem equally urgent. For these minutes, you do not need to solve the whole situation. Begin by noticing one fact: you are here, in this place, in this body."
+    },
+    {
+      "id": "G10", "language": "de",
+      "scriptSHA256": "6cccece643aaa98d640524552bbb259b595ab786af6ee168b597e6d9562c9ec4",
+      "text": "Unter Druck kann alles gleich dringend wirken. In diesen Minuten musst du nicht die ganze Situation lösen. Beginne mit einer einfachen Tatsache: Du bist hier, an diesem Ort, in diesem Körper."
+    },
+    {
+      "id": "G17", "language": "en",
+      "scriptSHA256": "759dcbcaab666291554de6c21483b7f55775456d70711186b419cf5a3b9294f5",
+      "text": "Begin by noticing the whole shape of the body at once. Not every detail. Just the sense of a body here, taking up space, touching a surface, surrounded by air."
+    },
+    {
+      "id": "G17", "language": "de",
+      "scriptSHA256": "df95da270420b35c48651b3c5c2dd468aaf442c92df9912a75e878446b96fbbc",
+      "text": "Nimm zuerst die ganze Form des Körpers auf einmal wahr. Nicht jedes Detail. Nur das Empfinden eines Körpers, der hier Raum einnimmt, eine Unterlage berührt und von Luft umgeben ist."
+    },
+    {
+      "id": "G24", "language": "en",
+      "scriptSHA256": "cb4d12387e219095436d4bdf0e2cd32cf6baed4b1362d9c5398c94da78efc4a1",
+      "text": "Notice the residue of what came before: a conversation, a message, another task, or a thought still moving. You do not need to erase it. Silently say, that was before. This is the transition."
+    },
+    {
+      "id": "G24", "language": "de",
+      "scriptSHA256": "486c1cb4463ab2c1a98a639bc2d2f63b0f6e3e93c0a40697f7540b395b54f6c7",
+      "text": "Bemerke, was vom Vorherigen noch nachklingt: ein Gespräch, eine Nachricht, eine andere Aufgabe oder ein Gedanke in Bewegung. Du musst nichts davon auslöschen. Sage still: Das war vorher. Jetzt ist der Übergang."
+    },
+    {
+      "id": "G30", "language": "en",
+      "scriptSHA256": "39ed104343e2718df6d1e812954d11a835dd1371e6950827bc99f43ef2a00361",
+      "text": "Grief can appear as sadness, numbness, anger, love, tiredness, relief, confusion, or nothing that has a name. There is no correct feeling to find. Notice only what is already present and manageable enough to meet."
+    },
+    {
+      "id": "G30", "language": "de",
+      "scriptSHA256": "ca28bc289f223787dfbf5c314f204b76ec5023e132f3037a931e91cfe602caf3",
+      "text": "Trauer kann als Traurigkeit, Taubheit, Ärger, Liebe, Müdigkeit, Erleichterung, Verwirrung oder als etwas Namenloses erscheinen. Es gibt kein richtiges Gefühl, das du finden musst. Bemerke nur, was bereits da und gut genug zu tragen ist."
+    },
+    {
+      "id": "G41", "language": "en",
+      "scriptSHA256": "de98000de5863c660e2ab3b1506dda196003e51dbceea035a95a6cbb67ffab84",
+      "text": "Let the screen rest face down or dim. Settle in a position that is as comfortable as it can reasonably be. This practice does not promise sleep. Its purpose is to make a little less struggle around being awake."
+    },
+    {
+      "id": "G41", "language": "de",
+      "scriptSHA256": "a3febf36465cc2a5dd2930dfd417e1d51aa8c10116c7a6ed81650e938019feba",
+      "text": "Lege den Bildschirm mit der Anzeige nach unten oder dimme ihn. Finde eine Haltung, die so angenehm ist, wie es gerade vernünftig möglich ist. Diese Übung verspricht keinen Schlaf. Sie soll nur etwas weniger Kampf um das Wachsein entstehen lassen."
+    }
+  ]
+}

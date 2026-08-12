@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "state": "draft-url-bound",
+  "release_attachable": false,
+  "primary_category": "HEALTH_AND_FITNESS",
+  "secondary_category": "LIFESTYLE",
+  "age_rating": {
+    "questionnaire_state": "unreconciled-no-asc-record",
+    "content_position": "no objectionable-content descriptors expected from the current product contract",
+    "calculated_rating": null,
+    "region_specific_ratings": null,
+    "os_version_specific_ratings": null,
+    "override": "NOT_APPLICABLE",
+    "made_for_kids": false,
+    "not_kids_rationale": "A general-audience secular meditation and private reflection tool; it is not designed, marketed, or data-modeled specifically for children."
+  },
+  "content_rights": "Only original Arrive Within media and exact compatible third-party material with retained provenance/notices may ship; uncertain-rights references are forbidden.",
+  "export_compliance_position": "Expected exempt use of Apple platform encryption only; re-evaluate against the exact archive and current App Store questions.",
+  "copyright": "2026 Arrive Within contributors",
+  "marketing_url": "https://arrivewithin.com/",
+  "support_url": "https://arrivewithin.com/support",
+  "privacy_url": "https://arrivewithin.com/privacy",
+  "url_binding": {
+    "state": "verified-custom-domain-production-readback",
+    "verified_at": "2026-08-12",
+    "base_url": "https://arrivewithin.com",
+    "required_routes": {
+      "marketing": "/",
+      "support": "/support",
+      "privacy": "/privacy"
+    },
+    "custom_domain": "arrivewithin.com",
+    "hosting": {
+      "provider": "Vercel",
+      "plan": "Hobby",
+      "project": "arrive-within"
+    },
+    "release_rule": "The three URLs are bound to the exact public HTTPS readback. Metadata remains non-attachable until the separately required candidate, localized metadata, screenshots, review details, and claim gates pass."
+  },
+  "storekit_absence": {
+    "required": true,
+    "forbidden": [
+      "StoreKit framework linkage or imports",
+      "StoreKit product identifiers or configuration",
+      "purchase, paywall, restore, subscription, manage-plan, or donation UI",
+      "entitlement state or transaction observers",
+      "App Store Connect in-app purchase records"
+    ]
+  },
+  "current_rules": {
+    "verified_at": "2026-08-10",
+    "sources": {
+      "app_information": "https://developer.apple.com/help/app-store-connect/reference/app-information/app-information/",
+      "platform_version_information": "https://developer.apple.com/help/app-store-connect/reference/app-information/platform-version-information",
+      "screenshot_specifications": "https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/",
+      "age_rating": "https://developer.apple.com/help/app-store-connect/manage-app-information/set-an-app-age-rating",
+      "app_privacy": "https://developer.apple.com/app-store/app-privacy-details/",
+      "required_reason_apis": "https://developer.apple.com/documentation/bundleresources/app-privacy-configuration/nsprivacyaccessedapitypes/nsprivacyaccessedapitype"
+    },
+    "limits": {
+      "name_characters_min": 2,
+      "name_characters_max": 30,
+      "subtitle_characters_max": 30,
+      "promotional_text_characters_max": 170,
+      "description_characters_max": 4000,
+      "keywords_utf8_bytes_max": 100,
+      "keyword_characters_min_exclusive": 2,
+      "whats_new_characters_max": 4000,
+      "review_notes_utf8_bytes_max": 4000,
+      "iphone_6_9_portrait_pixels": [1320, 2868],
+      "ipad_13_portrait_pixels": [2064, 2752]
+    },
+    "age_rating_rule": "Calculated from the current App Store Connect questionnaire and may vary by region and OS version; no public rating is claimed before live reconciliation.",
+    "whats_new_rule": "Not available for the first version; localized source is retained for the first update only."
+  },
+  "candidate_binding": null
+}

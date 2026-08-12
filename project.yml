@@ -1,0 +1,149 @@
+name: ArriveWithin
+attributes:
+  LastUpgradeCheck: 2660
+options:
+  minimumXcodeGenVersion: 2.46.0
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+  xcodeVersion: "26.6"
+  deploymentTarget:
+    iOS: "18.0"
+  developmentLanguage: en
+
+configs:
+  Debug: debug
+  Release: release
+
+settings:
+  base:
+    SWIFT_VERSION: 6.0
+    SWIFT_STRICT_CONCURRENCY: complete
+    GCC_TREAT_WARNINGS_AS_ERRORS: YES
+    SWIFT_TREAT_WARNINGS_AS_ERRORS: YES
+    CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: YES
+
+packages:
+  ArriveWithinCore:
+    path: Packages/ArriveWithinCore
+
+targets:
+  ArriveWithin:
+    type: application
+    platform: iOS
+    deploymentTarget: "18.0"
+    configFiles:
+      Debug: Config/Base.xcconfig
+      Release: Config/Base.xcconfig
+    sources:
+      - path: Apps/ArriveWithin/Sources
+      - path: Apps/ArriveWithin/Resources
+        buildPhase: resources
+        excludes:
+          - Info.plist
+      - path: Content/guided
+        type: folder
+        buildPhase: resources
+      - path: Renderer/dist
+        name: GardenRenderer
+        type: folder
+        buildPhase: resources
+      - path: THIRD_PARTY_NOTICES.md
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.philipps.arrivewithin.ios
+        PRODUCT_NAME: Arrive Within
+        PRODUCT_MODULE_NAME: ArriveWithin
+        CODE_SIGN_STYLE: $(ARRIVE_WITHIN_APP_CODE_SIGN_STYLE)
+        PROVISIONING_PROFILE_SPECIFIER: $(ARRIVE_WITHIN_PROVISIONING_PROFILE_SPECIFIER)
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: Apps/ArriveWithin/Resources/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: 7
+        VERSIONING_SYSTEM: apple-generic
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SUPPORTED_PLATFORMS: iphoneos iphonesimulator
+        SUPPORTS_MACCATALYST: NO
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: NO
+        SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: NO
+    dependencies:
+      - package: ArriveWithinCore
+        product: ArriveWithinDomain
+      - package: ArriveWithinCore
+        product: ArriveWithinMeditation
+      - package: ArriveWithinCore
+        product: ArriveWithinPersistence
+      - package: ArriveWithinCore
+        product: ArriveWithinGardenBridge
+      - package: ArriveWithinCore
+        product: ArriveWithinContent
+
+  ArriveWithinTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "18.0"
+    configFiles:
+      Debug: Config/Base.xcconfig
+      Release: Config/Base.xcconfig
+    sources:
+      - path: Apps/ArriveWithin/Tests/ArriveWithinTests
+    settings:
+      base:
+        PRODUCT_NAME: $(TARGET_NAME)
+        PRODUCT_BUNDLE_IDENTIFIER: com.philipps.arrivewithin.ios.tests
+        CODE_SIGN_STYLE: Automatic
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/Arrive Within.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Arrive Within
+        BUNDLE_LOADER: $(TEST_HOST)
+    dependencies:
+      - target: ArriveWithin
+      - package: ArriveWithinCore
+        product: ArriveWithinContent
+      - package: ArriveWithinCore
+        product: ArriveWithinDomain
+      - package: ArriveWithinCore
+        product: ArriveWithinMeditation
+      - package: ArriveWithinCore
+        product: ArriveWithinPersistence
+      - package: ArriveWithinCore
+        product: ArriveWithinTestSupport
+
+  ArriveWithinUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "18.0"
+    configFiles:
+      Debug: Config/Base.xcconfig
+      Release: Config/Base.xcconfig
+    sources:
+      - path: Apps/ArriveWithin/Tests/ArriveWithinUITests
+    settings:
+      base:
+        PRODUCT_NAME: $(TARGET_NAME)
+        PRODUCT_BUNDLE_IDENTIFIER: com.philipps.arrivewithin.ios.uitests
+        CODE_SIGN_STYLE: Automatic
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: ArriveWithin
+    dependencies:
+      - target: ArriveWithin
+
+schemes:
+  ArriveWithin:
+    build:
+      targets:
+        ArriveWithin: all
+        ArriveWithinTests: [test]
+        ArriveWithinUITests: [test]
+    run:
+      config: Debug
+    test:
+      gatherCoverageData: false
+      targets:
+        - name: ArriveWithinTests
+        - name: ArriveWithinUITests
+    profile:
+      config: Release
+    archive:
+      config: Release

@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "state": "locally-generated-objectively-validated-human-review-pending",
+  "source": {
+    "generator": "Marketing/PublicMedia/scripts/generate-public-media.mjs",
+    "generator_sha256": "33a3b90ff9f4486b62f348adeae2882da4e504840166c3322e1eea6560e1ddf6",
+    "plan": "Marketing/PublicMedia/growth-states.json",
+    "plan_sha256": "a80879580949d7c35d3160a3e80da25b65bc363aba18dd1b6bca01f1f97141af",
+    "renderer_source_files": [
+      "Renderer/index.html",
+      "Renderer/public/garden.css",
+      "Renderer/src/bridge.ts",
+      "Renderer/src/main.ts",
+      "Renderer/src/resilience.ts",
+      "Renderer/src/scene.ts",
+      "Renderer/src/seeded.ts",
+      "Renderer/src/shipping-html.ts",
+      "Renderer/src/shipping-visual.ts",
+      "Renderer/src/types.ts",
+      "Renderer/src/validation.ts",
+      "Renderer/src/visual-design.ts",
+      "Renderer/src/world-model.ts",
+      "Shared/GardenState.schema.json"
+    ],
+    "renderer_source_sha256": "9867787a40ba0220f23f90270b996bc60d62dd3ea2d791c6c58ed96b4c8b9f31",
+    "garden_state_schema_sha256": "2194a09d0511522423eafe62724e1d96a450f3847e49cb872b1e3383944331a3",
+    "product_state": "safe synthetic GardenState values accepted by the shipping typed bridge and rendered by the real bundled Three.js renderer"
+  },
+  "capture": {
+    "viewport": {
+      "width": 1280,
+      "height": 720,
+      "device_scale_factor": 1
+    },
+    "browser": "chromium",
+    "playwright_version": "1.61.1",
+    "external_network": "blocked",
+    "external_requests_observed": 0,
+    "reduce_motion": true,
+    "csp_execution_mode": "Playwright bypassCSP mirrors the shipping WKUserScript isolated-content-world injection while preserving the page's network/navigation contract for capture",
+    "browser_notices": [
+      "Chromium GPU readback stall notice caused by deterministic screenshot capture"
+    ],
+    "frames": [
+      {
+        "id": "00-seed",
+        "label": "Before the first practice",
+        "path": "output/frames/01-00-seed.png",
+        "sha256": "8ad8ddc0dbb04f8cb73ae7456ab6b2b6aac9aa423b14a8a6d20fdb8e640b1d7d",
+        "state_sha256": "cc05c4ab40d068396493f6a746b0f137f7b8ce4e4353d550e01090bac0d2fb2f",
+        "journey_day": 0,
+        "highest_milestone": 0
+      },
+      {
+        "id": "01-roots",
+        "label": "Practice day 1 · first permanent growth",
+        "path": "output/frames/02-01-roots.png",
+        "sha256": "66100de26a2b5be92d5ec39331bfb957af59f2ab477630fe8eee865db6ed89a1",
+        "state_sha256": "d8d09d5960fdefc4979affec6296b10be20b583318b6b5a14997832e9d138efd",
+        "journey_day": 1,
+        "highest_milestone": 0
+      },
+      {
+        "id": "05-water",
+        "label": "Practice day 5 · Earth II",
+        "path": "output/frames/03-05-water.png",
+        "sha256": "b903bebc668ef44cbad45194b3c8c594c9e49265c1d65057101f74364b765d15",
+        "state_sha256": "c86bccecbaf6e82f17b07fda2ceeaa255bb76eebd03ccfb7785a2b1bd18dddf4",
+        "journey_day": 5,
+        "highest_milestone": 2
+      },
+      {
+        "id": "09-warmth",
+        "label": "Practice day 9 · Water I",
+        "path": "output/frames/04-09-warmth.png",
+        "sha256": "1256e940f72ab5f3440630d02682abe7a2eca1e82691b211ab3c4c0f4a9e2910",
+        "state_sha256": "e2829345f1b102ae2d9a1e8edca09bc78bebb61b3fdb191026366ca5bb7d7727",
+        "journey_day": 9,
+        "highest_milestone": 4
+      },
+      {
+        "id": "15-sanctuary",
+        "label": "Practice day 15 · Fire I",
+        "path": "output/frames/05-15-sanctuary.png",
+        "sha256": "52e340dc48a2cd478d70a23a630e92b4b7b8180d09edea59d3860b0b8f92be58",
+        "state_sha256": "c5cec1c8ae690adaacde73a2e63508a02cef518f1412664fb53cf0bf34f47a78",
+        "journey_day": 15,
+        "highest_milestone": 7
+      },
+      {
+        "id": "30-living-world",
+        "label": "Practice day 30",
+        "path": "output/frames/06-30-living-world.png",
+        "sha256": "3ec058af541fde0ee90d5ac6b42d08491045a818b1b992825e61c71db59d0a12",
+        "state_sha256": "4e3eb9407b34e676f6b4b040ae77837308e7f6641f9dc848c0164c8ce55186b4",
+        "journey_day": 30,
+        "highest_milestone": 15
+      }
+    ]
+  },
+  "video": {
+    "path": "output/garden-growth-v1.mp4",
+    "width": 1280,
+    "height": 720,
+    "frame_rate": "30/1",
+    "pixel_format": "yuv420p",
+    "codec": "h264",
+    "duration_seconds": 9.733333,
+    "audio_streams": 0,
+    "transition": "six real deterministic renderer frames; 2.2 seconds per frame; 0.7-second dissolve; no generated interpolation"
+  },
+  "toolchain": {
+    "node": "v26.7.0",
+    "playwright": "1.61.1",
+    "sharp": "0.35.3",
+    "ffmpeg": "ffmpeg version 8.1.2 Copyright (c) 2000-2026 the FFmpeg developers",
+    "ffprobe": "ffprobe version 8.1.2 Copyright (c) 2007-2026 the FFmpeg developers"
+  },
+  "output": {
+    "output/garden-growth-v1.mp4": {
+      "bytes": 874509,
+      "sha256": "6e9e21f5ac1beaf01394fd523ad44cd9a146a8fb34e9a05a652ff1ee15e414e7"
+    },
+    "output/garden-growth-poster.png": {
+      "bytes": 141778,
+      "sha256": "98f5ee70618a292cbde409e83f01786afed0e84e3ecc0e70aacaec12e2a8f8e1"
+    },
+    "output/social-preview.png": {
+      "bytes": 182591,
+      "sha256": "f345b19a378ca431ca51ea8785eb352865023ed4e84b4ada8ecbbd10bce1511f"
+    },
+    "output/growth-contact-sheet.jpg": {
+      "bytes": 68607,
+      "sha256": "1b2d2b16146e7470095a1e7dc0dd00181eed571030b555d97f6fd1c3ec72b1bc"
+    }
+  },
+  "rights": {
+    "code_license": "MIT",
+    "media_license": "CC-BY-4.0",
+    "third_party_visual_assets": [],
+    "claim": "Only the original Arrive Within renderer and safe synthetic product state are depicted; no generated icon concept, uncertain-rights reference, narration, or third-party visual is included."
+  },
+  "human_review": {
+    "contact_sheet": "output/growth-contact-sheet.jpg",
+    "state": "pending",
+    "scope": [
+      "visual quality",
+      "truthful progression",
+      "motion comfort",
+      "README/website/social crop"
+    ]
+  },
+  "claim_boundary": "This media proves local deterministic renderer output only. It is not physical-device performance, official CloudKit, signed-candidate, App Store, deployment, or public readback evidence."
+}

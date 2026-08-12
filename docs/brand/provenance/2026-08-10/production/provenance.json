@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "product": "Arrive Within",
+  "direction": "B — Quiet Threshold",
+  "selectedByOwnerAt": "2026-08-10",
+  "generation": {
+    "mode": "OpenAI built-in image generation",
+    "modelIdentifier": "not exposed by built-in tool",
+    "generatedAt": "2026-08-10T08:55:51+08:00",
+    "prompt": "production-refinement-prompt.txt",
+    "promptSha256": "12f8cc2753eec7344fd1f23997b96b446e66659841718403bed3a2e8de44e172",
+    "output": "quiet-threshold-production-raw.png",
+    "outputSha256": "f2f75e9934778ade9a1e47368e5e855c5de295d91bff02187865083fed878902",
+    "outputBytes": 2377971,
+    "dimensions": "1254x1254",
+    "format": "opaque RGB PNG"
+  },
+  "inputs": [
+    {
+      "role": "first-party material, lighting, restraint, and small-size-style reference only",
+      "name": "house-style reference",
+      "sha256": "f0c503c4ec9b056cca70a7a48dfee3b9416ef19954b6bf7df67b8562f08150a7",
+      "redistributed": false,
+      "copiedGeometryAllowed": false
+    },
+    {
+      "role": "owner-selected composition and product meaning reference",
+      "name": "direction-b.png",
+      "sha256": "c74bccc0b7f1ed489ae7fe696e31dffb2beaaf8c078597123b72190f87c03034",
+      "redistributed": true
+    }
+  ],
+  "canonicalSource": {
+    "path": "Apps/ArriveWithin/Resources/AppIcon.icon",
+    "layerPlan": "docs/brand/APP_ICON_LAYER_PLAN.md",
+    "derivedManifest": "docs/brand/app-icon-derived/_manifest.json",
+    "transformationScript": "scripts/generate_app_icon_assets.mjs"
+  },
+  "rights": {
+    "outputTermsChecked": "2026-08-10",
+    "outputTermsSource": "https://openai.com/policies/services-agreement/",
+    "basis": "Output rights are assigned to the customer to the extent permitted by law; customer responsibility and non-uniqueness remain explicit.",
+    "repositoryMediaLicense": "CC BY 4.0",
+    "publicationState": "unauthorized",
+    "trademarkSimilarityReview": "pending"
+  },
+  "qa": {
+    "currentState": "local production source compiled; owner production visual review pending",
+    "contactSheet": "docs/brand/app-icon-qa-contact-sheet.png",
+    "buildRecord": "docs/brand/icon-build-validation.json"
+  }
+}

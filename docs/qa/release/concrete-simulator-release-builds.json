@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "status": "passed-local-unsigned-simulator-release-builds",
+  "date": "2026-08-10",
+  "source_binding": {
+    "kind": "release-source-tree-sha256-no-git-lineage",
+    "shipping_source_files": 63,
+    "shipping_source_sha256": "2e86045d7d562b1de2002a759fdda91079bcb0b5160f3a359a32a864df16f5bf",
+    "git_commit": null,
+    "reason": "Git initialization and commit are unauthorized."
+  },
+  "toolchain": {
+    "xcode": "26.6",
+    "xcode_build": "17F113",
+    "sdk": "iphonesimulator26.5",
+    "sdk_build": "23F81a",
+    "host_os_build": "25F84"
+  },
+  "configuration": "Release",
+  "code_signing_allowed": false,
+  "builds": [
+    {
+      "device": "iPhone 17 Pro",
+      "runtime": "iOS 26.5 simulator",
+      "destination_identifier": "retained-in-private-local-evidence",
+      "result": "passed",
+      "bundle_files": 102,
+      "bundle_size_kib": 14748,
+      "architectures": [
+        "arm64",
+        "x86_64"
+      ],
+      "executable_sha256": "68a25e6f2ac378ebf9d440f90d4649757f89476172aa56b6932987d552f2e698",
+      "info_plist_sha256": "b72760b8abd5bb92c7faaf64a653f41a6f1ab8b22e21c1d8068dd47fe14f8ac1",
+      "privacy_manifest_sha256": "0562b6e4331f1fcffb4d7b7e3e11c240ebbf6dbef84ec1b66318408d9f2d524b"
+    },
+    {
+      "device": "iPad Pro 13-inch (M5)",
+      "runtime": "iOS 26.5 simulator",
+      "destination_identifier": "retained-in-private-local-evidence",
+      "result": "passed",
+      "bundle_files": 102,
+      "bundle_size_kib": 14748,
+      "architectures": [
+        "arm64",
+        "x86_64"
+      ],
+      "executable_sha256": "46e51ab23db8d7244e2402e2626ef444381bbba5d3cab8f7665c159531aca5ee",
+      "info_plist_sha256": "b72760b8abd5bb92c7faaf64a653f41a6f1ab8b22e21c1d8068dd47fe14f8ac1",
+      "privacy_manifest_sha256": "0562b6e4331f1fcffb4d7b7e3e11c240ebbf6dbef84ec1b66318408d9f2d524b"
+    }
+  ],
+  "built_contract": {
+    "bundle_identifier": "com.philipps.arrivewithin.ios",
+    "marketing_version": "1.0",
+    "build_number": "1",
+    "minimum_os": "18.0",
+    "device_families": [
+      1,
+      2
+    ],
+    "localizations": [
+      "en",
+      "de"
+    ],
+    "cloudkit_container_identifier": "",
+    "non_exempt_encryption": false,
+    "privacy_manifest_packaged": true,
+    "privacy_tracking": false,
+    "required_reason_api": "NSPrivacyAccessedAPICategorySystemBootTime / 35F9.1",
+    "storekit_linked": false
+  },
+  "claim_boundary": "These are unsigned Release builds for concrete simulator destinations. They are not archives, IPAs, signed-device builds, TestFlight candidates, physical-device proof, official CloudKit proof, or App Store evidence."
+}

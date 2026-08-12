@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "auditionVersion": "chatterbox-english-f-v4",
+  "rightsState": "approved-for-private-default-voice-audition",
+  "releaseRightsState": "pending-owner-cc-by-4.0-signoff",
+  "ownerDirection": {
+    "voiceIdentity": "default-en-owner-approved",
+    "rejectedComparisons": [
+      "en-e1-slower-fluid-1100",
+      "en-e2-slower-fluid-1350"
+    ],
+    "reason": "speech-only delivery and comma-separated emotional lists remained too fast",
+    "bulkGeneration": "authorized-for-F2-direction-production-candidates",
+    "f1Status": "rejected-but-good-audition-provenance",
+    "f2Status": "owner-selected-production-candidate-direction",
+    "selectedAt": "2026-08-10",
+    "selectedDirection": "en-f2-spacious-slow"
+  },
+  "source": {
+    "repository": "https://github.com/resemble-ai/chatterbox",
+    "commit": "5de7a54aa4e5e2baadb0182dde554908b48b85c2",
+    "packageVersion": "0.1.7",
+    "license": "MIT",
+    "perthCommit": "ce86c49d029f42272c1902eccb675556b9ed2330"
+  },
+  "model": {
+    "repository": "ResembleAI/chatterbox",
+    "revision": "5bb1f6ee58e50c3b8d408bc82a6d3740c2db6e18",
+    "englishModel": "ChatterboxTTS",
+    "voiceReference": null,
+    "voiceLabel": "default-en"
+  },
+  "generation": {
+    "sampleRate": 24000,
+    "channels": 1,
+    "repetitionPenalty": 1.25,
+    "minP": 0.05,
+    "topP": 0.95,
+    "normalization": "none-complete-audition-assembly",
+    "timeStretch": "none",
+    "semanticPauseMethod": "natural context-aware phrase generation followed only by bounded silence extension at detected semantic ellipses and explicit aligned clause boundaries"
+  },
+  "excerpts": [
+    {
+      "id": "G01",
+      "language": "en",
+      "scriptSHA256": "0512bcaa57c773cbb43f57d514effde7d194940acc64476625d06927a8a5a01a",
+      "sentences": [
+        {
+          "sourceText": "Notice that the ground is already meeting you.",
+          "units": [
+            {
+              "sourceText": "Notice that the ground is already meeting you.",
+              "generationText": "Notice that the ground … is already meeting you.",
+              "internalBoundaries": [
+                {"after": "ground", "kind": "clause"}
+              ]
+            }
+          ]
+        },
+        {
+          "sourceText": "Feel one or two places where your body is supported: feet on the floor, the seat beneath you, or the surface under your back.",
+          "units": [
+            {
+              "sourceText": "Feel one or two places where your body is supported: feet on the floor, the seat beneath you, or the surface under your back.",
+              "generationText": "Feel one or two places where your body is supported … feet on the floor … the seat beneath you … or the surface under your back.",
+              "internalBoundaries": [
+                {"after": "supported", "kind": "clause"},
+                {"after": "floor", "kind": "clause"},
+                {"after": "you", "kind": "clause"}
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "G30",
+      "language": "en",
+      "scriptSHA256": "39ed104343e2718df6d1e812954d11a835dd1371e6950827bc99f43ef2a00361",
+      "sentences": [
+        {
+          "sourceText": "Grief can appear as sadness, numbness, anger, love, tiredness, relief, confusion, or nothing that has a name.",
+          "units": [
+            {
+              "sourceText": "Grief can appear as sadness, numbness,",
+              "generationText": "Grief can appear as sadness … numbness.",
+              "internalBoundaries": [
+                {"after": "sadness", "kind": "list"}
+              ],
+              "gapAfter": {"after": "numbness", "kind": "list"}
+            },
+            {
+              "sourceText": "anger, love,",
+              "generationText": "Anger … love.",
+              "internalBoundaries": [
+                {"after": "anger", "kind": "list"}
+              ],
+              "gapAfter": {"after": "love", "kind": "list"}
+            },
+            {
+              "sourceText": "tiredness, relief,",
+              "generationText": "Tiredness … relief.",
+              "internalBoundaries": [
+                {"after": "tiredness", "kind": "list"}
+              ],
+              "gapAfter": {"after": "relief", "kind": "list"}
+            },
+            {
+              "sourceText": "confusion, or nothing that has a name.",
+              "generationText": "Confusion … or nothing that has a name.",
+              "internalBoundaries": [
+                {"after": "confusion", "kind": "list"}
+              ]
+            }
+          ]
+        },
+        {
+          "sourceText": "There is no correct feeling to find.",
+          "units": [
+            {
+              "sourceText": "There is no correct feeling to find.",
+              "generationText": "There is no correct feeling … to find.",
+              "internalBoundaries": [
+                {"after": "feeling", "kind": "clause"}
+              ]
+            }
+          ]
+        },
+        {
+          "sourceText": "Notice only what is already present and manageable enough to meet.",
+          "units": [
+            {
+              "sourceText": "Notice only what is already present and manageable enough to meet.",
+              "generationText": "Notice only what is already present … and manageable enough to meet.",
+              "internalBoundaries": [
+                {"after": "present", "kind": "clause"}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variants": [
+    {
+      "id": "en-f1-calm-slow",
+      "label": "English F1 — calm-slow",
+      "deliveryClaim": "approved default-en identity; genuinely regenerated context-aware phrases; no time stretch or compression",
+      "excerptIDs": ["G01", "G30"],
+      "seed": 20260840,
+      "speechOnlyWPMRange": [125, 135],
+      "listPauseMs": 450,
+      "clausePauseMs": 650,
+      "sentenceGapMs": 1400,
+      "practiceTransitionGapMs": 2000,
+      "exaggeration": 0.24,
+      "cfgWeight": 0.12,
+      "temperature": 0.66
+    },
+    {
+      "id": "en-f2-spacious-slow",
+      "label": "English F2 — spacious-slow",
+      "deliveryClaim": "approved default-en identity; independently regenerated more deliberate context-aware phrases; no time stretch or compression",
+      "excerptIDs": ["G01", "G30"],
+      "seed": 20260860,
+      "speechOnlyWPMRange": [105, 120],
+      "listPauseMs": 650,
+      "clausePauseMs": 900,
+      "sentenceGapMs": 1700,
+      "practiceTransitionGapMs": 2400,
+      "exaggeration": 0.18,
+      "cfgWeight": 0.03,
+      "temperature": 0.62
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+Use case: logo-brand
+Asset type: iOS app icon concept direction A, standalone square bitmap
+Primary request: Explore one original icon direction for Arrive Within, a private meditation app where each intentional practice creates permanent visible growth in one living inner sanctuary. This direction is “Living Rings”: a direct emblem in which a central tree canopy and seed resolve into a few bold organic growth rings, with one small dawn accent marking the first practice.
+Input images: Image 1 is a style reference only. Match only its tactile paper/clay material language, matte sculpted finish, restrained close shadow, calm field, minimalism, and small-size clarity. Never copy or trace its route, S-curve, arrow, dots, lower-left-to-upper-right movement, literal geometry, name, palette, or composition.
+Scene/backdrop: warm mineral cream #F8F1DF filling the square edge to edge
+Subject: one centered, singular tree-canopy emblem made from three or four broad, irregular nested growth rings in deep forest green and misted sage; a simple short central trunk or grounded base makes the canopy read as living growth, while a restrained dawn-amber #D7A64E seed/core marks the beginning of practice. The whole mark must read first as one calm tree/growth symbol, not a target, fingerprint, maze, landscape, or miniature garden scene.
+Style/medium: refined tactile paper/clay relief; clean minimal brand mark; calm, warm, authored, premium
+Composition/framing: true square canvas; centered approximately 15 percent safe margin; broad strong silhouette legible at 40 px; balanced negative space; no directional movement
+Lighting/mood: soft diffuse upper-left studio light; restrained close shadow only beneath raised forms
+Color palette: mineral cream #F8F1DF field; deep forest #071B14 primary; misted sage #99B88D secondary; one small dawn-amber #D7A64E core
+Materials/textures: matte sculpted primary forms with extremely subtle fine paper/clay texture that survives reduction
+Constraints: one concept only; full-square opaque field; no transparency; no baked rounded-corner mask; no rounded-square tile, plate, border, frame, or outer drop shadow; no text; no letters; no numbers; no presentation board; no watermark; no unrelated symbols or scenery
+Avoid: lotus, seated or yoga silhouette, brain, heart, zen stones, clock, timer, currency, flame, streak badge, trophy, game token, photoreal tree, neon, glassmorphism, generic wellness gradient, Sakura or Japanese-town cues, copied product art, fingerprint detail, target/bullseye read, Image 1 geometry or composition, glossy plastic, heavy extrusion, harsh or distant shadow, excessive grain, detail that disappears at 40 px

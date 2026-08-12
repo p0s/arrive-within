@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "status": "passed-source-intent",
+  "generated_at": null,
+  "generation_time_policy": "omitted-for-byte-reproducibility",
+  "source_sha256": "7ec04984a2aafff235d2386c8cf3937a8dfa10108a600e64df90cc3be50f39ca",
+  "checks_total": 39,
+  "checks_passed": 39,
+  "checks_failed": 0,
+  "verified_boundaries": [
+    "future feedback source isolated and absent from the V1 app target",
+    "V1 endpoint absent and local-only store selected",
+    "no tracking, analytics, ATT, clipboard, or automatic support upload path",
+    "private CloudKit code isolated and private-scope only",
+    "renderer and website network isolation",
+    "conservative privacy manifest and bilingual permission-source intent"
+  ],
+  "external_candidate_gates": [
+    "future feedback privacy reconciliation before any app-target activation",
+    "future private CloudKit deletion protocol, account isolation, and two-device behavior",
+    "exact archive and IPA resources, frameworks, endpoints, entitlements, and encryption inspection",
+    "live privacy-policy and App Store Connect answers"
+  ],
+  "private_findings_report": "ignored-local-only",
+  "claim_boundary": "This is a deterministic source/data-flow audit. It is not runtime network capture, deployed-service proof, CloudKit proof, exact archive inspection, App Store reconciliation, or publication evidence."
+}

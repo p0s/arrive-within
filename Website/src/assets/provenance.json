@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "source_revision": "720deeed8719b680ebe4359e1f572565780cc1015ce4ab0d83cb530335bfb405",
+  "rights": "First-party Arrive Within rendered app UI; public redistribution is intended under the repository media license after final repository licensing review.",
+  "capture_state": "Guarded iOS 26.5 simulator UI with deterministic safe synthetic product data; not physical-device, CloudKit, signed-candidate, or App Store evidence.",
+  "assets": [
+    {
+      "file": "garden-en-iphone.png",
+      "source": "Marketing/AppStoreScreenshots/public/runtime-ui/en-US/iphone-6.9/garden-hero.png",
+      "sha256": "4423e5eb2e605c00ca9d25056b301d65ee0ecc91421f79f2417da6827d368e81",
+      "alt": "Arrive Within on iPhone showing a mature living garden and the Meditate action."
+    },
+    {
+      "file": "garden-de-iphone.png",
+      "source": "Marketing/AppStoreScreenshots/public/runtime-ui/de-DE/iphone-6.9/garden-hero.png",
+      "sha256": "770c1f44a3f88b7e5a2ae9c8c3f0b1fca75dc932bf16b3d21309e80d72d0642a",
+      "alt": "Arrive Within auf dem iPhone mit einem gewachsenen Garten und der Aktion Meditieren."
+    },
+    {
+      "file": "journey-en-iphone.png",
+      "source": "Marketing/AppStoreScreenshots/public/runtime-ui/en-US/iphone-6.9/journey-calendar.png",
+      "sha256": "7b62e8ebc4448461b4733328a2e483710c789d895a45d30e413a28888ce0841d",
+      "alt": "The private Arrive Within practice calendar shows an honest rhythm without streak pressure."
+    },
+    {
+      "file": "journey-de-iphone.png",
+      "source": "Marketing/AppStoreScreenshots/public/runtime-ui/de-DE/iphone-6.9/journey-calendar.png",
+      "sha256": "65fa9e9cc76ae46d89b53e7443451465a00f247935834bc24d18e5f6dfbdafc1",
+      "alt": "Der private Praxiskalender in Arrive Within zeigt einen ehrlichen Rhythmus ohne Streak-Druck."
+    },
+    {
+      "file": "journal-en-ipad.png",
+      "source": "Marketing/AppStoreScreenshots/public/runtime-ui/en-US/ipad-13/journal.png",
+      "sha256": "8788778ae2534245c1860035979b12afe15fc3cc8c9679718b6603d85161fbe5",
+      "alt": "The private Arrive Within journal and reflection editor on iPad."
+    },
+    {
+      "file": "journal-de-ipad.png",
+      "source": "Marketing/AppStoreScreenshots/public/runtime-ui/de-DE/ipad-13/journal.png",
+      "sha256": "e300c8eca8effaf46475645b88a6c66a21210581f2fe4eb5a10370e803d41542",
+      "alt": "Das private Arrive Within Journal mit Reflexionseditor auf dem iPad."
+    },
+    {
+      "file": "garden-en-ipad.png",
+      "source": "Marketing/AppStoreScreenshots/public/runtime-ui/en-US/ipad-13/garden-hero.png",
+      "sha256": "c119d6b1380a9437cfc8f883fba4d1d3df02d0170ddf7e000a8b7c54e50eeebc",
+      "alt": "The mature Arrive Within garden in the adaptive iPad layout."
+    },
+    {
+      "file": "garden-de-ipad.png",
+      "source": "Marketing/AppStoreScreenshots/public/runtime-ui/de-DE/ipad-13/garden-hero.png",
+      "sha256": "7044580688b2ccb34c1999401457d005c9d90b724fd5b0abaf66573508e486f5",
+      "alt": "Der gewachsene Arrive Within Garten im angepassten iPad-Layout."
+    },
+    {
+      "file": "garden-growth-v1.mp4",
+      "source": "Marketing/PublicMedia/output/garden-growth-v1.mp4",
+      "sha256": "6e9e21f5ac1beaf01394fd523ad44cd9a146a8fb34e9a05a652ff1ee15e414e7",
+      "alt": "Silent deterministic progression of the real Arrive Within garden from before the first practice to practice day 30."
+    },
+    {
+      "file": "garden-growth-poster.png",
+      "source": "Marketing/PublicMedia/output/garden-growth-poster.png",
+      "sha256": "98f5ee70618a292cbde409e83f01786afed0e84e3ecc0e70aacaec12e2a8f8e1",
+      "alt": "The mature deterministic Arrive Within garden used as the growth-film poster."
+    },
+    {
+      "file": "social-preview.png",
+      "source": "Marketing/PublicMedia/output/social-preview.png",
+      "sha256": "f345b19a378ca431ca51ea8785eb352865023ed4e84b4ada8ecbbd10bce1511f",
+      "alt": "Arrive Within social preview with the mature deterministic garden and the words Meditation that grows."
+    }
+  ]
+}

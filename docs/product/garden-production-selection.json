@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "status": "owner-selected",
+  "safe_baseline_direction": "verdant-atelier",
+  "selected_direction": "twilight-refuge",
+  "selected_modules": {
+    "tree_silhouette": "twilight-refuge",
+    "palette": "twilight-refuge",
+    "lighting": "twilight-refuge",
+    "water_treatment": "twilight-refuge",
+    "ground_flora": "twilight-refuge",
+    "particles": "twilight-refuge",
+    "camera_composition": "twilight-refuge",
+    "micro_growth": "twilight-refuge",
+    "milestone_reveal": "twilight-refuge"
+  },
+  "selection_date": "2026-08-11",
+  "shipping_authority": "Renderer/src/shipping-visual.ts",
+  "release_exclusive": true,
+  "unselected_source_policy": "Alternate compositions remain public design-lab source but must be unreachable from the shipping renderer entry and absent from the app bundle.",
+  "claim_boundary": "C — Twilight Refuge is the owner-selected production composition and the shipping source authority now imports only it. A and B remain non-shipping design-lab references. Fresh build, bundle/archive exclusion, accessibility, performance, TestFlight, and App Store proof remain pending."
+}

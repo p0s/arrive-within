@@ -1,0 +1,9 @@
+{
+  "status": "passed-objective-generation",
+  "direction_count": 3,
+  "still_count": 30,
+  "milestone_still_count": 45,
+  "motion_clip_count": 6,
+  "external_requests_observed": 0,
+  "owner_selection": "pending"
+}

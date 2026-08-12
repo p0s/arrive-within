@@ -1,0 +1,18 @@
+status: passed-source-contract-selected-candidate-unbound
+release_ready: false
+source_contract_passed: true
+candidate_bound: false
+checks_passed: 120
+checks_failed: 0
+shipping_source_file_count: 69
+shipping_source_sha256: b6e463a7f783f4c1af086d65dfaef2e22b070f933553ded66885bc43bded103e
+
+Remaining gates:
+- automated 84-track narration candidate library and exact package inspection
+- owner-deferred fluent bilingual, editorial, pronunciation, and rights review remains not passed
+- future CloudKit deletion protocol and exact-candidate two-device proof before reactivation
+- App Review approval, storefront availability, and storefront installation readback
+- remaining exact physical audio, performance, and assistive-technology matrices
+- Git lineage and history audit unavailable until a separately authorized first commit
+
+This deterministic source check validates the repository's exact build-7 release-train readbacks but does not itself reproduce the frozen build-7 archive/IPA, live ASC or TestFlight state, physical-device observation, website deployment, App Review outcome, storefront, human audio/rights review, Git lineage, or public repository release.

@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "status": "pass",
+  "expectedImages": 6,
+  "actualImages": 6,
+  "externalRequests": 0,
+  "results": [
+    {
+      "file": "01-growth-arrive-de-de-iphone-6.9-1320x2868.png",
+      "status": "pass",
+      "width": 1320,
+      "height": 2868,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": []
+    },
+    {
+      "file": "02-growth-take-root-de-de-iphone-6.9-1320x2868.png",
+      "status": "pass",
+      "width": 1320,
+      "height": 2868,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": []
+    },
+    {
+      "file": "03-growth-rhythm-de-de-iphone-6.9-1320x2868.png",
+      "status": "pass",
+      "width": 1320,
+      "height": 2868,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": []
+    },
+    {
+      "file": "04-growth-stays-de-de-iphone-6.9-1320x2868.png",
+      "status": "pass",
+      "width": 1320,
+      "height": 2868,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": []
+    },
+    {
+      "file": "05-growth-reflect-de-de-iphone-6.9-1320x2868.png",
+      "status": "pass",
+      "width": 1320,
+      "height": 2868,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": []
+    },
+    {
+      "file": "06-growth-refuge-de-de-iphone-6.9-1320x2868.png",
+      "status": "pass",
+      "width": 1320,
+      "height": 2868,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": []
+    }
+  ]
+}

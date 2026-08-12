@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <filter id="shootDepth" x="-25%" y="-25%" width="150%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#263A2C" flood-opacity="0.30"/>
+    </filter>
+    <filter id="shootTexture" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.060" numOctaves="2" seed="67" result="noise"/>
+      <feColorMatrix in="noise" type="saturate" values="0" result="monochromeNoise"/>
+      <feComponentTransfer in="monochromeNoise" result="softNoise">
+        <feFuncA type="table" tableValues="0 0.14"/>
+      </feComponentTransfer>
+      <feComposite in="softNoise" in2="SourceGraphic" operator="in" result="texture"/>
+      <feBlend in="SourceGraphic" in2="texture" mode="soft-light"/>
+    </filter>
+  </defs>
+  <g fill="#4F7E58" filter="url(#shootDepth)">
+    <rect x="479" y="754" width="66" height="98" rx="29"/>
+    <path d="M515 788C451 788 398 739 396 670c65-2 116 36 133 98l4 15Z"/>
+    <path d="M509 788C573 788 626 739 628 670c-65-2-116 36-133 98l-4 15Z"/>
+  </g>
+  <g fill="#5D8E63" filter="url(#shootTexture)">
+    <rect x="487" y="756" width="50" height="88" rx="22"/>
+    <path d="M515 778C459 778 412 736 406 680c56 4 99 36 117 89l5 14Z"/>
+    <path d="M509 778C565 778 612 736 618 680c-56 4-99 36-117 89l-5 14Z"/>
+  </g>
+  <path d="M512 835V780M512 780c-25-43-59-70-96-87M512 780c25-43 59-70 96-87"
+        fill="none" stroke="#86AA78" stroke-width="5" stroke-linecap="round" opacity="0.42"/>
+</svg>

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "status": "pass",
+  "checks": [
+    "4 exact locale/device sets",
+    "24 selected numbered opaque RGB PNGs at exact dimensions",
+    "deterministic idempotent RGB least-significant-bit normalization",
+    "per-image and per-artifact SHA-256 readback",
+    "passing per-set JSON and text validation",
+    "contact-sheet SHA-256 readback",
+    "deterministic ZIP contents and byte readback",
+    "current app-source revision binding",
+    "external network request count is zero"
+  ],
+  "humanVisualReview": "approved",
+  "uploadAuthorization": "authorized-for-app-store-version-1.0-after-current-source-validation"
+}

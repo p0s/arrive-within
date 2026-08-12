@@ -1,0 +1,636 @@
+{
+  "schema_version": 1,
+  "status": "passed-source-contract-selected-candidate-unbound",
+  "release_ready": false,
+  "source_contract_passed": true,
+  "candidate_bound": false,
+  "apple_rules_verified_at": "2026-08-10",
+  "checks_passed": 120,
+  "checks_failed": 0,
+  "shipping_source_file_count": 69,
+  "shipping_source_sha256": "b6e463a7f783f4c1af086d65dfaef2e22b070f933553ded66885bc43bded103e",
+  "source_hashes": {
+    "docs/release/metadata/en-US.json": "ae1f4679e8b2045d6ff76a568ca8f3db4d392bf99343e701811157f0bf880031",
+    "docs/release/metadata/de-DE.json": "42a8e8424d3e0cbd6369577ddb27a7145374bb7f3c67172847f08826b2a5e325",
+    "docs/release/metadata/shared.json": "12f5b45204b7f3311310bfb757dcac595efab205f435de9897dcf745675b2aaf",
+    "docs/release/app-privacy-worksheet.json": "9ec7e0269c76b93b7030be1988587acc90ef3ae3e4b1e7573c0b258d64b97652",
+    "docs/release/current-release.example.json": "ec582d76079c089e4ef2bda1af5a1f37b02aae0163a83a4f8d818412f322db4c",
+    "docs/release/candidate.example.json": "a1c209e5786e4bd846efadc40e537f9b4bc0b9d9fdeb898c8f9ac4ce65e1162c",
+    "docs/release/release-train.json": "00ffc583e1dc84f9da3f9070924931fb1e47ce609f7830d27beea59602681da1",
+    "Apps/ArriveWithin/Resources/PrivacyInfo.xcprivacy": "0562b6e4331f1fcffb4d7b7e3e11c240ebbf6dbef84ec1b66318408d9f2d524b",
+    "Apps/ArriveWithin/Resources/Info.plist": "aca2757b61bd93c87aa1a1ea5da1a939085cd939c02fe17f70561883336fd145",
+    "Marketing/AppStoreScreenshots/screenshot-plan.json": "f53eb84de0d8907c86038409998b8193146a6c761e6489b52300911a8b5302d4"
+  },
+  "blockers": [
+    "automated 84-track narration candidate library and exact package inspection",
+    "owner-deferred fluent bilingual, editorial, pronunciation, and rights review remains not passed",
+    "future CloudKit deletion protocol and exact-candidate two-device proof before reactivation",
+    "App Review approval, storefront availability, and storefront installation readback",
+    "remaining exact physical audio, performance, and assistive-technology matrices",
+    "Git lineage and history audit unavailable until a separately authorized first commit"
+  ],
+  "failures": [],
+  "checks": [
+    {
+      "id": "metadata.locales",
+      "passed": true,
+      "detail": "expected [\"de-DE\",\"en-US\"]; found [\"de-DE\",\"en-US\"]"
+    },
+    {
+      "id": "metadata.plan-locales",
+      "passed": true,
+      "detail": "expected [\"de-DE\",\"en-US\"]; found [\"de-DE\",\"en-US\"]"
+    },
+    {
+      "id": "metadata.shared-draft",
+      "passed": true,
+      "detail": "shared metadata must remain non-attachable while preserving the verified public URL binding"
+    },
+    {
+      "id": "metadata.rules-date",
+      "passed": true,
+      "detail": "current Apple-rule verification date must be explicit"
+    },
+    {
+      "id": "metadata.rule-sources",
+      "passed": true,
+      "detail": "expected {\"app_information\":\"https://developer.apple.com/help/app-store-connect/reference/app-information/app-information/\",\"platform_version_information\":\"https://developer.apple.com/help/app-store-connect/reference/app-information/platform-version-information\",\"screenshot_specifications\":\"https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/\",\"age_rating\":\"https://developer.apple.com/help/app-store-connect/manage-app-information/set-an-app-age-rating\",\"app_privacy\":\"https://developer.apple.com/app-store/app-privacy-details/\",\"required_reason_apis\":\"https://developer.apple.com/documentation/bundleresources/app-privacy-configuration/nsprivacyaccessedapitypes/nsprivacyaccessedapitype\"}; found {\"app_information\":\"https://developer.apple.com/help/app-store-connect/reference/app-information/app-information/\",\"platform_version_information\":\"https://developer.apple.com/help/app-store-connect/reference/app-information/platform-version-information\",\"screenshot_specifications\":\"https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/\",\"age_rating\":\"https://developer.apple.com/help/app-store-connect/manage-app-information/set-an-app-age-rating\",\"app_privacy\":\"https://developer.apple.com/app-store/app-privacy-details/\",\"required_reason_apis\":\"https://developer.apple.com/documentation/bundleresources/app-privacy-configuration/nsprivacyaccessedapitypes/nsprivacyaccessedapitype\"}"
+    },
+    {
+      "id": "metadata.en-US.draft",
+      "passed": true,
+      "detail": "locale metadata must remain draft and non-attachable before an immutable candidate"
+    },
+    {
+      "id": "metadata.en-US.name",
+      "passed": true,
+      "detail": "name is 25 characters"
+    },
+    {
+      "id": "metadata.en-US.subtitle",
+      "passed": true,
+      "detail": "subtitle is 21 characters"
+    },
+    {
+      "id": "metadata.en-US.promotional-text",
+      "passed": true,
+      "detail": "promotional text is 105 characters"
+    },
+    {
+      "id": "metadata.en-US.description",
+      "passed": true,
+      "detail": "description is 935 characters"
+    },
+    {
+      "id": "metadata.en-US.keywords-bytes",
+      "passed": true,
+      "detail": "keywords are 82 UTF-8 bytes"
+    },
+    {
+      "id": "metadata.en-US.keywords-spacing",
+      "passed": true,
+      "detail": "keywords must be comma-delimited without padding"
+    },
+    {
+      "id": "metadata.en-US.keyword-length",
+      "passed": true,
+      "detail": "every keyword must exceed two characters"
+    },
+    {
+      "id": "metadata.en-US.keyword-duplicates",
+      "passed": true,
+      "detail": "keyword terms must be unique"
+    },
+    {
+      "id": "metadata.en-US.keyword-brand",
+      "passed": true,
+      "detail": "keywords must not duplicate app/company names"
+    },
+    {
+      "id": "metadata.en-US.whats-new",
+      "passed": true,
+      "detail": "What's New must be bounded and explicitly unavailable for version 1.0"
+    },
+    {
+      "id": "metadata.en-US.tester-instructions",
+      "passed": true,
+      "detail": "tester instructions are 307 UTF-8 bytes"
+    },
+    {
+      "id": "metadata.en-US.review-notes",
+      "passed": true,
+      "detail": "review notes are 882 UTF-8 bytes"
+    },
+    {
+      "id": "metadata.en-US.claim-dependencies",
+      "passed": true,
+      "detail": "release-facing narration, CloudKit, and candidate claims must remain explicitly gated"
+    },
+    {
+      "id": "metadata.en-US.screenshot-headlines",
+      "passed": true,
+      "detail": "expected [\"Arrive in the moment\",\"Let practice take root\",\"See your practice rhythm\",\"Growth that stays\",\"Notice what changed\",\"A refuge that remembers\"]; found [\"Arrive in the moment\",\"Let practice take root\",\"See your practice rhythm\",\"Growth that stays\",\"Notice what changed\",\"A refuge that remembers\"]"
+    },
+    {
+      "id": "metadata.de-DE.draft",
+      "passed": true,
+      "detail": "locale metadata must remain draft and non-attachable before an immutable candidate"
+    },
+    {
+      "id": "metadata.de-DE.name",
+      "passed": true,
+      "detail": "name is 25 characters"
+    },
+    {
+      "id": "metadata.de-DE.subtitle",
+      "passed": true,
+      "detail": "subtitle is 22 characters"
+    },
+    {
+      "id": "metadata.de-DE.promotional-text",
+      "passed": true,
+      "detail": "promotional text is 127 characters"
+    },
+    {
+      "id": "metadata.de-DE.description",
+      "passed": true,
+      "detail": "description is 1053 characters"
+    },
+    {
+      "id": "metadata.de-DE.keywords-bytes",
+      "passed": true,
+      "detail": "keywords are 84 UTF-8 bytes"
+    },
+    {
+      "id": "metadata.de-DE.keywords-spacing",
+      "passed": true,
+      "detail": "keywords must be comma-delimited without padding"
+    },
+    {
+      "id": "metadata.de-DE.keyword-length",
+      "passed": true,
+      "detail": "every keyword must exceed two characters"
+    },
+    {
+      "id": "metadata.de-DE.keyword-duplicates",
+      "passed": true,
+      "detail": "keyword terms must be unique"
+    },
+    {
+      "id": "metadata.de-DE.keyword-brand",
+      "passed": true,
+      "detail": "keywords must not duplicate app/company names"
+    },
+    {
+      "id": "metadata.de-DE.whats-new",
+      "passed": true,
+      "detail": "What's New must be bounded and explicitly unavailable for version 1.0"
+    },
+    {
+      "id": "metadata.de-DE.tester-instructions",
+      "passed": true,
+      "detail": "tester instructions are 363 UTF-8 bytes"
+    },
+    {
+      "id": "metadata.de-DE.review-notes",
+      "passed": true,
+      "detail": "review notes are 1003 UTF-8 bytes"
+    },
+    {
+      "id": "metadata.de-DE.claim-dependencies",
+      "passed": true,
+      "detail": "release-facing narration, CloudKit, and candidate claims must remain explicitly gated"
+    },
+    {
+      "id": "metadata.de-DE.screenshot-headlines",
+      "passed": true,
+      "detail": "expected [\"Komm ganz hier an\",\"Lass deine Praxis Wurzeln schlagen\",\"Dein Rhythmus im Blick\",\"Wachstum, das bleibt\",\"Spür nach, was sich verändert\",\"Ein Ort, der sich erinnert\"]; found [\"Komm ganz hier an\",\"Lass deine Praxis Wurzeln schlagen\",\"Dein Rhythmus im Blick\",\"Wachstum, das bleibt\",\"Spür nach, was sich verändert\",\"Ein Ort, der sich erinnert\"]"
+    },
+    {
+      "id": "metadata.urls-bound",
+      "passed": true,
+      "detail": "expected {\"marketing_url\":\"https://arrivewithin.com/\",\"support_url\":\"https://arrivewithin.com/support\",\"privacy_url\":\"https://arrivewithin.com/privacy\"}; found {\"marketing_url\":\"https://arrivewithin.com/\",\"support_url\":\"https://arrivewithin.com/support\",\"privacy_url\":\"https://arrivewithin.com/privacy\"}"
+    },
+    {
+      "id": "metadata.url-binding",
+      "passed": true,
+      "detail": "release URLs must remain bound to the exact verified custom-domain production readback"
+    },
+    {
+      "id": "metadata.age-rating-unbound",
+      "passed": true,
+      "detail": "age rating must remain questionnaire-derived, region/OS-aware, and unclaimed before live reconciliation"
+    },
+    {
+      "id": "metadata.storekit-contract",
+      "passed": true,
+      "detail": "StoreKit absence must be an explicit release contract"
+    },
+    {
+      "id": "metadata.candidate-unbound",
+      "passed": true,
+      "detail": "metadata must not bind a moving or nonexistent candidate"
+    },
+    {
+      "id": "screenshots.devices",
+      "passed": true,
+      "detail": "expected [{\"id\":\"iphone-6.9\",\"width\":1320,\"height\":2868},{\"id\":\"ipad-13\",\"width\":2064,\"height\":2752}]; found [{\"id\":\"iphone-6.9\",\"width\":1320,\"height\":2868},{\"id\":\"ipad-13\",\"width\":2064,\"height\":2752}]"
+    },
+    {
+      "id": "screenshots.matrix",
+      "passed": true,
+      "detail": "screenshot plan must bind the 6 x 2 x 2 matrix"
+    },
+    {
+      "id": "source.storekit.\\bimport\\s+StoreKit\\b",
+      "passed": true,
+      "detail": "forbidden shipping-source pattern /\\bimport\\s+StoreKit\\b/"
+    },
+    {
+      "id": "source.storekit.\\.storekit\\b",
+      "passed": true,
+      "detail": "forbidden shipping-source pattern /\\.storekit\\b/i"
+    },
+    {
+      "id": "source.storekit.\\bSKPayment\\w*\\b",
+      "passed": true,
+      "detail": "forbidden shipping-source pattern /\\bSKPayment\\w*\\b/"
+    },
+    {
+      "id": "source.storekit.\\bProduct\\.products\\b",
+      "passed": true,
+      "detail": "forbidden shipping-source pattern /\\bProduct\\.products\\b/"
+    },
+    {
+      "id": "source.storekit.\\bTransaction\\.updates\\b",
+      "passed": true,
+      "detail": "forbidden shipping-source pattern /\\bTransaction\\.updates\\b/"
+    },
+    {
+      "id": "source.storekit.\\bAppStore\\.sync\\b",
+      "passed": true,
+      "detail": "forbidden shipping-source pattern /\\bAppStore\\.sync\\b/"
+    },
+    {
+      "id": "source.storekit.\\b(productID|productId|transactionObserver|entitlementState)\\b",
+      "passed": true,
+      "detail": "forbidden shipping-source pattern /\\b(productID|productId|transactionObserver|entitlementState)\\b/"
+    },
+    {
+      "id": "source.storekit.\\b(paywall|restore purchases?|manage subscription|in-app purchase|donation)\\b",
+      "passed": true,
+      "detail": "forbidden shipping-source pattern /\\b(paywall|restore purchases?|manage subscription|in-app purchase|donation)\\b/i"
+    },
+    {
+      "id": "source.storekit-config-files",
+      "passed": true,
+      "detail": "no StoreKit configuration file may exist in the public product tree"
+    },
+    {
+      "id": "source.tracking.\\bimport\\s+AppTrackingTransparency\\b",
+      "passed": true,
+      "detail": "forbidden tracking/analytics pattern /\\bimport\\s+AppTrackingTransparency\\b/"
+    },
+    {
+      "id": "source.tracking.\\bimport\\s+AdSupport\\b",
+      "passed": true,
+      "detail": "forbidden tracking/analytics pattern /\\bimport\\s+AdSupport\\b/"
+    },
+    {
+      "id": "source.tracking.\\bATTrackingManager\\b",
+      "passed": true,
+      "detail": "forbidden tracking/analytics pattern /\\bATTrackingManager\\b/"
+    },
+    {
+      "id": "source.tracking.\\bASIdentifierManager\\b",
+      "passed": true,
+      "detail": "forbidden tracking/analytics pattern /\\bASIdentifierManager\\b/"
+    },
+    {
+      "id": "source.tracking.\\b(FirebaseAnalytics|Amplitude|Mixpanel|AppsFlyer|Adjust|FacebookSDK|Segment)\\b",
+      "passed": true,
+      "detail": "forbidden tracking/analytics pattern /\\b(FirebaseAnalytics|Amplitude|Mixpanel|AppsFlyer|Adjust|FacebookSDK|Segment)\\b/"
+    },
+    {
+      "id": "source.network.\\bNWConnection\\b",
+      "passed": true,
+      "detail": "custom network-client pattern /\\bNWConnection\\b/ requires explicit review"
+    },
+    {
+      "id": "source.network.\\bimport\\s+Network\\b",
+      "passed": true,
+      "detail": "custom network-client pattern /\\bimport\\s+Network\\b/ requires explicit review"
+    },
+    {
+      "id": "source.network.\\bSFSafariViewController\\b",
+      "passed": true,
+      "detail": "custom network-client pattern /\\bSFSafariViewController\\b/ requires explicit review"
+    },
+    {
+      "id": "source.network.shipping-url-session-files",
+      "passed": true,
+      "detail": "expected []; found []"
+    },
+    {
+      "id": "source.webview-nonpersistent",
+      "passed": true,
+      "detail": "renderer WebView must use a nonpersistent data store"
+    },
+    {
+      "id": "source.webview-bundled-document-only",
+      "passed": true,
+      "detail": "renderer document and navigation must remain bounded to its validated app-bundle directory"
+    },
+    {
+      "id": "privacy.required-reason-system-uptime-source",
+      "passed": true,
+      "detail": "systemUptime must remain represented by a required-reason declaration"
+    },
+    {
+      "id": "privacy.required-reason-no-file-timestamp",
+      "passed": true,
+      "detail": "file timestamp APIs require an additional audited declaration"
+    },
+    {
+      "id": "privacy.required-reason-no-user-defaults",
+      "passed": true,
+      "detail": "UserDefaults/CFPreferences require an additional audited declaration"
+    },
+    {
+      "id": "privacy.required-reason-no-disk-space",
+      "passed": true,
+      "detail": "disk-space APIs require an additional audited declaration"
+    },
+    {
+      "id": "privacy.required-reason-no-active-keyboards",
+      "passed": true,
+      "detail": "active-keyboard APIs require an additional audited declaration"
+    },
+    {
+      "id": "privacy.manifest-tracking",
+      "passed": true,
+      "detail": "expected false; found false"
+    },
+    {
+      "id": "privacy.manifest-tracking-domains",
+      "passed": true,
+      "detail": "expected []; found []"
+    },
+    {
+      "id": "privacy.manifest-collected-types",
+      "passed": true,
+      "detail": "expected []; found []"
+    },
+    {
+      "id": "privacy.manifest-required-reasons",
+      "passed": true,
+      "detail": "expected [{\"NSPrivacyAccessedAPIType\":\"NSPrivacyAccessedAPICategorySystemBootTime\",\"NSPrivacyAccessedAPITypeReasons\":[\"35F9.1\"]}]; found [{\"NSPrivacyAccessedAPIType\":\"NSPrivacyAccessedAPICategorySystemBootTime\",\"NSPrivacyAccessedAPITypeReasons\":[\"35F9.1\"]}]"
+    },
+    {
+      "id": "privacy.manifest-project-resource",
+      "passed": true,
+      "detail": "PrivacyInfo.xcprivacy must remain under the app resource group; exact archive packaging is a later gate"
+    },
+    {
+      "id": "privacy.encryption-source",
+      "passed": true,
+      "detail": "expected false; found false"
+    },
+    {
+      "id": "privacy.microphone-source",
+      "passed": true,
+      "detail": "English microphone purpose string is required"
+    },
+    {
+      "id": "privacy.speech-source",
+      "passed": true,
+      "detail": "English speech-recognition purpose string is required"
+    },
+    {
+      "id": "privacy.en.microphone-localized",
+      "passed": true,
+      "detail": "en microphone purpose string must be localized"
+    },
+    {
+      "id": "privacy.en.speech-localized",
+      "passed": true,
+      "detail": "en speech-recognition purpose string must be localized"
+    },
+    {
+      "id": "privacy.de.microphone-localized",
+      "passed": true,
+      "detail": "de microphone purpose string must be localized"
+    },
+    {
+      "id": "privacy.de.speech-localized",
+      "passed": true,
+      "detail": "de speech-recognition purpose string must be localized"
+    },
+    {
+      "id": "privacy.cloudkit-v1-disabled",
+      "passed": true,
+      "detail": "V1 remains local-only until operation-specific deletion and stale-device convergence are proven"
+    },
+    {
+      "id": "privacy.feedback-v1-absent",
+      "passed": true,
+      "detail": "V1 binary must not link a feedback transport, endpoint, or sending surface"
+    },
+    {
+      "id": "privacy.public-signing-unbound",
+      "passed": true,
+      "detail": "public and release source contain no entitlement binding; private identifiers stay ignored"
+    },
+    {
+      "id": "privacy.worksheet",
+      "passed": true,
+      "detail": "App Privacy worksheet must bind the exact local-only Data Not Collected candidate"
+    },
+    {
+      "id": "privacy.data-not-collected",
+      "passed": true,
+      "detail": "Current candidate App Privacy answer must remain Data Not Collected and bind the inspected build-7 binary plus owner-confirmed publication"
+    },
+    {
+      "id": "privacy.no-feedback-accounting",
+      "passed": true,
+      "detail": "The V1 App Privacy inventory does not count a removed feedback capability or ordinary Support link as collected data"
+    },
+    {
+      "id": "boundary.ignore./SPEC.md",
+      "passed": true,
+      "detail": "missing strict ignore entry /SPEC.md"
+    },
+    {
+      "id": "boundary.ignore./AGENTS.md",
+      "passed": true,
+      "detail": "missing strict ignore entry /AGENTS.md"
+    },
+    {
+      "id": "boundary.ignore./.codex/",
+      "passed": true,
+      "detail": "missing strict ignore entry /.codex/"
+    },
+    {
+      "id": "boundary.ignore./LOCAL_*.md",
+      "passed": true,
+      "detail": "missing strict ignore entry /LOCAL_*.md"
+    },
+    {
+      "id": "boundary.ignore./PRIVATE_*.md",
+      "passed": true,
+      "detail": "missing strict ignore entry /PRIVATE_*.md"
+    },
+    {
+      "id": "boundary.ignore..env*",
+      "passed": true,
+      "detail": "missing strict ignore entry .env*"
+    },
+    {
+      "id": "boundary.ignore.*.p8",
+      "passed": true,
+      "detail": "missing strict ignore entry *.p8"
+    },
+    {
+      "id": "boundary.ignore.*.p12",
+      "passed": true,
+      "detail": "missing strict ignore entry *.p12"
+    },
+    {
+      "id": "boundary.ignore.*.mobileprovision",
+      "passed": true,
+      "detail": "missing strict ignore entry *.mobileprovision"
+    },
+    {
+      "id": "boundary.ignore.**/*.entitlements.local",
+      "passed": true,
+      "detail": "missing strict ignore entry **/*.entitlements.local"
+    },
+    {
+      "id": "boundary.ignore./ContentProduction/auditions/",
+      "passed": true,
+      "detail": "missing strict ignore entry /ContentProduction/auditions/"
+    },
+    {
+      "id": "boundary.ignore./ContentProduction/model-cache/",
+      "passed": true,
+      "detail": "missing strict ignore entry /ContentProduction/model-cache/"
+    },
+    {
+      "id": "boundary.ignore./References/",
+      "passed": true,
+      "detail": "missing strict ignore entry /References/"
+    },
+    {
+      "id": "boundary.ignore./.evidence/",
+      "passed": true,
+      "detail": "missing strict ignore entry /.evidence/"
+    },
+    {
+      "id": "boundary.public-shipping-audio.!/Content/guided/**/audio.*.m4a",
+      "passed": true,
+      "detail": "promoted shipping narration source must not be ignored: !/Content/guided/**/audio.*.m4a"
+    },
+    {
+      "id": "boundary.public-shipping-audio.!/Content/guided/**/transcript.*.vtt",
+      "passed": true,
+      "detail": "promoted shipping narration source must not be ignored: !/Content/guided/**/transcript.*.vtt"
+    },
+    {
+      "id": "boundary.public-shipping-audio.!/Content/guided/**/provenance.*.json",
+      "passed": true,
+      "detail": "promoted shipping narration source must not be ignored: !/Content/guided/**/provenance.*.json"
+    },
+    {
+      "id": "candidate.template-state",
+      "passed": true,
+      "detail": "candidate template must use the pre-Git-capable schema without claiming a freeze"
+    },
+    {
+      "id": "candidate.source-mode",
+      "passed": true,
+      "detail": "pre-Git candidates must bind a deterministic prospective-public tree and claim no Git lineage"
+    },
+    {
+      "id": "candidate.source-unbound",
+      "passed": true,
+      "detail": "candidate source and previous-live boundary must be exact and currently unbound"
+    },
+    {
+      "id": "candidate.deviation-schema",
+      "passed": true,
+      "detail": "pre-Git and deferred-review deviations must be explicit and must never be represented as passes"
+    },
+    {
+      "id": "candidate.media-state-unbound",
+      "passed": true,
+      "detail": "candidate media state must bind packaged narration and the truthful baseline TestFlight note without claiming deferred human review"
+    },
+    {
+      "id": "candidate.binary-unbound",
+      "passed": true,
+      "detail": "candidate binary hashes must remain unbound"
+    },
+    {
+      "id": "candidate.signing-unbound",
+      "passed": true,
+      "detail": "candidate signing state must remain unbound"
+    },
+    {
+      "id": "candidate.cloudkit-unbound",
+      "passed": true,
+      "detail": "candidate CloudKit identity must remain unbound"
+    },
+    {
+      "id": "candidate.physical-schema",
+      "passed": true,
+      "detail": "candidate must bind exact public-safe device, OS, source manifest, scenarios, side effects, and result"
+    },
+    {
+      "id": "current-release.unreconciled",
+      "passed": true,
+      "detail": "current/live boundary must not be inferred from a moving branch tip"
+    },
+    {
+      "id": "prospective-manifest.tool",
+      "passed": true,
+      "detail": "pre-Git candidates require a deterministic prospective-public manifest generator"
+    },
+    {
+      "id": "prospective-manifest.test",
+      "passed": true,
+      "detail": "the prospective-public manifest generator requires a deterministic private-boundary regression"
+    },
+    {
+      "id": "release-train.stages",
+      "passed": true,
+      "detail": "expected [\"live-reconciliation\",\"archive-export-inspect\",\"upload\",\"valid\",\"internal-group-linkage\",\"in-beta-testing\",\"candidate-install-upgrade-physical\",\"metadata-screenshots-attach\",\"app-review-submit\",\"after-approval\",\"approval-ready-for-distribution\",\"storefront-install-verify\",\"public-repository-and-release-assets\"]; found [\"live-reconciliation\",\"archive-export-inspect\",\"upload\",\"valid\",\"internal-group-linkage\",\"in-beta-testing\",\"candidate-install-upgrade-physical\",\"metadata-screenshots-attach\",\"app-review-submit\",\"after-approval\",\"approval-ready-for-distribution\",\"storefront-install-verify\",\"public-repository-and-release-assets\"]"
+    },
+    {
+      "id": "release-train.order",
+      "passed": true,
+      "detail": "release stages must be fixed in exact order"
+    },
+    {
+      "id": "release-train.live-reconciliation-readback",
+      "passed": true,
+      "detail": "live identity, signing readiness, V1 CloudKit disablement, and the exact selected internal build must retain honest readback"
+    },
+    {
+      "id": "release-train.authority",
+      "passed": true,
+      "detail": "every release stage must carry an explicit authorization boundary"
+    },
+    {
+      "id": "release-train.pre-git-authority",
+      "passed": true,
+      "detail": "exact app release stages must reflect current authority while public-repository mutation remains prohibited"
+    },
+    {
+      "id": "release-train.candidate-unbound",
+      "passed": true,
+      "detail": "verified builds 1 through 7 and the submitted build-7 review state must remain exact while the narration-complete update is unbound"
+    }
+  ],
+  "claim_boundary": "This deterministic source check validates the repository's exact build-7 release-train readbacks but does not itself reproduce the frozen build-7 archive/IPA, live ASC or TestFlight state, physical-device observation, website deployment, App Review outcome, storefront, human audio/rights review, Git lineage, or public repository release."
+}

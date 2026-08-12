@@ -1,0 +1,1547 @@
+{
+  "schema_version": 1,
+  "state": "local-design-candidates-owner-selection-pending",
+  "generated_at": "2026-08-12T05:11:44.696Z",
+  "source": {
+    "generator": "Marketing/GardenDesignLab/scripts/generate-garden-design-lab.mjs",
+    "generator_sha256": "ca7fd95170caa4bf0de9aa966f17f9d45b5f185844ddf97c010275f0f0fe6850",
+    "files": [
+      {
+        "path": "Renderer/src/scene.ts",
+        "sha256": "680a4584379cea744cb49252e6dc6690c604ac6420451d6fa4d75436a1ba7a32"
+      },
+      {
+        "path": "Renderer/src/visual-design.ts",
+        "sha256": "028926c3171d64f4a54da3a53798697d5d2b8ccac4e3a384de570f2081053104"
+      },
+      {
+        "path": "Renderer/src/visual-directions/verdant-atelier.ts",
+        "sha256": "77bfd7f71f19e6742d8e281b0cf895c174fd17018362e60630a17f636b3ee088"
+      },
+      {
+        "path": "Renderer/src/visual-directions/paper-sanctuary.ts",
+        "sha256": "6b732a1bc22e0f100a710c1bb0592ad497f9a513552cbcdcc5b3fdc598b4c271"
+      },
+      {
+        "path": "Renderer/src/visual-directions/twilight-refuge.ts",
+        "sha256": "8055683e5858fa85bf347bad9ef3114163645f042a21defe192a596b2595f39a"
+      },
+      {
+        "path": "Renderer/design-lab/index.html",
+        "sha256": "1686fac462ce25e1d51d85c45233f62c1122e39e211be7a14ec9ada36bb48743"
+      },
+      {
+        "path": "Renderer/design-lab/lab.css",
+        "sha256": "4e26c45c4bed70b41b41db91eb9345d9d68b9b90c491731f03e3acbf59f7fc9c"
+      },
+      {
+        "path": "Renderer/design-lab/lab.ts",
+        "sha256": "b45aa93dfee21cf27a5389bfe8285c2304eb7c1a94846a904cdefaab5afcd34a"
+      }
+    ]
+  },
+  "capture": {
+    "renderer_authority": "shared-versioned-GardenState-v1",
+    "external_network": "blocked",
+    "external_requests_observed": 0,
+    "device_viewports": {
+      "iphone": {
+        "width": 430,
+        "height": 932
+      },
+      "ipad": {
+        "width": 1024,
+        "height": 1366
+      }
+    },
+    "directions": [
+      "verdant-atelier",
+      "paper-sanctuary",
+      "twilight-refuge"
+    ],
+    "presets": [
+      "empty",
+      "first-growth",
+      "milestone-reveal",
+      "micro-growth",
+      "mature"
+    ],
+    "stills": [
+      {
+        "direction": "verdant-atelier",
+        "device": "iphone",
+        "preset": "empty",
+        "path": "output/verdant-atelier/iphone/empty.png",
+        "sha256": "6f2b3b1706dd97d3274a64f198ded505f90aba4c12ec457519d86827b7444500",
+        "bytes": 65481,
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 9,
+          "triangles": 2950,
+          "geometries": 9,
+          "textures": 5,
+          "programs": 12,
+          "rebuildCount": 1,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "device": "iphone",
+        "preset": "first-growth",
+        "path": "output/verdant-atelier/iphone/first-growth.png",
+        "sha256": "33d0955b6fb3e1c237725623599be9b9f16a4e85df1af9ce4ed39fc077967028",
+        "bytes": 78419,
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 10,
+          "triangles": 5212,
+          "geometries": 10,
+          "textures": 5,
+          "programs": 13,
+          "rebuildCount": 2,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "device": "iphone",
+        "preset": "milestone-reveal",
+        "path": "output/verdant-atelier/iphone/milestone-reveal.png",
+        "sha256": "c6ff942894d5f52e4998ebb6fef4b2945862c1acd84ae0bd426b88634722cdaf",
+        "bytes": 130056,
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 20,
+          "triangles": 21416,
+          "geometries": 19,
+          "textures": 5,
+          "programs": 15,
+          "rebuildCount": 3,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "device": "iphone",
+        "preset": "micro-growth",
+        "path": "output/verdant-atelier/iphone/micro-growth.png",
+        "sha256": "759d2c76c4991a6a3d281379ee3e4d4792666db518e694f4955d1939086abbc2",
+        "bytes": 158587,
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 31,
+          "triangles": 39232,
+          "geometries": 32,
+          "textures": 5,
+          "programs": 18,
+          "rebuildCount": 4,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "device": "iphone",
+        "preset": "mature",
+        "path": "output/verdant-atelier/iphone/mature.png",
+        "sha256": "e9a8df8cf66661217347e2f3b629407fc2a5e8158a8f66362dca21e98c0e5db5",
+        "bytes": 157896,
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 31,
+          "triangles": 39232,
+          "geometries": 30,
+          "textures": 5,
+          "programs": 18,
+          "rebuildCount": 5,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "device": "iphone",
+        "preset": "empty",
+        "path": "output/paper-sanctuary/iphone/empty.png",
+        "sha256": "b38b9e2e2b55adfafd25692ba40d1fcbe5549f5303b2cf26700b16e188872828",
+        "bytes": 63910,
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 11,
+          "triangles": 3168,
+          "geometries": 10,
+          "textures": 5,
+          "programs": 12,
+          "rebuildCount": 1,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "device": "iphone",
+        "preset": "first-growth",
+        "path": "output/paper-sanctuary/iphone/first-growth.png",
+        "sha256": "b27278206c8f958c24ca32264f1ae6c6b8a8bf1e0584f569a69c38ee28828f78",
+        "bytes": 81085,
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 12,
+          "triangles": 5684,
+          "geometries": 11,
+          "textures": 5,
+          "programs": 13,
+          "rebuildCount": 2,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "device": "iphone",
+        "preset": "milestone-reveal",
+        "path": "output/paper-sanctuary/iphone/milestone-reveal.png",
+        "sha256": "d882bb619b810c6efb58c303193626f1cafefea4304551ea329aca4b18953b89",
+        "bytes": 142832,
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 22,
+          "triangles": 23464,
+          "geometries": 20,
+          "textures": 5,
+          "programs": 15,
+          "rebuildCount": 3,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "device": "iphone",
+        "preset": "micro-growth",
+        "path": "output/paper-sanctuary/iphone/micro-growth.png",
+        "sha256": "f28f14b6cafc27650d09142ef937e202627d41204c6ad2888ba32eb08544d4b1",
+        "bytes": 162823,
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 33,
+          "triangles": 42566,
+          "geometries": 33,
+          "textures": 5,
+          "programs": 18,
+          "rebuildCount": 4,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "device": "iphone",
+        "preset": "mature",
+        "path": "output/paper-sanctuary/iphone/mature.png",
+        "sha256": "ecceb8d0128051a9f78110faf166b9bd47491b2ab65cb1a31151978c8b8aecb2",
+        "bytes": 162148,
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 33,
+          "triangles": 42566,
+          "geometries": 31,
+          "textures": 5,
+          "programs": 18,
+          "rebuildCount": 5,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "device": "iphone",
+        "preset": "empty",
+        "path": "output/twilight-refuge/iphone/empty.png",
+        "sha256": "979ce0c967a5a028b440576aab6ae37ea5b819ff927b6817d92a21102b66f76f",
+        "bytes": 50184,
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 9,
+          "triangles": 2156,
+          "geometries": 9,
+          "textures": 5,
+          "programs": 12,
+          "rebuildCount": 1,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "device": "iphone",
+        "preset": "first-growth",
+        "path": "output/twilight-refuge/iphone/first-growth.png",
+        "sha256": "7307e10fafb719223519f3050f3df55065e19dcd5c001329d6a00d3a108768f1",
+        "bytes": 59704,
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 10,
+          "triangles": 2876,
+          "geometries": 10,
+          "textures": 5,
+          "programs": 13,
+          "rebuildCount": 2,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "device": "iphone",
+        "preset": "milestone-reveal",
+        "path": "output/twilight-refuge/iphone/milestone-reveal.png",
+        "sha256": "93698c54e9d2f155e21a65aa1465513212bf09a841a88f4c1319e2b240533f05",
+        "bytes": 101288,
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 20,
+          "triangles": 9032,
+          "geometries": 19,
+          "textures": 5,
+          "programs": 15,
+          "rebuildCount": 3,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "device": "iphone",
+        "preset": "micro-growth",
+        "path": "output/twilight-refuge/iphone/micro-growth.png",
+        "sha256": "463918403dbcd8add324d548e143d09514e4786388d2c8679f587506a786eba6",
+        "bytes": 122762,
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 32,
+          "triangles": 18690,
+          "geometries": 32,
+          "textures": 5,
+          "programs": 18,
+          "rebuildCount": 4,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "device": "iphone",
+        "preset": "mature",
+        "path": "output/twilight-refuge/iphone/mature.png",
+        "sha256": "a89dbdd96cfac26ff30fbb749b096ce09c5b5b19f4717cb37a79714c2560e900",
+        "bytes": 121976,
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 32,
+          "triangles": 18690,
+          "geometries": 31,
+          "textures": 5,
+          "programs": 18,
+          "rebuildCount": 5,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "device": "ipad",
+        "preset": "empty",
+        "path": "output/verdant-atelier/ipad/empty.png",
+        "sha256": "2bee4730ccbadb30c66c53d5b90e25bd7f5a589add91207e35a7b805b78c405f",
+        "bytes": 161408,
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 9,
+          "triangles": 2950,
+          "geometries": 9,
+          "textures": 5,
+          "programs": 12,
+          "rebuildCount": 1,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "device": "ipad",
+        "preset": "first-growth",
+        "path": "output/verdant-atelier/ipad/first-growth.png",
+        "sha256": "76aae13f63d8f36ceee74db4eb0e3420886439bdfa5166e6dba684d0a8824e06",
+        "bytes": 188495,
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 10,
+          "triangles": 5212,
+          "geometries": 10,
+          "textures": 5,
+          "programs": 13,
+          "rebuildCount": 2,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "device": "ipad",
+        "preset": "milestone-reveal",
+        "path": "output/verdant-atelier/ipad/milestone-reveal.png",
+        "sha256": "8b8bc1cdf281d68b248a2b21c9862be1b8b141b9ec260e9d6ac8dda44409eacc",
+        "bytes": 330904,
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 22,
+          "triangles": 21568,
+          "geometries": 22,
+          "textures": 5,
+          "programs": 15,
+          "rebuildCount": 3,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "device": "ipad",
+        "preset": "micro-growth",
+        "path": "output/verdant-atelier/ipad/micro-growth.png",
+        "sha256": "cb59f542c4e7f51b79f08914ffc553bbea3758c64523d3213cfc02b7f8a1c10f",
+        "bytes": 423514,
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 33,
+          "triangles": 39672,
+          "geometries": 32,
+          "textures": 5,
+          "programs": 18,
+          "rebuildCount": 4,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "device": "ipad",
+        "preset": "mature",
+        "path": "output/verdant-atelier/ipad/mature.png",
+        "sha256": "777af791a623118b1e8d23c96785062b0929563ad29168219731a78238157808",
+        "bytes": 423718,
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 33,
+          "triangles": 39672,
+          "geometries": 32,
+          "textures": 5,
+          "programs": 18,
+          "rebuildCount": 5,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "device": "ipad",
+        "preset": "empty",
+        "path": "output/paper-sanctuary/ipad/empty.png",
+        "sha256": "b7fd9b551f80a89852b6da85200c13c31dc6271533d44e7f1c29d1fa9f2add76",
+        "bytes": 159451,
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 11,
+          "triangles": 3168,
+          "geometries": 10,
+          "textures": 5,
+          "programs": 12,
+          "rebuildCount": 1,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "device": "ipad",
+        "preset": "first-growth",
+        "path": "output/paper-sanctuary/ipad/first-growth.png",
+        "sha256": "fa8da204b77a5727e2d934193ab76bc5443c26560894e510d7d0b429d611396e",
+        "bytes": 191385,
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 12,
+          "triangles": 5684,
+          "geometries": 11,
+          "textures": 5,
+          "programs": 13,
+          "rebuildCount": 2,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "device": "ipad",
+        "preset": "milestone-reveal",
+        "path": "output/paper-sanctuary/ipad/milestone-reveal.png",
+        "sha256": "20494d645fce9ae755ea352ed83bbcda6712352df53b14de9b9e151147843361",
+        "bytes": 361766,
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 23,
+          "triangles": 23536,
+          "geometries": 23,
+          "textures": 5,
+          "programs": 15,
+          "rebuildCount": 3,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "device": "ipad",
+        "preset": "micro-growth",
+        "path": "output/paper-sanctuary/ipad/micro-growth.png",
+        "sha256": "0e8ef48ceab9525a859265cbe958384ea2ab075805b3dea5d66b478992f92dab",
+        "bytes": 445706,
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 35,
+          "triangles": 43006,
+          "geometries": 33,
+          "textures": 5,
+          "programs": 18,
+          "rebuildCount": 4,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "device": "ipad",
+        "preset": "mature",
+        "path": "output/paper-sanctuary/ipad/mature.png",
+        "sha256": "370b31da5f62fc06d6aedc3dd45c10efb6496c776d5bb29d801752858b754ce2",
+        "bytes": 445890,
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 35,
+          "triangles": 43006,
+          "geometries": 33,
+          "textures": 5,
+          "programs": 18,
+          "rebuildCount": 5,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "device": "ipad",
+        "preset": "empty",
+        "path": "output/twilight-refuge/ipad/empty.png",
+        "sha256": "12ee8fce3bd78486ba42d6ac7ec345ddb433b75f58df5292f528ff923a1ab5ff",
+        "bytes": 111754,
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 9,
+          "triangles": 2156,
+          "geometries": 9,
+          "textures": 5,
+          "programs": 12,
+          "rebuildCount": 1,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "device": "ipad",
+        "preset": "first-growth",
+        "path": "output/twilight-refuge/ipad/first-growth.png",
+        "sha256": "fd81d655a3d25d099e37591ce3010a1334aa40a93ee6e2feb86918cb2b1fa2ef",
+        "bytes": 131553,
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 10,
+          "triangles": 2876,
+          "geometries": 10,
+          "textures": 5,
+          "programs": 13,
+          "rebuildCount": 2,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "device": "ipad",
+        "preset": "milestone-reveal",
+        "path": "output/twilight-refuge/ipad/milestone-reveal.png",
+        "sha256": "0965968483b55f13addaeb34073dfe463ea1a0469dd14c81696d204a7c255b9c",
+        "bytes": 241293,
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 23,
+          "triangles": 9264,
+          "geometries": 22,
+          "textures": 5,
+          "programs": 15,
+          "rebuildCount": 3,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "device": "ipad",
+        "preset": "micro-growth",
+        "path": "output/twilight-refuge/ipad/micro-growth.png",
+        "sha256": "819759731aa389f5062f0b3cfd694a1d9d34013b999ec0b73d24ac2906e18d22",
+        "bytes": 312983,
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 33,
+          "triangles": 18770,
+          "geometries": 32,
+          "textures": 5,
+          "programs": 18,
+          "rebuildCount": 4,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "device": "ipad",
+        "preset": "mature",
+        "path": "output/twilight-refuge/ipad/mature.png",
+        "sha256": "b3fba524093a6ac68a5a8ce03368d9d0a0f3efaa8cc84283eb024bfebedab9a5",
+        "bytes": 312151,
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 33,
+          "triangles": 18770,
+          "geometries": 32,
+          "textures": 5,
+          "programs": 18,
+          "rebuildCount": 5,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      }
+    ],
+    "milestone_stills": [
+      {
+        "direction": "verdant-atelier",
+        "milestone": 1,
+        "path": "output/verdant-atelier/milestones/01.png",
+        "sha256": "7aaec943f4fbd482ef038dbbe2d18cf750b0073221257cb7ad32274d0cc69976",
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 11,
+          "triangles": 7684,
+          "geometries": 11,
+          "textures": 5,
+          "programs": 13,
+          "rebuildCount": 2,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "milestone": 2,
+        "path": "output/verdant-atelier/milestones/02.png",
+        "sha256": "58a57002d5d846678586c41924ed2cd54d8d1dfa856269e342cd4a2d1c72fc61",
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 12,
+          "triangles": 10334,
+          "geometries": 12,
+          "textures": 5,
+          "programs": 13,
+          "rebuildCount": 3,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "milestone": 3,
+        "path": "output/verdant-atelier/milestones/03.png",
+        "sha256": "588aec0f6ea66b5c0e5716c8b8f0ca0724a82635ff2224d8eb1773277af5f8b1",
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 13,
+          "triangles": 12864,
+          "geometries": 13,
+          "textures": 5,
+          "programs": 13,
+          "rebuildCount": 4,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "milestone": 4,
+        "path": "output/verdant-atelier/milestones/04.png",
+        "sha256": "8dd7b9d9a370777d8938c2e613af4b4d0d56cf4e0692e99c9b94447572b2a260",
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 15,
+          "triangles": 14208,
+          "geometries": 14,
+          "textures": 5,
+          "programs": 15,
+          "rebuildCount": 5,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "milestone": 5,
+        "path": "output/verdant-atelier/milestones/05.png",
+        "sha256": "f8d6d2c923ee873a8e6a3581a38722f15dec9a6ccf212bf3b9136e1273d2ecb0",
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 16,
+          "triangles": 16546,
+          "geometries": 15,
+          "textures": 5,
+          "programs": 15,
+          "rebuildCount": 6,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "milestone": 6,
+        "path": "output/verdant-atelier/milestones/06.png",
+        "sha256": "d2fc75b6dfe023e1b44de8a9e0c959d46e5b896c68c3fe99e0850caf9252b62f",
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 20,
+          "triangles": 18046,
+          "geometries": 19,
+          "textures": 5,
+          "programs": 15,
+          "rebuildCount": 7,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "milestone": 7,
+        "path": "output/verdant-atelier/milestones/07.png",
+        "sha256": "f3e88d27744be0022060535a7d2a3395be42e4d93413f37be1db0ced4dd3affd",
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 23,
+          "triangles": 20538,
+          "geometries": 22,
+          "textures": 5,
+          "programs": 15,
+          "rebuildCount": 8,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "milestone": 8,
+        "path": "output/verdant-atelier/milestones/08.png",
+        "sha256": "8d51647e5083b04de45cfcaa2b1c696d12b62f41f29b599a5be7d04494a44d61",
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 24,
+          "triangles": 22698,
+          "geometries": 23,
+          "textures": 5,
+          "programs": 16,
+          "rebuildCount": 9,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "milestone": 9,
+        "path": "output/verdant-atelier/milestones/09.png",
+        "sha256": "1899807a76615aad75f856ecf5e9683cb7d41d505e9001ff5afef604e4c22a02",
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 25,
+          "triangles": 25564,
+          "geometries": 24,
+          "textures": 5,
+          "programs": 16,
+          "rebuildCount": 10,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "milestone": 10,
+        "path": "output/verdant-atelier/milestones/10.png",
+        "sha256": "f3116d73cc2c7451a98929459e13d118a66958817acb9bc89cb744838b2d8a0e",
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 29,
+          "triangles": 28184,
+          "geometries": 28,
+          "textures": 5,
+          "programs": 16,
+          "rebuildCount": 11,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "milestone": 11,
+        "path": "output/verdant-atelier/milestones/11.png",
+        "sha256": "e67b4927c65adccc2db5bf998a82de0b60004a6c86dac8ac73ba67150f983be0",
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 30,
+          "triangles": 29390,
+          "geometries": 29,
+          "textures": 5,
+          "programs": 17,
+          "rebuildCount": 12,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "milestone": 12,
+        "path": "output/verdant-atelier/milestones/12.png",
+        "sha256": "2cb9f7763ebaefe7bfb36cb1d4732ee958f072997d1a172abff1f825bc3d979f",
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 31,
+          "triangles": 32688,
+          "geometries": 30,
+          "textures": 5,
+          "programs": 18,
+          "rebuildCount": 13,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "milestone": 13,
+        "path": "output/verdant-atelier/milestones/13.png",
+        "sha256": "26e5709302de8ee04d7926b1e647ec2f70b88cb5580db185c637de827bb352bb",
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 32,
+          "triangles": 34660,
+          "geometries": 31,
+          "textures": 5,
+          "programs": 18,
+          "rebuildCount": 14,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "milestone": 14,
+        "path": "output/verdant-atelier/milestones/14.png",
+        "sha256": "5f164d7b3bf19e98d38fd69810c13d43ff6ba947fa9501286f4fc136d54c1ef0",
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 33,
+          "triangles": 36532,
+          "geometries": 32,
+          "textures": 5,
+          "programs": 19,
+          "rebuildCount": 15,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "verdant-atelier",
+        "milestone": 15,
+        "path": "output/verdant-atelier/milestones/15.png",
+        "sha256": "76e30275fdc101b900c40f95069f100ee05fefc6182f78b2db6722dd940c5c72",
+        "diagnostics": {
+          "direction": "verdant-atelier",
+          "drawCalls": 34,
+          "triangles": 39254,
+          "geometries": 33,
+          "textures": 5,
+          "programs": 19,
+          "rebuildCount": 16,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "milestone": 1,
+        "path": "output/paper-sanctuary/milestones/01.png",
+        "sha256": "9652ec95f693856402223763ea1f8512cf5f5a83b4d87bd852c1a9cc4b158cc6",
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 13,
+          "triangles": 8404,
+          "geometries": 12,
+          "textures": 5,
+          "programs": 13,
+          "rebuildCount": 2,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "milestone": 2,
+        "path": "output/paper-sanctuary/milestones/02.png",
+        "sha256": "dc22ebd2408999059085f78a4183b1a8db9a79e3e7bfde9b9898b4a757ea5d48",
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 14,
+          "triangles": 11296,
+          "geometries": 13,
+          "textures": 5,
+          "programs": 13,
+          "rebuildCount": 3,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "milestone": 3,
+        "path": "output/paper-sanctuary/milestones/03.png",
+        "sha256": "cef1f051f0bbdf1db650b5ebcf14640d82737086e6273c071548ebf043dc51e7",
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 15,
+          "triangles": 14068,
+          "geometries": 14,
+          "textures": 5,
+          "programs": 13,
+          "rebuildCount": 4,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "milestone": 4,
+        "path": "output/paper-sanctuary/milestones/04.png",
+        "sha256": "65a93995af83ef48908eda18335278f5953b872ef43438baaa9dd6e63cdfbd36",
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 17,
+          "triangles": 15524,
+          "geometries": 15,
+          "textures": 5,
+          "programs": 15,
+          "rebuildCount": 5,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "milestone": 5,
+        "path": "output/paper-sanctuary/milestones/05.png",
+        "sha256": "872e57d256a444b8024fa561453e5410c4565286103a9acc4336849f1b2b9dc7",
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 18,
+          "triangles": 18104,
+          "geometries": 16,
+          "textures": 5,
+          "programs": 15,
+          "rebuildCount": 6,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "milestone": 6,
+        "path": "output/paper-sanctuary/milestones/06.png",
+        "sha256": "5f21b309d65de3a9990fa3ea5bf074943b5919d28b56e6acf2ae6ff1caca3546",
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 22,
+          "triangles": 19716,
+          "geometries": 20,
+          "textures": 5,
+          "programs": 15,
+          "rebuildCount": 7,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "milestone": 7,
+        "path": "output/paper-sanctuary/milestones/07.png",
+        "sha256": "566ba604c4ade66b4ae18d1b5ded2217f7c36599b2b10779b3d4844b60f4bfe5",
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 25,
+          "triangles": 22456,
+          "geometries": 23,
+          "textures": 5,
+          "programs": 15,
+          "rebuildCount": 8,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "milestone": 8,
+        "path": "output/paper-sanctuary/milestones/08.png",
+        "sha256": "b6bffe01c1d6b2819af080fe0383e3385a0fd9842eb87006e89809b595ff3540",
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 26,
+          "triangles": 24728,
+          "geometries": 24,
+          "textures": 5,
+          "programs": 16,
+          "rebuildCount": 9,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "milestone": 9,
+        "path": "output/paper-sanctuary/milestones/09.png",
+        "sha256": "6b019ede5c5cc683239ff87cec7ec920fed2a607e28acd0899222cd2a3647d54",
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 27,
+          "triangles": 27836,
+          "geometries": 25,
+          "textures": 5,
+          "programs": 16,
+          "rebuildCount": 10,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "milestone": 10,
+        "path": "output/paper-sanctuary/milestones/10.png",
+        "sha256": "4cfb5f92b6e5c14dcede6eadadba845b19d3250e36418cc6c5cf9935cd1df774",
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 31,
+          "triangles": 30568,
+          "geometries": 29,
+          "textures": 5,
+          "programs": 16,
+          "rebuildCount": 11,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "milestone": 11,
+        "path": "output/paper-sanctuary/milestones/11.png",
+        "sha256": "204ab553c0cf14c05f9a8609834e34db4602061cebf61026caa431fa03081360",
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 32,
+          "triangles": 31886,
+          "geometries": 30,
+          "textures": 5,
+          "programs": 17,
+          "rebuildCount": 12,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "milestone": 12,
+        "path": "output/paper-sanctuary/milestones/12.png",
+        "sha256": "9103c34f026274694fe4552880e82eac8e29a9b11df2e203339845674bc56c2c",
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 33,
+          "triangles": 35426,
+          "geometries": 31,
+          "textures": 5,
+          "programs": 18,
+          "rebuildCount": 13,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "milestone": 13,
+        "path": "output/paper-sanctuary/milestones/13.png",
+        "sha256": "c14c48b949167bf26a4344d0caf70c8ad9ae2c6d7f955067c1f0749036c0cc2e",
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 34,
+          "triangles": 37510,
+          "geometries": 32,
+          "textures": 5,
+          "programs": 18,
+          "rebuildCount": 14,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "milestone": 14,
+        "path": "output/paper-sanctuary/milestones/14.png",
+        "sha256": "23ff14fd460d7b2b82881bb9dc6184c17469237cab18fa3adc0281819978b46b",
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 35,
+          "triangles": 39494,
+          "geometries": 33,
+          "textures": 5,
+          "programs": 19,
+          "rebuildCount": 15,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "paper-sanctuary",
+        "milestone": 15,
+        "path": "output/paper-sanctuary/milestones/15.png",
+        "sha256": "05b41b0808a597ba0ffac6d66f30876059161dac06cdf5a81835e973f119403b",
+        "diagnostics": {
+          "direction": "paper-sanctuary",
+          "drawCalls": 36,
+          "triangles": 42458,
+          "geometries": 34,
+          "textures": 5,
+          "programs": 19,
+          "rebuildCount": 16,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "milestone": 1,
+        "path": "output/twilight-refuge/milestones/01.png",
+        "sha256": "36b222337479f19fd008da9137bfdcb06d1530d7f01dce7f97b5c967645b0544",
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 11,
+          "triangles": 3804,
+          "geometries": 11,
+          "textures": 5,
+          "programs": 13,
+          "rebuildCount": 2,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "milestone": 2,
+        "path": "output/twilight-refuge/milestones/02.png",
+        "sha256": "87ef5c9705f482a2a97f57695d8275acccb79dd94d043f39fb9f1aa8f8291e05",
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 12,
+          "triangles": 4908,
+          "geometries": 12,
+          "textures": 5,
+          "programs": 13,
+          "rebuildCount": 3,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "milestone": 3,
+        "path": "output/twilight-refuge/milestones/03.png",
+        "sha256": "970278131a6697cd02bd4996707877226d2801b61a4066a0d037263358bb3dc0",
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 13,
+          "triangles": 5892,
+          "geometries": 13,
+          "textures": 5,
+          "programs": 13,
+          "rebuildCount": 4,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "milestone": 4,
+        "path": "output/twilight-refuge/milestones/04.png",
+        "sha256": "e397127d48d71f44036cc2d92d705764fbb9177d428a1b1f54563326a4f00c6c",
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 15,
+          "triangles": 6460,
+          "geometries": 14,
+          "textures": 5,
+          "programs": 15,
+          "rebuildCount": 5,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "milestone": 5,
+        "path": "output/twilight-refuge/milestones/05.png",
+        "sha256": "06b63928bd36be52f11215c7d0fe919faa1776f177e42656b535641c4067c5de",
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 16,
+          "triangles": 7252,
+          "geometries": 15,
+          "textures": 5,
+          "programs": 15,
+          "rebuildCount": 6,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "milestone": 6,
+        "path": "output/twilight-refuge/milestones/06.png",
+        "sha256": "429b7310fe67bb23344d66103f683dddb8653036e330dc12b144a205d632b294",
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 20,
+          "triangles": 7976,
+          "geometries": 19,
+          "textures": 5,
+          "programs": 15,
+          "rebuildCount": 7,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "milestone": 7,
+        "path": "output/twilight-refuge/milestones/07.png",
+        "sha256": "d82cf24d5638a7f15c8a9f8cf2734097e8293be88bc6a201059837d71802ce8e",
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 23,
+          "triangles": 8924,
+          "geometries": 22,
+          "textures": 5,
+          "programs": 15,
+          "rebuildCount": 8,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "milestone": 8,
+        "path": "output/twilight-refuge/milestones/08.png",
+        "sha256": "16a1d0ac1fb029e75f8928f497e7e2358d23cbcd596fd6c9dc511aedd81241ea",
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 24,
+          "triangles": 10308,
+          "geometries": 23,
+          "textures": 5,
+          "programs": 16,
+          "rebuildCount": 9,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "milestone": 9,
+        "path": "output/twilight-refuge/milestones/09.png",
+        "sha256": "c1de56b4ebf86be65a94d2d0f74889b3ebead7fc0141b4c0b52f42eee70b796f",
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 25,
+          "triangles": 11628,
+          "geometries": 24,
+          "textures": 5,
+          "programs": 16,
+          "rebuildCount": 10,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "milestone": 10,
+        "path": "output/twilight-refuge/milestones/10.png",
+        "sha256": "ac7436c5197b29d7d834486d3d320e578e5c75416a51ab352e07c764a5d456d6",
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 29,
+          "triangles": 13472,
+          "geometries": 28,
+          "textures": 5,
+          "programs": 16,
+          "rebuildCount": 11,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "milestone": 11,
+        "path": "output/twilight-refuge/milestones/11.png",
+        "sha256": "36aa9e691d1a40a6ea91cbc790e267dc1b02bac39821c57c8edf516b1ca6e44e",
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 30,
+          "triangles": 13902,
+          "geometries": 29,
+          "textures": 5,
+          "programs": 17,
+          "rebuildCount": 12,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "milestone": 12,
+        "path": "output/twilight-refuge/milestones/12.png",
+        "sha256": "773bddcdba86220c6fad139a23e4cd5b3c8feca5da042b2f6a6330619da5007f",
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 31,
+          "triangles": 15654,
+          "geometries": 30,
+          "textures": 5,
+          "programs": 18,
+          "rebuildCount": 13,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "milestone": 13,
+        "path": "output/twilight-refuge/milestones/13.png",
+        "sha256": "b4589683efc74dd2ab527e26c6b67d49d5320c45668d756087aa62d81e39c118",
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 32,
+          "triangles": 16850,
+          "geometries": 31,
+          "textures": 5,
+          "programs": 18,
+          "rebuildCount": 14,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "milestone": 14,
+        "path": "output/twilight-refuge/milestones/14.png",
+        "sha256": "b45b684065c0965ab2df438b6f4ec9107322ad2321dbbe27316882ee3ba95666",
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 33,
+          "triangles": 17946,
+          "geometries": 32,
+          "textures": 5,
+          "programs": 19,
+          "rebuildCount": 15,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      },
+      {
+        "direction": "twilight-refuge",
+        "milestone": 15,
+        "path": "output/twilight-refuge/milestones/15.png",
+        "sha256": "a699031deceb33d36317c7f6fd5b06fa8762de0568a5d59d70ae327a48b3bc05",
+        "diagnostics": {
+          "direction": "twilight-refuge",
+          "drawCalls": 34,
+          "triangles": 19122,
+          "geometries": 33,
+          "textures": 5,
+          "programs": 19,
+          "rebuildCount": 16,
+          "context": "available",
+          "effectivePixelRatio": 1
+        }
+      }
+    ],
+    "contact_sheets": [
+      {
+        "direction": "verdant-atelier",
+        "path": "output/verdant-atelier-contact-sheet.jpg",
+        "sha256": "4206395563e80922780616dbae02af0aa2fd0a26cbec0e4606bea45c539434df",
+        "bytes": 249388
+      },
+      {
+        "direction": "verdant-atelier",
+        "kind": "milestones",
+        "path": "output/verdant-atelier-milestones.jpg",
+        "sha256": "a70665aa97c8f03e1db84368b6eb0bb1b064122d1083bc87c8e401bc879343f9",
+        "bytes": 359130
+      },
+      {
+        "direction": "paper-sanctuary",
+        "path": "output/paper-sanctuary-contact-sheet.jpg",
+        "sha256": "f04b20dcdb68d0c51c862df521f3df516944ac5ec33daa1ea35f4ae3e5930cc4",
+        "bytes": 240251
+      },
+      {
+        "direction": "paper-sanctuary",
+        "kind": "milestones",
+        "path": "output/paper-sanctuary-milestones.jpg",
+        "sha256": "683a1d75af50f54777dd5e39556deee1d1b23d38170d9cb3e249249801eb0c72",
+        "bytes": 343682
+      },
+      {
+        "direction": "twilight-refuge",
+        "path": "output/twilight-refuge-contact-sheet.jpg",
+        "sha256": "8f541046d815688a8c826ef4d5f82b0a35d88c916a8b66dc4e9a0aef379bd48f",
+        "bytes": 200571
+      },
+      {
+        "direction": "twilight-refuge",
+        "kind": "milestones",
+        "path": "output/twilight-refuge-milestones.jpg",
+        "sha256": "0e67db49cfc90b5b78cf9cfd0ede37117d3226f440158be33f260b63b8cef4b8",
+        "bytes": 304410
+      }
+    ],
+    "motion_clips": [
+      {
+        "direction": "verdant-atelier",
+        "reduce_motion": false,
+        "semantic_states": [
+          "ordinary-micro-growth",
+          "major-milestone-reveal",
+          "user-orbit",
+          "reset"
+        ],
+        "frame_count": 58,
+        "path": "output/verdant-atelier/motion-standard.mp4",
+        "sha256": "4cc02848f07bb5a6d2f4d4ef42320031d712b8eb853c54e85e13a86624a164ea",
+        "bytes": 178594
+      },
+      {
+        "direction": "verdant-atelier",
+        "reduce_motion": true,
+        "semantic_states": [
+          "ordinary-micro-growth",
+          "major-milestone-reveal"
+        ],
+        "frame_count": 26,
+        "path": "output/verdant-atelier/motion-reduced.mp4",
+        "sha256": "ee43f982563a851a9b0053b153467cd19585bd4a258608efd5bc95c0d3c78369",
+        "bytes": 83401
+      },
+      {
+        "direction": "paper-sanctuary",
+        "reduce_motion": false,
+        "semantic_states": [
+          "ordinary-micro-growth",
+          "major-milestone-reveal",
+          "user-orbit",
+          "reset"
+        ],
+        "frame_count": 58,
+        "path": "output/paper-sanctuary/motion-standard.mp4",
+        "sha256": "4ddb388e94ccb4aad82e22bf80a0904110a9bf74a36f7c5a653205210c9afb6a",
+        "bytes": 179408
+      },
+      {
+        "direction": "paper-sanctuary",
+        "reduce_motion": true,
+        "semantic_states": [
+          "ordinary-micro-growth",
+          "major-milestone-reveal"
+        ],
+        "frame_count": 26,
+        "path": "output/paper-sanctuary/motion-reduced.mp4",
+        "sha256": "e47b56b031b9c014c9ece29366fe2fa034d2da675429f5d169adfa4045f94cb1",
+        "bytes": 82642
+      },
+      {
+        "direction": "twilight-refuge",
+        "reduce_motion": false,
+        "semantic_states": [
+          "ordinary-micro-growth",
+          "major-milestone-reveal",
+          "user-orbit",
+          "reset"
+        ],
+        "frame_count": 58,
+        "path": "output/twilight-refuge/motion-standard.mp4",
+        "sha256": "695eaa8fb6a5c229ecb73d9a959876765f4b4ffdc9f79880dca8e67be9119d4b",
+        "bytes": 141808
+      },
+      {
+        "direction": "twilight-refuge",
+        "reduce_motion": true,
+        "semantic_states": [
+          "ordinary-micro-growth",
+          "major-milestone-reveal"
+        ],
+        "frame_count": 26,
+        "path": "output/twilight-refuge/motion-reduced.mp4",
+        "sha256": "27bfc0ebe9c569b33379fc8da95de13e04c9264344300436e1d79bcc0becbcc0",
+        "bytes": 68384
+      }
+    ]
+  },
+  "shipping_boundary": {
+    "lab_route_in_app_bundle": false,
+    "unselected_direction_code_in_current_renderer_bundle": false,
+    "verified_by": "shipping renderer string exclusion plus Xcode resource boundary"
+  },
+  "rights": {
+    "origin": "original procedural compositions",
+    "third_party_visual_assets": [],
+    "code_license": "MIT",
+    "media_license": "CC-BY-4.0"
+  },
+  "review": {
+    "owner_selection": "pending",
+    "visual_qa": "pending",
+    "physical_performance": "pending"
+  },
+  "claim_boundary": "Local deterministic design evidence only; it is not selected production art, physical-device performance, final TestFlight, or App Store proof."
+}

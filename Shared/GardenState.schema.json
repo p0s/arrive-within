@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:arrive-within:garden-state:v1",
+  "title": "Arrive Within GardenState",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "gardenID",
+    "gardenSeed",
+    "profileGenerationID",
+    "qualifyingSessionCount",
+    "totalQualifyingSeconds",
+    "journeyDay",
+    "highestMilestone",
+    "unlockedVariants",
+    "activeCustomization",
+    "microGrowthOrdinal",
+    "reduceMotion",
+    "qualityHint"
+  ],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "gardenID": {"type": "string", "format": "uuid"},
+    "gardenSeed": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+    "profileGenerationID": {"type": "string", "format": "uuid"},
+    "qualifyingSessionCount": {"type": "integer", "minimum": 0},
+    "totalQualifyingSeconds": {"type": "integer", "minimum": 0},
+    "journeyDay": {"type": "integer", "minimum": 0, "maximum": 30},
+    "highestMilestone": {"type": "integer", "minimum": 0, "maximum": 15},
+    "unlockedVariants": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^m(0[1-9]|1[0-5])-[ab]$"},
+      "uniqueItems": true
+    },
+    "activeCustomization": {
+      "type": "object",
+      "propertyNames": {"pattern": "^(?:[1-9]|1[0-5])$"},
+      "additionalProperties": {"type": "string", "pattern": "^m(0[1-9]|1[0-5])-[ab]$"}
+    },
+    "microGrowthOrdinal": {"type": "integer", "minimum": 0},
+    "localTimePresentation": {"type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+    "latestGrowthEvent": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "practiceEventID",
+            "sessionID",
+            "beforeMicroGrowthOrdinal",
+            "afterMicroGrowthOrdinal",
+            "beforeJourneyDay",
+            "afterJourneyDay"
+          ],
+          "properties": {
+            "practiceEventID": {"type": "string", "format": "uuid"},
+            "sessionID": {"type": "string", "format": "uuid"},
+            "beforeMicroGrowthOrdinal": {"type": "integer", "minimum": 0},
+            "afterMicroGrowthOrdinal": {"type": "integer", "minimum": 1},
+            "beforeJourneyDay": {"type": "integer", "minimum": 0, "maximum": 30},
+            "afterJourneyDay": {"type": "integer", "minimum": 0, "maximum": 30}
+          }
+        }
+      ]
+    },
+    "reduceMotion": {"type": "boolean"},
+    "qualityHint": {"enum": ["low", "balanced", "high"]}
+  }
+}

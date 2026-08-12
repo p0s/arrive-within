@@ -1,0 +1,13 @@
+Use case: logo-brand
+Asset type: iOS app icon concept direction C, standalone square bitmap
+Primary request: Explore one original icon direction for Arrive Within, a private meditation app where practice becomes durable growth. This direction is “Rooted Light”: a causal emblem in which one grounded seed/root silhouette meets a single calm disc of light, expressing an inward pause taking root and becoming life.
+Input images: Image 1 is a style reference only. Match only its tactile paper/clay material language, matte sculpted finish, restrained close shadow, calm field, minimalism, and small-size clarity. Never copy or trace its route, S-curve, arrow, dots, lower-left-to-upper-right movement, literal geometry, name, palette, or composition.
+Scene/backdrop: deep night-indigo #1D2834 filling the square edge to edge, calm rather than black
+Subject: one large warm mineral-cream disc centered slightly above the midline, met from below by one bold deep-forest seed/root form: a compact seed body with two or three broad downward roots forming a stable cradle, plus one minimal upward shoot touching but not piercing the disc. The silhouette must read as rooted growth meeting light, not a flame, hand, person, sun-over-horizon scene, or map pin.
+Style/medium: refined tactile paper/clay relief; clean minimal brand mark; intimate, calm, warm, premium
+Composition/framing: true square canvas; centered approximately 15 percent safe margin; two-element vertical balance with one unified silhouette; strong recognition at 40 px; no diagonal motion
+Lighting/mood: soft diffuse upper light motivated by the disc; restrained close shadow beneath raised root and seed forms
+Color palette: night indigo #1D2834 field; warm mineral cream #F8F1DF light disc; deep forest #174636 root/seed; tiny muted dawn-amber #D7A64E contact accent only if it improves the causal meeting point
+Materials/textures: matte sculpted forms with extremely subtle fine paper/clay texture; the disc is softly tactile, not glowing neon
+Constraints: one concept only; full-square opaque field; no transparency; no baked rounded-corner mask; no rounded-square tile, plate, border, frame, or outer drop shadow; no text; no letters; no numbers; no presentation board; no watermark; no unrelated symbols or scenery; disc and rooted form must remain clearly distinct at 40 px
+Avoid: lotus, seated or yoga silhouette, brain, heart, zen stones, clock, timer, currency, flame, streak badge, trophy, game token, photoreal tree, neon, glassmorphism, generic wellness gradient, sunrise landscape, hand/person silhouette, map pin, Image 1 geometry or composition, glossy plastic, heavy extrusion, harsh or distant shadow, excessive grain, fine detail that disappears at 40 px

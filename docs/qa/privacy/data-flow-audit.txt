@@ -1,0 +1,1 @@
+PASSED-SOURCE-INTENT 39/39 privacy/data-flow checks; candidate and external gates remain separate.

@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "product": "Arrive Within",
+  "generatedAt": null,
+  "generationTimePolicy": "omitted-for-byte-reproducibility",
+  "locale": "de-DE",
+  "device": "iphone-6.9",
+  "theme": "forest-twilight",
+  "width": 1320,
+  "height": 2868,
+  "renderer": "Playwright Chromium element screenshots",
+  "pixelNormalization": "Deterministic RGB PNG encoding with each RGB least-significant bit cleared",
+  "copyState": "selected-garden-growth-awaiting-final-visual-review",
+  "narrative": {
+    "id": "current",
+    "title": "Frozen current narrative",
+    "ownerSelection": null
+  },
+  "humanVisualReview": {
+    "state": "approved",
+    "reviewer": "implementation-review",
+    "reviewedAt": "2026-08-12",
+    "notes": "All revised final pixels were inspected in English and German on iPhone and iPad: each slide has exactly one headline, no eyebrow or subtitle, a tight headline-to-product gap, no clipping, and legible real app UI."
+  },
+  "network": {
+    "policy": "Block all external requests; allow localhost only",
+    "externalRequests": 0
+  },
+  "sourceCaptures": {
+    "state": "candidate-ready",
+    "method": "Guarded XCUITest using a pooled iPhone 17 Pro simulator on iOS 26.5 and the authorized physical iPad Pro 13-inch (M4) on iOS 26.6, with deterministic safe synthetic product state",
+    "test": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish and testCaptureAllRequiredMarketingStatesGerman — selected Garden/growth shipping states only",
+    "statusBarProfile": "Actual visible system status from each exact passed capture run; no synthetic status-bar overlay. The iPhone simulator and physical iPad capture timestamps differ, and the final marketing compositions preserve those source status bars.",
+    "sourceRevision": "720deeed8719b680ebe4359e1f572565780cc1015ce4ab0d83cb530335bfb405",
+    "sourceRevisionKind": "sha256-capture-source-manifest",
+    "sourceManifestPath": "capture-source-manifest.json",
+    "resultBundle": {
+      "name": "final-b6-current-source-720deeed-iphone.xcresult",
+      "xcresult_tree_sha256": "83b7403653c16a8fa43ca700fd5d5f0cedd7b7bc844c07a39d2e072af368878b",
+      "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
+    },
+    "safeSyntheticData": true,
+    "currentSet": {
+      "locale": "de-DE",
+      "device": "iphone-6.9",
+      "model": "iPhone 17 Pro",
+      "os": "iOS 26.5 Simulator",
+      "width": 1206,
+      "height": 2622,
+      "result_bundle": {
+        "name": "final-b6-current-source-720deeed-iphone.xcresult",
+        "xcresult_tree_sha256": "83b7403653c16a8fa43ca700fd5d5f0cedd7b7bc844c07a39d2e072af368878b",
+        "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
+      },
+      "captures": {
+        "garden-hero": {
+          "path": "public/runtime-ui/de-DE/iphone-6.9/garden-hero.png",
+          "sha256": "770c1f44a3f88b7e5a2ae9c8c3f0b1fca75dc932bf16b3d21309e80d72d0642a"
+        },
+        "garden-seed": {
+          "path": "public/runtime-ui/de-DE/iphone-6.9/garden-seed.png",
+          "sha256": "fb442568c7f7f454450be8f5b323074ecd33f47a30d4beac30fbea8a1d953b5d"
+        },
+        "guided-library": {
+          "path": "public/runtime-ui/de-DE/iphone-6.9/guided-library.png",
+          "sha256": "2313b9653ddc7fab09a23499608d0380ccffa2b90413358b8f0d9a81a1267f42"
+        },
+        "practice-chooser": {
+          "path": "public/runtime-ui/de-DE/iphone-6.9/practice-chooser.png",
+          "sha256": "6aa93ba5571ae5c0016b26ba64306a7b6906633489b6890ef483be2000708329"
+        },
+        "journal": {
+          "path": "public/runtime-ui/de-DE/iphone-6.9/journal.png",
+          "sha256": "24cb9dc0e2b221e5bf58f98225f44f0687c0b17781c21817a012f40325eb614d"
+        },
+        "data-sync": {
+          "path": "public/runtime-ui/de-DE/iphone-6.9/data-sync.png",
+          "sha256": "df98ba8ff87dde53e7306741ad331066afba0325ff4c0ef6bc3cab7a71a6a0ff"
+        },
+        "journey-calendar": {
+          "path": "public/runtime-ui/de-DE/iphone-6.9/journey-calendar.png",
+          "sha256": "65fa9e9cc76ae46d89b53e7443451465a00f247935834bc24d18e5f6dfbdafc1"
+        },
+        "journey-milestones": {
+          "path": "public/runtime-ui/de-DE/iphone-6.9/journey-milestones.png",
+          "sha256": "c82a7970d70984bde49e7cd55c201a6015f854f1a4457426051b7f1111ba19bb"
+        }
+      }
+    },
+    "companionGarden": {
+      "locale": "de-DE",
+      "device": "ipad-13",
+      "model": "iPad Pro 13-inch (M5)",
+      "os": "iOS 26.5 Simulator",
+      "capture": {
+        "path": "public/runtime-ui/de-DE/ipad-13/garden-hero.png",
+        "sha256": "7044580688b2ccb34c1999401457d005c9d90b724fd5b0abaf66573508e486f5"
+      }
+    }
+  },
+  "contactSheet": {
+    "filename": "_contact-sheet.jpg",
+    "sha256": "35e4f31361311014c9af4aae0c7dad9b7cd7c0ac4c2f90358357cd634624763f",
+    "width": 1440,
+    "height": 1890,
+    "encoding": "sharp 0.35.3 JPEG quality 92, 4:4:4 chroma subsampling, no metadata"
+  },
+  "items": [
+    {
+      "filename": "01-growth-arrive-de-de-iphone-6.9-1320x2868.png",
+      "sha256": "c29539467b00be9a1ecb9ed40536c9b53e7f312d95b846967c2ec94ad586d52e",
+      "slide": 1,
+      "slideId": "growth-arrive",
+      "idea": "Arrive in the present through the living Garden",
+      "runtimeSurface": "Selected mature Garden composition",
+      "width": 1320,
+      "height": 2868
+    },
+    {
+      "filename": "02-growth-take-root-de-de-iphone-6.9-1320x2868.png",
+      "sha256": "442c3a1004d8ace6d9bc9de75dd887ec7c04a194300e8abca9c78efaf173b00c",
+      "slide": 2,
+      "slideId": "growth-take-root",
+      "idea": "A qualifying practice becomes lasting visible growth",
+      "runtimeSurface": "Deterministic Garden before and after growth",
+      "width": 1320,
+      "height": 2868
+    },
+    {
+      "filename": "03-growth-rhythm-de-de-iphone-6.9-1320x2868.png",
+      "sha256": "5ff27392ba4785a36f9f49bb7725b7a3793034b145e90252da060be474d63c6a",
+      "slide": 3,
+      "slideId": "growth-rhythm",
+      "idea": "Browse a private monthly practice rhythm without pressure",
+      "runtimeSurface": "Journey monthly practice calendar",
+      "width": 1320,
+      "height": 2868
+    },
+    {
+      "filename": "04-growth-stays-de-de-iphone-6.9-1320x2868.png",
+      "sha256": "0abe3af15d06254af57d0b447cc4a17ea67d3932505fdcde5d4da57612dd5534",
+      "slide": 4,
+      "slideId": "growth-stays",
+      "idea": "Milestones remain as a nonpunitive record of practice",
+      "runtimeSurface": "Journey milestone history and variants",
+      "width": 1320,
+      "height": 2868
+    },
+    {
+      "filename": "05-growth-reflect-de-de-iphone-6.9-1320x2868.png",
+      "sha256": "6135b998a3a7dc990411e0f2cf224ccb003248942e82185d37f9d1851942650f",
+      "slide": 5,
+      "slideId": "growth-reflect",
+      "idea": "Private reflection gives practice personal meaning",
+      "runtimeSurface": "Journal editor with safe synthetic reflection",
+      "width": 1320,
+      "height": 2868
+    },
+    {
+      "filename": "06-growth-refuge-de-de-iphone-6.9-1320x2868.png",
+      "sha256": "b4adc186353579bb2518af4c58d15e1bc9b923b47faebad923d244c34e3c5faa",
+      "slide": 6,
+      "slideId": "growth-refuge",
+      "idea": "The mature Garden remembers consistent practice",
+      "runtimeSurface": "Selected mature Garden with milestone detail",
+      "width": 1320,
+      "height": 2868
+    }
+  ],
+  "uploadAuthorization": "authorized-for-app-store-version-1.0-after-current-source-validation"
+}

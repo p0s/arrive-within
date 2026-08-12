@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "state": "current-candidate-local-only-data-not-collected",
+  "tracking": false,
+  "att_prompt": false,
+  "third_party_sdk_collection": false,
+  "custom_product_data_backend": false,
+  "current_candidate_user_initiated_feedback_receiver": false,
+  "current_candidate_app_privacy_answer": "Data Not Collected",
+  "automatic_support_upload": false,
+  "data_inventory": [
+    {
+      "id": "practice-and-garden",
+      "values": ["practice events", "garden seed", "preferences", "favorites"],
+      "local_only": true,
+      "optional_private_cloudkit": false,
+      "asc_data_type_if_developer_collection_applies": "Product Interaction",
+      "purpose": "App Functionality",
+      "tracking": false
+    },
+    {
+      "id": "journal-text-and-transcript",
+      "values": ["free-form journal text", "on-device transcript"],
+      "local_only": true,
+      "optional_private_cloudkit": false,
+      "asc_data_type_if_developer_collection_applies": "Other User Content",
+      "purpose": "App Functionality",
+      "tracking": false
+    },
+    {
+      "id": "journal-voice",
+      "values": ["private voice recording"],
+      "local_only": true,
+      "optional_private_cloudkit": false,
+      "asc_data_type_if_developer_collection_applies": "Audio Data",
+      "purpose": "App Functionality",
+      "tracking": false
+    },
+    {
+      "id": "reminders",
+      "values": ["device-local weekly reminder schedules"],
+      "local_only": true,
+      "optional_private_cloudkit": false,
+      "asc_data_type_if_developer_collection_applies": null,
+      "purpose": "App Functionality",
+      "tracking": false
+    },
+    {
+      "id": "diagnostics",
+      "values": ["bounded redacted diagnostics exported only by the user"],
+      "local_only": true,
+      "optional_private_cloudkit": false,
+      "asc_data_type_if_developer_collection_applies": null,
+      "purpose": "Customer Support",
+      "tracking": false
+    }
+  ],
+  "mode_analysis": {
+    "local_only": {
+      "off_device_transmission": false,
+      "app_privacy_position": "On-device-only processing is not collected under Apple's current guidance.",
+      "candidate_checks": [
+        "no analytics SDK in exact archive",
+        "no automatic support upload",
+        "local-only persistence configuration selected",
+        "feedback endpoint and in-app transmission target absent"
+      ]
+    },
+    "future_private_cloudkit": {
+      "off_device_transmission": true,
+      "destination": "Apple private CloudKit database selected by the user",
+      "operator_visible_custom_backend": false,
+      "app_privacy_position": "Apple says developers do not disclose data collected by Apple, but data a developer collects from Apple frameworks or services must be disclosed. The exact current ASC questions, private-database operator-access model, enabled fields, and exact candidate must be reconciled before answers are frozen.",
+      "conservative_categories_for_final_reconciliation": [
+        "Product Interaction",
+        "Other User Content",
+        "Audio Data"
+      ],
+      "linked_to_user": null,
+      "final_collection_answers": null
+    }
+  },
+  "final_gate": {
+    "status": "build7-source-binary-and-owner-publication-reconciled",
+    "evidence": [
+      "build-7 immutable private candidate manifest",
+      "exact archive has no CloudKit or push entitlement and no remote-notification mode",
+      "exact archive has no feedback endpoint, transport dependency, or sending UI",
+      "exact archive privacy manifest declares no tracking and no collected data types",
+      "owner confirmed that the Data Not Collected response is published in App Store Connect",
+      "published bilingual privacy-policy routes read back successfully"
+    ],
+    "limitations": [
+      "the allowed App Store Connect API reader does not expose App Privacy publication state",
+      "future CloudKit activation requires a new privacy assessment"
+    ]
+  },
+  "current_guidance": {
+    "verified_at": "2026-08-10",
+    "url": "https://developer.apple.com/app-store/app-privacy-details/"
+  }
+}

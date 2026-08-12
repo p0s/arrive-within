@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "status": "deterministic-safe-synthetic-product-state",
+  "renderer_contract": "Shared/GardenState.schema.json",
+  "garden_id": "11000000-0000-4000-8000-000000000001",
+  "profile_generation_id": "41000000-0000-4000-8000-000000000001",
+  "garden_seed": 515151,
+  "quality_hint": "high",
+  "reduce_motion": true,
+  "milestones": [
+    { "id": 1, "practice_day": 2, "title": "Earth I", "variant_a": "Root weave", "variant_b": "Root fan" },
+    { "id": 2, "practice_day": 4, "title": "Earth II", "variant_a": "River stones", "variant_b": "Slate path" },
+    { "id": 3, "practice_day": 6, "title": "Earth III", "variant_a": "Fern grove", "variant_b": "Moss grove" },
+    { "id": 4, "practice_day": 8, "title": "Water I", "variant_a": "Silver dew", "variant_b": "Warm dew" },
+    { "id": 5, "practice_day": 10, "title": "Water II", "variant_a": "Lily pond", "variant_b": "Reed pond" },
+    { "id": 6, "practice_day": 12, "title": "Water III", "variant_a": "Clear ripple", "variant_b": "Shaded ripple" },
+    { "id": 7, "practice_day": 14, "title": "Fire I", "variant_a": "Morning gold", "variant_b": "Amber canopy" },
+    { "id": 8, "practice_day": 16, "title": "Fire II", "variant_a": "Low lanterns", "variant_b": "High fireflies" },
+    { "id": 9, "practice_day": 18, "title": "Fire III", "variant_a": "Apricot bloom", "variant_b": "Golden bloom" },
+    { "id": 10, "practice_day": 20, "title": "Air I", "variant_a": "Meadow breeze", "variant_b": "Canopy breeze" },
+    { "id": 11, "practice_day": 22, "title": "Air II", "variant_a": "Swift pair", "variant_b": "Drifting leaves" },
+    { "id": 12, "practice_day": 24, "title": "Air III", "variant_a": "Open sky", "variant_b": "Cloud veil" },
+    { "id": 13, "practice_day": 26, "title": "Space I", "variant_a": "Blue twilight", "variant_b": "Violet twilight" },
+    { "id": 14, "practice_day": 28, "title": "Space II", "variant_a": "Pearl moon", "variant_b": "Crescent moon" },
+    { "id": 15, "practice_day": 30, "title": "Space III", "variant_a": "Sanctuary bloom", "variant_b": "Sanctuary fruit" }
+  ]
+}

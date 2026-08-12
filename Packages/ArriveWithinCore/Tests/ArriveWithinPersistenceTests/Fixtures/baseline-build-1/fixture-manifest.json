@@ -1,0 +1,17 @@
+{
+  "baselineBuild": 1,
+  "baselinePersistenceSourceSHA256": "9323e18ef6117fd5d9e28ff274825b2c5eaa491039218d9b3c88ffc82c578562",
+  "baselineProspectivePublicTreeSHA256": "cd17974d5196cd3e395da9782b83f30cc46dbc800aaaf6f4803eee78147d73a9",
+  "files": {
+    "app-settings-v1.json": "b7e313cdd744bbe52657fa8b184ca006bf6e19fead7259bd72d9ad8abcf2eb8f",
+    "deletion-state-v1.json": "b0c3c42a6c9f687f258c2fe233a01388b8d0508ded533fd76aab61ed78b5f95a",
+    "meditation-preferences-v1.json": "712701704673c8b9b71769853038aa1d1ff5864f8b0aad1c1acd09611e8ffd52",
+    "product-v1.sqlite": "426940e2e9e30de4b07e8261fa6ce0ef72126fb7b1d2fdab60d77dfeb6a2f7d1",
+    "session-state-v1.json": "c5e3e746df2359335692c12099970070b414fc4ac779753c8eb6bfeec7aee707",
+    "weekly-reminders-v1.json": "21fc734e4ec1aeb73fda54a1a099b10eaffdde434c4b9ca693dd8c79d4987efa"
+  },
+  "fixtureID": "baseline-build-1-synthetic-v1",
+  "fixtureSchemaVersion": 1,
+  "origin": "Synthetic, privacy-safe data written through the byte-verified build-1 persistence implementation and build-1-compatible V1 domain encodings.",
+  "sqliteIntegrityCheck": "ok"
+}

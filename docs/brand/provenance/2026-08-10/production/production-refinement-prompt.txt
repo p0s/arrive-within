@@ -1,0 +1,19 @@
+Create one polished, production-ready square app-icon master for Arrive Within, refining the explicitly owner-selected “B — Quiet Threshold” direction.
+
+INPUT ROLES ARE STRICT:
+- Image 1 is a first-party house-style reference only. Borrow only its tactile matte material, softly modeled relief, close restrained shadow, diffuse studio lighting, and strong small-size legibility. Do not copy its route, S-curve, arrow, dots, colors, placement, or composition.
+- Image 2 is the selected composition reference and product authority. Preserve its Quiet Threshold meaning and essential geometry: one centered deep-forest architectural arch/threshold, a warm mineral-cream interior plane with restrained dawn-amber warmth, and one compact living two-leaf shoot inside.
+
+REFINEMENT TARGET:
+- 1:1 full-bleed opaque square, frontal and still, nearly symmetrical, optically centered.
+- Keep the complete symbol comfortably inside a 15% safe margin.
+- Make the arch a bold monolithic threshold with a clean rounded opening and stable base.
+- Keep the shoot unmistakably botanical, compact, calm, and secondary to the threshold; preserve a natural stem and two leaves without resembling a person, flame, heart, lotus, or yoga pose.
+- Use a misted sage background, deep forest arch, warm mineral-cream opening, restrained amber inner warmth, and muted living green shoot.
+- Use simple bold geometry, tactile matte relief, subtly irregular natural surface, gentle bevels, diffuse overhead light, and a close soft shadow. It must read clearly at 40 px.
+- Preserve generous negative space and a quiet, premium, grounded feeling. No text and no border tile.
+
+ABSOLUTE EXCLUSIONS:
+No literal path, route, S-curve, arrow, dots, clock, lotus, seated silhouette, brain, heart, zen stones, currency, gamification, photoreal tree, Japanese/Sakura imagery, gradients, glass, neon, glow, busy scenery, landscape horizon, outer canvas mask, rounded-square container, floating badge, watermark, lettering, tiny details, or copied house-reference composition.
+
+Return exactly one refined square image, not a concept sheet or mockup. The result is a visual production target for a separately authored named-layer Icon Composer package; do not add UI chrome, a phone, or an app-store presentation frame.

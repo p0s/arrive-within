@@ -1,0 +1,51 @@
+name: Guided-content correction
+description: Propose a precise editorial, safety, transcript, timing, or pronunciation correction.
+title: "[Guided content]: "
+labels: [content]
+body:
+  - type: markdown
+    attributes:
+      value: Share only redacted evidence. Never include private voice/reference files, credentials, device identifiers, or signing/configuration values.
+  - type: input
+    id: practice
+    attributes:
+      label: Practice ID
+      placeholder: G01
+    validations:
+      required: true
+  - type: dropdown
+    id: language
+    attributes:
+      label: Language
+      options: [English, German, Both]
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Correction type
+      options: [Meaning or tone, Meditation safety, Grammar or style, Pronunciation, Pause or pacing, Transcript alignment, Metadata or duration]
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Exact current text or cue
+      description: Quote only the smallest necessary repository passage.
+    validations:
+      required: true
+  - type: textarea
+    id: correction
+    attributes:
+      label: Proposed correction and rationale
+    validations:
+      required: true
+  - type: checkboxes
+    id: rights
+    attributes:
+      label: Rights and review
+      options:
+        - label: This proposal is original or I documented a compatible source and license.
+          required: true
+        - label: I understand automated checks do not replace fluent-language and meditation-safety review.
+          required: true

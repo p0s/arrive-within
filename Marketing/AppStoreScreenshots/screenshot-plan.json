@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "status": "implemented",
+  "copy_state": "selected-garden-growth-awaiting-final-visual-review",
+  "source_policy": "Actual deterministic rendered app UI with safe synthetic data only",
+  "locales": ["en-US", "de-DE"],
+  "devices": [
+    {
+      "id": "iphone-6.9",
+      "orientation": "portrait",
+      "width": 1320,
+      "height": 2868
+    },
+    {
+      "id": "ipad-13",
+      "orientation": "portrait",
+      "width": 2064,
+      "height": 2752
+    }
+  ],
+  "slides": [
+    {
+      "index": 1,
+      "id": "growth-arrive",
+      "idea": "Arrive in the present through the living Garden",
+      "headline": {
+        "en-US": ["Arrive in", "the moment"],
+        "de-DE": ["Komm ganz", "hier an"]
+      },
+      "runtime_surface": "Selected mature Garden composition"
+    },
+    {
+      "index": 2,
+      "id": "growth-take-root",
+      "idea": "A qualifying practice becomes lasting visible growth",
+      "headline": {
+        "en-US": ["Let practice", "take root"],
+        "de-DE": ["Lass deine Praxis", "Wurzeln schlagen"]
+      },
+      "runtime_surface": "Deterministic Garden before and after growth"
+    },
+    {
+      "index": 3,
+      "id": "growth-rhythm",
+      "idea": "Browse a private monthly practice rhythm without pressure",
+      "headline": {
+        "en-US": ["See your", "practice rhythm"],
+        "de-DE": ["Dein Rhythmus", "im Blick"]
+      },
+      "runtime_surface": "Journey monthly practice calendar"
+    },
+    {
+      "index": 4,
+      "id": "growth-stays",
+      "idea": "Milestones remain as a nonpunitive record of practice",
+      "headline": {
+        "en-US": ["Growth", "that stays"],
+        "de-DE": ["Wachstum,", "das bleibt"]
+      },
+      "runtime_surface": "Journey milestone history and variants"
+    },
+    {
+      "index": 5,
+      "id": "growth-reflect",
+      "idea": "Private reflection gives practice personal meaning",
+      "headline": {
+        "en-US": ["Notice", "what changed"],
+        "de-DE": ["Spür nach,", "was sich verändert"]
+      },
+      "runtime_surface": "Journal editor with safe synthetic reflection"
+    },
+    {
+      "index": 6,
+      "id": "growth-refuge",
+      "idea": "The mature Garden remembers consistent practice",
+      "headline": {
+        "en-US": ["A refuge", "that remembers"],
+        "de-DE": ["Ein Ort,", "der sich erinnert"]
+      },
+      "runtime_surface": "Selected mature Garden with milestone detail"
+    }
+  ],
+  "expected_final_images": 24,
+  "expected_slides_per_set": 6,
+  "required_capture_ids": [
+    "garden-hero",
+    "garden-seed",
+    "journey-calendar",
+    "journey-milestones",
+    "journal"
+  ],
+  "renderer": "Playwright Chromium element screenshots",
+  "network_policy": "Block all external requests; allow localhost only",
+  "font_policy": "Tracked local fonts or deterministic system stack",
+  "required_set_artifacts": [
+    "numbered opaque RGB PNG files",
+    "SHA-256 hashes",
+    "_manifest.json",
+    "_validation.txt",
+    "_validation.json",
+    "_contact-sheet.jpg",
+    "ZIP archive",
+    "human visual review state"
+  ],
+  "additional_public_media": [
+    "short real garden-growth video",
+    "README and website app media",
+    "social preview"
+  ],
+  "upload_authorization": "authorized-for-app-store-version-1.0-after-current-source-validation"
+}

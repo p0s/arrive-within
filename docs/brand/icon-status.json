@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "source": "Apps/ArriveWithin/Resources/AppIcon.icon",
+  "sourceType": "icon-composer",
+  "selection": "B — Quiet Threshold",
+  "selectionDate": "2026-08-10",
+  "qa": "docs/brand/icon-qa.json",
+  "status": "selected-build-7-archive-verified-external-visual-readback-pending",
+  "baselineArchiveEvidence": {
+    "marketingVersion": "1.0",
+    "buildNumber": "1",
+    "phoneCompatibilityIcon": {
+      "pixels": "120x120",
+      "colorSpace": "RGB",
+      "hasAlpha": false,
+      "sha256": "143359110c0462f005218c2fee2cf3c9d711421b3f714d3c9c64b9035ec05cfd"
+    },
+    "ipadCompatibilityIcon": {
+      "pixels": "152x152",
+      "colorSpace": "RGB",
+      "hasAlpha": false,
+      "sha256": "cad8023d9b7d458eb1d69d3a2ee01debdd0254a76368833644e15254f3a4b174"
+    },
+    "assetCatalogSha256": "17833efdfd4ce4aa832d2f1d78296103af08288d7d4094aaacad70374328ccaa",
+    "claimBoundary": "Exact baseline archive packaging only; not visual Home Screen, selected-final archive, TestFlight icon-display, App Store, physical-device, or publication proof."
+  },
+  "selectedCandidateArchiveEvidence": {
+    "marketingVersion": "1.0",
+    "buildNumber": "7",
+    "archiveTreeSha256": "36d759314bea37f87f87a9866b21ca443e1f7d66a501bd13d936e314e62a6623",
+    "phoneCompatibilityIcon": {
+      "pixels": "120x120",
+      "colorSpace": "RGB",
+      "hasAlpha": false,
+      "sha256": "143359110c0462f005218c2fee2cf3c9d711421b3f714d3c9c64b9035ec05cfd"
+    },
+    "ipadCompatibilityIcon": {
+      "pixels": "152x152",
+      "colorSpace": "RGB",
+      "hasAlpha": false,
+      "sha256": "cad8023d9b7d458eb1d69d3a2ee01debdd0254a76368833644e15254f3a4b174"
+    },
+    "assetCatalogSha256": "8092fd3e0dfef7008fc80263079faec3694985abcf8d815d783528a26863cf7f",
+    "claimBoundary": "Exact selected build-7 archive packaging; not visual Home Screen, TestFlight icon-display, App Store storefront, publication, or trademark proof."
+  },
+  "externalBoundaries": [
+    "owner acceptance of the installed Icon Composer EULA before GUI-only clear-mode preview",
+    "owner review of the refined production contact sheet",
+    "physical Home Screen inspection",
+    "TestFlight readback",
+    "App Store readback",
+    "publication and trademark/similarity review"
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "status": "build-7-submitted-waiting-for-review-audio-later-update-in-progress",
+  "current_release_snapshot": "docs/release/current-release.example.json",
+  "candidate_manifest": null,
+  "baseline_internal_testflight": {
+    "marketing_version": "1.0",
+    "build_number": 1,
+    "source_provenance": "prospective-public-tree-pre-git",
+    "prospective_public_tree_sha256": "cd17974d5196cd3e395da9782b83f30cc46dbc800aaaf6f4803eee78147d73a9",
+    "prospective_public_file_count": 546,
+    "apple_processing": "VALID",
+    "internal_distribution": "IN_BETA_TESTING",
+    "runtime_readback": "owner-confirmed-install-and-launch",
+    "media_boundary": "zero packaged guided narration tracks; approved-audio discovery fails closed; this is not the final App Store candidate",
+    "claim_boundary": "Exact build 1 only. No full physical scenario matrix, current screenshot matrix, selected visual direction, App Review, or public-store claim."
+  },
+  "selected_visual_internal_testflight": {
+    "marketing_version": "1.0",
+    "build_number": 2,
+    "source_provenance": "prospective-public-tree-pre-git",
+    "prospective_public_tree_sha256": "2c42de124e2c1180f15076f139ba01aa0310e11b498b5e9fd89f00eef6252dee",
+    "prospective_public_file_count": 676,
+    "visual_direction": "twilight-refuge",
+    "apple_processing": "VALID",
+    "internal_distribution": "IN_BETA_TESTING",
+    "runtime_readback": "pending-owner-install-and-launch",
+    "media_boundary": "zero packaged guided narration tracks; approved-audio discovery fails closed; this is not the narration-complete final candidate",
+    "claim_boundary": "Exact build 2 only. No owner install/launch readback, full physical scenario matrix, final screenshot matrix, App Review, or public-store claim."
+  },
+  "renderer_replacement_lane": {
+    "rejected_build": {
+      "marketing_version": "1.0",
+      "build_number": 3,
+      "visual_direction": "twilight-refuge",
+      "apple_processing": "VALID",
+      "internal_distribution": "IN_BETA_TESTING",
+      "runtime_readback": "exact physical iPad TestFlight install launched but Garden entered native fallback",
+      "diagnostic": "bundle-validation-failed",
+      "disposition": "rejected"
+    },
+    "next_build": {
+      "marketing_version": "1.0",
+      "build_number": 4,
+      "visual_direction": "twilight-refuge",
+      "source_runtime_readback": "focused physical iPad development test passed 1/1 with WebGL readiness and no fallback",
+      "apple_processing": "VALID",
+      "internal_distribution": "IN_BETA_TESTING",
+      "testflight_runtime_readback": "owner-installed exact build 4 on physical iPad launched with visible Three.js Twilight Refuge and no native fallback",
+      "distribution_state": "verified-valid-internal-testflight-physical-ipad-threejs",
+      "media_boundary": "zero packaged guided narration tracks; this renderer replacement is not the narration-complete final candidate"
+    },
+    "garden_first_candidate": {
+      "marketing_version": "1.0",
+      "build_number": 5,
+      "visual_direction": "twilight-refuge-garden-first-shell",
+      "source_runtime_readback": "focused physical iPad development test passed 1/1 in portrait and landscape with full-canvas Three.js and quiet overlays",
+      "apple_processing": "VALID",
+      "app_store_eligible": true,
+      "testflight_runtime_readback": "owner-installed exact build 5 on physical iPad launched with the real Three.js Twilight Refuge",
+      "distribution_state": "ready-for-review-submission-build-owner-verified-on-physical-ipad",
+      "media_boundary": "zero packaged guided narration tracks; this UI candidate is not the narration-complete final candidate"
+    },
+    "lighting_replacement_candidate": {
+      "marketing_version": "1.0",
+      "build_number": 6,
+      "visual_direction": "twilight-refuge-garden-first-rebalanced-fill",
+      "source_change": "reduce the camera-aligned amber point fill from 42 to 26 while retaining fixed world lighting and authored depth",
+      "focused_local_evidence": "7/7 selected-visual unit tests and regenerated 30-still/45-milestone/6-clip Garden lab validation pass",
+      "physical_source_runtime_readback": "both guarded EN/DE marketing capture methods pass on the authorized physical iPad; current-source images show the real Three.js Garden and reduced Twilight fill with no native fallback",
+      "archive_and_binary": "frozen 689-file source; inspected signed archive and 5,283,205-byte IPA with zero narration, no CloudKit/push entitlements, no remote-notification mode, local-only privacy manifest, and exact Twilight renderer hashes",
+      "apple_processing": "VALID",
+      "app_store_eligible": true,
+      "internal_distribution": "existing Internal Testing group add succeeded; exact beta-detail relationship readback is unavailable because the current ASC endpoint returns -50",
+      "physical_runtime_readback": "CoreDevice reports exact version 1.0 build 6 installed on the authorized physical iPad and launch succeeds; distribution origin and final Garden orbit remain pending owner confirmation",
+      "distribution_state": "apple-valid-internal-group-add-version-launch-proven-owner-visual-testflight-confirmation-pending",
+      "media_boundary": "zero packaged guided narration tracks; narration remains a later independent update"
+    },
+    "notice_complete_replacement_candidate": {
+      "marketing_version": "1.0",
+      "build_number": 7,
+      "visual_direction": "twilight-refuge-garden-first-rebalanced-fill",
+      "source_change": "retain build-6 product behavior while packaging exact third-party license notices and the final public-source/license reconciliation",
+      "focused_local_evidence": "release-source validation passes 120/120; the coherent final public gate passes 82/82 public, 39/39 privacy, 17/17 manual-security, 42x2 guided-source, Swift/renderer/localization/media/website/release checks",
+      "archive_and_binary": "frozen 672-file source; inspected signed archive and 5,286,801-byte distribution IPA with exact notices/privacy/renderer hashes, zero narration, no CloudKit/push entitlements, no remote-notification mode, and no debug/test fixture",
+      "apple_processing": "VALID",
+      "app_store_eligible": true,
+      "internal_distribution": "existing Internal Testing group add succeeded and exact build-beta detail reads IN_BETA_TESTING",
+      "physical_runtime_readback": "CoreDevice reads exact version 1.0 build 7 installed on the authorized physical iPad; the owner directly confirmed its real Three.js Twilight Garden is good.",
+      "distribution_state": "apple-valid-app-store-eligible-in-beta-testing-physical-ipad-owner-verified",
+      "media_boundary": "zero packaged guided narration tracks; narration remains a later independent update"
+    }
+  },
+  "stages": [
+    {"order": 1, "id": "live-reconciliation", "status": "verified-exact-app-record-signing-ready-cloudkit-v1-deferred", "authorization": "exact-app-read-and-required-app-scoped-configuration-authorized", "readback": "App Store Connect API readback returns exactly one matching iOS app record with the owner-entered primary name, en-US locale, and exact bundle binding. A private CloudKit container and five production-schema record types exist as historical future-capability configuration, but version 1.0 source deliberately binds no container, CloudKit entitlement, push entitlement, remote-notification mode, or CloudKit runtime. The refreshed App Store profile reuses only existing unmodified distribution certificates and remains valid into 2027; the exact archive must prove the app requests none of its unused CloudKit/push capability. No signing certificate was created or revoked."},
+    {"order": 2, "id": "archive-export-inspect", "status": "verified-through-build-7", "authorization": "exact-app-archive-export-and-inspection-authorized-with-existing-lawful-signing", "readback": "Build 7 was archived and exported with the existing profile/certificate. The 5,286,801-byte IPA hash is 6557cb29…; the signed app has version 1.0 (7), iPhone/iPad families, English/German, exact third-party notices, no CloudKit or push entitlement, no remote-notification background mode, no feedback endpoint, no narration, no debug/test fixture, and only the selected Twilight renderer."},
+    {"order": 3, "id": "upload", "status": "verified-build-7", "authorization": "exact-arrive-within-candidate-upload-authorized", "readback": "Apple accepted exact build 7 as build ID 65920760-e201-470f-a347-f1617ed7b087; it is now the build attached to version 1.0 and the WAITING_FOR_REVIEW submission."},
+    {"order": 4, "id": "valid", "status": "verified-build-7", "authorization": "read-only-processing-state-after-upload", "readback": "Apple reports build 7 VALID, APP_STORE_ELIGIBLE, unexpired, minimum OS 18.0, and non-exempt encryption false."},
+    {"order": 5, "id": "internal-group-linkage", "status": "verified-build-7", "authorization": "existing-appropriate-internal-group-linkage-authorized-no-new-testers", "readback": "Adding exact build 7 to the one existing Internal Testing group succeeded without creating a group, tester, or notification."},
+    {"order": 6, "id": "in-beta-testing", "status": "verified-build-7", "authorization": "read-only-processing-state-after-linkage", "readback": "Exact build-beta detail reads IN_BETA_TESTING for build 7."},
+    {"order": 7, "id": "candidate-install-upgrade-physical", "status": "verified-build-7-on-physical-ipad", "authorization": "exact-candidate-install-upgrade-runtime-proof-authorized-on-available-approved-surfaces", "readback": "CoreDevice reads exact version 1.0 build 7 installed on the authorized physical iPad; the owner directly confirmed its real Three.js Twilight Garden is good."},
+    {"order": 8, "id": "metadata-screenshots-attach", "status": "verified-build-7-and-24-live-images", "authorization": "exact-app-bilingual-metadata-privacy-and-media-attachment-authorized", "readback": "The owner-selected territory policy, bilingual metadata, review details, privacy response, URLs, and exactly 24 revised EN/DE phone/iPad screenshots are attached. ASC reads six COMPLETE assets in each of four locale/device sets, and all 24 sourceFileChecksum values match the approved local PNG MD5 values. Version 1.0 now reads exact build 7 attached."},
+    {"order": 9, "id": "app-review-submit", "status": "waiting-for-review-build-7", "authorization": "exact-app-validation-and-review-submission-authorized", "readback": "Submission 3a40dd4d-0e93-4ef1-94d7-41f687d21f1b was submitted at 2026-08-12T14:29:43.308Z and reads WAITING_FOR_REVIEW. Version 1.0 also reads WAITING_FOR_REVIEW with exact build 7 attached."},
+    {"order": 10, "id": "after-approval", "status": "selected", "authorization": "after-approval-release-mode-authorized", "readback": "Release mode reads AFTER_APPROVAL."},
+    {"order": 11, "id": "approval-ready-for-distribution", "status": "not-started", "authorization": "read-only-status-after-review", "readback": null},
+    {"order": 12, "id": "storefront-install-verify", "status": "authorized-after-approval", "authorization": "exact-app-release-and-public-readback-authorized-after-approval", "readback": null},
+    {"order": 13, "id": "public-repository-and-release-assets", "status": "authorized-exact-origin-main-push-pending", "authorization": "owner-authorized-git-initialization-staging-ssh-signed-initial-commit-exact-existing-origin-and-main-push; github-actions-settings-visibility-tags-releases-and-other-publication-mutations-remain-prohibited", "readback": null}
+  ],
+  "claim_boundary": "The notice-complete zero-narration build 7 is bound to its frozen 672-file pre-Git source and inspected archive/distribution IPA; Apple reports it VALID, App Store eligible, IN_BETA_TESTING, attached to version 1.0, and WAITING_FOR_REVIEW under submission 3a40dd4d-0e93-4ef1-94d7-41f687d21f1b with AFTER_APPROVAL. CoreDevice reads exact build 7 on the authorized iPad and the owner confirmed its real Three.js Twilight Garden. All 24 approved bilingual phone/iPad screenshot checksums read back COMPLETE. The refreshed Twilight website is deployed with byte-exact route/media readback. Deterministic local upgrade proof opens a hash-bound synthetic fixture produced through the exact manifest-verified build-1 persistence source; exact seeded TestFlight upgrade remains separate. Narration remains a later build/update; a verified private lower-bound packet contains at least 23 EN plus 5 DE complete candidates and 235.0 minutes, while the sole guarded owner continues beyond that snapshot by at most two hash-verified units per fresh child through the real-proven checkpoint-only fast path under the unchanged 11 GiB stop line. Every human and rights gate remains pending. App Review approval and storefront gates remain unpassed. The formal Codex Security workbench is owner-waived/skipped, not passed. The owner now authorizes local Git initialization, staging, one SSH-signed initial commit, tracked/history and clean-clone audit, configuration of the exact existing origin, and push of main. GitHub Actions, repository settings or visibility changes, tags, releases, new or revoked signing certificates, unrequested testers, agreements, and unrelated accounts/domains/projects/DNS/browser activity remain unauthorized."
+}

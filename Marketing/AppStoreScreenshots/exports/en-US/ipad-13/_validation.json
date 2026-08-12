@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "status": "pass",
+  "expectedImages": 6,
+  "actualImages": 6,
+  "externalRequests": 0,
+  "results": [
+    {
+      "file": "01-growth-arrive-en-us-ipad-13-2064x2752.png",
+      "status": "pass",
+      "width": 2064,
+      "height": 2752,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": []
+    },
+    {
+      "file": "02-growth-take-root-en-us-ipad-13-2064x2752.png",
+      "status": "pass",
+      "width": 2064,
+      "height": 2752,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": []
+    },
+    {
+      "file": "03-growth-rhythm-en-us-ipad-13-2064x2752.png",
+      "status": "pass",
+      "width": 2064,
+      "height": 2752,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": []
+    },
+    {
+      "file": "04-growth-stays-en-us-ipad-13-2064x2752.png",
+      "status": "pass",
+      "width": 2064,
+      "height": 2752,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": []
+    },
+    {
+      "file": "05-growth-reflect-en-us-ipad-13-2064x2752.png",
+      "status": "pass",
+      "width": 2064,
+      "height": 2752,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": []
+    },
+    {
+      "file": "06-growth-refuge-en-us-ipad-13-2064x2752.png",
+      "status": "pass",
+      "width": 2064,
+      "height": 2752,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": []
+    }
+  ]
+}
