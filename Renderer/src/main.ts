@@ -2,6 +2,7 @@ import { installGardenBridge } from "./bridge";
 import { AdaptiveQualityController, WebGLContextRecoveryState } from "./resilience";
 import { createGardenScene, type GardenSceneController } from "./scene";
 import { shippingGardenVisualDirection } from "./shipping-visual";
+import { resolveGardenRenderStyle } from "./render-style";
 import type { GardenState } from "./types";
 import { validateGardenState } from "./validation";
 
@@ -52,6 +53,13 @@ const bridge = installGardenBridge({
     if (ceilingSelection !== undefined) {
       bridge.emit("selected-quality", { quality: ceilingSelection, reason: "state-ceiling" });
     }
+  },
+  setRenderStyle(style): void {
+    scene?.setVisualDirection(resolveGardenRenderStyle(style));
+    emitRendererInventory();
+  },
+  diagnostics(): object | null {
+    return scene?.diagnostics() ?? null;
   },
   setActive(active): void {
     scene?.setActive(active);

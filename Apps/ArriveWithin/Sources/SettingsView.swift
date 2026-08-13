@@ -35,6 +35,15 @@ struct SettingsView: View {
       }
 
       Section {
+        NavigationLink {
+          PremiumGardenStylesView(model: model)
+        } label: {
+          Label("garden.styles.title", systemImage: "paintpalette")
+        }
+        .accessibilityIdentifier("settings.gardenStyles")
+      }
+
+      Section {
         Link(destination: ProductWebLinks.privacy) {
           Label("settings.privacy.link", systemImage: "hand.raised")
         }

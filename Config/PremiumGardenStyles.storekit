@@ -1,0 +1,46 @@
+{
+  "identifier" : "ARRIVE-WITHIN-PREMIUM-GARDEN-LOCAL-1",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : false,
+      "internalID" : "premium-garden-material-styles-1",
+      "localizations" : [
+        {
+          "description" : "Unlock hand-drawn, stop-motion, crochet, and claymation treatments for the same living Garden.",
+          "displayName" : "Premium Garden Styles",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Schalte handgezeichnete, Stop-Motion-, Häkel- und Knetstile für denselben lebendigen Garten frei.",
+          "displayName" : "Premium-Gartenstile",
+          "locale" : "de_DE"
+        }
+      ],
+      "productID" : "com.philipps.arrivewithin.garden.materialstyles",
+      "referenceName" : "Premium Garden Material Styles",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      { "current" : null, "enabled" : false, "name" : "Load Products" },
+      { "current" : null, "enabled" : false, "name" : "Purchase" },
+      { "current" : null, "enabled" : false, "name" : "Verification" },
+      { "current" : null, "enabled" : false, "name" : "App Store Sync" }
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

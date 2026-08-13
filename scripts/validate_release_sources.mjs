@@ -161,7 +161,23 @@ record(
   "release URLs must remain bound to the exact verified custom-domain production readback",
 );
 record("metadata.age-rating-unbound", shared.age_rating?.questionnaire_state === "unreconciled-no-asc-record" && shared.age_rating?.calculated_rating === null && shared.age_rating?.made_for_kids === false, "age rating must remain questionnaire-derived, region/OS-aware, and unclaimed before live reconciliation");
-record("metadata.storekit-contract", shared.storekit_absence?.required === true && shared.storekit_absence?.forbidden?.length >= 5, "StoreKit absence must be an explicit release contract");
+record(
+  "metadata.storekit-contract",
+  shared.storekit_contract?.required === true
+    && shared.storekit_contract?.product_id === "com.philipps.arrivewithin.garden.materialstyles"
+    && shared.storekit_contract?.app_store_connect_id === "6801014376"
+    && shared.storekit_contract?.type === "NON_CONSUMABLE"
+    && shared.storekit_contract?.base_price?.amount === "4.99"
+    && shared.storekit_contract?.base_price?.currency === "USD"
+    && shared.storekit_contract?.base_price?.territory === "USA"
+    && shared.storekit_contract?.family_sharable === false
+    && shared.storekit_contract?.available_territories === 175
+    && shared.storekit_contract?.available_in_new_territories === true
+    && JSON.stringify(shared.storekit_contract?.locales) === JSON.stringify(["de-DE", "en-US"])
+    && shared.storekit_contract?.app_store_connect_state === "READY_TO_SUBMIT"
+    && shared.storekit_contract?.current_app_review_attachment === false,
+  "StoreKit must remain one exact non-consumable Garden entitlement, configured but not attached to the in-review app version",
+);
 record("metadata.candidate-unbound", shared.candidate_binding === null, "metadata must not bind a moving or nonexistent candidate");
 
 equal("screenshots.devices", screenshotPlan.devices.map(({ id, width, height }) => ({ id, width, height })), [
@@ -183,21 +199,36 @@ sourceFiles.splice(0, sourceFiles.length, ...sourceFiles.filter(
 sourceFiles.sort();
 const shippingSource = sourceFiles.map((path) => `${relative(root, path)}\0${readFileSync(path, "utf8")}`).join("\0");
 
-const forbiddenStorePatterns = [
-  /\bimport\s+StoreKit\b/,
-  /\.storekit\b/i,
-  /\bSKPayment\w*\b/,
-  /\bProduct\.products\b/,
-  /\bTransaction\.updates\b/,
-  /\bAppStore\.sync\b/,
-  /\b(productID|productId|transactionObserver|entitlementState)\b/,
-  /\b(paywall|restore purchases?|manage subscription|in-app purchase|donation)\b/i,
-];
-for (const pattern of forbiddenStorePatterns) {
-  record(`source.storekit.${pattern.source}`, !pattern.test(shippingSource), `forbidden shipping-source pattern ${pattern}`);
-}
 const repositoryFiles = walk(".", new Set([".build", ".pnpm-store", ".venv", "node_modules", "dist", "auditions", "model-cache", ".git"]));
-record("source.storekit-config-files", !repositoryFiles.some((path) => path.toLocaleLowerCase().endsWith(".storekit")), "no StoreKit configuration file may exist in the public product tree");
+const premiumStoreKitSourcePath = "Apps/ArriveWithin/Sources/PremiumGardenStyles.swift";
+const premiumStoreKitSource = read(premiumStoreKitSourcePath);
+const storeKitImportFiles = sourceFiles
+  .filter((path) => /\bimport\s+StoreKit\b/.test(readFileSync(path, "utf8")))
+  .map((path) => relative(root, path));
+equal("source.storekit.import-files", storeKitImportFiles, [premiumStoreKitSourcePath]);
+const storeKitAPIFiles = sourceFiles
+  .filter((path) => /\b(Product\.products|Transaction\.(?:updates|currentEntitlements)|AppStore\.sync)\b/.test(readFileSync(path, "utf8")))
+  .map((path) => relative(root, path));
+equal("source.storekit.api-files", storeKitAPIFiles, [premiumStoreKitSourcePath]);
+record("source.storekit.verified-transactions", premiumStoreKitSource.includes("case .verified(let transaction)") && premiumStoreKitSource.includes("transaction.revocationDate == nil"), "the entitlement must require verified, unrevoked StoreKit transactions");
+record("source.storekit.exact-product-id", premiumStoreKitSource.includes(`static let id = "${shared.storekit_contract.product_id}"`), "the native client must use the contracted product identifier");
+record("source.storekit.no-legacy-api", !/\bSKPayment\w*\b/.test(shippingSource), "legacy StoreKit payment APIs remain forbidden");
+const storeKitConfigFiles = repositoryFiles
+  .filter((path) => path.toLocaleLowerCase().endsWith(".storekit"))
+  .map((path) => relative(root, path));
+equal("source.storekit-config-files", storeKitConfigFiles, ["Config/PremiumGardenStyles.storekit"]);
+const storeKitConfig = json("Config/PremiumGardenStyles.storekit");
+record("source.storekit-config-one-product", storeKitConfig.products?.length === 1 && storeKitConfig.nonRenewingSubscriptions?.length === 0 && storeKitConfig.subscriptionGroups?.length === 0, "local StoreKit data must contain one product and no subscription surface");
+record(
+  "source.storekit-config-product",
+  storeKitConfig.products?.[0]?.productID === shared.storekit_contract.product_id
+    && storeKitConfig.products?.[0]?.type === "NonConsumable"
+    && storeKitConfig.products?.[0]?.displayPrice === shared.storekit_contract.base_price.amount
+    && storeKitConfig.products?.[0]?.familyShareable === false
+    && JSON.stringify(storeKitConfig.products?.[0]?.localizations?.map(({ locale }) => locale).sort()) === JSON.stringify(["de_DE", "en_US"]),
+  "local StoreKit product must mirror the exact live non-consumable contract",
+);
+record("source.storekit-scheme-binding", read("project.yml").includes("storeKitConfiguration: Config/PremiumGardenStyles.storekit"), "the shared development scheme must bind the exact local StoreKit configuration");
 
 const forbiddenTrackingPatterns = [
   /\bimport\s+AppTrackingTransparency\b/,

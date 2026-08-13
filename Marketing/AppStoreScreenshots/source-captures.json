@@ -9,7 +9,7 @@
   "source_manifest_path": "capture-source-manifest.json",
   "post_capture_change": {
     "classification": "submitted-build-7-post-submission-source-changes",
-    "current_source_revision": "9eec7a09f147e2999b529f4e3d63bceba0d7be1a05f5a54bd710f6043f17a894",
+    "current_source_revision": "b5d049396d36e9e5458395dde9e9da077dc56ebad97782442d12de510db9c97c",
     "changed_paths": [
       "Apps/ArriveWithin/Resources/Audio/audio-assets.json",
       "Apps/ArriveWithin/Resources/Audio/closing-bell-v1.wav",
@@ -18,12 +18,19 @@
       "Apps/ArriveWithin/Resources/en.lproj/Localizable.strings",
       "Apps/ArriveWithin/Sources/AppDependencies.swift",
       "Apps/ArriveWithin/Sources/AppModel.swift",
+      "Apps/ArriveWithin/Sources/AppSettings.swift",
+      "Apps/ArriveWithin/Sources/GardenView.swift",
+      "Apps/ArriveWithin/Sources/GardenWebView.swift",
       "Apps/ArriveWithin/Sources/GuidedLibraryView.swift",
       "Apps/ArriveWithin/Sources/MeditationAudioController.swift",
       "Apps/ArriveWithin/Sources/PracticeView.swift",
+      "Apps/ArriveWithin/Sources/PremiumGardenStyles.swift",
+      "Apps/ArriveWithin/Sources/PremiumGardenStylesView.swift",
       "Apps/ArriveWithin/Sources/RendererDiagnostics.swift",
+      "Apps/ArriveWithin/Sources/SettingsView.swift",
       "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinUITests.swift",
       "ArriveWithin.xcodeproj/project.pbxproj",
+      "ArriveWithin.xcodeproj/xcshareddata/xcschemes/ArriveWithin.xcscheme",
       "Config/ArriveWithin.entitlements.local",
       "Config/Base.xcconfig",
       "Config/Local.xcconfig",
@@ -41,9 +48,10 @@
     "submitted_build": 7,
     "submitted_state_at_freeze": "WAITING_FOR_REVIEW",
     "valid_until": "next-editable-app-store-metadata-opportunity",
-    "app_store_connect_mutation": "none",
+    "submitted_listing_mutation": "none",
+    "separate_iap_state": "READY_TO_SUBMIT_NOT_ATTACHED",
     "next_action": "recapture-and-review-at-next-editable-metadata-opportunity",
-    "rationale": "Exact build 7 was already WAITING_FOR_REVIEW and must not be replaced, cancelled, edited, or resubmitted. The post-publication Garden and timer audio correction are deliberately not represented by the submitted App Store screenshots; App Store Connect remained untouched. The retained 24 images remain the checksum-bound submitted-build artifact, not proof of the later source, and fresh current-source captures must be generated, reviewed, and bound at the next editable metadata opportunity."
+    "rationale": "Exact build 7 was already WAITING_FOR_REVIEW and must not be replaced, cancelled, edited, or resubmitted. The post-submission Garden and timer audio correction are deliberately not represented by the submitted App Store screenshots; the submitted App Store listing and screenshots remained untouched. The READY_TO_SUBMIT IAP is separate and not attached. The retained 24 images remain the checksum-bound submitted-build artifact, not proof of the later source, and fresh current-source captures must be generated, reviewed, and bound at the next editable metadata opportunity."
   },
   "result_bundles": [
     {

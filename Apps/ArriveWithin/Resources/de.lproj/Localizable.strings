@@ -29,9 +29,6 @@
 "garden.renderer.native" = "Native Gartenansicht";
 "garden.renderer.unavailable" = "Die lebendige Ansicht pausiert. Dein Fortschritt ist sicher.";
 "garden.renderer.web" = "Lebendiger 3D-Garten";
-"garden.renderer.diagnostics.prepare" = "Renderer-Diagnose vorbereiten";
-"garden.renderer.diagnostics.share" = "Renderer-Diagnose teilen";
-"garden.renderer.diagnostics.detail" = "Nur Renderer-Status und gerundete Zeitwerte — niemals Reflexionen oder Übungsverlauf.";
 
 "settings.language.title" = "Sprache";
 "settings.language.label" = "App-Sprache";
@@ -40,6 +37,33 @@
 "settings.language.german" = "Deutsch";
 "settings.language.detail" = "Ändert Arrive Within sofort. „System“ folgt dem Gerät und verwendet außerhalb von Deutsch und Englisch standardmäßig Englisch.";
 "settings.language.save.error" = "Die Spracheinstellung konnte nicht gespeichert werden. Die bisherige Auswahl bleibt aktiv.";
+"garden.styles.title" = "Gartenstil";
+"garden.styles.detail" = "Dämmerung ist enthalten. Premiumstile ändern nur Material und Bewegung des Gartens – nicht deinen Fortschritt oder die Welt.";
+"garden.styles.twilight.title" = "Dämmerung";
+"garden.styles.twilight.detail" = "Der ursprüngliche lebendige Garten · Enthalten";
+"garden.styles.hand-drawn.title" = "Handgezeichnet";
+"garden.styles.hand-drawn.detail" = "Papierstruktur, sanfte Tusche, unperfekte Konturen";
+"garden.styles.stop-motion.title" = "Stop-Motion";
+"garden.styles.stop-motion.detail" = "Eine handgefertigte Miniatur, Bild für Bild bewegt";
+"garden.styles.crochet.title" = "Gehäkelt";
+"garden.styles.crochet.detail" = "Weiche Maschen und ruhige Naturfasern";
+"garden.styles.claymation.title" = "Knetanimation";
+"garden.styles.claymation.detail" = "Weiche Knetformen mit feiner Fingerstruktur";
+"garden.styles.selected" = "Ausgewählt";
+"garden.styles.locked" = "Premiumstil";
+"garden.styles.owned" = "Alle vier Premiumstile gehören dir";
+"garden.styles.unlock" = "Alle vier freischalten";
+"garden.styles.unavailable" = "Käufe sind derzeit nicht verfügbar. Dämmerung bleibt vollständig nutzbar.";
+"garden.styles.restore" = "Kauf wiederherstellen";
+"garden.styles.purchase.detail" = "Einmalkauf. Kein Abo. Der App Store bestätigt den Besitz – nach der Bestätigung auch offline.";
+"garden.styles.paywall.title" = "Vier haptische Arten, deinen Garten zu erleben";
+"garden.styles.paywall.body" = "Wechsle Material und Rhythmus. Baum, Meilensteine, lokaler Himmel und stille Tierwelt bleiben dieselben.";
+"garden.styles.paywall.navigation" = "Premium-Gartenstile";
+"garden.styles.purchase.pending" = "Dein Kauf wartet auf eine Bestätigung.";
+"garden.styles.purchase.failed" = "Der Kauf konnte nicht abgeschlossen werden. Dir wurde nichts berechnet.";
+"garden.styles.restore.none" = "Für dieses App-Store-Konto wurde kein früherer Premium-Gartenkauf gefunden.";
+"garden.styles.restore.failed" = "Der Kauf kann derzeit nicht wiederhergestellt werden.";
+"settings.garden.style.save.error" = "Der Gartenstil konnte nicht gespeichert werden. Der bisherige Stil bleibt aktiv.";
 "commands.navigation" = "Navigation";
 
 "practice.title" = "Meditieren";
@@ -231,7 +255,7 @@
 "data.delete.confirm.action" = "Alles löschen";
 "data.delete.confirm.body" = "Das lässt sich nicht rückgängig machen. Kopien, die du bewusst außerhalb von Arrive Within geteilt hast, kontrolliert die App nicht.";
 "data.delete.complete" = "Alle lokalen Arrive-Within-Daten wurden gelöscht.";
-"data.delete.failed" = "Die Löschung konnte nicht abgeschlossen werden. Arrive Within meldet keinen Erfolg.";
+"data.delete.failed" = "Die Löschung konnte nicht abgeschlossen werden. Einige lokale Daten könnten noch vorhanden sein.";
 "data.action.sessionActive" = "Beende die aktive Praxis, bevor du Daten exportierst, zurücksetzt oder löschst.";
 
 "recovery.title" = "Praxis fortsetzen?";
@@ -249,11 +273,11 @@
 "audio.notice.guided.route.lost" = "Der Audioausgang hat sich geändert. Diese geführte Praxis bleibt pausiert, damit der Ton nicht unerwartet anderswo erklingt.";
 "audio.notice.guided.system.reset" = "Das Audiosystem wurde neu gestartet. Diese geführte Praxis bleibt pausiert, bis du sie fortsetzt.";
 "audio.notice.background.alert.denied" = "Abschlusshinweise sind nicht erlaubt. Die Zeitmessung bleibt korrekt, aber ohne aktiven Klangraum kann bei gesperrtem Gerät kein Klang garantiert werden.";
-"audio.notice.guided.catalog.unavailable" = "Der enthaltene Katalog geführter Meditationen konnte nicht verifiziert werden. Timer und Stoppuhr bleiben verfügbar.";
+"audio.notice.guided.catalog.unavailable" = "Geführte Meditationen sind derzeit nicht verfügbar. Timer und Stoppuhr bleiben verfügbar.";
 
 "guided.library.title" = "Geführte Meditationen";
 "guided.library.browse" = "Geführte Meditationen ansehen";
-"guided.library.detail" = "Wähle nach Zweck oder Dauer. Jede freigegebene Aufnahme bleibt auf diesem Gerät.";
+"guided.library.detail" = "Wähle nach Zweck oder Dauer. Verfügbare Aufnahmen bleiben auf diesem Gerät.";
 "guided.catalog.count.format" = "%d Meditationen";
 "guided.catalog.unavailable" = "Der enthaltene Katalog ist nicht verfügbar.";
 "guided.search.prompt" = "Titel oder Zweck";
@@ -281,8 +305,8 @@
 "guided.language.en" = "English";
 "guided.language.de" = "Deutsch";
 "guided.offline.ready" = "Offline verfügbar";
-"guided.offline.pending" = "Aufnahme wartet auf Freigabe";
-"guided.pending.explanation" = "Das vollständige Skript liegt vor. Die Wiedergabe bleibt deaktiviert, bis Stimme, Rechte, Audio, Transkript und zweisprachige Prüfung freigegeben sind.";
+"guided.offline.pending" = "Anleitungen folgen bald";
+"guided.pending.explanation" = "Geführte Meditationen folgen mit einem späteren Update. Timer und Stoppuhr sind jetzt verfügbar.";
 "guided.safety.nonclinical" = "Ein Meditationswerkzeug, keine medizinische Behandlung. Halte die Augen offen oder beende die Übung, wenn das sicherer ist.";
 "guided.favorite.on" = "Favorit";
 "guided.recent" = "Kürzlich praktiziert";

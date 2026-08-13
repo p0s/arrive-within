@@ -1,5 +1,5 @@
 export const FROZEN_RENDERER_SOURCE_SHA256 = "9867787a40ba0220f23f90270b996bc60d62dd3ea2d791c6c58ed96b4c8b9f31";
-export const CURRENT_RENDERER_SOURCE_SHA256 = "e001e54e6cbecd30a8080dd5e3f9014650bcc253ca28cbe86c27185b231fc284";
+export const CURRENT_RENDERER_SOURCE_SHA256 = "ceb4332aecd2c734563b94486e8a877ee10fd5cdb22692bc93c21345b3f8ef27";
 export const FROZEN_GARDEN_SCHEMA_SHA256 = "2194a09d0511522423eafe62724e1d96a450f3847e49cb872b1e3383944331a3";
 export const CURRENT_GARDEN_SCHEMA_SHA256 = "a73eb83fd1326b3c113663db54005a93024862fa630d8f92a4f3cf1fecc08fee";
 
@@ -21,8 +21,11 @@ export const FROZEN_SOURCE_FILE_SHA256 = {
 };
 
 export const POST_PUBLICATION_CHANGED_PATHS = [
+  "Renderer/src/bridge.ts",
   "Renderer/src/main.ts",
+  "Renderer/src/render-style.ts",
   "Renderer/src/scene.ts",
+  "Renderer/src/shipping-visual.ts",
   "Renderer/src/types.ts",
   "Renderer/src/visual-design.ts",
   "Renderer/src/world-model.ts",
@@ -38,8 +41,13 @@ const REQUIRED_RATIONALE = [
 
 export function changedSourcePaths(currentFileSha256) {
   const baselinePaths = Object.keys(FROZEN_SOURCE_FILE_SHA256);
-  if (JSON.stringify(Object.keys(currentFileSha256)) !== JSON.stringify(baselinePaths)) return ["<source-file-set-drift>"];
-  return baselinePaths.filter((path) => currentFileSha256[path] !== FROZEN_SOURCE_FILE_SHA256[path]);
+  const currentPaths = [
+    ...baselinePaths.slice(0, 4),
+    "Renderer/src/render-style.ts",
+    ...baselinePaths.slice(4),
+  ];
+  if (JSON.stringify(Object.keys(currentFileSha256)) !== JSON.stringify(currentPaths)) return ["<source-file-set-drift>"];
+  return currentPaths.filter((path) => currentFileSha256[path] !== FROZEN_SOURCE_FILE_SHA256[path]);
 }
 
 export function isExactPostPublicationMediaFreeze({

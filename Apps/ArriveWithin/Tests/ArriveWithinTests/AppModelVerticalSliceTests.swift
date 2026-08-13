@@ -804,6 +804,12 @@ private actor RejectingAppSettingsRepository: AppSettingsRepository {
     _ = language
     throw AppSettingsError.couldNotPersist
   }
+
+  func loadGardenRenderStyle() -> GardenRenderStyle { .twilight }
+
+  func saveGardenRenderStyle(_ style: GardenRenderStyle) throws {
+    throw AppSettingsError.couldNotPersist
+  }
   func deleteAll() throws {
     throw AppSettingsError.couldNotPersist
   }

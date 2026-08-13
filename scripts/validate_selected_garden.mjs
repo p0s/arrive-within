@@ -34,7 +34,15 @@ const reachableDirections = [...reachable]
   .map((path) => relative(projectRoot, path))
   .filter((path) => path.startsWith("Renderer/src/visual-directions/"))
   .sort();
-assert(reachableDirections.length === 1, "shipping renderer must reach exactly one direction module");
+const premiumDirections = selection.premium_material_profiles ?? [];
+const expectedReachableDirections = [
+  ...(selection.status === "owner-selected" ? premiumDirections : []),
+  selection.status === "owner-selected" ? selection.selected_direction : selection.safe_baseline_direction,
+].map((direction) => `Renderer/src/visual-directions/${direction}.ts`).sort();
+assert(
+  JSON.stringify(reachableDirections) === JSON.stringify(expectedReachableDirections),
+  `shipping renderer direction set drifted: ${reachableDirections.join(", ")}`,
+);
 assert(
   [...reachable].every((path) => !relative(projectRoot, path).startsWith("Renderer/design-lab/")),
   "design-lab code is reachable from the shipping renderer",
@@ -53,7 +61,7 @@ if (pending) {
     "shipping authority does not preserve the declared safe baseline",
   );
   assert(
-    reachableDirections[0] === `Renderer/src/visual-directions/${selection.safe_baseline_direction}.ts`,
+    reachableDirections.includes(`Renderer/src/visual-directions/${selection.safe_baseline_direction}.ts`),
     "safe baseline direction is not the only reachable direction module",
   );
 } else {
@@ -67,8 +75,8 @@ if (pending) {
     "shipping authority and owner selection disagree",
   );
   assert(
-    reachableDirections[0] === `Renderer/src/visual-directions/${selection.selected_direction}.ts`,
-    "an unselected direction module is reachable from the shipping renderer",
+    reachableDirections.includes(`Renderer/src/visual-directions/${selection.selected_direction}.ts`),
+    "selected composition is not reachable from the shipping renderer",
   );
 
   const bundlePath = join(projectRoot, "Renderer/dist/renderer.js");
@@ -96,7 +104,7 @@ if (pending) {
 }
 
 process.stdout.write(
-  `Selected Garden boundary passed: ${reachableDirections[0]}; state=${selection.status}.\n`,
+  `Selected Garden boundary passed: ${reachableDirections.join(", ")}; state=${selection.status}.\n`,
 );
 
 function reachableRelativeTypeScript(entryPath) {

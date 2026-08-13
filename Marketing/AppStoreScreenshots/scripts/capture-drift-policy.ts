@@ -6,13 +6,14 @@ export type SubmittedBuildCaptureFreeze = {
   submitted_build: 7;
   submitted_state_at_freeze: "WAITING_FOR_REVIEW";
   valid_until: "next-editable-app-store-metadata-opportunity";
-  app_store_connect_mutation: "none";
+  submitted_listing_mutation: "none";
+  separate_iap_state: "READY_TO_SUBMIT_NOT_ATTACHED";
   next_action: "recapture-and-review-at-next-editable-metadata-opportunity";
   rationale: string;
 };
 
 export const POST_SUBMISSION_SOURCE_REVISION =
-  "9eec7a09f147e2999b529f4e3d63bceba0d7be1a05f5a54bd710f6043f17a894";
+  "b5d049396d36e9e5458395dde9e9da077dc56ebad97782442d12de510db9c97c";
 
 export const POST_SUBMISSION_CHANGED_PATHS = [
   "Apps/ArriveWithin/Resources/Audio/audio-assets.json",
@@ -22,12 +23,19 @@ export const POST_SUBMISSION_CHANGED_PATHS = [
   "Apps/ArriveWithin/Resources/en.lproj/Localizable.strings",
   "Apps/ArriveWithin/Sources/AppDependencies.swift",
   "Apps/ArriveWithin/Sources/AppModel.swift",
+  "Apps/ArriveWithin/Sources/AppSettings.swift",
+  "Apps/ArriveWithin/Sources/GardenView.swift",
+  "Apps/ArriveWithin/Sources/GardenWebView.swift",
   "Apps/ArriveWithin/Sources/GuidedLibraryView.swift",
   "Apps/ArriveWithin/Sources/MeditationAudioController.swift",
   "Apps/ArriveWithin/Sources/PracticeView.swift",
+  "Apps/ArriveWithin/Sources/PremiumGardenStyles.swift",
+  "Apps/ArriveWithin/Sources/PremiumGardenStylesView.swift",
   "Apps/ArriveWithin/Sources/RendererDiagnostics.swift",
+  "Apps/ArriveWithin/Sources/SettingsView.swift",
   "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinUITests.swift",
   "ArriveWithin.xcodeproj/project.pbxproj",
+  "ArriveWithin.xcodeproj/xcshareddata/xcschemes/ArriveWithin.xcscheme",
   "Config/ArriveWithin.entitlements.local",
   "Config/Base.xcconfig",
   "Config/Local.xcconfig",
@@ -46,10 +54,11 @@ const REQUIRED_RATIONALE_FRAGMENTS = [
   "build 7",
   "WAITING_FOR_REVIEW",
   "must not be replaced, cancelled, edited, or resubmitted",
-  "post-publication Garden",
+  "post-submission Garden",
   "not represented by the submitted App Store screenshots",
   "timer audio correction",
-  "App Store Connect remained untouched",
+  "submitted App Store listing and screenshots remained untouched",
+  "IAP is separate and not attached",
   "next editable metadata opportunity",
 ] as const;
 
@@ -68,7 +77,8 @@ export function isExactSubmittedBuildCaptureFreeze(
       attestation.submitted_build === 7 &&
       attestation.submitted_state_at_freeze === "WAITING_FOR_REVIEW" &&
       attestation.valid_until === "next-editable-app-store-metadata-opportunity" &&
-      attestation.app_store_connect_mutation === "none" &&
+      attestation.submitted_listing_mutation === "none" &&
+      attestation.separate_iap_state === "READY_TO_SUBMIT_NOT_ATTACHED" &&
       attestation.next_action === "recapture-and-review-at-next-editable-metadata-opportunity" &&
       REQUIRED_RATIONALE_FRAGMENTS.every((fragment) => attestation.rationale.includes(fragment)),
   );

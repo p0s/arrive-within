@@ -9,83 +9,83 @@
   "comparison_metrics": [
     {
       "milestone_id": 1,
-      "changed_pixel_ratio": 0.025241970486111112,
-      "mean_absolute_channel_delta": 0.30884114583333333
+      "changed_pixel_ratio": 0.010922309027777778,
+      "mean_absolute_channel_delta": 0.2607751012731481
     },
     {
       "milestone_id": 2,
-      "changed_pixel_ratio": 0.042939453125,
-      "mean_absolute_channel_delta": 1.4120319733796296
+      "changed_pixel_ratio": 0.010509982638888889,
+      "mean_absolute_channel_delta": 0.15680844907407407
     },
     {
       "milestone_id": 3,
-      "changed_pixel_ratio": 0.06734157986111111,
-      "mean_absolute_channel_delta": 1.7508463541666666
+      "changed_pixel_ratio": 0.03053493923611111,
+      "mean_absolute_channel_delta": 0.6056416377314815
     },
     {
       "milestone_id": 4,
-      "changed_pixel_ratio": 0.04261393229166666,
-      "mean_absolute_channel_delta": 1.3125112123842593
+      "changed_pixel_ratio": 0.004864366319444444,
+      "mean_absolute_channel_delta": 0.026506799768518517
     },
     {
       "milestone_id": 5,
-      "changed_pixel_ratio": 0.05129123263888889,
-      "mean_absolute_channel_delta": 1.2737999131944444
+      "changed_pixel_ratio": 0.0027213541666666666,
+      "mean_absolute_channel_delta": 0.058090277777777775
     },
     {
       "milestone_id": 6,
-      "changed_pixel_ratio": 0.009751519097222222,
-      "mean_absolute_channel_delta": 0.0796412037037037
+      "changed_pixel_ratio": 0.0006325954861111111,
+      "mean_absolute_channel_delta": 0.0027958622685185187
     },
     {
       "milestone_id": 7,
-      "changed_pixel_ratio": 0.015325520833333333,
-      "mean_absolute_channel_delta": 0.1597826244212963
+      "changed_pixel_ratio": 0.0006141493055555556,
+      "mean_absolute_channel_delta": 0.0009675202546296296
     },
     {
       "milestone_id": 8,
-      "changed_pixel_ratio": 0.008256293402777778,
-      "mean_absolute_channel_delta": 0.14462999131944446
+      "changed_pixel_ratio": 0.00006401909722222223,
+      "mean_absolute_channel_delta": 0.00015950520833333333
     },
     {
       "milestone_id": 9,
-      "changed_pixel_ratio": 0.01885199652777778,
-      "mean_absolute_channel_delta": 0.9346603732638888
+      "changed_pixel_ratio": 0.000002170138888888889,
+      "mean_absolute_channel_delta": 7.233796296296296e-7
     },
     {
       "milestone_id": 10,
-      "changed_pixel_ratio": 0.008855251736111111,
-      "mean_absolute_channel_delta": 0.11502423321759259
+      "changed_pixel_ratio": 0.0007975260416666667,
+      "mean_absolute_channel_delta": 0.0036103877314814813
     },
     {
       "milestone_id": 11,
-      "changed_pixel_ratio": 0.00862087673611111,
-      "mean_absolute_channel_delta": 0.24631329571759258
+      "changed_pixel_ratio": 0.0003862847222222222,
+      "mean_absolute_channel_delta": 0.010055338541666667
     },
     {
       "milestone_id": 12,
-      "changed_pixel_ratio": 0.10176540798611111,
-      "mean_absolute_channel_delta": 1.7957660590277778
+      "changed_pixel_ratio": 0.010855034722222223,
+      "mean_absolute_channel_delta": 0.07315285011574074
     },
     {
       "milestone_id": 13,
-      "changed_pixel_ratio": 0.006206597222222222,
-      "mean_absolute_channel_delta": 0.22963216145833334
+      "changed_pixel_ratio": 0.0000032552083333333335,
+      "mean_absolute_channel_delta": 0.0000010850694444444444
     },
     {
       "milestone_id": 14,
-      "changed_pixel_ratio": 0.010891927083333334,
-      "mean_absolute_channel_delta": 1.2254875578703703
+      "changed_pixel_ratio": 0.0017447916666666666,
+      "mean_absolute_channel_delta": 0.002199435763888889
     },
     {
       "milestone_id": 15,
-      "changed_pixel_ratio": 0.039752604166666664,
-      "mean_absolute_channel_delta": 2.4362120225694444
+      "changed_pixel_ratio": 0.019309895833333333,
+      "mean_absolute_channel_delta": 0.29568757233796295
     }
   ],
   "human_review": "pending",
   "release_ready": false,
-  "manifest_sha256": "c6ec0fe369a4e084aa817ec9c352413df94570296d55f503cc5cd9461c24564d",
+  "manifest_sha256": "6dbf87327e3c361f49c7f980da98ab51604103a3dbd8b70d82e6c9abd00645d8",
   "failures": [],
   "checks": [
     {

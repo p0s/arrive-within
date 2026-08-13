@@ -277,7 +277,11 @@ function deriveDetails(
       details.push({
         kind,
         x: Math.cos(angle) * radius,
-        y,
+        y: kind === "fireflies"
+          ? selectedVariant.endsWith("-b")
+            ? random.range(1.85, 3.45)
+            : random.range(0.42, 1.28)
+          : y,
         z: Math.sin(angle) * radius * 0.72,
         scale: random.range(minimumScale, maximumScale),
         rotation: angle + random.signed(0.28),

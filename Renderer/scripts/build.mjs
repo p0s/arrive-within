@@ -81,6 +81,7 @@ await writeFile(
       sha256: digest,
       visualDirection: selectedDirection,
       visualSelectionState,
+      premiumMaterialProfiles: ["hand-drawn", "stop-motion", "crochet", "claymation"],
       unselectedDirectionModulesPresent: false,
     },
     null,

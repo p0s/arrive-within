@@ -1,4 +1,5 @@
 import { createGardenScene, type GardenRendererDiagnostics } from "../src/scene";
+import { resolveGardenRenderStyle } from "../src/render-style";
 import type { GardenDayPhase, GardenState } from "../src/types";
 import type { GardenVisualDirection, GardenVisualDirectionID } from "../src/visual-design";
 import { paperSanctuary } from "../src/visual-directions/paper-sanctuary";
@@ -34,7 +35,10 @@ const directions: Record<GardenVisualDirectionID, GardenVisualDirection> = {
 };
 const query = new URLSearchParams(location.search);
 const requestedDirection = query.get("direction") as GardenVisualDirectionID | null;
-const direction = requestedDirection === null ? verdantAtelier : directions[requestedDirection];
+const requestedStyle = query.get("style");
+const direction = requestedStyle === null
+  ? requestedDirection === null ? verdantAtelier : directions[requestedDirection]
+  : resolveGardenRenderStyle(requestedStyle);
 if (direction === undefined) throw new Error("Unknown Garden design direction.");
 let reduceMotion = query.get("reduceMotion") === "1" || matchMedia("(prefers-reduced-motion: reduce)").matches;
 const initialPreset = parsePreset(query.get("preset"));
