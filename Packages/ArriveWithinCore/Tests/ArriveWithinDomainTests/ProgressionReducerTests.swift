@@ -5,6 +5,49 @@ import Testing
 
 @Suite("Deterministic garden progression")
 struct ProgressionReducerTests {
+  @Test("Local garden phases use stable native clock boundaries")
+  func localGardenDayPhaseBoundaries() throws {
+    let singapore = try #require(TimeZone(identifier: "Asia/Singapore"))
+    let losAngeles = try #require(TimeZone(identifier: "America/Los_Angeles"))
+    let phase: (Int, TimeZone) throws -> GardenDayPhase = { hour, timeZone in
+      GardenDayPhase.presentation(
+        at: try localDate(
+          year: 2026,
+          month: 8,
+          day: 13,
+          hour: hour,
+          minute: 0,
+          timeZone: timeZone
+        ),
+        timeZone: timeZone
+      )
+    }
+
+    for timeZone in [singapore, losAngeles] {
+      #expect(try phase(4, timeZone) == .night)
+      #expect(try phase(5, timeZone) == .dawn)
+      #expect(try phase(8, timeZone) == .day)
+      #expect(try phase(17, timeZone) == .dusk)
+      #expect(try phase(20, timeZone) == .night)
+    }
+
+    let sameInstant = try localDate(
+      year: 2026,
+      month: 8,
+      day: 13,
+      hour: 8,
+      minute: 30,
+      timeZone: singapore
+    )
+    #expect(GardenDayPhase.presentation(at: sameInstant, timeZone: singapore) == .day)
+    #expect(GardenDayPhase.presentation(at: sameInstant, timeZone: losAngeles) == .dusk)
+
+    var projection = context()
+    projection.localDayPhase = .night
+    let state = ProgressionReducer.reduce(events: [], context: projection)
+    #expect(state.localDayPhase == .night)
+  }
+
   @Test("Sub-three-minute sessions remain history-only")
   func shortSessionDoesNotGrow() throws {
     let start = Date(timeIntervalSince1970: 1_786_320_000)

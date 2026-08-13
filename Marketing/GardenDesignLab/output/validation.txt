@@ -4,5 +4,7 @@ stills: 30
 milestone_stills: 45
 motion_clips: 6
 external_requests_observed: 0
+current_source_state: regeneration-deferred-host-denial
+current_garden_proof: separate
 owner_selection: pending
 physical_performance: pending

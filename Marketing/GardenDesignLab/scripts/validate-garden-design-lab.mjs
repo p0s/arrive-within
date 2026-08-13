@@ -5,6 +5,8 @@ import { readFileSync, statSync } from "node:fs";
 import { dirname, join, normalize, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { isExactPostPublicationGardenLabFreeze } from "./garden-lab-drift-policy.mjs";
+
 const scriptRoot = dirname(fileURLToPath(import.meta.url));
 const labRoot = resolve(scriptRoot, "..");
 const projectRoot = resolve(labRoot, "../..");
@@ -23,9 +25,13 @@ assert(manifest.shipping_boundary.lab_route_in_app_bundle === false, "Garden lab
 assert(manifest.shipping_boundary.unselected_direction_code_in_current_renderer_bundle === false, "shipping renderer includes alternate direction code");
 assert(manifest.review.owner_selection === "pending", "Garden owner selection must be recorded through the selected-path integration, not rewritten in lab evidence");
 
-for (const source of manifest.source.files) {
-  assert(sha256(join(projectRoot, source.path)) === source.sha256, `stale Garden lab source hash: ${source.path}`);
-}
+const currentSourceSha256 = Object.fromEntries(
+  manifest.source.files.map((source) => [source.path, sha256(join(projectRoot, source.path))]),
+);
+const sourceMatches = manifest.source.files.every((source) => currentSourceSha256[source.path] === source.sha256);
+const exactPostPublicationFreeze = isExactPostPublicationGardenLabFreeze(manifest, currentSourceSha256);
+assert(sourceMatches || exactPostPublicationFreeze, "Garden lab source drift is not the one exact historical selection-lab boundary");
+assert(sourceMatches ? manifest.post_generation_change === undefined : exactPostPublicationFreeze, "Garden lab drift boundary is stale or incomplete");
 assert(
   sha256(join(projectRoot, manifest.source.generator)) === manifest.source.generator_sha256,
   "stale Garden lab generator hash",
@@ -46,6 +52,8 @@ assert(diagnostics.every((item) => item.context === "available"), "Garden contex
 assert(Math.max(...diagnostics.map((item) => item.drawCalls)) <= 40, "Garden draw-call budget regressed above 40");
 assert(Math.max(...diagnostics.map((item) => item.textures)) <= 8, "Garden texture budget regressed above 8");
 assert(Math.max(...diagnostics.map((item) => item.geometries)) <= 40, "Garden geometry budget regressed above 40");
+const validationText = readFileSync(join(labRoot, "output/validation.txt"), "utf8");
+assert(!exactPostPublicationFreeze || (validationText.includes("current_source_state: regeneration-deferred-host-denial") && validationText.includes("current_garden_proof: separate")), "Garden lab validation text must preserve the historical/current proof boundary");
 
 process.stdout.write("Garden design-lab validation passed: 3 directions, 15 milestones each, 6 clips, bounded renderer inventory.\n");
 

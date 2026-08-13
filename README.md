@@ -8,13 +8,13 @@ Arrive Within is a free, bilingual meditation app for iPhone and iPad. A configu
   <img src="Marketing/AppStoreScreenshots/exports/en-US/iphone-6.9/02-growth-take-root-en-us-iphone-6.9-1320x2868.png" width="31%" alt="Two tilted Arrive Within practice screens showing growth">
 </p>
 
-[Watch the silent garden-growth film](Marketing/PublicMedia/output/garden-growth-v1.mp4) · [Architecture](docs/architecture/OVERVIEW.md) · [Contributing](CONTRIBUTING.md) · [Privacy](https://arrivewithin.com/privacy)
+[Watch the silent garden-growth film](Marketing/PublicMedia/output/garden-growth-v1.mp4) · [Source](https://github.com/p0s/arrive-within) · [Architecture](docs/architecture/OVERVIEW.md) · [Contributing](CONTRIBUTING.md) · [Privacy](https://arrivewithin.com/privacy)
 
 ## Project status
 
 Arrive Within 1.0 is in active pre-release verification. The app, renderer, bilingual content source, website, and marketing generators are present, but this repository does **not** claim App Store availability or finished narration yet. English F2 and German C2 are the selected narration directions, Quiet Threshold B is the packaged icon, and C — Twilight Refuge is the only shipping garden; A/B remain non-shipping source references.
 
-There is no App Store download link until an exact reviewed candidate is actually available.
+There is no App Store download link until an exact reviewed candidate is actually available. The country-neutral URL is reserved as `https://apps.apple.com/app/id6800192697`; add it to this README and the website only after Apple approval and a successful storefront readback.
 
 ## What is here
 

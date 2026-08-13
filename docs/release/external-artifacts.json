@@ -32,6 +32,13 @@
         "build_output_sha256": "59430428d7124fc08b6fb3d155f22eb8e63d56aafd1c9240cb0bfcb3486cc951",
         "local_validation": "passed",
         "public_readback": "passed-and-current-production"
+      },
+      "unreleased_local_successor": {
+        "source_sha256": "e890d6dc76c33297eac8b2d4df9b6c174524176f91c4d0e7d2709deacc3d960d",
+        "build_output_sha256": "cdacc5b9920cc3b9b960b5073af69515e27f44b5c684f3a81f78ca14956646e6",
+        "local_static_validation": "passed-byte-reproducible",
+        "browser_review": "pending-desktop-execution-sandbox",
+        "public_readback": "not-performed-not-deployed"
       }
     }
   ]

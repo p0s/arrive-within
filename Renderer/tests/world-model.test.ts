@@ -37,6 +37,9 @@ describe("deterministic authored world model", () => {
     expect(low.backgroundVegetationCount).toBeLessThan(balanced.backgroundVegetationCount);
     expect(balanced.backgroundVegetationCount).toBeLessThan(high.backgroundVegetationCount);
     expect(low.shadowMapSize).toBeLessThan(high.shadowMapSize);
+    expect(low.birdCount).toBeLessThan(balanced.birdCount);
+    expect(balanced.birdCount).toBeLessThan(high.birdCount);
+    expect(low.groundAnimalCount).toBeLessThan(balanced.groundAnimalCount);
     expect(deriveWorldModel({ ...state, qualityHint: "low" }).trunkHeight).toBe(
       deriveWorldModel({ ...state, qualityHint: "high" }).trunkHeight,
     );
@@ -85,6 +88,53 @@ describe("deterministic authored world model", () => {
     expect(variantA.details).not.toEqual(variantB.details);
     expect(variantA.foliage).toEqual(variantB.foliage);
     expect(variantA.trunkHeight).toBe(variantB.trunkHeight);
+  });
+
+  it("treats birds, pavilion, and grass hares as milestone ecology", () => {
+    const beforeAirTwo = deriveWorldModel({
+      ...state,
+      journeyDay: 20,
+      highestMilestone: 10,
+      qualityHint: "balanced",
+    });
+    const airTwo = deriveWorldModel({
+      ...state,
+      journeyDay: 22,
+      highestMilestone: 11,
+      qualityHint: "balanced",
+    });
+    const beforeSpaceThree = deriveWorldModel({
+      ...state,
+      journeyDay: 28,
+      highestMilestone: 14,
+      qualityHint: "balanced",
+    });
+    const completeWorld = deriveWorldModel({
+      ...state,
+      journeyDay: 30,
+      highestMilestone: 15,
+      qualityHint: "balanced",
+    });
+
+    expect(beforeAirTwo.birds).toHaveLength(0);
+    expect(airTwo.birds).toHaveLength(3);
+    expect(beforeSpaceThree.groundAnimals).toHaveLength(0);
+    expect(beforeSpaceThree.details.some((detail) => detail.kind === "sanctuary")).toBe(false);
+    expect(completeWorld.groundAnimals.map((animal) => animal.kind)).toEqual(["hare", "hare"]);
+    expect(completeWorld.details.filter((detail) => detail.kind === "sanctuary")).toHaveLength(1);
+  });
+
+  it("keeps local time presentational rather than changing permanent growth", () => {
+    const day = deriveWorldModel({ ...state, localDayPhase: "day" });
+    const night = deriveWorldModel({ ...state, localDayPhase: "night" });
+
+    expect(day.dayPhase).toBe("day");
+    expect(night.dayPhase).toBe("night");
+    expect(day.trunkHeight).toBe(night.trunkHeight);
+    expect(day.foliage).toEqual(night.foliage);
+    expect(day.details).toEqual(night.details);
+    expect(day.birds).toEqual(night.birds);
+    expect(day.groundAnimals).toEqual(night.groundAnimals);
   });
 
   it("keeps post-day-thirty growth bounded, permanent, and recognizable", () => {

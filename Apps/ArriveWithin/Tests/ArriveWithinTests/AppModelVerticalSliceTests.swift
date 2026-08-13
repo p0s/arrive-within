@@ -649,6 +649,47 @@ struct AppModelVerticalSliceTests {
     await model.updateReduceMotion(false)
     #expect(model.gardenState?.reduceMotion == false)
   }
+
+  @Test("Foreground refresh follows the native local clock without losing Reduce Motion")
+  func foregroundRefreshUpdatesGardenDayPhase() async throws {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = .current
+    let dawnBoundary = try #require(
+      calendar.date(
+        from: DateComponents(year: 2026, month: 8, day: 13, hour: 7, minute: 59)
+      )
+    )
+    let eventRepository = InMemoryPracticeEventRepository()
+    let clock = VirtualSessionClock(
+      moment: SessionMoment(monotonicMilliseconds: 1_000, wallClock: dawnBoundary)
+    )
+    let model = AppModel(
+      dependencies: AppDependencies(
+        profileRepository: TestProfileRepository(),
+        eventRepository: eventRepository,
+        sessionRepository: TestSessionRepository(),
+        preferencesRepository: TestPreferencesRepository(),
+        completionCoordinator: SessionCompletionCoordinator(repository: eventRepository),
+        clock: clock,
+        dataDirectory: FileManager.default.temporaryDirectory
+          .appending(path: UUID().uuidString, directoryHint: .isDirectory),
+        audioController: NoOpMeditationAudioController(),
+        timerEndAlertController: NoOpTimerEndAlertController(),
+        hapticController: NoOpMeditationHapticController()
+      )
+    )
+
+    await model.start()
+    await model.exploreGarden()
+    await model.updateReduceMotion(true)
+    #expect(model.gardenState?.localDayPhase == .dawn)
+
+    clock.advance(milliseconds: 60_000)
+    await model.updateForForeground()
+
+    #expect(model.gardenState?.localDayPhase == .day)
+    #expect(model.gardenState?.reduceMotion == true)
+  }
 }
 
 @MainActor

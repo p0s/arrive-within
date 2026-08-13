@@ -21,6 +21,7 @@ const initialState: GardenState = validateGardenState({
   activeCustomization: {},
   microGrowthOrdinal: 0,
   localTimePresentation: null,
+  localDayPhase: "day",
   latestGrowthEvent: null,
   reduceMotion: matchMedia("(prefers-reduced-motion: reduce)").matches,
   qualityHint: "balanced",

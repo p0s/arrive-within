@@ -11,6 +11,8 @@ Arrive Within is a quiet living world centered on one recognizable tree. Growth 
 
 The hero tree always has the strongest silhouette, detail, movement, and light. Milestones enrich the same tree and landscape; they do not replace it with a random new tree.
 
+The detailed spatial, architectural, local-time, ecology, and wildlife rules live in the [Garden world contract](../product/GARDEN_WORLD.md). New Garden art must fit that one world rather than add an isolated prop or ambient effect.
+
 ## Palette and material
 
 Use deep forest green, misted sage, warm mineral cream, restrained dawn amber, and optional night indigo. Materials are matte, tactile, and softly dimensional. Quantized toon light, colored shadow, restrained ink/outline work, careful antialiasing, and deliberate color grading may support the authored composition.
@@ -28,6 +30,7 @@ Motion suggests breathing, weather, and growth: slow canopy movement, drifting p
 - lotus flowers, yoga/seated silhouettes, brains, hearts, zen-stone stacks, or a clock as the dominant brand symbol;
 - currency, loot, harvesting, tap-to-collect, free-roaming avatars, inventories, or irreversible cosmetic choices;
 - Japanese/Sakura identity, SoulGarden/Messenger imagery, or any third-party recognizable composition;
+- torii, pagoda tiers, shrine gates, religious statuary, culture-specific sacred ornament, or an indiscriminate mixture of Japanese and Chinese motifs;
 - literal reuse of any reference icon’s route, S-curve, arrow, dots, palette, or composition.
 
 ## App icon territory

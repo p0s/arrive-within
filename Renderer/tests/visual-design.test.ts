@@ -35,6 +35,21 @@ describe("selectable visual directions", () => {
     );
   });
 
+  it("resolves four materially distinct local atmosphere phases", () => {
+    const models = (["dawn", "day", "dusk", "night"] as const).map((phase) =>
+      resolveVisualModel(
+        deriveWorldModel({ ...state, localDayPhase: phase }),
+        twilightRefuge,
+      ),
+    );
+
+    expect(new Set(models.map((model) => model.skyTopColor)).size).toBe(4);
+    expect(new Set(models.map((model) => model.skyColor)).size).toBe(4);
+    expect(models[1]?.sunIntensity).toBeGreaterThan(models[3]?.sunIntensity ?? Infinity);
+    expect(models[3]?.starOpacity).toBeGreaterThan(models[2]?.starOpacity ?? Infinity);
+    expect(models[1]?.starOpacity).toBe(0);
+  });
+
   it("provides three distinct original production compositions", () => {
     expect(directions.map((direction) => direction.id)).toEqual([
       "verdant-atelier",
@@ -80,6 +95,9 @@ describe("selectable visual directions", () => {
     );
     expect(gardenVisualSignature(state)).not.toBe(
       gardenVisualSignature({ ...state, microGrowthOrdinal: state.microGrowthOrdinal + 1 }),
+    );
+    expect(gardenVisualSignature(state)).not.toBe(
+      gardenVisualSignature({ ...state, localDayPhase: "day" }),
     );
   });
 

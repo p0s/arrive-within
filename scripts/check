@@ -28,6 +28,7 @@ zsh scripts/test_xcodebuild_runtime_test_preflight.zsh
 
 print "== Public repository boundary =="
 node --test scripts/test_public_repository_archive_scanner.mjs
+node scripts/test_public_repository_link_policy.mjs
 node scripts/validate_public_repository.mjs
 
 print "== Privacy and data-flow boundary =="
@@ -57,7 +58,16 @@ python3 scripts/test_guided_content_release_boundary.py
 node scripts/validate_localizations.mjs
 
 print "== Swift domain, persistence, meditation, content, and bridge =="
-swift test --package-path Packages/ArriveWithinCore --no-parallel
+swiftpm_sandbox_arguments=()
+case "${ARRIVE_WITHIN_SWIFTPM_SANDBOX:-enabled}" in
+  enabled) ;;
+  disabled) swiftpm_sandbox_arguments=(--disable-sandbox) ;;
+  *)
+    print -u2 "ARRIVE_WITHIN_SWIFTPM_SANDBOX must be enabled or disabled."
+    exit 64
+    ;;
+esac
+swift test --package-path Packages/ArriveWithinCore --no-parallel "${swiftpm_sandbox_arguments[@]}"
 
 print "== Renderer =="
 pnpm --dir Renderer verify
@@ -74,18 +84,21 @@ print "== App Store screenshot source and output matrix =="
   node node_modules/typescript/bin/tsc --noEmit
   node --import tsx scripts/validate-plan.ts
   node --import tsx scripts/validate-narrative-alternatives.ts
+  node --import tsx scripts/test-capture-drift-policy.ts
   node --import tsx scripts/validate-captures.ts
   node --import tsx scripts/validate-export-matrix.ts
   node --import tsx scripts/verify-reproducibility.ts --check
 )
 
 print "== Public media =="
+node Marketing/PublicMedia/scripts/test-public-media-drift-policy.mjs
 node Marketing/PublicMedia/scripts/validate-public-media.mjs
 
 print "== Renderer milestone and variant visual matrix =="
 node Marketing/RendererVisualMatrix/scripts/validate-renderer-visual-matrix.mjs
 
 print "== Selectable Garden and sound design labs =="
+node Marketing/GardenDesignLab/scripts/test-garden-lab-drift-policy.mjs
 node Marketing/GardenDesignLab/scripts/validate-garden-design-lab.mjs
 zsh scripts/generate_sound_design_lab.sh
 node Marketing/SoundDesignLab/scripts/validate-sound-design-lab.mjs
