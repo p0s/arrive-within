@@ -7,15 +7,57 @@ import Foundation
   import Darwin
 #endif
 
+enum AppDataDirectoryPreparationError: Error, Equatable, Sendable {
+  case unsafeDirectory
+  case backupExclusionFailed
+}
+
 enum AppDataDirectoryPreparer {
   static func prepare(_ directory: URL, fileManager: FileManager = .default) throws {
-    try fileManager.createDirectory(
-      at: directory,
-      withIntermediateDirectories: true,
-      attributes: [
-        .protectionKey: FileProtectionType.completeUntilFirstUserAuthentication
-      ]
-    )
+    let normalized = directory.standardizedFileURL
+    guard normalized.isFileURL, normalized.path != "/" else {
+      throw AppDataDirectoryPreparationError.unsafeDirectory
+    }
+    var existingIsDirectory: ObjCBool = false
+    if fileManager.fileExists(atPath: normalized.path, isDirectory: &existingIsDirectory) {
+      let existingValues = try normalized.resourceValues(
+        forKeys: [.isDirectoryKey, .isSymbolicLinkKey]
+      )
+      guard existingIsDirectory.boolValue,
+        existingValues.isDirectory == true,
+        existingValues.isSymbolicLink != true
+      else {
+        throw AppDataDirectoryPreparationError.unsafeDirectory
+      }
+    } else {
+      try fileManager.createDirectory(
+        at: normalized,
+        withIntermediateDirectories: true,
+        attributes: [
+          .protectionKey: FileProtectionType.completeUntilFirstUserAuthentication
+        ]
+      )
+    }
+    let values = try normalized.resourceValues(forKeys: [.isDirectoryKey, .isSymbolicLinkKey])
+    guard values.isDirectory == true, values.isSymbolicLink != true else {
+      throw AppDataDirectoryPreparationError.unsafeDirectory
+    }
+    #if os(iOS)
+      try fileManager.setAttributes(
+        [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication],
+        ofItemAtPath: normalized.path
+      )
+    #endif
+    var backupValues = URLResourceValues()
+    backupValues.isExcludedFromBackup = true
+    var mutableDirectory = normalized
+    try mutableDirectory.setResourceValues(backupValues)
+    mutableDirectory.removeAllCachedResourceValues()
+    guard try mutableDirectory.resourceValues(
+      forKeys: [.isExcludedFromBackupKey]
+    ).isExcludedFromBackup == true else {
+      throw AppDataDirectoryPreparationError.backupExclusionFailed
+    }
   }
 }
 
