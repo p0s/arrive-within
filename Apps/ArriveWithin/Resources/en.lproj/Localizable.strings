@@ -264,11 +264,14 @@
 "recovery.confirm.maximum" = "Count time until the app closed";
 "recovery.discard" = "End without saving";
 
-"audio.notice.guided.pending" = "Guided practices are coming in a future update. Timer and Stopwatch remain available.";
-"audio.notice.unavailable" = "Sound is unavailable. Timing and local progress will continue.";
-"audio.notice.interrupted" = "Audio was interrupted. The practice is paused until you choose Continue.";
-"audio.notice.route.lost" = "The audio route changed. The practice is paused so sound never jumps to an unexpected output.";
-"audio.notice.system.reset" = "The audio system restarted. The practice is paused until you choose Continue.";
+"audio.notice.guided.pending" = "Guided narration is not available until the owner selects a lawful voice and the track passes bilingual review.";
+"audio.notice.unavailable" = "Sound is unavailable. Timing and local progress continue safely; no audio reliability is claimed.";
+"audio.notice.interrupted" = "Audio was interrupted. Timing continues; sound will return when iOS makes it available.";
+"audio.notice.route.lost" = "The audio output changed. Timing continues; sound will return on a safe output.";
+"audio.notice.system.reset" = "The audio system restarted. Timing continues while sound recovers.";
+"audio.notice.guided.interrupted" = "Audio was interrupted. This guided practice is paused until you choose Continue.";
+"audio.notice.guided.route.lost" = "The audio output changed. This guided practice is paused so sound cannot jump to an unexpected output.";
+"audio.notice.guided.system.reset" = "The audio system restarted. This guided practice is paused until you choose Continue.";
 "audio.notice.background.alert.denied" = "End alerts are not allowed. Timing remains accurate, but a bell cannot be guaranteed while the app is locked without active ambience.";
 "audio.notice.guided.catalog.unavailable" = "Guided practices are unavailable right now. Timer and Stopwatch remain available.";
 

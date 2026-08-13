@@ -98,6 +98,7 @@ print "== Renderer milestone and variant visual matrix =="
 node Marketing/RendererVisualMatrix/scripts/validate-renderer-visual-matrix.mjs
 
 print "== Selectable Garden and sound design labs =="
+node scripts/validate_original_audio_assets.mjs
 node Marketing/GardenDesignLab/scripts/test-garden-lab-drift-policy.mjs
 node Marketing/GardenDesignLab/scripts/validate-garden-design-lab.mjs
 zsh scripts/generate_sound_design_lab.sh

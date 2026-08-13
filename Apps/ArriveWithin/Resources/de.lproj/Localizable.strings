@@ -264,11 +264,14 @@
 "recovery.confirm.maximum" = "Zeit bis zum Schließen mitzählen";
 "recovery.discard" = "Ohne Speichern beenden";
 
-"audio.notice.guided.pending" = "Geführte Meditationen folgen mit einem späteren Update. Timer und Stoppuhr bleiben verfügbar.";
-"audio.notice.unavailable" = "Der Ton ist nicht verfügbar. Zeitmessung und lokaler Fortschritt laufen weiter.";
-"audio.notice.interrupted" = "Die Audioausgabe wurde unterbrochen. Die Praxis bleibt pausiert, bis du sie fortsetzt.";
-"audio.notice.route.lost" = "Der Audioausgang hat sich geändert. Die Praxis ist pausiert, damit der Ton nicht unerwartet anderswo erklingt.";
-"audio.notice.system.reset" = "Das Audiosystem wurde neu gestartet. Die Praxis bleibt pausiert, bis du sie fortsetzt.";
+"audio.notice.guided.pending" = "Geführte Meditationen sind verfügbar, sobald eine rechtlich geeignete Stimme gewählt und die Aufnahme zweisprachig geprüft wurde.";
+"audio.notice.unavailable" = "Der Ton ist nicht verfügbar. Zeitmessung und lokaler Fortschritt laufen sicher weiter; eine Audio-Zuverlässigkeit wird nicht behauptet.";
+"audio.notice.interrupted" = "Die Audioausgabe wurde unterbrochen. Die Zeitmessung läuft weiter; der Ton kehrt zurück, sobald iOS ihn wieder freigibt.";
+"audio.notice.route.lost" = "Der Audioausgang hat sich geändert. Die Zeitmessung läuft weiter; der Ton wird erst über einen sicheren Ausgang fortgesetzt.";
+"audio.notice.system.reset" = "Das Audiosystem wurde neu gestartet. Die Zeitmessung läuft weiter, während der Ton wiederhergestellt wird.";
+"audio.notice.guided.interrupted" = "Die Audioausgabe wurde unterbrochen. Diese geführte Praxis bleibt pausiert, bis du sie fortsetzt.";
+"audio.notice.guided.route.lost" = "Der Audioausgang hat sich geändert. Diese geführte Praxis bleibt pausiert, damit der Ton nicht unerwartet anderswo erklingt.";
+"audio.notice.guided.system.reset" = "Das Audiosystem wurde neu gestartet. Diese geführte Praxis bleibt pausiert, bis du sie fortsetzt.";
 "audio.notice.background.alert.denied" = "Abschlusshinweise sind nicht erlaubt. Die Zeitmessung bleibt korrekt, aber ohne aktiven Klangraum kann bei gesperrtem Gerät kein Klang garantiert werden.";
 "audio.notice.guided.catalog.unavailable" = "Geführte Meditationen sind derzeit nicht verfügbar. Timer und Stoppuhr bleiben verfügbar.";
 

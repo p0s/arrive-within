@@ -4,6 +4,17 @@ Date: 2026-08-09
 Status: Passed for the named local engineering boundary; whole scenario remains in progress
 Product tree: current uncommitted local source; Git lineage does not exist and is not claimed
 
+## 2026-08-13 physical correction
+
+The owner-observed build-9 run on a physical iPhone supersedes the earlier simulator-only bell claim: both shipped bell masters peaked around -41 dBFS and were not perceptibly audible, and the app aborted while scheduling the closing bell after the engine had stopped or rebuilt. The selected synthesis direction remains unchanged. The replacement masters add deterministic output gain with limiter headroom and are now fail-closed by a bundled peak/RMS validator:
+
+- `opening-bell-v1.wav`: `bb1b61b3c8ae54c53b9a9c2cb5e8bd30a4892b6dc7003ed352b8c0e3746cfe42`
+- `closing-bell-v1.wav`: `cb736817872448631b88f4769c4698cfa044e1f81cb9218d7a76fc58f37eab5b`
+
+The old hashes below remain as historical evidence for the original local run. Replacement physical audibility and lifecycle proof stays pending until bound to the next exact candidate.
+
+The replacement source was then exercised on the authorized physical iPhone with the real native audio controller. The first run reproduced an immediate opening-buffer abort and localized the missing invariant: player nodes had been connected without the loaded media's explicit format. After explicit per-layer connections, an accelerated three-minute flow allowed the four-second opening bell to finish and stop the engine, then crossed automatic completion through the rebuilt one-shot closing path. The exact focused UI test passed 1/1 with no crash. This is physical source-level lifecycle proof; human audibility and exact TestFlight-candidate proof remain pending.
+
 ## Outcome
 
 The timer now persists validated settings and session configuration, uses monotonic active time across preparation/pause/resume, clamps a suspended timer's completion to its exact target instead of over-crediting wake time, and completes idempotently. The rendered first-use path still completes a real 180-second model transition, restores deterministic growth after relaunch, and preserves it through native fallback.

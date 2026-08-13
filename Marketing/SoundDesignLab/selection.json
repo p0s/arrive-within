@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "owner-selected-bundled-baseline",
+  "status": "owner-selected-bundled-baseline-remastered-after-device-failure",
   "selection_date": "2026-08-13",
   "ambience_selection": {
     "id": "still-air-v1",
@@ -12,12 +12,12 @@
     "opening": {
       "id": "opening-bell-v1",
       "path": "Audio/opening-bell-v1.wav",
-      "sha256": "b94002d4a8fcbe8b916def7caede307bf846a8d2a7cb729237bd4d866f6baf44"
+      "sha256": "bb1b61b3c8ae54c53b9a9c2cb5e8bd30a4892b6dc7003ed352b8c0e3746cfe42"
     },
     "closing_and_interval": {
       "id": "closing-bell-v1",
       "path": "Audio/closing-bell-v1.wav",
-      "sha256": "f193545d6f5feff8bbea1da58c8cf2575cc45dde75a23cf779ce145e4b2a1f2b"
+      "sha256": "cb736817872448631b88f4769c4698cfa044e1f81cb9218d7a76fc58f37eab5b"
     }
   },
   "eligible_ambience_ids": [
@@ -34,7 +34,7 @@
     "bell-b-warm",
     "bell-c-airy"
   ],
-  "selection_effect": "The owner approved the exact already-bundled Still Air ambience and bell-v1 family as the shipping sound direction. No lab candidate is promoted and no app asset bytes change.",
-  "physical_qa": "pending exact-device loop, fatigue, route, interruption, lock/background, mix-balance, haptic, and energy review",
+  "selection_effect": "The selected Still Air ambience and bell-v1 synthesis direction remain unchanged. After the owner reported that build 9's approximately -41 dBFS bell peaks were inaudible on a physical iPhone, both bell masters received 29 dB of deterministic output gain with limiter headroom; no lab candidate was promoted and the ambience bytes remain unchanged.",
+  "physical_qa": "Build 9 failed owner-observed physical iPhone bell audibility and completion stability. Replacement source passes the exact physical iPhone accelerated opening plus stopped-engine closing completion path without a crash; it still requires exact-candidate human built-in-speaker audibility, route, interruption, lock/background, mix-balance, haptic, and energy review.",
   "release_exclusion": "Every sound-lab candidate remains outside the app bundle; only the three hash-bound baseline assets named here are selected."
 }

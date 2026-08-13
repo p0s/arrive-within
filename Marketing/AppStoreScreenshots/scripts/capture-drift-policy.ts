@@ -1,5 +1,5 @@
 export type SubmittedBuildCaptureFreeze = {
-  classification: "submitted-build-7-post-submission-source-change";
+  classification: "submitted-build-7-post-submission-source-changes";
   current_source_revision: string;
   changed_paths: string[];
   submitted_version: "1.0";
@@ -13,9 +13,12 @@ export type SubmittedBuildCaptureFreeze = {
 };
 
 export const POST_SUBMISSION_SOURCE_REVISION =
-  "00dcc81d10e5aa2470b6add166df50e6ca01c0cdf9598f75e4f9250a6cda6532";
+  "b5d049396d36e9e5458395dde9e9da077dc56ebad97782442d12de510db9c97c";
 
 export const POST_SUBMISSION_CHANGED_PATHS = [
+  "Apps/ArriveWithin/Resources/Audio/audio-assets.json",
+  "Apps/ArriveWithin/Resources/Audio/closing-bell-v1.wav",
+  "Apps/ArriveWithin/Resources/Audio/opening-bell-v1.wav",
   "Apps/ArriveWithin/Resources/de.lproj/Localizable.strings",
   "Apps/ArriveWithin/Resources/en.lproj/Localizable.strings",
   "Apps/ArriveWithin/Sources/AppDependencies.swift",
@@ -41,6 +44,7 @@ export const POST_SUBMISSION_CHANGED_PATHS = [
   "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/ProgressionReducer.swift",
   "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/WeeklyReminderSchedule.swift",
   "Packages/ArriveWithinCore/Sources/ArriveWithinGardenBridge/GardenDescription.swift",
+  "Packages/ArriveWithinCore/Sources/ArriveWithinMeditation/AudioLifecyclePolicy.swift",
   "Renderer/dist/renderer-manifest.json",
   "Renderer/dist/renderer.js",
   "project.yml",
@@ -52,6 +56,7 @@ const REQUIRED_RATIONALE_FRAGMENTS = [
   "must not be replaced, cancelled, edited, or resubmitted",
   "post-submission Garden",
   "not represented by the submitted App Store screenshots",
+  "timer audio correction",
   "submitted App Store listing and screenshots remained untouched",
   "IAP is separate and not attached",
   "next editable metadata opportunity",
@@ -63,7 +68,7 @@ export function isExactSubmittedBuildCaptureFreeze(
   changedPaths: string[],
 ): boolean {
   return Boolean(
-    attestation?.classification === "submitted-build-7-post-submission-source-change" &&
+    attestation?.classification === "submitted-build-7-post-submission-source-changes" &&
       attestation.current_source_revision === POST_SUBMISSION_SOURCE_REVISION &&
       currentSourceRevision === POST_SUBMISSION_SOURCE_REVISION &&
       JSON.stringify(attestation.changed_paths) === JSON.stringify(POST_SUBMISSION_CHANGED_PATHS) &&

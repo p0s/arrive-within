@@ -165,23 +165,31 @@ struct MeditationSessionTests {
     #expect(events.count == 1)
   }
 
-  @Test("Unsafe audio events pause and never resume without the user")
+  @Test("Timer timing survives audio loss while guided narration pauses safely")
   func interruptionAndRoutePolicy() throws {
     #expect(
-      AudioLifecyclePolicy.actions(for: .running, event: .interruptionBegan)
+      AudioLifecyclePolicy.actions(for: .timer, phase: .running, event: .interruptionBegan)
+        == [.stopPlayback, .rebuildPlayback]
+    )
+    #expect(
+      AudioLifecyclePolicy.actions(for: .timer, phase: .running, event: .interruptionEnded)
+        == [.resumePlayback]
+    )
+    #expect(
+      AudioLifecyclePolicy.actions(for: .guided, phase: .running, event: .interruptionBegan)
         == [.pauseSession, .stopPlayback, .waitForUserResume]
     )
     #expect(
-      AudioLifecyclePolicy.actions(for: .paused, event: .interruptionEnded)
+      AudioLifecyclePolicy.actions(for: .guided, phase: .paused, event: .interruptionEnded)
         == [.waitForUserResume]
     )
     #expect(
-      AudioLifecyclePolicy.actions(for: .running, event: .outputRouteLost)
-        == [.pauseSession, .stopPlayback, .waitForUserResume]
+      AudioLifecyclePolicy.actions(for: .stopwatch, phase: .running, event: .outputRouteLost)
+        == [.stopPlayback, .rebuildPlayback]
     )
     #expect(
-      AudioLifecyclePolicy.actions(for: .running, event: .mediaServicesReset)
-        == [.pauseSession, .stopPlayback, .rebuildPlayback, .waitForUserResume]
+      AudioLifecyclePolicy.actions(for: .timer, phase: .running, event: .mediaServicesReset)
+        == [.stopPlayback, .rebuildPlayback, .resumePlayback]
     )
   }
 
