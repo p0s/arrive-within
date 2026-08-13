@@ -12,7 +12,7 @@ export type SubmittedBuildCaptureFreeze = {
 };
 
 export const POST_PUBLICATION_GARDEN_SOURCE_REVISION =
-  "81baf10ef17ab940e3b92fc3f3b1b167010ea43ec4ecee5e48269bfb67fce2d0";
+  "6f7204eb86bada8115bda223482a5e5861e59cd3f996d43d3f95bd672df18795";
 
 export const POST_PUBLICATION_GARDEN_CHANGED_PATHS = [
   "Apps/ArriveWithin/Sources/AppModel.swift",

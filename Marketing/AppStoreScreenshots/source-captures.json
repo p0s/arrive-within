@@ -9,7 +9,7 @@
   "source_manifest_path": "capture-source-manifest.json",
   "post_capture_change": {
     "classification": "submitted-build-7-post-publication-garden-change",
-    "current_source_revision": "81baf10ef17ab940e3b92fc3f3b1b167010ea43ec4ecee5e48269bfb67fce2d0",
+    "current_source_revision": "6f7204eb86bada8115bda223482a5e5861e59cd3f996d43d3f95bd672df18795",
     "changed_paths": [
       "Apps/ArriveWithin/Sources/AppModel.swift",
       "Apps/ArriveWithin/Sources/GuidedLibraryView.swift",
