@@ -27,6 +27,7 @@ print "== Guarded XCTest command classification =="
 zsh scripts/test_xcodebuild_runtime_test_preflight.zsh
 
 print "== Public repository boundary =="
+node scripts/test_public_repository_link_policy.mjs
 node scripts/validate_public_repository.mjs
 
 print "== Privacy and data-flow boundary =="

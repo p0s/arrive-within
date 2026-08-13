@@ -7,6 +7,15 @@
 - Acceptance/story/scenario IDs:
 - Deliberately out of scope:
 
+## Change workflow
+
+- [ ] Normal product/code work is on a topic branch for review, or the maintainer-approved documentation/emergency exception is explained below.
+- [ ] Commits are cohesive, reviewable, and limited to this outcome.
+- [ ] The public-tree, privacy, secret-signature, and Git-history boundaries passed before push.
+- [ ] No private path/evidence, credential, signing value, personal identifier, or uncertain-rights asset is included.
+- [ ] No GitHub Actions workflow is added or enabled without separate owner authorization.
+- [ ] Any TestFlight, App Store, deployment, tag, release, or repository-setting mutation has separate explicit authorization and is reported independently.
+
 ## Verification
 
 - [ ] Smallest relevant automated tests pass.
