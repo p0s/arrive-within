@@ -1,13 +1,15 @@
+export const repositoryURL = "https://github.com/p0s/arrive-within";
+
 export const siteContent = {
   en: {
     lang: "en",
     locale: "en-US",
     languageName: "English",
     switchLabel: "DE",
-    nav: { home: "Home", practice: "Practice", privacy: "Privacy", openSource: "Open source", support: "Support" },
+    nav: { home: "Home", practice: "Practice", privacy: "Privacy", openSource: "Open source", support: "Support", source: "Source on GitHub" },
     footer: {
       statement: "A private meditation garden for iPhone and iPad.",
-      status: "Arrive Within 1.0 is in local completion. Public availability has not been announced.",
+      status: "The source is public. App Store availability has not been announced.",
       copyright: "© 2026 Arrive Within contributors",
     },
     home: {
@@ -18,13 +20,11 @@ export const siteContent = {
       intro: "A dependable timer or an open-ended sit. Every qualifying practice becomes permanent, visible growth—without streak pressure, accounts, ads, or subscriptions.",
       primaryAction: "See how it grows",
       secondaryAction: "Read the privacy promise",
-      visualNote: "Actual Arrive Within UI · deterministic safe sample data",
       media: {
         kicker: "One garden, faithfully grown",
         title: "See practice become a living world.",
-        body: "Six deterministic states from the real Arrive Within renderer show the same garden from before the first practice through practice day 30. The silent film uses safe sample state, contains no generated interpolation, and makes no physical-device performance claim.",
-        label: "Silent garden-growth film showing six deterministic stages from before the first practice to practice day 30.",
-        caption: "Real renderer · deterministic safe sample state · 9.73 seconds · no audio",
+        body: "Follow the same garden from before the first practice through day 30.",
+        label: "Garden-growth film showing the same garden from before the first practice through practice day 30.",
         fallback: "Open the garden-growth film",
       },
       growth: {
@@ -56,8 +56,8 @@ export const siteContent = {
       open: {
         kicker: "Built in the open",
         title: "One canonical app, ready for public collaboration.",
-        body: "The source, deterministic renderer, content contracts, tests, website, and release evidence are being prepared as one public-safe repository. No private overlay is required to build the real product.",
-        link: "Open-source commitment",
+        body: "The source, deterministic renderer, content contracts, tests, website, and release evidence live together in one public repository. No private overlay is required to build the real product.",
+        link: "Explore the open-source project",
       },
     },
     support: {
@@ -95,18 +95,18 @@ export const siteContent = {
     },
     openSourcePage: {
       metaTitle: "Open source — Arrive Within",
-      metaDescription: "How Arrive Within is being prepared as one canonical public open-source iPhone and iPad app.",
+      metaDescription: "Explore and contribute to the canonical public source for the Arrive Within iPhone and iPad app.",
       eyebrow: "Open-source commitment",
-      title: "The public repository will be the real product.",
-      intro: "Arrive Within is intended to become a canonical public repository whose tracked history is safe to inspect from the first commit.",
+      title: "The public repository is the real product.",
+      intro: "Arrive Within is developed in one canonical public repository whose tracked history is safe to inspect from the first commit.",
       principles: [
-        { title: "No demo fork", text: "The native app, renderer, content contracts, website, tests, and release evidence live together. There is no private product implementation behind a public shell." },
+        { title: "No demo fork", text: "The native app, renderer, content contracts, website, tests, and release evidence live together in this repository. There is no private product behind a public shell." },
         { title: "Reproducible evidence", text: "Deterministic fixtures and public-safe ledgers separate local tests, simulator proof, physical devices, CloudKit, TestFlight, App Store, and deployment readback." },
         { title: "Rights before assets", text: "No copied reference art, uncertain voice material, proprietary behavior, or unreviewed media enters the public history." },
         { title: "Privacy as architecture", text: "The app is local-first, has no tracking or custom user-data backend, and keeps the renderer outside product authority." },
       ],
-      repoLabel: "Repository publication is pending",
-      repoNote: "The canonical public location will be added only after an authorized publication and independent readback.",
+      repoLabel: "View source on GitHub",
+      repoNote: "Browse the app, renderer, tests, contributor guides, and public evidence, or propose a focused improvement.",
     },
   },
   de: {
@@ -114,10 +114,10 @@ export const siteContent = {
     locale: "de-DE",
     languageName: "Deutsch",
     switchLabel: "EN",
-    nav: { home: "Start", practice: "Meditieren", privacy: "Datenschutz", openSource: "Open Source", support: "Hilfe" },
+    nav: { home: "Start", practice: "Meditieren", privacy: "Datenschutz", openSource: "Open Source", support: "Hilfe", source: "Quellcode auf GitHub" },
     footer: {
       statement: "Ein privater Meditationsgarten für iPhone und iPad.",
-      status: "Arrive Within 1.0 wird lokal fertiggestellt. Eine öffentliche Verfügbarkeit wurde noch nicht angekündigt.",
+      status: "Der Quellcode ist öffentlich. Eine Verfügbarkeit im App Store wurde noch nicht angekündigt.",
       copyright: "© 2026 Mitwirkende von Arrive Within",
     },
     home: {
@@ -128,13 +128,11 @@ export const siteContent = {
       intro: "Ein verlässlicher Timer oder eine offene Stoppuhr. Jede qualifizierende Praxis wird zu dauerhaftem, sichtbarem Wachstum – ohne Streak-Druck, Konto, Werbung oder Abo.",
       primaryAction: "Sieh, wie der Garten wächst",
       secondaryAction: "Lies unser Datenschutzversprechen",
-      visualNote: "Echte Arrive Within Oberfläche · sichere deterministische Beispieldaten",
       media: {
         kicker: "Ein Garten, verlässlich gewachsen",
         title: "Sieh, wie Praxis zu einer lebendigen Welt wird.",
-        body: "Sechs deterministische Zustände aus dem echten Arrive Within Renderer zeigen denselben Garten vor der ersten Meditation bis zum 30. Praxistag. Der stumme Film nutzt sichere Beispieldaten, enthält keine generierte Zwischenanimation und macht keine Aussage zur Leistung auf echten Geräten.",
-        label: "Stummer Gartenfilm mit sechs deterministischen Stufen vor der ersten Meditation bis zum 30. Praxistag.",
-        caption: "Echter Renderer · sichere deterministische Beispieldaten · 9,73 Sekunden · ohne Ton",
+        body: "Begleite denselben Garten von vor der ersten Meditation bis zum 30. Praxistag.",
+        label: "Gartenfilm, der denselben Garten von vor der ersten Meditation bis zum 30. Praxistag zeigt.",
         fallback: "Gartenfilm öffnen",
       },
       growth: {
@@ -166,8 +164,8 @@ export const siteContent = {
       open: {
         kicker: "Offen entwickelt",
         title: "Eine echte App, vorbereitet für öffentliche Zusammenarbeit.",
-        body: "Quellcode, deterministischer Renderer, Inhaltsverträge, Tests, Website und Freigabenachweise werden als ein öffentlich sicheres Repository vorbereitet. Für das echte Produkt ist keine private Zusatzschicht nötig.",
-        link: "Unser Open-Source-Versprechen",
+        body: "Quellcode, deterministischer Renderer, Inhaltsverträge, Tests, Website und Freigabenachweise leben gemeinsam in einem öffentlichen Repository. Für das echte Produkt ist keine private Zusatzschicht nötig.",
+        link: "Entdecke das Open-Source-Projekt",
       },
     },
     support: {
@@ -205,18 +203,18 @@ export const siteContent = {
     },
     openSourcePage: {
       metaTitle: "Open Source — Arrive Within",
-      metaDescription: "Wie Arrive Within als eine kanonische öffentliche Open-Source-App für iPhone und iPad vorbereitet wird.",
+      metaDescription: "Entdecke den kanonischen öffentlichen Quellcode der Arrive Within App für iPhone und iPad und wirke daran mit.",
       eyebrow: "Open-Source-Versprechen",
-      title: "Das öffentliche Repository wird das echte Produkt.",
-      intro: "Arrive Within soll ein kanonisches öffentliches Repository werden, dessen gesamte nachverfolgte Historie ab dem ersten Commit sicher einsehbar ist.",
+      title: "Das öffentliche Repository ist das echte Produkt.",
+      intro: "Arrive Within wird in einem kanonischen öffentlichen Repository entwickelt, dessen gesamte nachverfolgte Historie ab dem ersten Commit sicher einsehbar ist.",
       principles: [
-        { title: "Kein Demo-Fork", text: "Native App, Renderer, Inhaltsverträge, Website, Tests und Freigabenachweise gehören zusammen. Hinter einer öffentlichen Hülle liegt keine private Produktimplementierung." },
+        { title: "Kein Demo-Fork", text: "Native App, Renderer, Inhaltsverträge, Website, Tests und Freigabenachweise gehören zu diesem Repository. Hinter einer öffentlichen Hülle liegt kein privates Produkt." },
         { title: "Reproduzierbare Nachweise", text: "Deterministische Fixtures und öffentlich sichere Ledgers trennen lokale Tests, Simulator, echte Geräte, CloudKit, TestFlight, App Store und Deployment-Readback." },
         { title: "Rechte vor Assets", text: "Kopierte Referenzkunst, unklare Stimmen, proprietäres Verhalten und ungeprüfte Medien gelangen nicht in die öffentliche Historie." },
         { title: "Datenschutz als Architektur", text: "Die App ist lokal ausgerichtet, hat kein Tracking und keinen eigenen Nutzerdaten-Server; der Renderer besitzt keine Produktwahrheit." },
       ],
-      repoLabel: "Veröffentlichung des Repositorys steht aus",
-      repoNote: "Der kanonische öffentliche Ort wird erst nach einer autorisierten Veröffentlichung und unabhängigem Readback ergänzt.",
+      repoLabel: "Quellcode auf GitHub ansehen",
+      repoNote: "Durchsuche App, Renderer, Tests, Leitfäden und öffentliche Nachweise oder schlage eine gezielte Verbesserung vor.",
     },
   },
 };

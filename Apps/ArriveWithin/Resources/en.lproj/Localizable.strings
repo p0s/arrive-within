@@ -29,9 +29,6 @@
 "garden.renderer.native" = "Native garden view";
 "garden.renderer.unavailable" = "The living view paused. Your progress is safe.";
 "garden.renderer.web" = "Living 3D garden";
-"garden.renderer.diagnostics.prepare" = "Prepare renderer diagnostics";
-"garden.renderer.diagnostics.share" = "Share renderer diagnostics";
-"garden.renderer.diagnostics.detail" = "Only renderer status and rounded timings — never reflections or practice history.";
 
 "settings.language.title" = "Language";
 "settings.language.label" = "App language";
@@ -258,7 +255,7 @@
 "data.delete.confirm.action" = "Delete everything";
 "data.delete.confirm.body" = "This cannot be undone. Copies you deliberately shared outside Arrive Within are not controlled by the app.";
 "data.delete.complete" = "All local Arrive Within data was deleted.";
-"data.delete.failed" = "Deletion could not finish. Arrive Within has not claimed success.";
+"data.delete.failed" = "Deletion could not finish. Some local data may still be present.";
 "data.action.sessionActive" = "Finish the active practice before exporting, resetting, or deleting data.";
 
 "recovery.title" = "Continue your practice?";
@@ -267,17 +264,17 @@
 "recovery.confirm.maximum" = "Count time until the app closed";
 "recovery.discard" = "End without saving";
 
-"audio.notice.guided.pending" = "Guided narration is not available until the owner selects a lawful voice and the track passes bilingual review.";
-"audio.notice.unavailable" = "Sound is unavailable. Timing and local progress continue safely; no audio reliability is claimed.";
+"audio.notice.guided.pending" = "Guided practices are coming in a future update. Timer and Stopwatch remain available.";
+"audio.notice.unavailable" = "Sound is unavailable. Timing and local progress will continue.";
 "audio.notice.interrupted" = "Audio was interrupted. The practice is paused until you choose Continue.";
 "audio.notice.route.lost" = "The audio route changed. The practice is paused so sound never jumps to an unexpected output.";
 "audio.notice.system.reset" = "The audio system restarted. The practice is paused until you choose Continue.";
 "audio.notice.background.alert.denied" = "End alerts are not allowed. Timing remains accurate, but a bell cannot be guaranteed while the app is locked without active ambience.";
-"audio.notice.guided.catalog.unavailable" = "The bundled guided-practice catalogue could not be verified. Timer and stopwatch remain available.";
+"audio.notice.guided.catalog.unavailable" = "Guided practices are unavailable right now. Timer and Stopwatch remain available.";
 
 "guided.library.title" = "Guided practices";
 "guided.library.browse" = "Browse guided practices";
-"guided.library.detail" = "Choose by purpose or duration. Every approved track stays on this device.";
+"guided.library.detail" = "Choose by purpose or duration. Available tracks stay on this device.";
 "guided.catalog.count.format" = "%d practices";
 "guided.catalog.unavailable" = "The bundled catalogue is unavailable.";
 "guided.search.prompt" = "Title or purpose";
@@ -305,8 +302,8 @@
 "guided.language.en" = "English";
 "guided.language.de" = "Deutsch";
 "guided.offline.ready" = "Available offline";
-"guided.offline.pending" = "Narration awaiting approval";
-"guided.pending.explanation" = "The complete script is present, but playback stays disabled until the voice, rights, audio, transcript, and bilingual review gates pass.";
+"guided.offline.pending" = "Narration coming soon";
+"guided.pending.explanation" = "Guided practices are coming in a future update. Timer and Stopwatch are available now.";
 "guided.safety.nonclinical" = "A meditation tool, not medical treatment. Keep your eyes open or stop whenever that is safer.";
 "guided.favorite.on" = "Favorite";
 "guided.recent" = "Recently practiced";

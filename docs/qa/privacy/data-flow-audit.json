@@ -3,14 +3,15 @@
   "status": "passed-source-intent",
   "generated_at": null,
   "generation_time_policy": "omitted-for-byte-reproducibility",
-  "source_sha256": "92a3a23a89a60a36ce237222fa0c6328892034564c400e22cd3fc8207452dd4f",
-  "checks_total": 39,
-  "checks_passed": 39,
+  "source_sha256": "90452abf7f62ee4398c09105981a77f556c524c56f24d5f564937a6b1280729e",
+  "checks_total": 40,
+  "checks_passed": 40,
   "checks_failed": 0,
   "verified_boundaries": [
     "future feedback source isolated and absent from the V1 app target",
     "V1 endpoint absent and local-only store selected",
     "no tracking, analytics, ATT, clipboard, or automatic support upload path",
+    "durable private app data excluded from backup with launch-time readback",
     "private CloudKit code isolated and private-scope only",
     "renderer and website network isolation",
     "conservative privacy manifest and bilingual permission-source intent"

@@ -13,10 +13,8 @@ enum GardenRenderStyle: String, Codable, CaseIterable, Identifiable, Sendable {
 }
 
 enum PremiumGardenProduct {
-  // This source identifier is intentionally unconfigured in App Store Connect.
-  // Creating and pricing the product remains a separate release operation.
   static let id = "com.philipps.arrivewithin.garden.materialstyles"
-  static let proposedUSDPrice = "$4.99"
+  static let testDisplayPrice = "$4.99"
 }
 
 struct PremiumGardenAccessSnapshot: Equatable, Sendable {

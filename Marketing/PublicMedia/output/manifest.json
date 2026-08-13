@@ -11,6 +11,7 @@
       "Renderer/public/garden.css",
       "Renderer/src/bridge.ts",
       "Renderer/src/main.ts",
+      "Renderer/src/render-style.ts",
       "Renderer/src/resilience.ts",
       "Renderer/src/scene.ts",
       "Renderer/src/seeded.ts",
@@ -22,8 +23,8 @@
       "Renderer/src/world-model.ts",
       "Shared/GardenState.schema.json"
     ],
-    "renderer_source_sha256": "9867787a40ba0220f23f90270b996bc60d62dd3ea2d791c6c58ed96b4c8b9f31",
-    "garden_state_schema_sha256": "2194a09d0511522423eafe62724e1d96a450f3847e49cb872b1e3383944331a3",
+    "renderer_source_sha256": "ceb4332aecd2c734563b94486e8a877ee10fd5cdb22692bc93c21345b3f8ef27",
+    "garden_state_schema_sha256": "a73eb83fd1326b3c113663db54005a93024862fa630d8f92a4f3cf1fecc08fee",
     "product_state": "safe synthetic GardenState values accepted by the shipping typed bridge and rendered by the real bundled Three.js renderer"
   },
   "capture": {
@@ -46,7 +47,7 @@
         "id": "00-seed",
         "label": "Before the first practice",
         "path": "output/frames/01-00-seed.png",
-        "sha256": "8ad8ddc0dbb04f8cb73ae7456ab6b2b6aac9aa423b14a8a6d20fdb8e640b1d7d",
+        "sha256": "ef6c01ec8a917727dd4e38a1d80adf414b5ba532bf2cd16e469e1f0a6bd0940d",
         "state_sha256": "cc05c4ab40d068396493f6a746b0f137f7b8ce4e4353d550e01090bac0d2fb2f",
         "journey_day": 0,
         "highest_milestone": 0
@@ -55,7 +56,7 @@
         "id": "01-roots",
         "label": "Practice day 1 · first permanent growth",
         "path": "output/frames/02-01-roots.png",
-        "sha256": "66100de26a2b5be92d5ec39331bfb957af59f2ab477630fe8eee865db6ed89a1",
+        "sha256": "cee4555714be09df36345d1dc19cbd2acebe9159bc09c98e6496cab207f3dba3",
         "state_sha256": "d8d09d5960fdefc4979affec6296b10be20b583318b6b5a14997832e9d138efd",
         "journey_day": 1,
         "highest_milestone": 0
@@ -64,7 +65,7 @@
         "id": "05-water",
         "label": "Practice day 5 · Earth II",
         "path": "output/frames/03-05-water.png",
-        "sha256": "b903bebc668ef44cbad45194b3c8c594c9e49265c1d65057101f74364b765d15",
+        "sha256": "aa47d8a5f73b9bd1ccbf268a5f8229f1d326d5e2207dc0afcf693df81bba35a2",
         "state_sha256": "c86bccecbaf6e82f17b07fda2ceeaa255bb76eebd03ccfb7785a2b1bd18dddf4",
         "journey_day": 5,
         "highest_milestone": 2
@@ -73,7 +74,7 @@
         "id": "09-warmth",
         "label": "Practice day 9 · Water I",
         "path": "output/frames/04-09-warmth.png",
-        "sha256": "1256e940f72ab5f3440630d02682abe7a2eca1e82691b211ab3c4c0f4a9e2910",
+        "sha256": "98461f6abbb28606898932b2758679b19fc8ed0bc376077015f163575af78742",
         "state_sha256": "e2829345f1b102ae2d9a1e8edca09bc78bebb61b3fdb191026366ca5bb7d7727",
         "journey_day": 9,
         "highest_milestone": 4
@@ -82,7 +83,7 @@
         "id": "15-sanctuary",
         "label": "Practice day 15 · Fire I",
         "path": "output/frames/05-15-sanctuary.png",
-        "sha256": "52e340dc48a2cd478d70a23a630e92b4b7b8180d09edea59d3860b0b8f92be58",
+        "sha256": "91b2ac70aeacfb866ce9512a73966a07551e050985f767d8282120feb545a2e1",
         "state_sha256": "c5cec1c8ae690adaacde73a2e63508a02cef518f1412664fb53cf0bf34f47a78",
         "journey_day": 15,
         "highest_milestone": 7
@@ -91,7 +92,7 @@
         "id": "30-living-world",
         "label": "Practice day 30",
         "path": "output/frames/06-30-living-world.png",
-        "sha256": "3ec058af541fde0ee90d5ac6b42d08491045a818b1b992825e61c71db59d0a12",
+        "sha256": "45aefeff0ec7a39cd21989147a96021a568fdda2e5ee0f81ef5f17ca3be5469c",
         "state_sha256": "4e3eb9407b34e676f6b4b040ae77837308e7f6641f9dc848c0164c8ce55186b4",
         "journey_day": 30,
         "highest_milestone": 15
@@ -113,25 +114,25 @@
     "node": "v26.7.0",
     "playwright": "1.61.1",
     "sharp": "0.35.3",
-    "ffmpeg": "ffmpeg version 8.1.2 Copyright (c) 2000-2026 the FFmpeg developers",
-    "ffprobe": "ffprobe version 8.1.2 Copyright (c) 2007-2026 the FFmpeg developers"
+    "ffmpeg": "ffmpeg version 9.0.1 Copyright (c) 2000-2026 the FFmpeg developers",
+    "ffprobe": "ffprobe version 9.0.1 Copyright (c) 2007-2026 the FFmpeg developers"
   },
   "output": {
     "output/garden-growth-v1.mp4": {
-      "bytes": 874509,
-      "sha256": "6e9e21f5ac1beaf01394fd523ad44cd9a146a8fb34e9a05a652ff1ee15e414e7"
+      "bytes": 923354,
+      "sha256": "86d124074309b067d939e70aec077c324efe801d37a42f7f22b0d8fcb17c7edd"
     },
     "output/garden-growth-poster.png": {
-      "bytes": 141778,
-      "sha256": "98f5ee70618a292cbde409e83f01786afed0e84e3ecc0e70aacaec12e2a8f8e1"
+      "bytes": 173997,
+      "sha256": "6f6b87dbd6a2d25c04a14b99bb2e019807f01c1ada60a4d3ae37fba2fa5f8b49"
     },
     "output/social-preview.png": {
-      "bytes": 182591,
-      "sha256": "f345b19a378ca431ca51ea8785eb352865023ed4e84b4ada8ecbbd10bce1511f"
+      "bytes": 187416,
+      "sha256": "4de29448720a226dcaa73baf572c331c4158a53298f7a73be19c4759a83ae005"
     },
     "output/growth-contact-sheet.jpg": {
-      "bytes": 68607,
-      "sha256": "1b2d2b16146e7470095a1e7dc0dd00181eed571030b555d97f6fd1c3ec72b1bc"
+      "bytes": 65389,
+      "sha256": "000f806077ca062c784308fe2d12e413602c3d8f8c618b85ab00af6d5be97a2b"
     }
   },
   "rights": {

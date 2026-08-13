@@ -1,6 +1,6 @@
 # Local App Store screenshot matrix
 
-Status: Current-source Garden/growth set mechanically verified, visually approved, attached to version 1.0, and checksum-read back from App Store Connect.
+Status: Submitted-build-7 Garden/growth set mechanically verified, visually approved, attached to version 1.0, and checksum-read back from App Store Connect. Post-publication Garden source is proven separately and is not represented as a recapture of these images.
 
 ## Frozen output
 
@@ -22,7 +22,7 @@ The inputs are attachments from the guarded `ArriveWithinMarketingCaptureUITests
 
 The capture-source revision is `720deeed8719b680ebe4359e1f572565780cc1015ce4ab0d83cb530335bfb405`. The selected test wave ingested exactly five safe actual-UI states per locale/device set (20 attachments total): Garden hero, Garden seed, Journey calendar, Journey milestones, and Journal. It binds version 1.0 (6), the Garden-first full-canvas composition, the reduced Twilight fixed-fill lighting, the hardened local-only Journal/export behavior, and the zero-audio Practice behavior; it contains no guided-narration or CloudKit-convergence marketing state.
 
-The current-source validator also binds the exact six-file post-capture delta. Three files advance nonvisual legal packaging/build metadata to build 7; the other three correct the renderer-to-Swift inventory-diagnostics event and rebuilt bundle manifest. The latter changes observability only—no rendering, layout, camera, lighting, animation, product state, localization, or captured pixel—so a narrow deterministic attestation preserves the approved captures without pretending they were recaptured after that diagnostic fix.
+The capture validator binds the retained images to their original source manifest and the exact submitted build. After submission, the Garden and premium-style source intentionally changed visually. Because version 1.0 build 7 was already `WAITING_FOR_REVIEW`, neither the submitted build nor its 24 live images was replaced, cancelled, edited, or resubmitted. A narrow deterministic freeze accepts only the current fixed source digest and exact 28-path delta; unit controls reject a near-match digest, any extra path, another build, a softened mutation boundary, or a missing deferred action. The separate `READY_TO_SUBMIT` IAP is not attached to that submission. The new Garden's rendered QA is separate proof, and fresh current-source App Store captures remain required at the next editable metadata opportunity.
 
 ## Deterministic export proof
 

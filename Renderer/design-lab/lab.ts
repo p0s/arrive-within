@@ -1,4 +1,5 @@
 import { createGardenScene, type GardenRendererDiagnostics } from "../src/scene";
+import { resolveGardenRenderStyle } from "../src/render-style";
 import type { GardenDayPhase, GardenState } from "../src/types";
 import type { GardenVisualDirection, GardenVisualDirectionID } from "../src/visual-design";
 import { paperSanctuary } from "../src/visual-directions/paper-sanctuary";
@@ -19,6 +20,7 @@ declare global {
       setPreset(preset: LabPreset): void;
       setMilestone(milestone: number): void;
       setDayPhase(phase: GardenDayPhase): void;
+      setReduceMotion(reduced: boolean): void;
       resetView(): void;
       diagnostics(): GardenRendererDiagnostics;
       ready: boolean;
@@ -33,9 +35,12 @@ const directions: Record<GardenVisualDirectionID, GardenVisualDirection> = {
 };
 const query = new URLSearchParams(location.search);
 const requestedDirection = query.get("direction") as GardenVisualDirectionID | null;
-const direction = requestedDirection === null ? verdantAtelier : directions[requestedDirection];
+const requestedStyle = query.get("style");
+const direction = requestedStyle === null
+  ? requestedDirection === null ? verdantAtelier : directions[requestedDirection]
+  : resolveGardenRenderStyle(requestedStyle);
 if (direction === undefined) throw new Error("Unknown Garden design direction.");
-const reduceMotion = query.get("reduceMotion") === "1" || matchMedia("(prefers-reduced-motion: reduce)").matches;
+let reduceMotion = query.get("reduceMotion") === "1" || matchMedia("(prefers-reduced-motion: reduce)").matches;
 const initialPreset = parsePreset(query.get("preset"));
 let localDayPhase = parseDayPhase(query.get("phase"));
 document.documentElement.dataset.theme = query.get("theme") === "light" ? "light" : "dark";
@@ -73,6 +78,11 @@ const api = {
   setDayPhase(phase: GardenDayPhase): void {
     localDayPhase = phase;
     currentState = { ...currentState, localDayPhase };
+    scene.update(currentState);
+  },
+  setReduceMotion(reduced: boolean): void {
+    reduceMotion = reduced;
+    currentState = { ...currentState, reduceMotion };
     scene.update(currentState);
   },
   resetView(): void { scene.resetView(); },

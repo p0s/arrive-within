@@ -129,7 +129,6 @@ final class AppModel {
   var rendererGeneration = 0
   var rendererSelectedQuality: GardenQualityHint = .balanced
   var rendererRecoveryCount = 0
-  var rendererDiagnosticsExportURL: URL?
 
   @ObservationIgnored private let dependencies: AppDependencies
   @ObservationIgnored private var ticker: Task<Void, Never>?
@@ -1109,28 +1108,10 @@ final class AppModel {
     }
   }
 
-  func prepareRendererDiagnosticsExport() {
-    let snapshot = rendererDiagnosticsRecorder.snapshot(
-      rendererReady: rendererIsReady,
-      nativeFallbackActive: forceNativeGarden || rendererFailureMessage != nil,
-      selectedQuality: rendererSelectedQuality,
-      contextRecoveryCount: rendererRecoveryCount
-    )
-    let url = FileManager.default.temporaryDirectory
-      .appending(path: "arrive-within-renderer-diagnostics.json")
-    do {
-      try RendererDiagnosticsExporter.export(snapshot, to: url)
-      rendererDiagnosticsExportURL = url
-    } catch {
-      rendererDiagnosticsExportURL = nil
-    }
-  }
-
   func retryRenderer() {
     rendererIsReady = false
     rendererFailureMessage = nil
     forceNativeGarden = false
-    rendererDiagnosticsExportURL = nil
     rendererGeneration += 1
   }
 

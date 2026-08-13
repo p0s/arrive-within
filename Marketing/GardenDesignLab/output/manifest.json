@@ -1527,6 +1527,19 @@
       }
     ]
   },
+  "post_generation_change": {
+    "classification": "selected-garden-design-lab-regeneration-deferred",
+    "changed_paths": [
+      "Renderer/src/scene.ts",
+      "Renderer/src/visual-design.ts",
+      "Renderer/design-lab/lab.ts"
+    ],
+    "selected_direction": "twilight-refuge",
+    "fresh_browser_matrix": "passed-60-render-phone-ipad-day-night-style-matrix",
+    "current_garden_proof": "separate-provenance-bound-rendered-artifacts-and-deterministic-orbit-diagnostics",
+    "valid_until": "next-successful-current-source-garden-lab-regeneration",
+    "rationale": "The retained historical three-direction selection lab remains byte-bound selection evidence but is not current Garden proof. The fresh 60-render browser matrix passed across five styles, three device proportions, and early/mature day/night states with stable orbit lighting and deterministic topology. Regenerate, visually review, and hash-bind the historical comparison lab at the next successful current-source Garden lab regeneration."
+  },
   "shipping_boundary": {
     "lab_route_in_app_bundle": false,
     "unselected_direction_code_in_current_renderer_bundle": false,

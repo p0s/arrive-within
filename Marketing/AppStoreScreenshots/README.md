@@ -17,6 +17,8 @@ This tracked, localhost-only Next.js studio composes the frozen six-slide narrat
 
 `screenshot-plan.json` defines the five selected Garden/growth product states for all four locale/device sets. A guarded XCUITest capture run must produce those opaque, safe-synthetic-data PNGs, then bind their source-tree revision and SHA-256 values in `source-captures.json`. The export refuses missing, transparent, wrong-size, unbound, or hash-mismatched captures. The two non-shipping alternatives reuse only retained Garden, Journey, and Journal captures whose pixels remain truthful for the zero-narration, local-only V1; obsolete guided-library and iCloud captures are excluded. Simulator captures prove only the marketing composition input; they do not substitute for physical-device or release-candidate evidence.
 
+The 24 retained images are the immutable submitted-build-7 artifact while version 1.0 is in App Review. They are not recast as captures of the later post-publication Garden. The validator permits that distinction only for one fixed source digest and one fixed path delta, with negative controls for near matches; that successor digest includes the reviewed Reduced Motion camera lock and cross-then-settle bird behavior. Any further capture-source change fails closed. Generate and review fresh current-source captures before the next editable App Store metadata opportunity.
+
 ## Local export
 
 1. Capture with the guarded project workflow on the exact selected iPhone and iPad targets, then run `pnpm ingest:captures -- --iphone-result <exact.xcresult> --ipad-result <exact.xcresult>`. Record the status bar actually visible in each source; use a fixed profile when the target supports it, but never claim a synthetic profile for a physical-device capture.

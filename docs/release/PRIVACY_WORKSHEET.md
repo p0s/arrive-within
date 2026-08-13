@@ -31,7 +31,7 @@ Current result: version 1.0 is local-only, contains no in-app feedback transmiss
 - `PrivacyInfo.xcprivacy` is valid XML and declares tracking false, no tracking domains, no collected data types, and only `NSPrivacyAccessedAPICategorySystemBootTime` with reason `35F9.1`.
 - Shipping source uses `ProcessInfo.processInfo.systemUptime` for elapsed meditation timing. It does not use the audited file-timestamp, UserDefaults/CFPreferences, disk-space, or active-keyboard required-reason categories.
 - FileManager use is limited to app-container paths, protected file creation/removal/existence, and protection attributes; the audited timestamp selectors are absent.
-- The shipping app source has no StoreKit/config/product/transaction path, ATT/AdSupport/analytics SDK, Network framework client, `URLSession`, or SFSafariViewController.
+- The shipping app has one bounded StoreKit 2 non-consumable path for Premium Garden styles. The exact product ID, verified/unrevoked transaction rules, restore behavior, local test configuration, and no-subscription boundary are source-validated. ATT/AdSupport/analytics SDKs, Network framework clients, `URLSession`, and SFSafariViewController remain absent.
 - The renderer WebView uses a nonpersistent data store, loads its verified local file bundle, and cancels navigation outside the allowed directory.
 - English and German microphone and speech-recognition purpose strings exist. `ITSAppUsesNonExemptEncryption` is false in source, pending exact archive verification.
 - Public and release source have no signing-entitlement binding, CloudKit container, or feedback endpoint. Ignored local configuration supplies signing values only for version 1.0.
@@ -51,9 +51,9 @@ Current result: version 1.0 is local-only, contains no in-app feedback transmiss
 - Re-run `validate_release_sources.mjs` against the frozen prospective-public source manifest and bind its report hash into the candidate manifest.
 - Inspect the exact archive and exported IPA; source inclusion does not prove packaged `PrivacyInfo.xcprivacy`, built values, frameworks, endpoints, or signing entitlements.
 
-## StoreKit absence gate
+## StoreKit purchase boundary
 
-The current 69-file shipping-source scan contains no StoreKit framework/import, product identifier, StoreKit configuration, purchase/paywall/restore/manage UI, transaction observer, entitlement state, subscription, donation, or paid-progress path. The exact archive and live ASC record must independently prove the same absence; source validation cannot prove that no ASC IAP record exists.
+The source scan permits StoreKit only in `PremiumGardenStyles.swift`, binds exactly one `NonConsumable` product and one local `.storekit` configuration, requires verified and unrevoked current entitlements, and forbids legacy payment APIs or subscription products. App Store Connect readback binds product `6801014376` at a USD 4.99 base price, English/German metadata, 175 territories plus future territories, and `READY_TO_SUBMIT`; it is not attached to the App Store version currently in review. Exact archive and TestFlight readback remain separate evidence.
 
 ## Candidate binding
 

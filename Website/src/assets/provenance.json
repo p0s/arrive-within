@@ -3,6 +3,10 @@
   "source_revision": "720deeed8719b680ebe4359e1f572565780cc1015ce4ab0d83cb530335bfb405",
   "rights": "First-party Arrive Within rendered app UI; public redistribution is intended under the repository media license after final repository licensing review.",
   "capture_state": "Guarded iOS 26.5 simulator UI with deterministic safe synthetic product data; not physical-device, CloudKit, signed-candidate, or App Store evidence.",
+  "public_media_source_state": "current-source-renderer-media-regenerated-and-reviewed-locally",
+  "public_media_source_revision": "e001e54e6cbecd30a8080dd5e3f9014650bcc253ca28cbe86c27185b231fc284",
+  "public_media_review": "Current Three.js Garden media was regenerated with external requests blocked and visually checked for the pavilion, mature tree silhouette, sparse wildlife, water, and sky balance.",
+  "public_media_next_action": "Keep the synchronized renderer-derived media bound to the current Garden source; regenerate after future renderer changes.",
   "assets": [
     {
       "file": "garden-en-iphone.png",
@@ -55,19 +59,19 @@
     {
       "file": "garden-growth-v1.mp4",
       "source": "Marketing/PublicMedia/output/garden-growth-v1.mp4",
-      "sha256": "6e9e21f5ac1beaf01394fd523ad44cd9a146a8fb34e9a05a652ff1ee15e414e7",
+      "sha256": "86d124074309b067d939e70aec077c324efe801d37a42f7f22b0d8fcb17c7edd",
       "alt": "Silent deterministic progression of the real Arrive Within garden from before the first practice to practice day 30."
     },
     {
       "file": "garden-growth-poster.png",
       "source": "Marketing/PublicMedia/output/garden-growth-poster.png",
-      "sha256": "98f5ee70618a292cbde409e83f01786afed0e84e3ecc0e70aacaec12e2a8f8e1",
+      "sha256": "6f6b87dbd6a2d25c04a14b99bb2e019807f01c1ada60a4d3ae37fba2fa5f8b49",
       "alt": "The mature deterministic Arrive Within garden used as the growth-film poster."
     },
     {
       "file": "social-preview.png",
       "source": "Marketing/PublicMedia/output/social-preview.png",
-      "sha256": "f345b19a378ca431ca51ea8785eb352865023ed4e84b4ada8ecbbd10bce1511f",
+      "sha256": "4de29448720a226dcaa73baf572c331c4158a53298f7a73be19c4759a83ae005",
       "alt": "Arrive Within social preview with the mature deterministic garden and the words Meditation that grows."
     }
   ]

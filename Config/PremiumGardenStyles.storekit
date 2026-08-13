@@ -6,7 +6,7 @@
   "products" : [
     {
       "displayPrice" : "4.99",
-      "familyShareable" : true,
+      "familyShareable" : false,
       "internalID" : "premium-garden-material-styles-1",
       "localizations" : [
         {

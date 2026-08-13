@@ -124,6 +124,24 @@ async function main() {
     "Public configuration contains no signing or entitlement binding."
   );
 
+  const appDependencies = await text("Apps/ArriveWithin/Sources/AppDependencies.swift");
+  const dataPreparationIndex = appDependencies.indexOf(
+    "try AppDataDirectoryPreparer.prepare(root)"
+  );
+  const productStoreIndex = appDependencies.indexOf(
+    "productStore = try CoreDataProductStore("
+  );
+  record(
+    "durable-data-backup-excluded",
+    appDependencies.includes("backupValues.isExcludedFromBackup = true")
+      && appDependencies.includes("forKeys: [.isExcludedFromBackupKey]")
+      && appDependencies.includes("forKeys: [.isDirectoryKey, .isSymbolicLinkKey]")
+      && appDependencies.includes("AppDataDirectoryPreparationError.backupExclusionFailed")
+      && dataPreparationIndex >= 0
+      && productStoreIndex > dataPreparationIndex,
+    "The validated durable app-data root is excluded from backup with launch-time readback before repositories open."
+  );
+
   const receiver = await text("services/feedback-receiver/feedback_receiver.py");
   const receiverKeys = receiver.match(/REPORT_KEYS = \{([^}]+)\}/)?.[1]
     ?.match(/"[^"]+"/g)?.map((value) => JSON.parse(value)) ?? [];
@@ -266,6 +284,7 @@ async function main() {
       "future feedback source isolated and absent from the V1 app target",
       "V1 endpoint absent and local-only store selected",
       "no tracking, analytics, ATT, clipboard, or automatic support upload path",
+      "durable private app data excluded from backup with launch-time readback",
       "private CloudKit code isolated and private-scope only",
       "renderer and website network isolation",
       "conservative privacy manifest and bilingual permission-source intent",

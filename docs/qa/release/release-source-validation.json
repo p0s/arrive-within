@@ -8,7 +8,7 @@
   "checks_passed": 120,
   "checks_failed": 0,
   "shipping_source_file_count": 69,
-  "shipping_source_sha256": "b6e463a7f783f4c1af086d65dfaef2e22b070f933553ded66885bc43bded103e",
+  "shipping_source_sha256": "03eb55935889b025d074d77ef9551e007ee0c7edca7f4c38c9e89f884cf6b87f",
   "source_hashes": {
     "docs/release/metadata/en-US.json": "ae1f4679e8b2045d6ff76a568ca8f3db4d392bf99343e701811157f0bf880031",
     "docs/release/metadata/de-DE.json": "42a8e8424d3e0cbd6369577ddb27a7145374bb7f3c67172847f08826b2a5e325",
@@ -16,7 +16,7 @@
     "docs/release/app-privacy-worksheet.json": "9ec7e0269c76b93b7030be1988587acc90ef3ae3e4b1e7573c0b258d64b97652",
     "docs/release/current-release.example.json": "ec582d76079c089e4ef2bda1af5a1f37b02aae0163a83a4f8d818412f322db4c",
     "docs/release/candidate.example.json": "a1c209e5786e4bd846efadc40e537f9b4bc0b9d9fdeb898c8f9ac4ce65e1162c",
-    "docs/release/release-train.json": "00ffc583e1dc84f9da3f9070924931fb1e47ce609f7830d27beea59602681da1",
+    "docs/release/release-train.json": "95f444561d81a753d7e1a1c55bcc7fa9183a8b59d5a9d987a11bf15606d7a6f6",
     "Apps/ArriveWithin/Resources/PrivacyInfo.xcprivacy": "0562b6e4331f1fcffb4d7b7e3e11c240ebbf6dbef84ec1b66318408d9f2d524b",
     "Apps/ArriveWithin/Resources/Info.plist": "aca2757b61bd93c87aa1a1ea5da1a939085cd939c02fe17f70561883336fd145",
     "Marketing/AppStoreScreenshots/screenshot-plan.json": "f53eb84de0d8907c86038409998b8193146a6c761e6489b52300911a8b5302d4"
@@ -27,7 +27,7 @@
     "future CloudKit deletion protocol and exact-candidate two-device proof before reactivation",
     "App Review approval, storefront availability, and storefront installation readback",
     "remaining exact physical audio, performance, and assistive-technology matrices",
-    "Git lineage and history audit unavailable until a separately authorized first commit"
+    "future product pushes require a fresh tracked-tree and reachable-history privacy audit"
   ],
   "failures": [],
   "checks": [
@@ -622,9 +622,9 @@
       "detail": "every release stage must carry an explicit authorization boundary"
     },
     {
-      "id": "release-train.pre-git-authority",
+      "id": "release-train.repository-authority",
       "passed": true,
-      "detail": "exact app release stages must reflect current authority while public-repository mutation remains prohibited"
+      "detail": "repository authority must bind the completed signed root publication while preserving GitHub Actions, tags, releases, and unrelated settings as separate boundaries"
     },
     {
       "id": "release-train.candidate-unbound",
@@ -632,5 +632,5 @@
       "detail": "verified builds 1 through 7 and the submitted build-7 review state must remain exact while the narration-complete update is unbound"
     }
   ],
-  "claim_boundary": "This deterministic source check validates the repository's exact build-7 release-train readbacks but does not itself reproduce the frozen build-7 archive/IPA, live ASC or TestFlight state, physical-device observation, website deployment, App Review outcome, storefront, human audio/rights review, Git lineage, or public repository release."
+  "claim_boundary": "This deterministic source check validates the repository's exact build-7 release-train and completed public-repository readbacks but does not itself reproduce the frozen build-7 archive/IPA, live ASC or TestFlight state, physical-device observation, website deployment, App Review outcome, storefront, human audio/rights review, or the external GitHub readback."
 }

@@ -4,7 +4,6 @@ struct PremiumGardenStylesView: View {
   @Bindable var model: AppModel
   @Environment(\.locale) private var locale
   @State private var requestedStyle: GardenRenderStyle?
-  @State private var showsPaywall = false
 
   var body: some View {
     Form {
@@ -21,6 +20,20 @@ struct PremiumGardenStylesView: View {
           }
           .buttonStyle(.plain)
           .accessibilityIdentifier("garden.style.\(style.rawValue)")
+          .accessibilityValue(
+            style == model.gardenRenderStyle
+              ? "selected"
+              : style.isPremium && !model.premiumGardenAccess.isOwned
+                ? "locked"
+                : "available"
+          )
+          .accessibilityHint(
+            style == model.gardenRenderStyle
+              ? Text("garden.styles.selected")
+              : style.isPremium && !model.premiumGardenAccess.isOwned
+                ? Text("garden.styles.locked")
+                : Text("")
+          )
         }
         if model.settingsNotice == .couldNotSaveGardenStyle {
           Label("settings.garden.style.save.error", systemImage: "exclamationmark.circle")
@@ -37,10 +50,10 @@ struct PremiumGardenStylesView: View {
         if model.premiumGardenAccess.isOwned {
           Label("garden.styles.owned", systemImage: "checkmark.seal.fill")
             .foregroundStyle(.tint)
+            .accessibilityIdentifier("garden.styles.owned")
         } else {
           Button {
             requestedStyle = .handDrawn
-            showsPaywall = true
           } label: {
             Label(premiumActionTitle, systemImage: "sparkles")
           }
@@ -67,8 +80,8 @@ struct PremiumGardenStylesView: View {
       }
     }
     .navigationTitle("garden.styles.title")
-    .sheet(isPresented: $showsPaywall) {
-      PremiumGardenPaywallView(model: model, requestedStyle: requestedStyle)
+    .sheet(item: $requestedStyle) { style in
+      PremiumGardenPaywallView(model: model, requestedStyle: style)
     }
     .alert(
       premiumNoticeText,
@@ -82,8 +95,9 @@ struct PremiumGardenStylesView: View {
   }
 
   private var premiumActionTitle: String {
-    let price = model.premiumGardenAccess.displayPrice ?? PremiumGardenProduct.proposedUSDPrice
-    return "\(AppLocalization.string("garden.styles.unlock", locale: locale)) · \(price)"
+    let title = AppLocalization.string("garden.styles.unlock", locale: locale)
+    guard let price = model.premiumGardenAccess.displayPrice else { return title }
+    return "\(title) · \(price)"
   }
 
   private var premiumNoticeText: LocalizedStringKey {
@@ -99,7 +113,6 @@ struct PremiumGardenStylesView: View {
   private func choose(_ style: GardenRenderStyle) {
     if style.isPremium, !model.premiumGardenAccess.isOwned {
       requestedStyle = style
-      showsPaywall = true
     } else {
       Task { await model.setGardenRenderStyle(style) }
     }
@@ -110,6 +123,7 @@ private struct GardenStyleRow: View {
   let style: GardenRenderStyle
   let isSelected: Bool
   let isLocked: Bool
+  @Environment(\.locale) private var locale
 
   var body: some View {
     HStack(spacing: 14) {
@@ -118,10 +132,10 @@ private struct GardenStyleRow: View {
         .accessibilityHidden(true)
 
       VStack(alignment: .leading, spacing: 3) {
-        Text(style.titleKey)
+        Text(AppLocalization.string(style.titleLocalizationKey, locale: locale))
           .font(.body.weight(.semibold))
           .foregroundStyle(.primary)
-        Text(style.detailKey)
+        Text(AppLocalization.string(style.detailLocalizationKey, locale: locale))
           .font(.caption)
           .foregroundStyle(.secondary)
           .lineLimit(2)
@@ -132,14 +146,17 @@ private struct GardenStyleRow: View {
         Image(systemName: "checkmark.circle.fill")
           .foregroundStyle(.tint)
           .accessibilityLabel(Text("garden.styles.selected"))
+          .accessibilityIdentifier("garden.style.\(style.rawValue).selected")
       } else if isLocked {
         Image(systemName: "lock.fill")
           .foregroundStyle(.secondary)
           .accessibilityLabel(Text("garden.styles.locked"))
+          .accessibilityIdentifier("garden.style.\(style.rawValue).locked")
       }
     }
     .contentShape(Rectangle())
     .frame(minHeight: 58)
+    .accessibilityAddTraits(isSelected ? .isSelected : [])
   }
 }
 
@@ -198,7 +215,11 @@ private struct PremiumGardenPaywallView: View {
 
           VStack(alignment: .leading, spacing: 13) {
             ForEach(GardenRenderStyle.allCases.filter(\.isPremium)) { style in
-              Label(style.titleKey, systemImage: style.symbolName)
+              Label {
+                Text(AppLocalization.string(style.titleLocalizationKey, locale: locale))
+              } icon: {
+                Image(systemName: style.symbolName)
+              }
                 .font(.body.weight(.semibold))
             }
           }
@@ -246,20 +267,22 @@ private struct PremiumGardenPaywallView: View {
         }
       }
     }
+    .accessibilityIdentifier("garden.styles.paywall")
   }
 
   private var purchaseTitle: String {
-    let price = model.premiumGardenAccess.displayPrice ?? PremiumGardenProduct.proposedUSDPrice
-    return "\(AppLocalization.string("garden.styles.unlock", locale: locale)) · \(price)"
+    let title = AppLocalization.string("garden.styles.unlock", locale: locale)
+    guard let price = model.premiumGardenAccess.displayPrice else { return title }
+    return "\(title) · \(price)"
   }
 }
 
 extension GardenRenderStyle {
-  fileprivate var titleKey: LocalizedStringKey {
-    LocalizedStringKey("garden.styles.\(rawValue).title")
+  fileprivate var titleLocalizationKey: String {
+    "garden.styles.\(rawValue).title"
   }
-  fileprivate var detailKey: LocalizedStringKey {
-    LocalizedStringKey("garden.styles.\(rawValue).detail")
+  fileprivate var detailLocalizationKey: String {
+    "garden.styles.\(rawValue).detail"
   }
 
   fileprivate var symbolName: String {

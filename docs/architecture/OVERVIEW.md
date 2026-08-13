@@ -51,7 +51,7 @@ Physical lock, interruption, Bluetooth/route, phone-call, notification, and exac
 
 ## Privacy and security boundaries
 
-- no product account, ads, analytics, tracking, attribution SDK, StoreKit, custom backend, or runtime AI;
+- no product account, ads, analytics, tracking, attribution SDK, custom backend, or runtime AI; StoreKit is limited to one verified non-consumable entitlement for optional Garden presentation styles;
 - journal text/audio and guided history are never sent to a project server;
 - on-device journal transcription only;
 - renderer messages and exported diagnostics are bounded and redacted;

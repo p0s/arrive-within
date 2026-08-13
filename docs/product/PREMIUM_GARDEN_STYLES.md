@@ -1,12 +1,14 @@
 # Premium Garden styles contract
 
-Status: implemented locally; App Store Connect product is intentionally unconfigured
+Status: implemented and configured for TestFlight sandbox purchase validation
 
 ## Product decision
 
-Twilight remains the complete free Garden. One optional non-consumable purchase unlocks four presentation styles together for a proposed USD 4.99 equivalent: Hand-drawn, Stop-motion, Crochet (`Gehäkelt` in German), and Claymation. This is not a subscription and never buys progress, milestones, wildlife, time phases, or a stronger Garden.
+Twilight remains the complete free Garden. One optional non-consumable purchase unlocks four presentation styles together from a USD 4.99 base price: Hand-drawn, Stop-motion, Crochet (`Gehäkelt` in German), and Claymation. This is not a subscription and never buys progress, milestones, wildlife, time phases, or a stronger Garden.
 
-The future App Store Connect product identifier is `com.philipps.arrivewithin.garden.materialstyles`. Source code and the local StoreKit configuration use that identifier, but this change does not create, price, clear, or publish a product in App Store Connect. `Config/PremiumGardenStyles.storekit` is local test data only; `$4.99` is a product proposal, not live-store availability evidence.
+The App Store Connect product identifier is `com.philipps.arrivewithin.garden.materialstyles` (ASC ID `6801014376`). The non-consumable is `READY_TO_SUBMIT`, has English and German storefront metadata, a completed native review screenshot, a USD 4.99 base price, and availability in all 175 current territories plus future territories. `Config/PremiumGardenStyles.storekit` mirrors the live product for deterministic local testing.
+
+The product is deliberately not attached to the existing App Store version 1.0 submission while that version remains in review. It can be exercised through StoreKit sandbox in the premium Garden TestFlight build; public storefront sale still requires a later app-version submission containing this implementation and the IAP version.
 
 ## Visual thesis
 
@@ -43,4 +45,4 @@ The selector lives in Settings, not on the Garden canvas. Tapping a locked style
 - Reset/left/right orbit preserves phase light positions, intensities, and exposure for every style.
 - Reduce Motion freezes all scene life; stop-motion is also static under Reduce Motion.
 - Style switching leaves one scene root and stable authoritative feature counts.
-- App Store Connect, TestFlight, website, and release state remain untouched by this implementation.
+- The live product configuration and TestFlight build match the exact product identifier, one-time purchase model, localizations, and verified native paywall shown here.

@@ -512,7 +512,7 @@ final class ArriveWithinUITests: XCTestCase {
     add(screenshot)
   }
 
-  func testRendererRecoversContextLossAndFallbackOffersDiagnostics() throws {
+  func testRendererRecoversContextLossAndFallbackOffersCalmRetry() throws {
     let app = XCUIApplication()
     app.launchArguments = [
       "-ui-test-reset",
@@ -546,16 +546,72 @@ final class ArriveWithinUITests: XCTestCase {
     app.launch()
 
     XCTAssertTrue(app.buttons["garden.renderer.retry"].waitForExistence(timeout: 8))
-    let prepare = app.buttons["garden.renderer.diagnostics.prepare"]
-    XCTAssertTrue(prepare.waitForExistence(timeout: 5))
-    prepare.tap()
-    XCTAssertTrue(app.buttons["garden.renderer.diagnostics.share"].waitForExistence(timeout: 5))
+    XCTAssertFalse(app.buttons["garden.renderer.diagnostics.prepare"].exists)
+    XCTAssertFalse(app.buttons["garden.renderer.diagnostics.share"].exists)
     XCTAssertTrue(app.buttons["garden.meditate"].exists)
 
     let fallbackScreenshot = XCTAttachment(screenshot: app.screenshot())
-    fallbackScreenshot.name = "Native garden — retry and redacted diagnostics"
+    fallbackScreenshot.name = "Native garden — calm retry"
     fallbackScreenshot.lifetime = .keepAlways
     add(fallbackScreenshot)
+  }
+
+  func testPremiumGardenPurchaseUnlocksAndSelectsRequestedStyle() throws {
+    let app = XCUIApplication()
+    app.launchArguments = [
+      "-ui-test-reset",
+      "-ui-test-seed", "424242",
+      "-ui-test-premium-available",
+      "-ui-test-premium-purchase-succeeds",
+    ]
+    app.launch()
+
+    XCTAssertTrue(app.buttons["onboarding.explore"].waitForExistence(timeout: 8))
+    app.buttons["onboarding.explore"].tap()
+    XCTAssertTrue(app.buttons["garden.settings"].waitForExistence(timeout: 8))
+    app.buttons["garden.settings"].tap()
+
+    let styles = app.buttons["settings.gardenStyles"]
+    XCTAssertTrue(styles.waitForExistence(timeout: 5))
+    styles.tap()
+
+    let claymation = app.buttons["garden.style.claymation"]
+    XCTAssertTrue(claymation.waitForExistence(timeout: 5))
+    XCTAssertEqual(claymation.value as? String, "locked")
+    claymation.tap()
+
+    let purchase = app.buttons["garden.styles.paywall.purchase"]
+    XCTAssertTrue(purchase.waitForExistence(timeout: 5))
+    XCTAssertTrue(app.staticTexts["Claymation"].exists)
+    XCTAssertFalse(app.staticTexts["garden.styles.claymation.title"].exists)
+    let paywallScreenshot = XCTAttachment(screenshot: app.screenshot())
+    paywallScreenshot.name = "Premium Garden styles — one-time unlock"
+    paywallScreenshot.lifetime = .keepAlways
+    add(paywallScreenshot)
+    purchase.tap()
+
+    XCTAssertTrue(
+      app.descendants(matching: .any)["garden.styles.owned"].waitForExistence(timeout: 5)
+    )
+    XCTAssertEqual(app.buttons["garden.style.claymation"].value as? String, "selected")
+
+    let unlockedScreenshot = XCTAttachment(screenshot: app.screenshot())
+    unlockedScreenshot.name = "Premium Garden styles — unlocked Claymation"
+    unlockedScreenshot.lifetime = .keepAlways
+    add(unlockedScreenshot)
+
+    let firstBackButton = app.navigationBars.buttons.firstMatch
+    XCTAssertTrue(firstBackButton.waitForExistence(timeout: 5))
+    firstBackButton.tap()
+    let secondBackButton = app.navigationBars.buttons.firstMatch
+    XCTAssertTrue(secondBackButton.waitForExistence(timeout: 5))
+    secondBackButton.tap()
+    XCTAssertTrue(app.webViews["garden.renderer.ready"].waitForExistence(timeout: 8))
+
+    let gardenScreenshot = XCTAttachment(screenshot: app.screenshot())
+    gardenScreenshot.name = "Living garden — purchased Claymation style"
+    gardenScreenshot.lifetime = .keepAlways
+    add(gardenScreenshot)
   }
 
   func testZeroAudioReleasePresentsOnlyCompletePracticeModes() throws {

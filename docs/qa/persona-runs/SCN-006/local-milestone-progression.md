@@ -1,7 +1,7 @@
 # SCN-006 local milestone progression and mature-garden probe
 
 Date: 2026-08-09
-Status: Passed for deterministic domain and complete local renderer-variant coverage; owner art and physical performance remain in progress
+Status: Passed for deterministic domain and complete local renderer-variant coverage; current motion direction owner-approved; variant art review and physical performance remain in progress
 Product tree: current uncommitted local source; Git lineage does not exist and is not claimed
 
 ## Outcome
@@ -25,4 +25,4 @@ The retained final screenshot was inspected at original resolution. It shows day
 
 ## Claim boundary
 
-This proves deterministic state, world-system presence, all 15 A/B variant pairs, post-day-30 continuity, and one real iPhone-simulator composition. Variant selection UI/persistence is proved separately in SCN-007; renderer context recreation and iPad composition are proved in SCN-001/006/012. This report does not prove owner-approved final art quality, actual motion comfort, oldest/recent-device memory/frame/thermal targets, or physical-device performance.
+This proves deterministic state, world-system presence, all 15 A/B variant pairs, post-day-30 continuity, and one real iPhone-simulator composition. The owner approved the current motion direction on 2026-08-13. Variant selection UI/persistence is proved separately in SCN-007; renderer context recreation and iPad composition are proved in SCN-001/006/012. This report does not prove owner approval of every variant-art frame, physical motion comfort, oldest/recent-device memory/frame/thermal targets, or physical-device performance.

@@ -1,11 +1,18 @@
 import { createHash } from "node:crypto";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { lstat, mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { listProspectivePublicFiles } from "./lib/prospective-public-files.mjs";
+import {
+  detectPublicPrivacySignatures,
+  publicRepositoryURL,
+} from "./lib/public-repository-link-policy.mjs";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const MODULE_PATH = fileURLToPath(import.meta.url);
+const ROOT = path.resolve(path.dirname(MODULE_PATH), "..");
 const REPORT_JSON = path.join(ROOT, ".evidence", "privacy", "public-repository-validation.json");
 const REPORT_TEXT = path.join(ROOT, ".evidence", "privacy", "public-repository-validation.txt");
 const PRIVATE_REPORT = path.join(ROOT, ".evidence", "privacy", "public-boundary-full.json");
@@ -43,18 +50,23 @@ const PRIVATE_PREFIXES = [
 ];
 const GENERATED_SEGMENTS = new Set([".build", ".git", ".next", ".pnpm-store", ".swiftpm", ".venv", ".vercel", "__pycache__", "DerivedData", "node_modules", "xcuserdata"]);
 const BINARY_EXTENSIONS = new Set([".aac", ".aiff", ".app", ".cer", ".der", ".gif", ".heic", ".ipa", ".jpeg", ".jpg", ".m4a", ".mobileprovision", ".mov", ".mp3", ".mp4", ".p12", ".pdf", ".png", ".wav", ".xcarchive", ".xcresult", ".zip"]);
+const DEFAULT_ARCHIVE_SCAN_LIMITS = Object.freeze({
+  maxDepth: 3,
+  maxTopLevelArchives: 64,
+  maxEntries: 2_048,
+  maxEntryBytes: 60_000_000,
+  maxExpandedBytes: 180_000_000,
+  maxListingBytes: 20_000_000,
+  subprocessTimeoutMilliseconds: 15_000,
+  maxWallMilliseconds: 60_000,
+});
 const GENERATED_CANDIDATE_ROOTS = [
   ["website-dist", "Website/dist"],
   ["app-store-screenshot-exports", "Marketing/AppStoreScreenshots/exports"],
   ["public-media-output", "Marketing/PublicMedia/output"],
   ["renderer-visual-output", "Marketing/RendererVisualMatrix/output"],
 ];
-const ownerHandle = String.fromCharCode(112, 48, 115);
 const permittedThirdPartyLicenseEmail = ["floatdrop", "gmail.com"].join("@");
-const deviceAliases = [
-  String.fromCharCode(112, 115, 97, 110),
-  String.fromCharCode(112, 112, 97, 100),
-];
 
 const checks = [];
 const failures = [];
@@ -113,36 +125,6 @@ async function collectCandidateFiles(directory, label, prefix = "") {
     else if (entry.isFile()) files.push({ label, relative, absolute });
   }
   return files;
-}
-
-function escapeRegExp(value) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-function privacyPatterns() {
-  const personalHome = ["", "(?:Users|home)", "[A-Za-z0-9._-]+", ""].join("/");
-  const privateRoot = ["", "private", ""].join("/");
-  const temporaryRoot = ["", "tmp", ""].join("/");
-  const fileScheme = ["file", ":", "//"].join("");
-  const remoteFragment = `${ownerHandle}/arrive-within`;
-  const teamIdentifierKey = String.fromCharCode(84, 101, 97, 109, 73, 100, 101, 110, 116, 105, 102, 105, 101, 114);
-  const prefixIdentifierKey = String.fromCharCode(65, 112, 112, 108, 105, 99, 97, 116, 105, 111, 110, 73, 100, 101, 110, 116, 105, 102, 105, 101, 114, 80, 114, 101, 102, 105, 120);
-  return [
-    { id: "owner-handle", pattern: new RegExp(escapeRegExp(ownerHandle), "i") },
-    { id: "device-alias", pattern: new RegExp(`\\b(?:${deviceAliases.map(escapeRegExp).join("|")})\\b`, "i") },
-    { id: "personal-home", pattern: new RegExp(personalHome) },
-    { id: "private-absolute-path", pattern: new RegExp(`(?:^|[\\s\"'=])${escapeRegExp(privateRoot)}`) },
-    { id: "temporary-absolute-path", pattern: new RegExp(`(?:^|[\\s\"'=])${escapeRegExp(temporaryRoot)}`) },
-    { id: "file-scheme", pattern: new RegExp(escapeRegExp(fileScheme), "i") },
-    { id: "repository-owner-location", pattern: new RegExp(escapeRegExp(remoteFragment), "i") },
-    { id: "private-key", pattern: /-----BEGIN (?:RSA |OPENSSH |EC |DSA )?PRIVATE KEY-----/ },
-    { id: "github-token", pattern: /\bgh[pousr]_[A-Za-z0-9]{20,}\b/ },
-    { id: "openai-token", pattern: /\bsk-[A-Za-z0-9_-]{20,}\b/ },
-    { id: "aws-key", pattern: /\bAKIA[0-9A-Z]{16}\b/ },
-    { id: "development-team-id", pattern: new RegExp(["DEVELOPMENT_TEAM", "\\s*=\\s*", "[A-Z0-9]{10}", "\\b"].join("")) },
-    { id: "provisioning-identifier", pattern: new RegExp([`(?:${teamIdentifierKey}|${prefixIdentifierKey}|com\\.apple\\.developer\\.team-identifier)`, "[^\\n]{0,80}", "(?:<string>|=|:)\\s*", "[A-Z0-9]{10}", "\\b"].join(""), "i") },
-    { id: "device-identifier-evidence", pattern: new RegExp(["(?:UDID|device[_ -]?identifier)", "[^\\n]{0,80}", "[0-9A-F]{8}-[0-9A-F-]{27,}"].join(""), "i") },
-  ];
 }
 
 function printableMetadata(buffer, minimumLength = 4) {
@@ -229,12 +211,20 @@ function scannableSource(buffer, displayPath) {
   return buffer.toString("utf8");
 }
 
+function hasZipStructure(buffer) {
+  if (buffer.length < 4) return false;
+  const signature = buffer.subarray(0, 4).toString("hex");
+  if (signature === "504b0304" || signature === "504b0506" || signature === "504b0708") {
+    return true;
+  }
+  const endOfCentralDirectory = buffer.lastIndexOf(Buffer.from([0x50, 0x4b, 0x05, 0x06]));
+  return endOfCentralDirectory >= Math.max(0, buffer.length - 65_557);
+}
+
 function scanBuffer(buffer, displayPath, scope, hits) {
   const source = scannableSource(buffer, displayPath);
-  for (const forbidden of privacyPatterns()) {
-    if (forbidden.pattern.test(source) || forbidden.pattern.test(displayPath)) {
-      hits.push({ scope, file: displayPath, pattern: forbidden.id });
-    }
+  for (const signature of detectPublicPrivacySignatures(source, displayPath)) {
+    hits.push({ scope, file: displayPath, pattern: signature });
   }
   const emailPattern = /\b[A-Z0-9._%+-]+@([A-Z0-9.-]+\.[A-Z]{2,})\b/gi;
   for (const match of source.matchAll(emailPattern)) {
@@ -247,23 +237,120 @@ function scanBuffer(buffer, displayPath, scope, hits) {
   }
 }
 
-function scanZipArchive(absolute, displayPath, hits) {
-  const listing = spawnSync("/usr/bin/unzip", ["-Z1", absolute], { encoding: "utf8", maxBuffer: 20_000_000 });
+function scanZipArchive(absolute, displayPath, hits, requestedLimits = {}) {
+  const limits = { ...DEFAULT_ARCHIVE_SCAN_LIMITS, ...requestedLimits };
+  const temporaryRoot = mkdtempSync(path.join(tmpdir(), "arrive-within-archive-scan-"));
+  const state = {
+    entries: 0,
+    expandedBytes: 0,
+    nestedSequence: 0,
+    limits,
+    temporaryRoot,
+    deadline: Date.now() + limits.maxWallMilliseconds,
+  };
+  try {
+    return scanZipArchiveFile(absolute, displayPath, hits, state, 0);
+  } finally {
+    rmSync(temporaryRoot, { recursive: true, force: true });
+  }
+}
+
+function scanZipArchiveFile(absolute, displayPath, hits, state, depth) {
+  const { limits } = state;
+  if (Date.now() >= state.deadline) {
+    hits.push({ scope: "release-archive", file: displayPath, pattern: "archive-time-limit-exceeded" });
+    return 0;
+  }
+  const listing = spawnSync("/usr/bin/unzip", ["-Z1", absolute], {
+    encoding: "utf8",
+    maxBuffer: limits.maxListingBytes,
+    timeout: Math.max(
+      1,
+      Math.min(limits.subprocessTimeoutMilliseconds, state.deadline - Date.now()),
+    ),
+  });
+  if (Date.now() >= state.deadline || listing.error?.code === "ETIMEDOUT") {
+    hits.push({ scope: "release-archive", file: displayPath, pattern: "archive-time-limit-exceeded" });
+    return 0;
+  }
   if (listing.status !== 0) {
     hits.push({ scope: "release-archive", file: displayPath, pattern: "unreadable-archive" });
     return 0;
   }
   const entries = listing.stdout.split(/\r?\n/).filter(Boolean);
+  if (state.entries + entries.length > limits.maxEntries) {
+    hits.push({ scope: "release-archive", file: displayPath, pattern: "archive-entry-limit-exceeded" });
+    return 0;
+  }
+  let scannedEntries = 0;
   for (const entry of entries) {
-    scanBuffer(Buffer.from(entry, "utf8"), `${displayPath}!${entry}`, "release-archive-name", hits);
-    const extracted = spawnSync("/usr/bin/unzip", ["-p", absolute, entry], { encoding: null, maxBuffer: 60_000_000 });
+    if (Date.now() >= state.deadline) {
+      hits.push({ scope: "release-archive", file: displayPath, pattern: "archive-time-limit-exceeded" });
+      return scannedEntries;
+    }
+    state.entries += 1;
+    scannedEntries += 1;
+    const entryDisplayPath = `${displayPath}!${entry}`;
+    scanBuffer(Buffer.from(entry, "utf8"), entryDisplayPath, "release-archive-name", hits);
+    const extracted = spawnSync("/usr/bin/unzip", ["-p", absolute, entry], {
+      encoding: null,
+      maxBuffer: limits.maxEntryBytes + 1,
+      timeout: Math.max(
+        1,
+        Math.min(limits.subprocessTimeoutMilliseconds, state.deadline - Date.now()),
+      ),
+    });
+    if (Date.now() >= state.deadline || extracted.error?.code === "ETIMEDOUT") {
+      hits.push({ scope: "release-archive", file: entryDisplayPath, pattern: "archive-time-limit-exceeded" });
+      return scannedEntries;
+    }
     if (extracted.status !== 0) {
-      hits.push({ scope: "release-archive", file: `${displayPath}!${entry}`, pattern: "unreadable-entry" });
+      hits.push({ scope: "release-archive", file: entryDisplayPath, pattern: "unreadable-entry" });
       continue;
     }
-    scanBuffer(extracted.stdout, `${displayPath}!${entry}`, "release-archive-content", hits);
+    if (!Buffer.isBuffer(extracted.stdout) || extracted.stdout.length > limits.maxEntryBytes) {
+      hits.push({ scope: "release-archive", file: entryDisplayPath, pattern: "archive-entry-size-limit-exceeded" });
+      continue;
+    }
+    if (state.expandedBytes + extracted.stdout.length > limits.maxExpandedBytes) {
+      hits.push({ scope: "release-archive", file: entryDisplayPath, pattern: "archive-expanded-size-limit-exceeded" });
+      return scannedEntries;
+    }
+    state.expandedBytes += extracted.stdout.length;
+
+    const namedAsZip = path.extname(entry).toLowerCase() === ".zip";
+    const containsZip = hasZipStructure(extracted.stdout);
+    if (namedAsZip || containsZip) {
+      if (!containsZip) {
+        hits.push({ scope: "release-archive", file: entryDisplayPath, pattern: "invalid-nested-archive" });
+        continue;
+      }
+      if (depth >= limits.maxDepth) {
+        hits.push({ scope: "release-archive", file: entryDisplayPath, pattern: "archive-depth-limit-exceeded" });
+        continue;
+      }
+      const nestedPath = path.join(
+        state.temporaryRoot,
+        `nested-${String(state.nestedSequence).padStart(4, "0")}.zip`,
+      );
+      state.nestedSequence += 1;
+      try {
+        writeFileSync(nestedPath, extracted.stdout, { flag: "wx", mode: 0o600 });
+        scannedEntries += scanZipArchiveFile(
+          nestedPath,
+          entryDisplayPath,
+          hits,
+          state,
+          depth + 1,
+        );
+      } finally {
+        rmSync(nestedPath, { force: true });
+      }
+      continue;
+    }
+    scanBuffer(extracted.stdout, entryDisplayPath, "release-archive-content", hits);
   }
-  return entries.length;
+  return scannedEntries;
 }
 
 async function sha256File(absolute) {
@@ -316,6 +403,7 @@ async function main() {
 
   const readme = await requireText("README.md");
   check("readme-pre-release-truth", readme.includes("active pre-release verification") && readme.includes("does **not** claim App Store"), "README must keep release evidence bounded");
+  check("readme-public-repository", readme.includes(publicRepositoryURL), "README must document the exact canonical public repository");
   check("readme-root-check", readme.includes("./scripts/check"), "README must document the root gate");
   check("readme-media", readme.includes("01-growth-arrive-en-us-iphone-6.9-1320x2868.png") && readme.includes("02-growth-take-root-en-us-iphone-6.9-1320x2868.png") && readme.includes("garden-growth-v1.mp4"), "README must lead with two selected actual-app screenshots and retain the canonical garden film");
   check("minimal-root-docs", ["CODE_OF_CONDUCT.md", "GOAL.md", "PRIVACY.md", "TRADEMARKS.md", "LICENSE-MEDIA.md", "ARCHITECTURE.md", "ART_DIRECTION.md", "CONTENT_GUIDE.md", "ASSET_POLICY.md"].every((file) => !publicSet.has(file)), "redundant or focused project documents must stay out of the public root");
@@ -344,8 +432,40 @@ async function main() {
   check("renderer-visual-matrix-boundary", rendererVisualMatrix.human_review?.state === "pending" && rendererVisualMatrix.claim_boundary?.includes("does not prove owner art approval"), "renderer matrix must preserve owner-review and release boundaries");
   const audioManifest = JSON.parse(await requireText("Apps/ArriveWithin/Resources/Audio/audio-assets.json"));
   check("procedural-audio-rights", typeof audioManifest.rights === "string" && audioManifest.rights.includes("no samples"), "bundled audio must record original deterministic synthesis");
+  const soundSelection = JSON.parse(await requireText("Marketing/SoundDesignLab/selection.json"));
+  const audioByID = new Map(audioManifest.assets.map((asset) => [asset.id, asset]));
+  const selectedAudio = [
+    soundSelection.ambience_selection,
+    soundSelection.bell_family_selection?.opening,
+    soundSelection.bell_family_selection?.closing_and_interval,
+  ];
+  check(
+    "procedural-audio-owner-selection",
+    soundSelection.status === "owner-selected-bundled-baseline"
+      && soundSelection.selection_date === "2026-08-13"
+      && selectedAudio.every((selected) => {
+        const bundled = audioByID.get(selected?.id);
+        return bundled?.path === selected?.path && bundled?.sha256 === selected?.sha256;
+      })
+      && soundSelection.unselected_lab_candidate_ids?.length === 6
+      && soundSelection.physical_qa?.startsWith("pending"),
+    "sound selection must bind the exact three bundled hashes, exclude all lab alternatives, and preserve physical QA truth",
+  );
   const websiteProvenance = JSON.parse(await requireText("Website/src/assets/provenance.json"));
-  check("website-provenance", websiteProvenance.assets?.length === 11 && websiteProvenance.assets.every((item) => /^[a-f0-9]{64}$/.test(item.sha256)), "website assets must have complete hash provenance");
+  const websiteBrandProvenance = JSON.parse(await requireText("Website/src/assets/brand-provenance.json"));
+  check(
+    "website-provenance",
+    websiteProvenance.assets?.length === 11
+      && websiteProvenance.assets.every((item) => /^[a-f0-9]{64}$/.test(item.sha256))
+      && websiteBrandProvenance.selection === "B — Quiet Threshold"
+      && websiteBrandProvenance.canonical_source === "Apps/ArriveWithin/Resources/AppIcon.icon"
+      && websiteBrandProvenance.assets?.length === 2
+      && websiteBrandProvenance.assets.every((item) => /^[a-f0-9]{64}$/.test(item.sha256) && item.alpha === false)
+      && websiteBrandProvenance.rights?.includes("trademark rights remain reserved"),
+    "website product media and selected identity assets must have complete bounded hash, rights, and trademark provenance",
+  );
+  const websiteContent = await requireText("Website/src/content.mjs");
+  check("website-public-repository", websiteContent.includes(publicRepositoryURL), "website source must link only to the exact canonical public repository");
 
   const privacyHits = [];
   const publicArchives = [];
@@ -361,7 +481,9 @@ async function main() {
     }
     const bytes = await readFile(absolute);
     scanBuffer(bytes, relative, "public-source", privacyHits);
-    if (extension.toLowerCase() === ".zip") publicArchives.push({ relative, absolute });
+    if (extension.toLowerCase() === ".zip" || hasZipStructure(bytes)) {
+      publicArchives.push({ relative, absolute });
+    }
     if (BINARY_EXTENSIONS.has(extension) || !TEXT_EXTENSIONS.has(extension)) binaryFilesScanned += 1;
     else textFilesScanned += 1;
   }
@@ -384,7 +506,11 @@ async function main() {
     const bytes = await readFile(candidate.absolute);
     scanBuffer(bytes, displayPath, "generated-candidate", privacyHits);
     generatedFilesScanned += 1;
-    if (path.extname(candidate.absolute).toLowerCase() === ".zip") {
+    if (path.extname(candidate.absolute).toLowerCase() === ".zip" || hasZipStructure(bytes)) {
+      if (archivesScanned >= DEFAULT_ARCHIVE_SCAN_LIMITS.maxTopLevelArchives) {
+        privacyHits.push({ scope: "release-archive", file: displayPath, pattern: "archive-count-limit-exceeded" });
+        continue;
+      }
       archivesScanned += 1;
       archiveEntriesScanned += scanZipArchive(candidate.absolute, displayPath, privacyHits);
       scannedArchivePaths.add(candidate.absolute);
@@ -392,6 +518,10 @@ async function main() {
   }
   for (const archive of publicArchives) {
     if (scannedArchivePaths.has(archive.absolute)) continue;
+    if (archivesScanned >= DEFAULT_ARCHIVE_SCAN_LIMITS.maxTopLevelArchives) {
+      privacyHits.push({ scope: "release-archive", file: archive.relative, pattern: "archive-count-limit-exceeded" });
+      continue;
+    }
     archivesScanned += 1;
     archiveEntriesScanned += scanZipArchive(archive.absolute, archive.relative, privacyHits);
   }
@@ -469,7 +599,11 @@ async function main() {
   process.stdout.write(`Public repository validation passed: ${report.checks_passed}/${report.checks_total} checks across ${publicFiles.length} simulated public files; Git/history gate ${gitBoundary.status}.\n`);
 }
 
-main().catch((error) => {
-  console.error(error instanceof Error ? error.message : error);
-  process.exit(1);
-});
+export { DEFAULT_ARCHIVE_SCAN_LIMITS, scanZipArchive };
+
+if (process.argv[1] && path.resolve(process.argv[1]) === MODULE_PATH) {
+  main().catch((error) => {
+    console.error(error instanceof Error ? error.message : error);
+    process.exit(1);
+  });
+}

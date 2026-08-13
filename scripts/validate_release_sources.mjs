@@ -22,7 +22,7 @@ const blockers = [
   "future CloudKit deletion protocol and exact-candidate two-device proof before reactivation",
   "App Review approval, storefront availability, and storefront installation readback",
   "remaining exact physical audio, performance, and assistive-technology matrices",
-  "Git lineage and history audit unavailable until a separately authorized first commit",
+  "future product pushes require a fresh tracked-tree and reachable-history privacy audit",
 ];
 
 function pathFromRoot(path) {
@@ -161,7 +161,23 @@ record(
   "release URLs must remain bound to the exact verified custom-domain production readback",
 );
 record("metadata.age-rating-unbound", shared.age_rating?.questionnaire_state === "unreconciled-no-asc-record" && shared.age_rating?.calculated_rating === null && shared.age_rating?.made_for_kids === false, "age rating must remain questionnaire-derived, region/OS-aware, and unclaimed before live reconciliation");
-record("metadata.storekit-contract", shared.storekit_absence?.required === true && shared.storekit_absence?.forbidden?.length >= 5, "StoreKit absence must be an explicit release contract");
+record(
+  "metadata.storekit-contract",
+  shared.storekit_contract?.required === true
+    && shared.storekit_contract?.product_id === "com.philipps.arrivewithin.garden.materialstyles"
+    && shared.storekit_contract?.app_store_connect_id === "6801014376"
+    && shared.storekit_contract?.type === "NON_CONSUMABLE"
+    && shared.storekit_contract?.base_price?.amount === "4.99"
+    && shared.storekit_contract?.base_price?.currency === "USD"
+    && shared.storekit_contract?.base_price?.territory === "USA"
+    && shared.storekit_contract?.family_sharable === false
+    && shared.storekit_contract?.available_territories === 175
+    && shared.storekit_contract?.available_in_new_territories === true
+    && JSON.stringify(shared.storekit_contract?.locales) === JSON.stringify(["de-DE", "en-US"])
+    && shared.storekit_contract?.app_store_connect_state === "READY_TO_SUBMIT"
+    && shared.storekit_contract?.current_app_review_attachment === false,
+  "StoreKit must remain one exact non-consumable Garden entitlement, configured but not attached to the in-review app version",
+);
 record("metadata.candidate-unbound", shared.candidate_binding === null, "metadata must not bind a moving or nonexistent candidate");
 
 equal("screenshots.devices", screenshotPlan.devices.map(({ id, width, height }) => ({ id, width, height })), [
@@ -183,21 +199,36 @@ sourceFiles.splice(0, sourceFiles.length, ...sourceFiles.filter(
 sourceFiles.sort();
 const shippingSource = sourceFiles.map((path) => `${relative(root, path)}\0${readFileSync(path, "utf8")}`).join("\0");
 
-const forbiddenStorePatterns = [
-  /\bimport\s+StoreKit\b/,
-  /\.storekit\b/i,
-  /\bSKPayment\w*\b/,
-  /\bProduct\.products\b/,
-  /\bTransaction\.updates\b/,
-  /\bAppStore\.sync\b/,
-  /\b(productID|productId|transactionObserver|entitlementState)\b/,
-  /\b(paywall|restore purchases?|manage subscription|in-app purchase|donation)\b/i,
-];
-for (const pattern of forbiddenStorePatterns) {
-  record(`source.storekit.${pattern.source}`, !pattern.test(shippingSource), `forbidden shipping-source pattern ${pattern}`);
-}
 const repositoryFiles = walk(".", new Set([".build", ".pnpm-store", ".venv", "node_modules", "dist", "auditions", "model-cache", ".git"]));
-record("source.storekit-config-files", !repositoryFiles.some((path) => path.toLocaleLowerCase().endsWith(".storekit")), "no StoreKit configuration file may exist in the public product tree");
+const premiumStoreKitSourcePath = "Apps/ArriveWithin/Sources/PremiumGardenStyles.swift";
+const premiumStoreKitSource = read(premiumStoreKitSourcePath);
+const storeKitImportFiles = sourceFiles
+  .filter((path) => /\bimport\s+StoreKit\b/.test(readFileSync(path, "utf8")))
+  .map((path) => relative(root, path));
+equal("source.storekit.import-files", storeKitImportFiles, [premiumStoreKitSourcePath]);
+const storeKitAPIFiles = sourceFiles
+  .filter((path) => /\b(Product\.products|Transaction\.(?:updates|currentEntitlements)|AppStore\.sync)\b/.test(readFileSync(path, "utf8")))
+  .map((path) => relative(root, path));
+equal("source.storekit.api-files", storeKitAPIFiles, [premiumStoreKitSourcePath]);
+record("source.storekit.verified-transactions", premiumStoreKitSource.includes("case .verified(let transaction)") && premiumStoreKitSource.includes("transaction.revocationDate == nil"), "the entitlement must require verified, unrevoked StoreKit transactions");
+record("source.storekit.exact-product-id", premiumStoreKitSource.includes(`static let id = "${shared.storekit_contract.product_id}"`), "the native client must use the contracted product identifier");
+record("source.storekit.no-legacy-api", !/\bSKPayment\w*\b/.test(shippingSource), "legacy StoreKit payment APIs remain forbidden");
+const storeKitConfigFiles = repositoryFiles
+  .filter((path) => path.toLocaleLowerCase().endsWith(".storekit"))
+  .map((path) => relative(root, path));
+equal("source.storekit-config-files", storeKitConfigFiles, ["Config/PremiumGardenStyles.storekit"]);
+const storeKitConfig = json("Config/PremiumGardenStyles.storekit");
+record("source.storekit-config-one-product", storeKitConfig.products?.length === 1 && storeKitConfig.nonRenewingSubscriptions?.length === 0 && storeKitConfig.subscriptionGroups?.length === 0, "local StoreKit data must contain one product and no subscription surface");
+record(
+  "source.storekit-config-product",
+  storeKitConfig.products?.[0]?.productID === shared.storekit_contract.product_id
+    && storeKitConfig.products?.[0]?.type === "NonConsumable"
+    && storeKitConfig.products?.[0]?.displayPrice === shared.storekit_contract.base_price.amount
+    && storeKitConfig.products?.[0]?.familyShareable === false
+    && JSON.stringify(storeKitConfig.products?.[0]?.localizations?.map(({ locale }) => locale).sort()) === JSON.stringify(["de_DE", "en_US"]),
+  "local StoreKit product must mirror the exact live non-consumable contract",
+);
+record("source.storekit-scheme-binding", read("project.yml").includes("storeKitConfiguration: Config/PremiumGardenStyles.storekit"), "the shared development scheme must bind the exact local StoreKit configuration");
 
 const forbiddenTrackingPatterns = [
   /\bimport\s+AppTrackingTransparency\b/,
@@ -334,11 +365,16 @@ record(
     && releaseTrain.stages.slice(2, 7).every((stage) => typeof stage.readback === "string")
     && typeof releaseTrain.stages[7].readback === "string"
     && releaseTrain.stages.slice(8, 10).every((stage) => typeof stage.readback === "string")
-    && releaseTrain.stages.slice(10).every((stage) => stage.readback === null),
+    && releaseTrain.stages.slice(10, 12).every((stage) => stage.readback === null)
+    && typeof releaseTrain.stages[12].readback === "string"
+    && releaseTrain.stages[12].readback.includes("canonical repository is public")
+    && releaseTrain.stages[12].readback.includes("6d7ba49967f3082e39dcb0437402a97593897276")
+    && releaseTrain.stages[12].readback.includes("root remains immutable reachable history")
+    && releaseTrain.stages[12].readback.includes("No GitHub Actions workflow or run exists"),
   "live identity, signing readiness, V1 CloudKit disablement, and the exact selected internal build must retain honest readback",
 );
 record("release-train.authority", releaseTrain.stages.every((stage) => typeof stage.authorization === "string" && stage.authorization.length > 0), "every release stage must carry an explicit authorization boundary");
-record("release-train.repository-authority", releaseTrain.stages.slice(0, 12).every((stage) => !stage.status.startsWith("unauthorized") && !stage.status.startsWith("prohibited")) && releaseTrain.stages[12].status === "authorized-exact-origin-main-push-pending" && releaseTrain.stages[12].authorization.includes("exact-existing-origin-and-main-push") && releaseTrain.stages[12].authorization.includes("github-actions-settings-visibility-tags-releases-and-other-publication-mutations-remain-prohibited"), "repository authority must permit only the owner-authorized signed initial commit and exact origin/main push while GitHub Actions and unrelated publication mutations remain prohibited");
+record("release-train.repository-authority", releaseTrain.stages.slice(0, 12).every((stage) => !stage.status.startsWith("unauthorized") && !stage.status.startsWith("prohibited")) && releaseTrain.stages[12].status === "verified-public-origin-main-signed-root" && releaseTrain.stages[12].authorization.includes("exact-existing-origin-main-push-and-public-visibility") && releaseTrain.stages[12].authorization.includes("github-actions-tags-releases-and-unrelated-repository-settings-remain-separate"), "repository authority must bind the completed signed root publication while preserving GitHub Actions, tags, releases, and unrelated settings as separate boundaries");
 record(
   "release-train.candidate-unbound",
   releaseTrain.candidate_manifest === null
@@ -396,6 +432,16 @@ record(
   "verified builds 1 through 7 and the submitted build-7 review state must remain exact while the narration-complete update is unbound",
 );
 
+record(
+  "release-train.post-publication-garden-follow-up",
+  releaseTrain.post_publication_garden_follow_up?.status === "deferred-until-next-editable-app-store-metadata-opportunity"
+    && releaseTrain.post_publication_garden_follow_up?.submitted_artifact?.includes("must not be relabeled")
+    && releaseTrain.post_publication_garden_follow_up?.current_source_boundary?.includes("not represented by the submitted build-7 App Store screenshots")
+    && releaseTrain.post_publication_garden_follow_up?.required_action?.includes("current-source English/German iPhone and iPad captures")
+    && releaseTrain.post_publication_garden_follow_up?.required_action?.includes("only then replace"),
+  "post-publication Garden proof must keep submitted build-7 screenshots frozen and require a fresh next-opportunity recapture",
+);
+
 const sourceHashes = Object.fromEntries([
   ...localePaths,
   "docs/release/metadata/shared.json",
@@ -423,7 +469,7 @@ const report = {
   blockers,
   failures,
   checks,
-  claim_boundary: "This deterministic source check validates the repository's exact build-7 release-train readbacks but does not itself reproduce the frozen build-7 archive/IPA, live ASC or TestFlight state, physical-device observation, website deployment, App Review outcome, storefront, human audio/rights review, Git lineage, or public repository release.",
+  claim_boundary: "This deterministic source check validates the repository's exact build-7 release-train and completed public-repository readbacks but does not itself reproduce the frozen build-7 archive/IPA, live ASC or TestFlight state, physical-device observation, website deployment, App Review outcome, storefront, human audio/rights review, or the external GitHub readback.",
 };
 
 if (process.argv.includes("--write-report")) {

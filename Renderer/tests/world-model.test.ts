@@ -90,6 +90,25 @@ describe("deterministic authored world model", () => {
     expect(variantA.trunkHeight).toBe(variantB.trunkHeight);
   });
 
+  it("keeps Fire II variants visibly authored as low and high fireflies", () => {
+    const fireState = {
+      ...state,
+      journeyDay: 16,
+      highestMilestone: 8,
+      qualityHint: "high" as const,
+    };
+    const low = deriveWorldModel({ ...fireState, activeCustomization: { "8": "m08-a" } });
+    const high = deriveWorldModel({ ...fireState, activeCustomization: { "8": "m08-b" } });
+    const averageHeight = (model: ReturnType<typeof deriveWorldModel>) => {
+      const fireflies = model.details.filter((detail) => detail.kind === "fireflies");
+      return fireflies.reduce((sum, detail) => sum + detail.y, 0) / fireflies.length;
+    };
+
+    expect(averageHeight(high)).toBeGreaterThan(averageHeight(low) + 0.8);
+    expect(low.foliage).toEqual(high.foliage);
+    expect(low.trunkHeight).toBe(high.trunkHeight);
+  });
+
   it("treats birds, pavilion, and grass hares as milestone ecology", () => {
     const beforeAirTwo = deriveWorldModel({
       ...state,

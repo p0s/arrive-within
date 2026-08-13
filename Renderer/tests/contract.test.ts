@@ -2,6 +2,7 @@ import fixture from "../../Shared/fixtures/garden-state-day-2.json";
 import { describe, expect, it } from "vitest";
 import { createRendererRequestID } from "../src/bridge";
 import { decodeSnapshotEnvelope, GardenContractError, validateGardenState } from "../src/validation";
+import { deriveWorldModel } from "../src/world-model";
 
 describe("GardenState contract", () => {
   it("accepts the exact shared Swift fixture", () => {
@@ -25,6 +26,19 @@ describe("GardenState contract", () => {
     expect(() => validateGardenState({ ...fixture, localDayPhase: "midnight-blue" })).toThrow(
       GardenContractError,
     );
+  });
+
+  it("accepts a legacy snapshot without localDayPhase and defaults its world to day", () => {
+    const { localDayPhase: _, ...legacyFixture } = fixture;
+    const legacyState = decodeSnapshotEnvelope({
+      type: "state-snapshot",
+      schemaVersion: 1,
+      requestID: "60000000-0000-4000-8000-000000000003",
+      payload: { state: legacyFixture },
+    }).payload.state;
+
+    expect(legacyState.localDayPhase).toBeUndefined();
+    expect(deriveWorldModel(legacyState).dayPhase).toBe("day");
   });
 
   it("requires a bounded typed bridge envelope", () => {
