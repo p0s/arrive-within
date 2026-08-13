@@ -91,7 +91,8 @@ enum RendererEventValidator {
           "direction", "drawCalls", "triangles", "geometries", "textures",
           "programs", "rebuildCount", "context", "effectivePixelRatio",
         ],
-        payload["direction"] as? String == "twilight-refuge",
+        let direction = payload["direction"] as? String,
+        ["twilight-refuge", "hand-drawn", "stop-motion", "crochet", "claymation"].contains(direction),
         let drawCalls = boundedInteger(payload["drawCalls"], range: 0...10_000),
         let triangles = boundedInteger(payload["triangles"], range: 0...10_000_000),
         let geometries = boundedInteger(payload["geometries"], range: 0...100_000),
@@ -106,7 +107,7 @@ enum RendererEventValidator {
       return .observation(
         .inventory(
           RendererInventory(
-            direction: "twilight-refuge",
+            direction: direction,
             drawCalls: drawCalls,
             triangles: triangles,
             geometries: geometries,

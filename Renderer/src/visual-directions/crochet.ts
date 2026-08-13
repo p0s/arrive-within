@@ -1,4 +1,4 @@
-import type { GardenVisualDirection } from "../visual-design";
+import { createGardenStyleProfile, type GardenVisualDirection } from "../visual-design";
 
 export const crochet: GardenVisualDirection = {
   id: "crochet",
@@ -23,5 +23,28 @@ export const crochet: GardenVisualDirection = {
   },
   motion: { canopyAmplitude: 0.4, particleSpeed: 0.52 },
   material: { treatment: "crochet-yarn", roughness: 1, flatShading: false, textureScale: 3.2 },
+  styleProfile: createGardenStyleProfile({
+    surfacePattern: "braided-yarn",
+    edgeMode: "none",
+    shadingBands: 1,
+    geometryTreatment: "rounded-inflated",
+    detailDensity: 0.84,
+    motionCadence: { framesPerSecond: 30, propJitter: 0, inkWobble: 0, squashStretch: 0.012 },
+    skyAccents: { horizonTint: "#a7a9b8", celestialTint: "#d8a17c", strength: 0.5 },
+    waterAccents: { tint: "#5f8084", opacity: 0.88, rippleScale: 1.18 },
+    seeds: { texture: 0xa41e7, motion: 0x5b4d2, geometry: 0x63ab1 },
+    materialRoles: {
+      canopy: { roughness: 1, flatShading: false, textureScale: 2.55, textureOpacity: 0.94 },
+      trunk: { roughness: 1, flatShading: false, textureScale: 2.25, textureOpacity: 0.9 },
+      ground: { roughness: 1, flatShading: false, textureScale: 2.8, textureOpacity: 0.84 },
+      grass: { roughness: 1, flatShading: false, textureScale: 2.8, textureOpacity: 0.8 },
+      water: { roughness: 0.42, flatShading: false, textureScale: 1.9, textureOpacity: 0.58 },
+      pavilion: { roughness: 1, flatShading: false, textureScale: 2.35, textureOpacity: 0.9 },
+      path: { roughness: 1, flatShading: false, textureScale: 2.65, textureOpacity: 0.86 },
+      rock: { roughness: 1, flatShading: false, textureScale: 2.2, textureOpacity: 0.84 },
+      wildlife: { roughness: 1, flatShading: false, textureScale: 2.3, textureOpacity: 0.92 },
+      celestial: { roughness: 1, flatShading: false, textureScale: 1, textureOpacity: 0 },
+    },
+  }),
   detailOverrides: { stream: "#64868a", pond: "#5b7d83", blossoms: "#c77f78", clouds: "#d5d1cb" },
 };

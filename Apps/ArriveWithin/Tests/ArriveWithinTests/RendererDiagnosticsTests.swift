@@ -66,6 +66,39 @@ struct RendererDiagnosticsTests {
           )
         )
     )
+    #expect(
+      RendererEventValidator.decode([
+        "type": "inventory",
+        "schemaVersion": 1,
+        "requestID": requestID,
+        "payload": [
+          "direction": "claymation",
+          "drawCalls": 42,
+          "triangles": 8_100,
+          "geometries": 18,
+          "textures": 15,
+          "programs": 4,
+          "rebuildCount": 2,
+          "context": "available",
+          "effectivePixelRatio": 2.0,
+        ],
+      ])
+        == .observation(
+          .inventory(
+            RendererInventory(
+              direction: "claymation",
+              drawCalls: 42,
+              triangles: 8_100,
+              geometries: 18,
+              textures: 15,
+              programs: 4,
+              rebuildCount: 2,
+              context: "available",
+              effectivePixelRatio: 2
+            )
+          )
+        )
+    )
   }
 
   @Test("Incoming events reject extra fields, booleans as timings, unknown codes, and invalid IDs")
@@ -107,6 +140,24 @@ struct RendererDiagnosticsTests {
         "payload": [
           "direction": "twilight-refuge",
           "drawCalls": -1,
+          "triangles": 8_100,
+          "geometries": 18,
+          "textures": 6,
+          "programs": 4,
+          "rebuildCount": 1,
+          "context": "available",
+          "effectivePixelRatio": 2.0,
+        ],
+      ]) == nil
+    )
+    #expect(
+      RendererEventValidator.decode([
+        "type": "inventory",
+        "schemaVersion": 1,
+        "requestID": requestID,
+        "payload": [
+          "direction": "unknown-style",
+          "drawCalls": 42,
           "triangles": 8_100,
           "geometries": 18,
           "textures": 6,

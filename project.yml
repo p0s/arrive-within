@@ -49,6 +49,22 @@ targets:
         buildPhase: resources
       - path: THIRD_PARTY_NOTICES.md
         buildPhase: resources
+    preBuildScripts:
+      - name: Finalize Garden renderer bundle
+        script: |
+          set -euo pipefail
+          RENDERER_ROOT="${SRCROOT}/Renderer"
+          RENDERER_NODE="/opt/homebrew/bin/node"
+          VITE_BIN="${RENDERER_ROOT}/node_modules/vite/bin/vite.js"
+          if [ ! -x "${RENDERER_NODE}" ] || [ ! -f "${VITE_BIN}" ]; then
+            echo "error: Renderer build dependencies are unavailable."
+            exit 1
+          fi
+          "${RENDERER_NODE}" "${RENDERER_ROOT}/scripts/build.mjs"
+        outputFiles:
+          - $(SRCROOT)/Renderer/dist/renderer.js
+          - $(SRCROOT)/Renderer/dist/renderer-manifest.json
+        basedOnDependencyAnalysis: false
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.philipps.arrivewithin.ios

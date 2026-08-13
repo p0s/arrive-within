@@ -1,4 +1,4 @@
-import type { GardenVisualDirection } from "../visual-design";
+import { createGardenStyleProfile, type GardenVisualDirection } from "../visual-design";
 
 export const claymation: GardenVisualDirection = {
   id: "claymation",
@@ -23,5 +23,28 @@ export const claymation: GardenVisualDirection = {
   },
   motion: { canopyAmplitude: 0.46, particleSpeed: 0.58 },
   material: { treatment: "clay", roughness: 0.82, flatShading: false, textureScale: 1.5 },
+  styleProfile: createGardenStyleProfile({
+    surfacePattern: "fingerprint-clay",
+    edgeMode: "none",
+    shadingBands: 1,
+    geometryTreatment: "moulded-clay",
+    detailDensity: 0.88,
+    motionCadence: { framesPerSecond: 24, propJitter: 0, inkWobble: 0, squashStretch: 0.045 },
+    skyAccents: { horizonTint: "#bca392", celestialTint: "#e1a16f", strength: 0.56 },
+    waterAccents: { tint: "#587c7e", opacity: 0.9, rippleScale: 1.1 },
+    seeds: { texture: 0xd29b3, motion: 0x7c3a4, geometry: 0x8d2a1 },
+    materialRoles: {
+      canopy: { roughness: 0.84, flatShading: false, textureScale: 1.45, textureOpacity: 0.88 },
+      trunk: { roughness: 0.86, flatShading: false, textureScale: 1.35, textureOpacity: 0.84 },
+      ground: { roughness: 0.92, flatShading: false, textureScale: 1.5, textureOpacity: 0.72 },
+      grass: { roughness: 0.9, flatShading: false, textureScale: 1.55, textureOpacity: 0.68 },
+      water: { roughness: 0.36, flatShading: false, textureScale: 1.5, textureOpacity: 0.54 },
+      pavilion: { roughness: 0.88, flatShading: false, textureScale: 1.4, textureOpacity: 0.8 },
+      path: { roughness: 0.92, flatShading: false, textureScale: 1.55, textureOpacity: 0.74 },
+      rock: { roughness: 0.9, flatShading: false, textureScale: 1.35, textureOpacity: 0.74 },
+      wildlife: { roughness: 0.84, flatShading: false, textureScale: 1.4, textureOpacity: 0.84 },
+      celestial: { roughness: 1, flatShading: false, textureScale: 1, textureOpacity: 0 },
+    },
+  }),
   detailOverrides: { stream: "#5e8486", pond: "#55797d", "warm-light": "#dfa067", blossoms: "#bd776a" },
 };

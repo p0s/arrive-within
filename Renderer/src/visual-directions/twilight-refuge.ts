@@ -1,4 +1,4 @@
-import type { GardenVisualDirection } from "../visual-design";
+import { createGardenStyleProfile, type GardenVisualDirection } from "../visual-design";
 
 export const twilightRefuge: GardenVisualDirection = {
   id: "twilight-refuge",
@@ -42,6 +42,29 @@ export const twilightRefuge: GardenVisualDirection = {
     waterOpacity: 0.78,
   },
   motion: { canopyAmplitude: 0.54, particleSpeed: 0.72 },
+  styleProfile: createGardenStyleProfile({
+    surfacePattern: "natural-grain",
+    edgeMode: "none",
+    shadingBands: 2,
+    geometryTreatment: "organic",
+    detailDensity: 1,
+    motionCadence: { framesPerSecond: 60, propJitter: 0, inkWobble: 0, squashStretch: 0 },
+    skyAccents: { horizonTint: "#252f55", celestialTint: "#e6ae63", strength: 0 },
+    waterAccents: { tint: "#496c68", opacity: 1, rippleScale: 1 },
+    seeds: { texture: 0x51c3d, motion: 0x72f19, geometry: 0xa41e7 },
+    materialRoles: {
+      canopy: { roughness: 0.9, flatShading: true },
+      trunk: { roughness: 0.96, flatShading: true },
+      ground: { roughness: 1, flatShading: true },
+      grass: { roughness: 0.94, flatShading: true },
+      water: { roughness: 0.3, flatShading: false },
+      pavilion: { roughness: 0.92, flatShading: true },
+      path: { roughness: 1, flatShading: true },
+      rock: { roughness: 0.94, flatShading: true },
+      wildlife: { roughness: 0.96, flatShading: true },
+      celestial: { roughness: 1, flatShading: true, textureOpacity: 0 },
+    },
+  }),
   detailOverrides: {
     stream: "#436f75",
     pond: "#385e69",

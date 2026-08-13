@@ -1,7 +1,7 @@
 import fixture from "../../Shared/fixtures/garden-state-day-2.json";
 import { describe, expect, it } from "vitest";
 import { gardenVisualSignature } from "../src/scene";
-import { directionEvidence, resolveVisualModel } from "../src/visual-design";
+import { directionEvidence, resolveVisualModel, styleProfileFor } from "../src/visual-design";
 import {
   shippingGardenVisualDirection,
   shippingGardenVisualSelection,
@@ -83,6 +83,44 @@ describe("selectable visual directions", () => {
     }
     expect(new Set(premium.map((direction) => direction.material?.treatment)).size).toBe(4);
     expect(gardenRenderStyles["stop-motion"].motion.framesPerSecond).toBe(8);
+  });
+
+  it("gives each premium style a unique material grammar and deterministic seeds", () => {
+    const premium = [
+      gardenRenderStyles["hand-drawn"],
+      gardenRenderStyles["stop-motion"],
+      gardenRenderStyles.crochet,
+      gardenRenderStyles.claymation,
+    ];
+    const signatures = premium.map((direction) => {
+      const profile = styleProfileFor(direction);
+      return [
+        profile.surfacePattern,
+        profile.edgeMode,
+        profile.shadingBands,
+        profile.geometryTreatment,
+        profile.motionCadence.framesPerSecond,
+        profile.seeds.texture,
+        profile.seeds.motion,
+        profile.seeds.geometry,
+      ].join("|");
+    });
+    expect(new Set(signatures).size).toBe(premium.length);
+    expect(styleProfileFor(gardenRenderStyles["hand-drawn"]).edgeMode).toBe("ink-outline");
+    expect(styleProfileFor(gardenRenderStyles["stop-motion"]).geometryTreatment).toBe("faceted-miniature");
+    expect(styleProfileFor(gardenRenderStyles.crochet).surfacePattern).toBe("braided-yarn");
+    expect(styleProfileFor(gardenRenderStyles.claymation).surfacePattern).toBe("fingerprint-clay");
+    expect(styleProfileFor(gardenRenderStyles.claymation).seeds).toEqual(
+      styleProfileFor(gardenRenderStyles.claymation).seeds,
+    );
+  });
+
+  it("keeps Twilight on its neutral style profile", () => {
+    const profile = styleProfileFor(twilightRefuge);
+    expect(profile.surfacePattern).toBe("natural-grain");
+    expect(profile.edgeMode).toBe("none");
+    expect(profile.geometryTreatment).toBe("organic");
+    expect(profile.skyAccents.strength).toBe(0);
   });
 
   it("falls back to the free Twilight profile for unknown native input", () => {

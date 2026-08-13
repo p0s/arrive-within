@@ -17,6 +17,84 @@ export type GardenMaterialTreatment =
   | "crochet-yarn"
   | "clay";
 
+export type GardenMaterialRole =
+  | "canopy"
+  | "trunk"
+  | "ground"
+  | "grass"
+  | "water"
+  | "pavilion"
+  | "path"
+  | "rock"
+  | "wildlife"
+  | "celestial";
+
+export type GardenSurfacePattern =
+  | "natural-grain"
+  | "paper-hatch"
+  | "miniature-paper-set"
+  | "braided-yarn"
+  | "fingerprint-clay";
+
+export type GardenEdgeMode = "none" | "ink-outline" | "faceted-edge";
+
+export type GardenGeometryTreatment =
+  | "organic"
+  | "cel-stepped"
+  | "faceted-miniature"
+  | "rounded-inflated"
+  | "moulded-clay";
+
+export interface GardenMaterialRoleProfile {
+  roughness: number;
+  flatShading: boolean;
+  textureScale: number;
+  textureOpacity: number;
+}
+
+export interface GardenStyleProfile {
+  surfacePattern: GardenSurfacePattern;
+  edgeMode: GardenEdgeMode;
+  shadingBands: number;
+  geometryTreatment: GardenGeometryTreatment;
+  detailDensity: number;
+  motionCadence: {
+    framesPerSecond: number;
+    propJitter: number;
+    inkWobble: number;
+    squashStretch: number;
+  };
+  skyAccents: {
+    horizonTint: string;
+    celestialTint: string;
+    strength: number;
+  };
+  waterAccents: {
+    tint: string;
+    opacity: number;
+    rippleScale: number;
+  };
+  seeds: {
+    texture: number;
+    motion: number;
+    geometry: number;
+  };
+  materialRoles: Record<GardenMaterialRole, GardenMaterialRoleProfile>;
+}
+
+export interface GardenStyleProfileOptions {
+  surfacePattern: GardenSurfacePattern;
+  edgeMode: GardenEdgeMode;
+  shadingBands: number;
+  geometryTreatment: GardenGeometryTreatment;
+  detailDensity: number;
+  motionCadence: GardenStyleProfile["motionCadence"];
+  skyAccents: GardenStyleProfile["skyAccents"];
+  waterAccents: GardenStyleProfile["waterAccents"];
+  seeds: GardenStyleProfile["seeds"];
+  materialRoles?: Partial<Record<GardenMaterialRole, Partial<GardenMaterialRoleProfile>>>;
+}
+
 export type FoliageForm = "painted-botanical" | "paper-relief" | "twilight-silhouette";
 
 export interface GardenVisualDirection {
@@ -73,6 +151,7 @@ export interface GardenVisualDirection {
     outlineColor?: string;
     outlineScale?: number;
   };
+  styleProfile?: GardenStyleProfile;
   detailOverrides: Partial<Record<GardenFeature, string>>;
 }
 
@@ -188,6 +267,7 @@ export function resolveVisualModel(
   direction: GardenVisualDirection,
 ): ResolvedVisualModel {
   const influence = clamp(direction.palette.influence, 0, 1);
+  const profile = styleProfileFor(direction);
   const phase = gardenPhasePalettes[model.dayPhase];
   const baseSkyColor = mixHex(
     model.skyColor,
@@ -201,14 +281,24 @@ export function resolveVisualModel(
     direction.palette.groundTint,
     clamp(direction.palette.groundInfluence ?? influence, 0, 1),
   );
+  const skyAccentStrength = clamp(profile.skyAccents.strength, 0, 1);
   return {
     dayPhase: model.dayPhase,
-    skyTopColor: mixHex(direction.lighting.hemisphereSky, phase.skyTop, phaseInfluence),
-    skyColor: mixHex(baseSkyColor, phase.skyHorizon, phaseInfluence),
+    skyTopColor: mixHex(
+      mixHex(direction.lighting.hemisphereSky, profile.skyAccents.horizonTint, skyAccentStrength * 0.16),
+      phase.skyTop,
+      phaseInfluence,
+    ),
+    skyColor: mixHex(
+      mixHex(baseSkyColor, profile.skyAccents.horizonTint, skyAccentStrength * 0.18),
+      phase.skyHorizon,
+      phaseInfluence,
+    ),
     skyLowerColor: mixHex(direction.lighting.hemisphereGround, phase.skyLower, phaseInfluence),
     fogColor: mixHex(baseSkyColor, phase.fog, 0.82),
-    celestialGlowColor: phase.glow,
-    celestialGlowStrength: model.dayPhase === "day" ? 0.26 : model.dayPhase === "night" ? 0.1 : 0.2,
+    celestialGlowColor: mixHex(phase.glow, profile.skyAccents.celestialTint, skyAccentStrength * 0.72),
+    celestialGlowStrength: (model.dayPhase === "day" ? 0.26 : model.dayPhase === "night" ? 0.1 : 0.2)
+      * (1 + skyAccentStrength * 0.08),
     starOpacity: phase.celestialOpacity,
     moonOpacity: Math.max(model.dayPhase === "day" ? 0.025 : 0.18, phase.celestialOpacity),
     groundColor: mixHex(baseGroundColor, phase.groundTarget, phase.groundBlend),
@@ -245,13 +335,94 @@ export function resolveDetailColor(
   return mixHex(original, target, clamp(direction.palette.influence * 0.72, 0, 1));
 }
 
+const defaultMaterialRoleProfile: GardenMaterialRoleProfile = {
+  roughness: 0.96,
+  flatShading: true,
+  textureScale: 1.8,
+  textureOpacity: 0.72,
+};
+
+export function createGardenStyleProfile(
+  options: GardenStyleProfileOptions,
+): GardenStyleProfile {
+  const materialRoles = Object.fromEntries(
+    (Object.keys(defaultMaterialRoles) as GardenMaterialRole[]).map((role) => [
+      role,
+      {
+        ...defaultMaterialRoleProfile,
+        ...defaultMaterialRoles[role],
+        ...options.materialRoles?.[role],
+      },
+    ]),
+  ) as Record<GardenMaterialRole, GardenMaterialRoleProfile>;
+  return {
+    ...options,
+    materialRoles,
+  };
+}
+
+export function styleProfileFor(direction: GardenVisualDirection): GardenStyleProfile {
+  return direction.styleProfile ?? createGardenStyleProfile({
+    surfacePattern: direction.material?.treatment === "inked-paper"
+      ? "paper-hatch"
+      : direction.material?.treatment === "miniature-stop-motion"
+      ? "miniature-paper-set"
+      : direction.material?.treatment === "crochet-yarn"
+      ? "braided-yarn"
+      : direction.material?.treatment === "clay"
+      ? "fingerprint-clay"
+      : "natural-grain",
+    edgeMode: direction.material?.outlineColor === undefined ? "none" : "ink-outline",
+    shadingBands: direction.material?.flatShading === false ? 1 : 2,
+    geometryTreatment: direction.material?.treatment === "inked-paper"
+      ? "cel-stepped"
+      : direction.material?.treatment === "miniature-stop-motion"
+      ? "faceted-miniature"
+      : direction.material?.treatment === "crochet-yarn"
+      ? "rounded-inflated"
+      : direction.material?.treatment === "clay"
+      ? "moulded-clay"
+      : "organic",
+    detailDensity: 1,
+    motionCadence: {
+      framesPerSecond: direction.motion.framesPerSecond ?? 60,
+      propJitter: 0,
+      inkWobble: 0,
+      squashStretch: 0,
+    },
+    skyAccents: { horizonTint: direction.palette.skyTint, celestialTint: direction.palette.accentTint, strength: 0 },
+    waterAccents: { tint: direction.palette.detailTint, opacity: 1, rippleScale: 1 },
+    seeds: { texture: 0x51c3d, motion: 0x72f19, geometry: 0xa41e7 },
+  });
+}
+
+const defaultMaterialRoles: Record<GardenMaterialRole, Partial<GardenMaterialRoleProfile>> = {
+  canopy: {},
+  trunk: {},
+  ground: {},
+  grass: {},
+  water: { roughness: 0.3, flatShading: false, textureScale: 1.4 },
+  pavilion: { roughness: 0.92 },
+  path: {},
+  rock: {},
+  wildlife: { roughness: 0.9, flatShading: false },
+  celestial: { roughness: 1, textureOpacity: 0 },
+};
+
 export function directionEvidence(direction: GardenVisualDirection): Record<string, unknown> {
+  const profile = styleProfileFor(direction);
   return {
     id: direction.id,
     meaning: direction.meaning,
     foliageForm: direction.foliageForm,
     materialTreatment: direction.material?.treatment ?? "natural",
     motionFramesPerSecond: direction.motion.framesPerSecond ?? 60,
+    surfacePattern: profile.surfacePattern,
+    edgeMode: profile.edgeMode,
+    shadingBands: profile.shadingBands,
+    geometryTreatment: profile.geometryTreatment,
+    detailDensity: profile.detailDensity,
+    styleSeeds: profile.seeds,
     groundLayers: direction.composition.groundLayers,
     reducedMotionBehavior: "static-state-with-direct-update",
     bridgeAuthority: "unchanged-garden-state-v1",

@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct PremiumGardenStylesView: View {
   @Bindable var model: AppModel
@@ -55,7 +56,7 @@ struct PremiumGardenStylesView: View {
           Button {
             requestedStyle = .handDrawn
           } label: {
-            Label(premiumActionTitle, systemImage: "sparkles")
+            Text(premiumActionTitle)
           }
           .disabled(
             model.premiumGardenPurchaseIsInProgress
@@ -127,7 +128,7 @@ private struct GardenStyleRow: View {
 
   var body: some View {
     HStack(spacing: 14) {
-      GardenStyleSwatch(style: style)
+      GardenStylePreview(style: style)
         .frame(width: 64, height: 48)
         .accessibilityHidden(true)
 
@@ -160,33 +161,33 @@ private struct GardenStyleRow: View {
   }
 }
 
-private struct GardenStyleSwatch: View {
+private struct GardenStylePreview: View {
   let style: GardenRenderStyle
 
   var body: some View {
-    ZStack {
-      RoundedRectangle(cornerRadius: 11, style: .continuous)
-        .fill(style.background)
-      Capsule()
-        .fill(style.ground)
-        .frame(width: 52, height: 13)
-        .offset(y: 15)
-      Capsule()
-        .fill(style.trunk)
-        .frame(width: 7, height: 25)
-        .offset(y: 5)
-      ForEach(0..<3, id: \.self) { index in
-        Circle()
-          .fill(style.foliage.opacity(0.94 - Double(index) * 0.08))
-          .frame(width: 25, height: 22)
-          .offset(x: CGFloat(index - 1) * 13, y: -9 + CGFloat(index % 2) * 3)
+    Group {
+      if let imageURL = Bundle.main.url(
+        forResource: style.previewResourceName,
+        withExtension: "png"
+      ), let image = UIImage(contentsOfFile: imageURL.path) {
+        Image(uiImage: image)
+          .resizable()
+          .scaledToFill()
+      } else {
+        Color.black.opacity(0.08)
+          .overlay {
+            Text("garden.styles.preview.missing")
+              .font(.caption2)
+              .multilineTextAlignment(.center)
+              .foregroundStyle(.secondary)
+          }
       }
     }
+    .clipped()
+    .clipShape(RoundedRectangle(cornerRadius: 11, style: .continuous))
     .overlay {
       RoundedRectangle(cornerRadius: 11, style: .continuous)
-        .stroke(
-          .primary.opacity(style == .handDrawn ? 0.45 : 0.12),
-          lineWidth: style == .handDrawn ? 1.5 : 0.7)
+        .stroke(.primary.opacity(0.16), lineWidth: 0.7)
     }
   }
 }
@@ -201,7 +202,7 @@ private struct PremiumGardenPaywallView: View {
     NavigationStack {
       ScrollView {
         VStack(alignment: .leading, spacing: 24) {
-          GardenStyleSwatch(style: requestedStyle ?? .handDrawn)
+          GardenStylePreview(style: requestedStyle ?? .handDrawn)
             .frame(height: 190)
             .frame(maxWidth: .infinity)
 
@@ -215,12 +216,13 @@ private struct PremiumGardenPaywallView: View {
 
           VStack(alignment: .leading, spacing: 13) {
             ForEach(GardenRenderStyle.allCases.filter(\.isPremium)) { style in
-              Label {
+              HStack(spacing: 12) {
+                GardenStylePreview(style: style)
+                  .frame(width: 72, height: 48)
+                  .accessibilityHidden(true)
                 Text(AppLocalization.string(style.titleLocalizationKey, locale: locale))
-              } icon: {
-                Image(systemName: style.symbolName)
+                  .font(.body.weight(.semibold))
               }
-                .font(.body.weight(.semibold))
             }
           }
 
@@ -285,36 +287,7 @@ extension GardenRenderStyle {
     "garden.styles.\(rawValue).detail"
   }
 
-  fileprivate var symbolName: String {
-    switch self {
-    case .twilight: "moon.stars"
-    case .handDrawn: "pencil.and.scribble"
-    case .stopMotion: "film.stack"
-    case .crochet: "circle.grid.cross"
-    case .claymation: "hand.raised.fingers.spread"
-    }
+  fileprivate var previewResourceName: String {
+    "garden-preview-\(rawValue)"
   }
-
-  fileprivate var background: Color {
-    switch self {
-    case .twilight: Color(red: 0.14, green: 0.18, blue: 0.32)
-    case .handDrawn: Color(red: 0.86, green: 0.84, blue: 0.76)
-    case .stopMotion: Color(red: 0.42, green: 0.49, blue: 0.53)
-    case .crochet: Color(red: 0.49, green: 0.53, blue: 0.61)
-    case .claymation: Color(red: 0.47, green: 0.54, blue: 0.59)
-    }
-  }
-
-  fileprivate var foliage: Color {
-    switch self {
-    case .twilight: Color(red: 0.31, green: 0.44, blue: 0.4)
-    case .handDrawn: Color(red: 0.39, green: 0.47, blue: 0.37)
-    case .stopMotion: Color(red: 0.38, green: 0.47, blue: 0.33)
-    case .crochet: Color(red: 0.41, green: 0.49, blue: 0.38)
-    case .claymation: Color(red: 0.4, green: 0.46, blue: 0.36)
-    }
-  }
-
-  fileprivate var ground: Color { foliage.opacity(0.72) }
-  fileprivate var trunk: Color { Color(red: 0.37, green: 0.29, blue: 0.24) }
 }
