@@ -1,7 +1,7 @@
 import { copyFile, lstat, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { siteContent } from "../src/content.mjs";
+import { repositoryURL, siteContent } from "../src/content.mjs";
 import {
   DIST,
   ROOT,
@@ -65,6 +65,7 @@ function footer(locale) {
       <a href="${routeFor(locale, "support")}">${escapeHtml(content.nav.support)}</a>
       <a href="${routeFor(locale, "privacy")}">${escapeHtml(content.nav.privacy)}</a>
       <a href="${routeFor(locale, "openSource")}">${escapeHtml(content.nav.openSource)}</a>
+      <a href="${repositoryURL}">${escapeHtml(content.nav.source)}</a>
     </nav>
   </footer>`;
 }
@@ -196,7 +197,7 @@ function privacyPage(locale) {
 function openSourcePage(locale) {
   const page = siteContent[locale].openSourcePage;
   const principles = page.principles.map((item, index) => `<li><span class="mode-number">0${index + 1}</span><h2>${escapeHtml(item.title)}</h2><p>${escapeHtml(item.text)}</p></li>`).join("");
-  const body = `<main id="main" class="article-shell open-source-shell"><header class="article-hero"><p class="eyebrow">${escapeHtml(page.eyebrow)}</p><h1>${escapeHtml(page.title)}</h1><p class="lede">${escapeHtml(page.intro)}</p></header><ol class="principle-list">${principles}</ol><section class="repository-callout"><p class="primary-action repository-status">${escapeHtml(page.repoLabel)}</p><p>${escapeHtml(page.repoNote)}</p></section></main>`;
+  const body = `<main id="main" class="article-shell open-source-shell"><header class="article-hero"><p class="eyebrow">${escapeHtml(page.eyebrow)}</p><h1>${escapeHtml(page.title)}</h1><p class="lede">${escapeHtml(page.intro)}</p></header><ol class="principle-list">${principles}</ol><section class="repository-callout"><a class="primary-action repository-status" href="${repositoryURL}">${escapeHtml(page.repoLabel)}</a><p>${escapeHtml(page.repoNote)}</p></section></main>`;
   return shell(locale, "openSource", page.metaTitle, page.metaDescription, body);
 }
 

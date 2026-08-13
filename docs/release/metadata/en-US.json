@@ -10,7 +10,8 @@
     "Arrive Within is a private, offline-first meditation garden. Begin with a dependable timer or an open-ended stopwatch. Every qualifying practice permanently grows one living tree and the world around it.",
     "Choose a flexible timer or an open-ended stopwatch, with optional bells, quiet ambience, haptics, and truthful session recovery after an interruption or relaunch.",
     "Write or record an optional private reflection, review your journey and simple statistics, create calm local reminders, and export a readable copy of your data whenever you choose.",
-    "Your privacy stays yours. Arrive Within collects no user information. There are no ads, analytics, tracking, subscriptions, purchases, accounts, cloud sync, or social comparisons. Practice, preferences, progress, and journal data stay on your device unless you explicitly export them through Apple's system share sheet. Missed days never remove growth. Your journal is never analyzed."
+    "Your privacy stays yours. Arrive Within collects no user information. There are no ads, analytics, tracking, subscriptions, purchases, accounts, cloud sync, or social comparisons. Practice, preferences, progress, and journal data stay on your device unless you explicitly export them through Apple's system share sheet. Missed days never remove growth. Your journal is never analyzed.",
+    "Arrive Within is open source. Explore the project and contribute at https://github.com/p0s/arrive-within."
   ],
   "keywords": "meditation,timer,stopwatch,mindfulness,breathing,journal,relax,focus,sleep,offline",
   "whats_new": "Welcome to Arrive Within.",

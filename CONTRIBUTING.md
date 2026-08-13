@@ -6,6 +6,8 @@ Thank you for improving Arrive Within itself: its native app, deterministic gard
 
 - Search existing issues and choose the form matching the work.
 - Keep a change focused on one coherent product gap.
+- Use a topic branch and pull request for normal product or code changes. Keep commits cohesive, reviewable, and limited to the stated outcome.
+- A maintainer may intentionally handle a trivial documentation correction or urgent safety fix directly, but the same public-boundary checks and honest evidence rules still apply.
 - For a material product, privacy, cost, rights, identity, or release-policy change, open a feature proposal before implementation.
 - Never add private configuration, credentials, signing material, model weights, voice references, personal data, uncertain-rights assets, or copied competitor behavior.
 - Read the [architecture overview](docs/architecture/OVERVIEW.md), [asset policy](docs/contributing/ASSET_POLICY.md), and the relevant art/content guide.
@@ -27,9 +29,17 @@ A pull request should:
 - include source, license, provenance, prompts/parameters, and hashes for every asset change;
 - distinguish simulator/local evidence from physical device, CloudKit, TestFlight, App Store, website, and public-release evidence;
 - avoid unsupported availability or release claims;
-- pass CI and maintainer review before merge.
+- pass the required local checks and maintainer review before merge.
 
 Physical-device evidence is required where the behavior depends on audio routes, lock/background/interruption, microphone, notifications, performance/thermal limits, private CloudKit, signing, or an exact distributed candidate. A simulator screenshot is not a substitute.
+
+## Before pushing
+
+- Review the exact staged diff and commit range. Normal product/code batches run `./scripts/goal`, which includes the public-tree, privacy/data-flow, secret-signature, and Git-history boundaries.
+- For an explicitly bounded documentation exception, run at least `git diff --check`, `node scripts/validate_public_repository.mjs`, `node scripts/validate_privacy_data_flows.mjs`, `node scripts/validate_manual_security_review.mjs`, and the smallest relevant documentation check.
+- Confirm that no secret, private path, ignored evidence, personal identifier, signing value, credential, uncertain-rights asset, or unsupported release claim enters the branch or its history.
+- Do not add or enable GitHub Actions unless the owner separately authorizes that exact workflow and cost surface.
+- A branch, push, or pull request never authorizes TestFlight, App Store, website deployment, tags, releases, repository settings, or another external mutation. Each requires separate owner authorization.
 
 ## Code and product conventions
 

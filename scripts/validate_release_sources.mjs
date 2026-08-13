@@ -401,6 +401,16 @@ record(
   "verified builds 1 through 7 and the submitted build-7 review state must remain exact while the narration-complete update is unbound",
 );
 
+record(
+  "release-train.post-publication-garden-follow-up",
+  releaseTrain.post_publication_garden_follow_up?.status === "deferred-until-next-editable-app-store-metadata-opportunity"
+    && releaseTrain.post_publication_garden_follow_up?.submitted_artifact?.includes("must not be relabeled")
+    && releaseTrain.post_publication_garden_follow_up?.current_source_boundary?.includes("not represented by the submitted build-7 App Store screenshots")
+    && releaseTrain.post_publication_garden_follow_up?.required_action?.includes("current-source English/German iPhone and iPad captures")
+    && releaseTrain.post_publication_garden_follow_up?.required_action?.includes("only then replace"),
+  "post-publication Garden proof must keep submitted build-7 screenshots frozen and require a fresh next-opportunity recapture",
+);
+
 const sourceHashes = Object.fromEntries([
   ...localePaths,
   "docs/release/metadata/shared.json",

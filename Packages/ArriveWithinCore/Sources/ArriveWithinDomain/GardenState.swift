@@ -11,6 +11,24 @@ public enum GardenQualityHint: String, Codable, CaseIterable, Sendable {
   case high
 }
 
+public enum GardenDayPhase: String, Codable, CaseIterable, Sendable {
+  case dawn
+  case day
+  case dusk
+  case night
+
+  public static func presentation(at date: Date, timeZone: TimeZone) -> Self {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = timeZone
+    switch calendar.component(.hour, from: date) {
+    case 5..<8: return .dawn
+    case 8..<17: return .day
+    case 17..<20: return .dusk
+    default: return .night
+    }
+  }
+}
+
 public struct GardenCustomization: Codable, Equatable, Sendable {
   public var selectedVariantByMilestone: [Int: String]
 
@@ -50,6 +68,7 @@ public struct GardenProjectionContext: Codable, Equatable, Sendable {
   public var customization: GardenCustomization
   public var reduceMotion: Bool
   public var qualityHint: GardenQualityHint
+  public var localDayPhase: GardenDayPhase
 
   public init(
     gardenID: UUID,
@@ -57,7 +76,8 @@ public struct GardenProjectionContext: Codable, Equatable, Sendable {
     profileGenerationID: UUID,
     customization: GardenCustomization = .init(),
     reduceMotion: Bool = false,
-    qualityHint: GardenQualityHint = .balanced
+    qualityHint: GardenQualityHint = .balanced,
+    localDayPhase: GardenDayPhase = .day
   ) {
     precondition(
       gardenSeed <= GardenSeedContract.maximumExactCrossRuntimeValue,
@@ -69,6 +89,7 @@ public struct GardenProjectionContext: Codable, Equatable, Sendable {
     self.customization = customization
     self.reduceMotion = reduceMotion
     self.qualityHint = qualityHint
+    self.localDayPhase = localDayPhase
   }
 }
 
@@ -112,6 +133,7 @@ public struct GardenState: Codable, Equatable, Sendable {
   public let activeCustomization: [Int: String]
   public let microGrowthOrdinal: Int
   public let localTimePresentation: String?
+  public let localDayPhase: GardenDayPhase?
   public let latestGrowthEvent: GardenGrowthEvent?
   public let reduceMotion: Bool
   public let qualityHint: GardenQualityHint
@@ -129,6 +151,7 @@ public struct GardenState: Codable, Equatable, Sendable {
     activeCustomization: [Int: String],
     microGrowthOrdinal: Int,
     localTimePresentation: String?,
+    localDayPhase: GardenDayPhase? = nil,
     latestGrowthEvent: GardenGrowthEvent?,
     reduceMotion: Bool,
     qualityHint: GardenQualityHint
@@ -149,6 +172,7 @@ public struct GardenState: Codable, Equatable, Sendable {
     self.activeCustomization = activeCustomization
     self.microGrowthOrdinal = microGrowthOrdinal
     self.localTimePresentation = localTimePresentation
+    self.localDayPhase = localDayPhase
     self.latestGrowthEvent = latestGrowthEvent
     self.reduceMotion = reduceMotion
     self.qualityHint = qualityHint

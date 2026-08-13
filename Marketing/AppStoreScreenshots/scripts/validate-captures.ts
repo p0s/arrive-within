@@ -14,6 +14,7 @@ import {
   type SourceCaptures,
 } from "./contracts";
 import { validateOpaqueRgbPng } from "./image-validation";
+import { isExactSubmittedBuildCaptureFreeze } from "./capture-drift-policy";
 import { computeCaptureSourceManifest, type CaptureSourceManifest } from "./source-provenance";
 
 function sha256(data: Buffer): string {
@@ -64,42 +65,8 @@ export async function validateCaptures(
     const changedPaths = [...new Set([...storedHashes.keys(), ...currentHashes.keys()])]
       .filter((file) => storedHashes.get(file) !== currentHashes.get(file))
       .sort();
-    const attestation = captures.post_capture_nonvisual_change;
-    const expectedPaths = [
-      "Apps/ArriveWithin/Sources/GuidedLibraryView.swift",
-      "Apps/ArriveWithin/Sources/MeditationAudioController.swift",
-      "Apps/ArriveWithin/Sources/PracticeView.swift",
-      "Apps/ArriveWithin/Sources/RendererDiagnostics.swift",
-      "ArriveWithin.xcodeproj/project.pbxproj",
-      "Config/ArriveWithin.entitlements.local",
-      "Config/Base.xcconfig",
-      "Config/Local.xcconfig",
-      "Packages/ArriveWithinCore/Package.swift",
-      "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/WeeklyReminderSchedule.swift",
-      "Renderer/dist/renderer-manifest.json",
-      "Renderer/dist/renderer.js",
-      "project.yml",
-    ];
-    const baseConfiguration = await readFile(path.resolve(ROOT, "../..", "Config/Base.xcconfig"), "utf8");
-    const projectSource = await readFile(path.resolve(ROOT, "../..", "project.yml"), "utf8");
-    if (
-      attestation?.classification !== "nonvisual-packaging-and-diagnostics-change" ||
-      attestation.current_source_revision !== currentManifest.source_revision ||
-      JSON.stringify(attestation.changed_paths) !== JSON.stringify(expectedPaths) ||
-      JSON.stringify(changedPaths) !== JSON.stringify(expectedPaths) ||
-      !attestation.rationale.includes("THIRD_PARTY_NOTICES.md") ||
-      !attestation.rationale.includes("inventory diagnostics") ||
-      !attestation.rationale.includes("test-only baseline-upgrade fixture") ||
-      !attestation.rationale.includes("end-of-file whitespace") ||
-      !attestation.rationale.includes("ignored local signing overlays") ||
-      !attestation.rationale.includes("zero-narration build 7") ||
-      !attestation.rationale.includes("fail-closed narration provenance") ||
-      !attestation.rationale.includes("no rendering, layout, camera, lighting, animation, or product-state change") ||
-      !attestation.rationale.includes("build 7") ||
-      !baseConfiguration.includes("CURRENT_PROJECT_VERSION = 7") ||
-      !projectSource.includes("- path: THIRD_PARTY_NOTICES.md")
-    ) {
-      throw new Error("source capture revision drift is not an allowlisted nonvisual packaging-only change");
+    if (!isExactSubmittedBuildCaptureFreeze(captures.post_capture_change, currentManifest.source_revision, changedPaths)) {
+      throw new Error("source capture revision drift is not the one exact submitted-build-7 Garden freeze");
     }
   }
   if (captures.result_bundles.length !== 2) throw new Error("exactly two iPhone/iPad result bundles are required");

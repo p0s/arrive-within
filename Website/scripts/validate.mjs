@@ -12,6 +12,7 @@ import {
   resolvePublicBaseURL,
   sha256,
 } from "./lib.mjs";
+import { repositoryURL } from "../src/content.mjs";
 
 const expectedRoutes = ["/", "/de", "/support", "/de/support", "/privacy", "/de/privacy", "/open-source", "/de/open-source"];
 const routeFiles = {
@@ -82,7 +83,12 @@ async function main() {
   }
 
   const provenance = JSON.parse(await readFile(path.join(ROOT, "src", "assets", "provenance.json"), "utf8"));
-  if (provenance.schema_version !== 1 || provenance.assets.length !== 11) throw new Error("website asset provenance must contain eight app-UI images plus three public-media assets");
+  if (
+    provenance.schema_version !== 1 ||
+    provenance.assets.length !== 11 ||
+    provenance.public_media_source_state !== "pre-enhancement-renderer-media-current-regeneration-deferred-host-denial" ||
+    !provenance.public_media_next_action.includes("next successful current-source browser capture")
+  ) throw new Error("website asset provenance must contain the exact submitted-media and deferred-regeneration boundary");
   for (const asset of provenance.assets) {
     const canonicalSource = path.join(path.resolve(ROOT, ".."), asset.source);
     const sourceFile = path.join(ROOT, "src", "assets", asset.file);
@@ -110,6 +116,7 @@ async function main() {
     }
     if (!html.includes(`rel="canonical" href="${publicBaseURL}${route}"`)) throw new Error(`${route}: incorrect canonical URL`);
     if (!html.includes(`property="og:image" content="${publicBaseURL}/assets/social-preview.png"`)) throw new Error(`${route}: missing canonical social preview`);
+    if (!html.includes(`href="${repositoryURL}"`)) throw new Error(`${route}: missing canonical public repository link`);
     if (/<script\b|<form\b|<iframe\b|<object\b|<embed\b/i.test(html)) throw new Error(`${route}: active or form content is forbidden`);
     if (/google-analytics|googletagmanager|gtag\s*\(|posthog|mixpanel|segment\.io|facebook\.net|doubleclick/i.test(html)) {
       throw new Error(`${route}: analytics or tracking marker found`);
@@ -132,7 +139,7 @@ async function main() {
     for (const match of html.matchAll(/\bhref="([^"]+)"/g)) {
       const href = match[1];
       if (href.startsWith("https://")) {
-        if (new URL(href).origin !== publicBaseURL) {
+        if (href !== repositoryURL && new URL(href).origin !== publicBaseURL) {
           throw new Error(`${route}: unapproved external link ${href}`);
         }
         continue;

@@ -40,6 +40,7 @@
     },
     "microGrowthOrdinal": {"type": "integer", "minimum": 0},
     "localTimePresentation": {"type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+    "localDayPhase": {"enum": ["dawn", "day", "dusk", "night"]},
     "latestGrowthEvent": {
       "oneOf": [
         {"type": "null"},
