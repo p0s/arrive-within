@@ -179,15 +179,9 @@ private struct PracticeChooserView: View {
             }
 
             Picker("practice.interval", selection: $intervalBellMinutes) {
-              Text("common.off").tag(Int?.none)
+              Text("practice.interval.off").tag(Int?.none)
               ForEach(intervalOptions, id: \.self) { minutes in
-                Text(
-                  String(
-                    format: AppLocalization.string("practice.interval.minutes.format", locale: locale),
-                    locale: locale,
-                    minutes
-                  )
-                )
+                Text(intervalTitle(minutes))
                 .tag(Int?.some(minutes))
               }
             }
@@ -325,11 +319,24 @@ private struct PracticeChooserView: View {
   }
 
   private func preparationTitle(_ duration: PreparationDuration) -> String {
-    guard duration != .off else { return AppLocalization.string("common.off", locale: locale) }
+    guard duration != .off else {
+      return AppLocalization.string("practice.preparation.immediate", locale: locale)
+    }
     return String(
       format: AppLocalization.string("practice.preparation.seconds.format", locale: locale),
       locale: locale,
       duration.rawValue
+    )
+  }
+
+  private func intervalTitle(_ minutes: Int) -> String {
+    guard minutes != 1 else {
+      return AppLocalization.string("practice.interval.one.minute", locale: locale)
+    }
+    return String(
+      format: AppLocalization.string("practice.interval.minutes.format", locale: locale),
+      locale: locale,
+      minutes
     )
   }
 

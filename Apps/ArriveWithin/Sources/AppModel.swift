@@ -279,6 +279,7 @@ final class AppModel {
     guidedContentVersion: Int? = nil
   ) async throws {
     guard activeSession == nil else { return }
+    audioNotice = nil
     let profile = try await createProfileIfNeeded()
     let moment = dependencies.clock.now()
     let guided = mode == .guided
@@ -630,6 +631,7 @@ final class AppModel {
         try await dependencies.sessionRepository.save(session)
         activeSession = nil
         preparationRemainingMilliseconds = 0
+        audioNotice = nil
         dependencies.audioController.stop()
         dependencies.timerEndAlertController.cancel(sessionID: session.id)
       } catch {
@@ -642,6 +644,7 @@ final class AppModel {
 
   func dismissCompletion(showGarden: Bool) {
     completionPresentation = nil
+    audioNotice = nil
     if showGarden { selectedSection = .garden }
   }
 
@@ -1585,6 +1588,7 @@ final class AppModel {
       activeSession = nil
       elapsedMilliseconds = outcome.event.activeMilliseconds
       lastIntervalBellOrdinal = 0
+      audioNotice = nil
       dependencies.timerEndAlertController.cancel(sessionID: session.id)
       completionPresentation = CompletionPresentation(
         qualifiedForGrowth: outcome.event.qualifiesForGrowth,

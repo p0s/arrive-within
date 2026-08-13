@@ -31,6 +31,37 @@ struct BundledAudioContractTests {
     controller.stop()
   }
 
+  #if !targetEnvironment(simulator)
+    @Test("A timer can start every enabled procedural audio layer on device")
+    func proceduralLayersStartOnDevice() async throws {
+      let audio = try MeditationAudioConfiguration(
+        intervalBellMinutes: 1,
+        ambienceID: "still-air-v1",
+        ambienceVolume: 0.3,
+        otherAudioPolicy: .mixWithOthers
+      )
+      let session = try MeditationSession(
+        id: UUID(),
+        profileGenerationID: UUID(),
+        mode: .timer,
+        targetDurationMilliseconds: 180_000,
+        preparedAt: Date(),
+        configuration: MeditationSessionConfiguration(audio: audio)
+      )
+      let controller = try NativeMeditationAudioController(bundle: .main)
+      defer { controller.stop() }
+      var systemEvents: [MeditationAudioSystemEvent] = []
+      controller.eventHandler = { systemEvents.append($0) }
+
+      try controller.begin(session: session)
+      try await Task.sleep(for: .milliseconds(250))
+      #expect(
+        systemEvents.isEmpty,
+        "Building the controller's own graph must not be reported as an external audio reset."
+      )
+    }
+  #endif
+
   @Test("Guided narration availability matches its explicit catalogue state")
   func guidedNarrationMatchesCatalogState() throws {
     let audio = try MeditationAudioConfiguration(narrationLanguageCode: "en")

@@ -15,6 +15,8 @@ The old hashes below remain as historical evidence for the original local run. R
 
 The replacement source was then exercised on the authorized physical iPhone with the real native audio controller. The first run reproduced an immediate opening-buffer abort and localized the missing invariant: player nodes had been connected without the loaded media's explicit format. After explicit per-layer connections, an accelerated three-minute flow allowed the four-second opening bell to finish and stop the engine, then crossed automatic completion through the rebuilt one-shot closing path. The exact focused UI test passed 1/1 with no crash. This is physical source-level lifecycle proof; human audibility and exact TestFlight-candidate proof remain pending.
 
+The next exact-device reproduction found a second startup invariant: `.longFormAudio` cannot be combined with `.mixWithOthers` on iOS and throws `NSOSStatusErrorDomain -50` before the graph starts. Mixed playback now selects the default route-sharing policy, while the dedicated opening player keeps the opening cue independent from future interval/closing scheduling. A device-hosted regression test exercises the full procedural layer set; its first post-fix rerun was blocked before launch by the device's developer-app trust state, so no physical pass is claimed from that rerun.
+
 ## Outcome
 
 The timer now persists validated settings and session configuration, uses monotonic active time across preparation/pause/resume, clamps a suspended timer's completion to its exact target instead of over-crediting wake time, and completes idempotently. The rendered first-use path still completes a real 180-second model transition, restores deterministic growth after relaunch, and preserves it through native fallback.
@@ -33,9 +35,9 @@ The app has a layered native audio path for opening/interval/closing bells, opti
 
 ## Exact media boundary
 
-- `opening-bell-v1.wav`: `b94002d4a8fcbe8b916def7caede307bf846a8d2a7cb729237bd4d866f6baf44`
-- `closing-bell-v1.wav`: `f193545d6f5feff8bbea1da58c8cf2575cc45dde75a23cf779ce145e4b2a1f2b`
-- `still-air-v1.m4a`: `bf4d184f989f98b915c299a103a58360a9d1e6c400e599884d9f1c5f404e65d0`
+- `opening-bell-v1.wav`: `3e37e03dc80b50035a06cb055ad4b1df49670a142ef8a887a2fd9d26b29b0278`
+- `closing-bell-v1.wav`: `cb736817872448631b88f4769c4698cfa044e1f81cb9218d7a76fc58f37eab5b`
+- `still-air-v1.m4a`: `d6c40f1cacf4c3714346cd85d38f28619b447b9029edb4c5094574c107f9a044`
 
 The owner approved these exact three hashes as the shipping sound direction on 2026-08-13. No sound-lab alternative was promoted or bundled.
 
