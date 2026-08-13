@@ -5,7 +5,13 @@ import {
   resolveVisualModel,
   type GardenVisualDirection,
 } from "./visual-design";
-import { deriveWorldModel, type GardenDetail, type GardenWorldModel } from "./world-model";
+import {
+  deriveWorldModel,
+  type GardenBird,
+  type GardenDetail,
+  type GardenGroundAnimal,
+  type GardenWorldModel,
+} from "./world-model";
 
 export interface GardenSceneEvents {
   contextLost(): void;
@@ -24,6 +30,14 @@ export interface GardenSceneController {
 
 export interface GardenRendererDiagnostics {
   direction: GardenVisualDirection["id"];
+  dayPhase: GardenWorldModel["dayPhase"];
+  orbitAngle: number;
+  toneMappingExposure: number;
+  hemisphereIntensity: number;
+  sunIntensity: number;
+  sunPosition: [number, number, number];
+  fillIntensity: number;
+  fillPosition: [number, number, number];
   drawCalls: number;
   triangles: number;
   geometries: number;
@@ -61,20 +75,26 @@ export function createGardenScene(
   });
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = visualDirection.lighting.exposure;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(31, 1, 0.1, 60);
 
+  let state = initialState;
+  let visualSignature = gardenVisualSignature(state);
+  let model = deriveWorldModel(state);
+  let composition = cameraComposition(model, visualDirection);
+  const initialVisual = resolveVisualModel(model, visualDirection);
+  renderer.toneMappingExposure = initialVisual.exposure;
+
   const hemisphere = new THREE.HemisphereLight(
-    visualDirection.lighting.hemisphereSky,
-    visualDirection.lighting.hemisphereGround,
-    visualDirection.lighting.hemisphereIntensity,
+    initialVisual.hemisphereSkyColor,
+    initialVisual.hemisphereGroundColor,
+    initialVisual.hemisphereIntensity,
   );
   scene.add(hemisphere);
-  const sun = new THREE.DirectionalLight("#ffe6ad", 3.4);
+  const sun = new THREE.DirectionalLight(initialVisual.sunColor, initialVisual.sunIntensity);
   sun.position.set(-4.5, 8.5, 5.5);
   sun.castShadow = true;
   sun.shadow.camera.near = 1;
@@ -86,18 +106,14 @@ export function createGardenScene(
   sun.shadow.bias = -0.0007;
   scene.add(sun);
   const fill = new THREE.PointLight(
-    visualDirection.lighting.fillColor,
-    visualDirection.lighting.fillIntensity,
+    initialVisual.fillColor,
+    initialVisual.fillIntensity,
     18,
     2,
   );
   fill.position.set(...visualDirection.lighting.fillPosition);
   scene.add(fill);
 
-  let state = initialState;
-  let visualSignature = gardenVisualSignature(state);
-  let model = deriveWorldModel(state);
-  let composition = cameraComposition(model, visualDirection);
   camera.position.copy(composition.position);
   camera.lookAt(composition.target);
   const skyDome = buildSkyDome(model, visualDirection);
@@ -105,7 +121,16 @@ export function createGardenScene(
   let world = buildWorld(model, visualDirection);
   scene.add(world.root);
   configureQuality(renderer, sun, model, visualDirection);
-  configureAtmosphere(scene, skyDome, model, visualDirection);
+  configureAtmosphere(
+    renderer,
+    scene,
+    skyDome,
+    hemisphere,
+    sun,
+    fill,
+    model,
+    visualDirection,
+  );
 
   let disposed = false;
   let animationFrame = 0;
@@ -212,6 +237,8 @@ export function createGardenScene(
       world.canopy.rotation.z = breeze * visualDirection.motion.canopyAmplitude;
       world.canopy.rotation.x = breeze * visualDirection.motion.canopyAmplitude * 0.42;
       world.particles.rotation.y = now * 0.000025 * visualDirection.motion.particleSpeed;
+      animateBirds(world.birds, model, now);
+      animateGroundWildlife(world.groundWildlife, now);
     }
     renderer.render(scene, camera);
     const frameMilliseconds = Math.min(100, performance.now() - renderStarted);
@@ -242,7 +269,16 @@ export function createGardenScene(
       rebuildCount += 1;
       scene.add(world.root);
       configureQuality(renderer, sun, model, visualDirection);
-      configureAtmosphere(scene, skyDome, model, visualDirection);
+      configureAtmosphere(
+        renderer,
+        scene,
+        skyDome,
+        hemisphere,
+        sun,
+        fill,
+        model,
+        visualDirection,
+      );
       updateCamera();
       const grew = state.microGrowthOrdinal > previousState.microGrowthOrdinal;
       if (!state.reduceMotion && grew) {
@@ -269,6 +305,14 @@ export function createGardenScene(
       const programs = renderer.info.programs?.length ?? 0;
       return {
         direction: visualDirection.id,
+        dayPhase: model.dayPhase,
+        orbitAngle,
+        toneMappingExposure: renderer.toneMappingExposure,
+        hemisphereIntensity: hemisphere.intensity,
+        sunIntensity: sun.intensity,
+        sunPosition: [sun.position.x, sun.position.y, sun.position.z],
+        fillIntensity: fill.intensity,
+        fillPosition: [fill.position.x, fill.position.y, fill.position.z],
         drawCalls: renderer.info.render.calls,
         triangles: renderer.info.render.triangles,
         geometries: renderer.info.memory.geometries,
@@ -307,6 +351,7 @@ export function gardenVisualSignature(state: GardenState): string {
     highestMilestone: state.highestMilestone,
     activeCustomization: customization,
     microGrowthOrdinal: state.microGrowthOrdinal,
+    localDayPhase: state.localDayPhase ?? "day",
     qualityHint: state.qualityHint,
   });
 }
@@ -335,6 +380,8 @@ interface BuiltWorld {
   root: THREE.Group;
   canopy: THREE.Group;
   particles: THREE.Points;
+  birds: THREE.Group;
+  groundWildlife: THREE.Group;
 }
 
 function buildWorld(model: GardenWorldModel, direction: GardenVisualDirection): BuiltWorld {
@@ -427,22 +474,33 @@ function buildWorld(model: GardenWorldModel, direction: GardenVisualDirection): 
   }
   const particleGeometry = new THREE.BufferGeometry();
   particleGeometry.setAttribute("position", new THREE.BufferAttribute(particlePositions, 3));
+  const particleVisibility = visual.dayPhase === "day"
+    ? 0.06
+    : visual.dayPhase === "dawn"
+    ? 0.2
+    : visual.dayPhase === "dusk"
+    ? 0.68
+    : 1;
   const particles = new THREE.Points(
     particleGeometry,
     new THREE.PointsMaterial({
       color: visual.accentColor,
-      opacity: direction.composition.particleOpacity,
+      opacity: direction.composition.particleOpacity * particleVisibility,
       size: direction.composition.particleSize,
       transparent: true,
     }),
   );
   root.add(particles);
 
-  for (const detailObject of buildDetailObjects(model.details, direction)) {
+  for (const detailObject of buildDetailObjects(model, direction)) {
     root.add(detailObject);
   }
 
-  return { root, canopy, particles };
+  const birds = buildBirds(model);
+  const groundWildlife = buildGroundWildlife(model);
+  root.add(birds, groundWildlife);
+
+  return { root, canopy, particles, birds, groundWildlife };
 }
 
 const instancedDetailKinds = new Set<GardenDetail["kind"]>([
@@ -453,13 +511,18 @@ const instancedDetailKinds = new Set<GardenDetail["kind"]>([
   "drifting-life",
   "clouds",
   "twilight-stars",
-  "sanctuary",
 ]);
 
 function buildDetailObjects(
-  details: GardenDetail[],
+  model: GardenWorldModel,
   direction: GardenVisualDirection,
 ): THREE.Object3D[] {
+  const visual = resolveVisualModel(model, direction);
+  const details = model.details.filter((detail) => {
+    if (detail.kind === "twilight-stars") return visual.starOpacity > 0.01;
+    if (detail.kind === "fireflies") return false;
+    return true;
+  });
   const objects: THREE.Object3D[] = [];
   const roots = details.filter((detail) => detail.kind === "roots");
   if (roots.length > 0) {
@@ -477,12 +540,14 @@ function buildDetailObjects(
 
   for (const kind of instancedDetailKinds) {
     const matching = details.filter((detail) => detail.kind === kind);
-    if (matching.length > 0) objects.push(buildInstancedDetailKind(kind, matching, direction));
+    if (matching.length > 0) {
+      objects.push(buildInstancedDetailKind(kind, matching, direction, model));
+    }
   }
 
   for (const detail of details) {
     if (detail.kind !== "roots" && !instancedDetailKinds.has(detail.kind)) {
-      objects.push(buildDetail(detail, direction));
+      objects.push(buildDetail(detail, direction, model));
     }
   }
   return objects;
@@ -538,9 +603,11 @@ function buildInstancedDetailKind(
   kind: GardenDetail["kind"],
   details: GardenDetail[],
   direction: GardenVisualDirection,
-): THREE.InstancedMesh {
+  model: GardenWorldModel,
+): THREE.Object3D {
+  if (kind === "clouds") return buildCloudBanks(details, direction, model);
   const geometry = detailGeometry(kind);
-  const material = detailMaterial(kind);
+  const material = detailMaterial(kind, model, direction);
   const mesh = new THREE.InstancedMesh(geometry, material, details.length);
   const transform = new THREE.Object3D();
   details.forEach((detail, index) => {
@@ -560,14 +627,9 @@ function buildInstancedDetailKind(
     case "fireflies":
       transform.position.y += Math.sin(detail.rotation * 3) * 1.3;
       break;
-    case "blossoms":
-      transform.position.y += Math.abs(Math.sin(detail.rotation)) * 1.9;
-      break;
+    case "blossoms": break;
     case "drifting-life":
       transform.rotation.set(detail.rotation, detail.rotation * 0.4, detail.rotation * 0.2);
-      break;
-    case "clouds":
-      transform.scale.set(detail.scale * 1.9, detail.scale * 0.48, detail.scale * 0.72);
       break;
     case "sanctuary":
       transform.position.y += 1.4 + Math.abs(Math.cos(detail.rotation)) * 2.7;
@@ -591,6 +653,60 @@ function buildInstancedDetailKind(
   return mesh;
 }
 
+function buildCloudBanks(
+  details: GardenDetail[],
+  direction: GardenVisualDirection,
+  model: GardenWorldModel,
+): THREE.Group {
+  const group = new THREE.Group();
+  group.name = "air-iii-authored-cloud-banks";
+  const texture = createCloudBankTexture();
+  const visual = resolveVisualModel(model, direction);
+  const opacity = visual.dayPhase === "day" ? 0.34 : visual.dayPhase === "night" ? 0.13 : 0.22;
+  for (const detail of details) {
+    const sprite = new THREE.Sprite(
+      new THREE.SpriteMaterial({
+        map: texture,
+        color: resolveDetailColor(detail.color, detail.kind, direction),
+        transparent: true,
+        opacity,
+        depthWrite: false,
+        rotation: detail.rotation * 0.22,
+      }),
+    );
+    sprite.position.set(detail.x, detail.y, detail.z);
+    sprite.scale.set(detail.scale * 3.2, detail.scale * 1.12, 1);
+    group.add(sprite);
+  }
+  return group;
+}
+
+function createCloudBankTexture(): THREE.CanvasTexture {
+  const canvas = document.createElement("canvas");
+  canvas.width = 256;
+  canvas.height = 112;
+  const context = canvas.getContext("2d");
+  if (context === null) throw new Error("Garden cloud texture context is unavailable.");
+  context.shadowColor = "rgba(255, 255, 255, 0.42)";
+  context.shadowBlur = 11;
+  context.fillStyle = "rgba(255, 255, 255, 0.94)";
+  context.beginPath();
+  context.moveTo(24, 79);
+  context.bezierCurveTo(31, 61, 51, 55, 70, 60);
+  context.bezierCurveTo(78, 36, 106, 28, 127, 48);
+  context.bezierCurveTo(143, 25, 181, 33, 184, 59);
+  context.bezierCurveTo(207, 50, 230, 63, 232, 80);
+  context.bezierCurveTo(190, 91, 67, 92, 24, 79);
+  context.closePath();
+  context.fill();
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.needsUpdate = true;
+  return texture;
+}
+
 function detailGeometry(kind: GardenDetail["kind"]): THREE.BufferGeometry {
   switch (kind) {
   case "stones": return new THREE.DodecahedronGeometry(0.46, 0);
@@ -598,23 +714,34 @@ function detailGeometry(kind: GardenDetail["kind"]): THREE.BufferGeometry {
   case "fireflies": return new THREE.SphereGeometry(1, 7, 5);
   case "blossoms":
   case "sanctuary": return new THREE.DodecahedronGeometry(1, 0);
-  case "drifting-life": return new THREE.ConeGeometry(1, 1.7, 3);
+  case "drifting-life": return floatingLeafGeometry();
   case "clouds": return new THREE.SphereGeometry(1, 12, 7);
   case "twilight-stars": return new THREE.SphereGeometry(1, 6, 4);
   default: throw new Error(`Unsupported instanced garden detail: ${kind}`);
   }
 }
 
-function detailMaterial(kind: GardenDetail["kind"]): THREE.Material {
+function detailMaterial(
+  kind: GardenDetail["kind"],
+  model: GardenWorldModel,
+  direction: GardenVisualDirection,
+): THREE.Material {
+  const visual = resolveVisualModel(model, direction);
   switch (kind) {
   case "fireflies":
-  case "twilight-stars":
     return new THREE.MeshBasicMaterial({ color: "#ffffff" });
+  case "twilight-stars":
+    return new THREE.MeshBasicMaterial({
+      color: "#ffffff",
+      transparent: true,
+      opacity: visual.starOpacity,
+      depthWrite: false,
+    });
   case "clouds":
     return new THREE.MeshBasicMaterial({
       color: "#ffffff",
       transparent: true,
-      opacity: 0.12,
+      opacity: visual.dayPhase === "day" ? 0.2 : visual.dayPhase === "night" ? 0.09 : 0.15,
       depthWrite: false,
     });
   case "drifting-life":
@@ -923,7 +1050,11 @@ function groundPlantGeometry(form: GardenVisualDirection["foliageForm"]): THREE.
   }
 }
 
-function buildDetail(detail: GardenDetail, direction: GardenVisualDirection): THREE.Object3D {
+function buildDetail(
+  detail: GardenDetail,
+  direction: GardenVisualDirection,
+  model: GardenWorldModel,
+): THREE.Object3D {
   const position = new THREE.Vector3(detail.x, detail.y, detail.z);
   const color = resolveDetailColor(detail.color, detail.kind, direction);
   switch (detail.kind) {
@@ -1075,23 +1206,329 @@ function buildDetail(detail: GardenDetail, direction: GardenVisualDirection): TH
     return star;
   }
   case "moon": {
-    const moon = new THREE.Mesh(
-      new THREE.SphereGeometry(detail.scale, 24, 16),
-      new THREE.MeshBasicMaterial({ color }),
+    const visual = resolveVisualModel(model, direction);
+    const moon = new THREE.Group();
+    moon.name = "space-ii-moon";
+    const disc = new THREE.Mesh(
+      new THREE.SphereGeometry(detail.scale, 18, 12),
+      new THREE.MeshStandardMaterial({
+        color,
+        emissive: color,
+        emissiveIntensity: 0.22,
+        roughness: 1,
+        metalness: 0,
+        flatShading: true,
+        transparent: true,
+        opacity: visual.moonOpacity,
+        depthWrite: false,
+      }),
     );
+    disc.rotation.set(0.16, detail.rotation, -0.08);
+    disc.renderOrder = 1;
+    const halo = new THREE.Sprite(
+      new THREE.SpriteMaterial({
+        map: createMoonHaloTexture(),
+        color: visual.celestialGlowColor,
+        transparent: true,
+        opacity: visual.moonOpacity * 0.46,
+        depthWrite: false,
+      }),
+    );
+    halo.scale.setScalar(detail.scale * 3.25);
+    halo.renderOrder = 0;
+    moon.add(halo, disc);
     moon.position.copy(position);
     return moon;
   }
   case "sanctuary": {
-    const fruitOrBloom = new THREE.Mesh(
-      new THREE.DodecahedronGeometry(detail.scale, 0),
-      new THREE.MeshToonMaterial({ color }),
-    );
-    fruitOrBloom.position.copy(position);
-    fruitOrBloom.position.y += 1.4 + Math.abs(Math.cos(detail.rotation)) * 2.7;
-    fruitOrBloom.castShadow = true;
-    return fruitOrBloom;
+    return buildGardenPavilion(detail, direction, model);
   }
+  }
+}
+
+function createMoonHaloTexture(): THREE.CanvasTexture {
+  const canvas = document.createElement("canvas");
+  canvas.width = 128;
+  canvas.height = 128;
+  const context = canvas.getContext("2d");
+  if (context === null) throw new Error("Garden moon halo texture context is unavailable.");
+  const gradient = context.createRadialGradient(64, 64, 22, 64, 64, 62);
+  gradient.addColorStop(0, "rgba(255, 246, 216, 0.16)");
+  gradient.addColorStop(0.42, "rgba(255, 229, 178, 0.14)");
+  gradient.addColorStop(0.72, "rgba(238, 188, 126, 0.055)");
+  gradient.addColorStop(1, "rgba(238, 188, 126, 0)");
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, 128, 128);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.needsUpdate = true;
+  return texture;
+}
+
+function buildGardenPavilion(
+  detail: GardenDetail,
+  direction: GardenVisualDirection,
+  model: GardenWorldModel,
+): THREE.Group {
+  const pavilion = new THREE.Group();
+  pavilion.name = "space-iii-open-timber-pavilion";
+  const visual = resolveVisualModel(model, direction);
+  const timber = new THREE.Color(detail.color).lerp(new THREE.Color("#5e493a"), 0.64);
+  const timberMaterial = new THREE.MeshToonMaterial({ color: timber });
+  const stoneMaterial = new THREE.MeshStandardMaterial({
+    color: new THREE.Color(visual.groundColor).offsetHSL(0, -0.08, 0.14),
+    roughness: 1,
+    metalness: 0,
+    flatShading: true,
+  });
+  const roofMaterial = new THREE.MeshToonMaterial({
+    color: "#26353a",
+  });
+
+  const plinth = new THREE.Mesh(new THREE.BoxGeometry(2.45, 0.2, 1.56), stoneMaterial);
+  plinth.position.y = 0.12;
+  plinth.castShadow = true;
+  plinth.receiveShadow = true;
+  pavilion.add(plinth);
+
+  const floor = new THREE.Mesh(
+    new THREE.BoxGeometry(2.18, 0.1, 1.3),
+    new THREE.MeshToonMaterial({ color: timber.clone().offsetHSL(0, -0.04, 0.08) }),
+  );
+  floor.position.y = 0.27;
+  floor.receiveShadow = true;
+  pavilion.add(floor);
+
+  const columnGeometry = new THREE.CylinderGeometry(0.065, 0.082, 1.38, 6);
+  for (const x of [-0.88, 0, 0.88]) {
+    for (const z of [-0.49, 0.49]) {
+      const column = new THREE.Mesh(columnGeometry, timberMaterial);
+      column.position.set(x, 0.98, z);
+      column.castShadow = true;
+      pavilion.add(column);
+    }
+  }
+
+  for (const z of [-0.5, 0.5]) {
+    const beam = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.12, 0.1), timberMaterial);
+    beam.position.set(0, 1.65, z);
+    beam.castShadow = true;
+    pavilion.add(beam);
+  }
+  for (const x of [-0.92, 0.92]) {
+    const beam = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.1, 1.18), timberMaterial);
+    beam.position.set(x, 1.58, 0);
+    beam.castShadow = true;
+    pavilion.add(beam);
+  }
+
+  const roof = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.92, 1.68, 0.46, 4, 1, false),
+    roofMaterial,
+  );
+  roof.position.y = 1.91;
+  roof.rotation.y = Math.PI / 4;
+  roof.scale.z = 0.68;
+  roof.castShadow = true;
+  pavilion.add(roof);
+
+  const eave = new THREE.Mesh(new THREE.BoxGeometry(2.72, 0.11, 1.72), roofMaterial);
+  eave.position.y = 1.7;
+  eave.castShadow = true;
+  pavilion.add(eave);
+
+  const ridge = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.075, 0.075), timberMaterial);
+  ridge.position.y = 2.17;
+  ridge.castShadow = true;
+  pavilion.add(ridge);
+
+  const interiorWarmth = new THREE.Mesh(
+    new THREE.PlaneGeometry(1.25, 0.72),
+    new THREE.MeshBasicMaterial({
+      color: visual.celestialGlowColor,
+      transparent: true,
+      opacity: visual.dayPhase === "day" ? 0.07 : 0.24,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+    }),
+  );
+  interiorWarmth.name = "pavilion-quiet-interior-warmth";
+  interiorWarmth.position.set(0, 1.03, -0.53);
+  pavilion.add(interiorWarmth);
+
+  pavilion.position.set(detail.x, detail.y, detail.z);
+  pavilion.rotation.y = detail.rotation;
+  pavilion.scale.setScalar(detail.scale);
+  return pavilion;
+}
+
+function floatingLeafGeometry(): THREE.ShapeGeometry {
+  const shape = new THREE.Shape();
+  shape.moveTo(0, -0.86);
+  shape.bezierCurveTo(0.42, -0.38, 0.46, 0.34, 0, 0.92);
+  shape.bezierCurveTo(-0.46, 0.34, -0.42, -0.38, 0, -0.86);
+  return new THREE.ShapeGeometry(shape, 5);
+}
+
+function buildBirds(model: GardenWorldModel): THREE.Group {
+  const flock = new THREE.Group();
+  flock.name = "air-ii-bird-flock";
+  for (const [index, bird] of model.birds.entries()) {
+    const figure = new THREE.Group();
+    figure.name = `garden-bird-${index + 1}`;
+    const material = new THREE.MeshBasicMaterial({ color: bird.color, side: THREE.DoubleSide });
+    const body = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 5), material);
+    body.scale.set(0.42, 0.15, 0.13);
+    body.rotation.z = -0.08;
+    figure.add(body);
+
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.16, 7, 5), material);
+    head.position.x = 0.48;
+    figure.add(head);
+
+    const beak = new THREE.Mesh(
+      new THREE.ConeGeometry(0.075, 0.24, 5),
+      new THREE.MeshBasicMaterial({ color: "#a48b59" }),
+    );
+    beak.position.x = 0.64;
+    beak.rotation.z = -Math.PI / 2;
+    figure.add(beak);
+
+    const leftWing = buildBirdWing(1, material);
+    leftWing.name = "bird-wing-left";
+    leftWing.position.set(-0.08, 0.05, 0);
+    figure.add(leftWing);
+    const rightWing = buildBirdWing(-1, material);
+    rightWing.name = "bird-wing-right";
+    rightWing.position.set(-0.08, 0.05, 0);
+    figure.add(rightWing);
+
+    figure.scale.setScalar(bird.scale);
+    placeBird(figure, bird, bird.phase);
+    flock.add(figure);
+  }
+  return flock;
+}
+
+function placeBird(figure: THREE.Group, bird: GardenBird, phase: number): void {
+  figure.position.set(
+    Math.cos(phase) * bird.pathRadius,
+    bird.height + Math.sin(phase * 2) * 0.22,
+    Math.sin(phase) * bird.pathDepth - 0.7,
+  );
+  figure.rotation.y = -0.52 + Math.sin(phase) * 0.22;
+  figure.rotation.z = Math.sin(phase * 2) * 0.08;
+}
+
+function animateBirds(flock: THREE.Group, model: GardenWorldModel, now: number): void {
+  for (const [index, figure] of flock.children.entries()) {
+    const bird = model.birds[index];
+    if (!(figure instanceof THREE.Group) || bird === undefined) continue;
+    const phase = bird.phase + now * 0.000075 * bird.speed;
+    placeBird(figure, bird, phase);
+    const flap = Math.sin(now * 0.0068 * bird.speed + bird.phase) * 0.28;
+    const leftWing = figure.getObjectByName("bird-wing-left");
+    const rightWing = figure.getObjectByName("bird-wing-right");
+    if (leftWing !== undefined) leftWing.rotation.x = flap;
+    if (rightWing !== undefined) rightWing.rotation.x = -flap;
+  }
+}
+
+function buildBirdWing(side: 1 | -1, material: THREE.Material): THREE.Group {
+  const wing = new THREE.Group();
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute([
+      0, 0, 0,
+      -0.04, 0.2, side * 0.48,
+      -0.22, 0.38, side * 1.06,
+      -0.44, 0.15, side * 0.76,
+      -0.3, -0.045, side * 0.18,
+    ], 3),
+  );
+  geometry.setIndex([0, 1, 4, 1, 2, 3, 1, 3, 4]);
+  geometry.computeVertexNormals();
+  wing.add(new THREE.Mesh(geometry, material));
+  wing.rotation.x = side * 0.1;
+  return wing;
+}
+
+function buildGroundWildlife(model: GardenWorldModel): THREE.Group {
+  const wildlife = new THREE.Group();
+  wildlife.name = "space-iii-grass-wildlife";
+  for (const [index, animal] of model.groundAnimals.entries()) {
+    const hare = buildHare(animal);
+    hare.name = `garden-hare-${index + 1}`;
+    hare.userData.motionPhase = index * 2.41 + animal.rotation;
+    hare.userData.baseScale = animal.scale;
+    wildlife.add(hare);
+  }
+  return wildlife;
+}
+
+function buildHare(animal: GardenGroundAnimal): THREE.Group {
+  const hare = new THREE.Group();
+  const material = new THREE.MeshToonMaterial({ color: animal.color });
+  const body = new THREE.Mesh(new THREE.SphereGeometry(1, 9, 6), material);
+  const haunch = new THREE.Mesh(new THREE.SphereGeometry(1, 9, 6), material);
+  const head = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 6), material);
+  const earGeometry = new THREE.SphereGeometry(1, 7, 5);
+
+  if (animal.pose === "seated") {
+    body.position.set(0, 0.38, 0);
+    body.scale.set(0.25, 0.43, 0.23);
+    haunch.position.set(-0.18, 0.23, 0);
+    haunch.scale.set(0.34, 0.27, 0.29);
+    head.position.set(0.02, 0.73, 0);
+  } else {
+    body.position.set(0, 0.27, 0);
+    body.scale.set(0.41, 0.25, 0.24);
+    haunch.position.set(-0.28, 0.25, 0);
+    haunch.scale.set(0.3, 0.28, 0.28);
+    head.position.set(0.38, 0.25, 0);
+  }
+  head.scale.set(0.2, 0.22, 0.2);
+  hare.add(body, haunch, head);
+
+  for (const [index, z] of [-0.075, 0.075].entries()) {
+    const ear = new THREE.Mesh(earGeometry, material);
+    ear.name = `hare-ear-${index + 1}`;
+    ear.position.set(
+      animal.pose === "seated" ? 0 : 0.39,
+      animal.pose === "seated" ? 1.02 : 0.48,
+      z,
+    );
+    ear.scale.set(0.07, 0.25, 0.055);
+    ear.rotation.z = animal.pose === "seated" ? -0.08 + index * 0.12 : -0.72 + index * 0.1;
+    hare.add(ear);
+  }
+
+  const tail = new THREE.Mesh(
+    new THREE.SphereGeometry(0.11, 7, 5),
+    new THREE.MeshToonMaterial({ color: "#a69b8b" }),
+  );
+  tail.position.set(-0.45, 0.32, 0);
+  hare.add(tail);
+  hare.position.set(animal.x, 0.08, animal.z);
+  hare.rotation.y = animal.rotation;
+  hare.scale.setScalar(animal.scale);
+  hare.traverse((object) => {
+    if (object instanceof THREE.Mesh) object.castShadow = true;
+  });
+  return hare;
+}
+
+function animateGroundWildlife(wildlife: THREE.Group, now: number): void {
+  for (const child of wildlife.children) {
+    if (!(child instanceof THREE.Group)) continue;
+    const phase = Number(child.userData.motionPhase ?? 0);
+    const baseScale = Number(child.userData.baseScale ?? 1);
+    child.scale.set(baseScale, baseScale * (1 + Math.sin(now * 0.0011 + phase) * 0.012), baseScale);
+    const ear = child.getObjectByName("hare-ear-2");
+    if (ear !== undefined) ear.rotation.y = Math.sin(now * 0.0008 + phase) * 0.1;
   }
 }
 
@@ -1137,27 +1574,40 @@ function buildSkyDome(
     depthWrite: false,
     fog: false,
     uniforms: {
-      topColor: { value: new THREE.Color(direction.lighting.hemisphereSky) },
+      topColor: { value: new THREE.Color(visual.skyTopColor) },
       horizonColor: { value: new THREE.Color(visual.skyColor) },
-      lowerColor: { value: new THREE.Color(visual.groundColor).lerp(new THREE.Color(visual.skyColor), 0.55) },
+      lowerColor: { value: new THREE.Color(visual.skyLowerColor) },
+      glowColor: { value: new THREE.Color(visual.celestialGlowColor) },
+      glowStrength: { value: visual.celestialGlowStrength },
+      glowDirection: { value: new THREE.Vector3(-0.46, 0.34, -0.82).normalize() },
     },
     vertexShader: `
       varying float gardenHeight;
+      varying vec3 gardenDirection;
       void main() {
-        gardenHeight = normalize(position).y;
+        gardenDirection = normalize(position);
+        gardenHeight = gardenDirection.y;
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
       }
     `,
     fragmentShader: `
       varying float gardenHeight;
+      varying vec3 gardenDirection;
       uniform vec3 topColor;
       uniform vec3 horizonColor;
       uniform vec3 lowerColor;
+      uniform vec3 glowColor;
+      uniform vec3 glowDirection;
+      uniform float glowStrength;
       void main() {
         float upperMix = smoothstep(-0.02, 0.72, gardenHeight);
         float lowerMix = smoothstep(-0.45, 0.05, gardenHeight);
         vec3 horizonToTop = mix(horizonColor, topColor, upperMix);
         vec3 color = mix(lowerColor, horizonToTop, lowerMix);
+        float horizonHaze = exp(-abs(gardenHeight) * 8.0) * 0.09;
+        float glow = pow(max(dot(normalize(gardenDirection), glowDirection), 0.0), 42.0) * glowStrength;
+        color = mix(color, horizonColor, horizonHaze);
+        color += glowColor * glow;
         gl_FragColor = vec4(color, 1.0);
       }
     `,
@@ -1170,23 +1620,40 @@ function buildSkyDome(
 }
 
 function configureAtmosphere(
+  renderer: THREE.WebGLRenderer,
   scene: THREE.Scene,
   skyDome: THREE.Mesh<THREE.SphereGeometry, THREE.ShaderMaterial>,
+  hemisphere: THREE.HemisphereLight,
+  sun: THREE.DirectionalLight,
+  fill: THREE.PointLight,
   model: GardenWorldModel,
   direction: GardenVisualDirection,
 ): void {
   const visual = resolveVisualModel(model, direction);
-  scene.background = new THREE.Color(visual.skyColor);
+  renderer.toneMappingExposure = visual.exposure;
+  hemisphere.color.set(visual.hemisphereSkyColor);
+  hemisphere.groundColor.set(visual.hemisphereGroundColor);
+  hemisphere.intensity = visual.hemisphereIntensity;
+  sun.color.set(visual.sunColor);
+  sun.intensity = visual.sunIntensity;
+  fill.color.set(visual.fillColor);
+  fill.intensity = visual.fillIntensity;
+  scene.background = new THREE.Color(visual.fogColor);
   const topColor = shaderColorUniform(skyDome.material, "topColor");
   const horizonColor = shaderColorUniform(skyDome.material, "horizonColor");
   const lowerColor = shaderColorUniform(skyDome.material, "lowerColor");
-  topColor.set(direction.lighting.hemisphereSky);
+  const glowColor = shaderColorUniform(skyDome.material, "glowColor");
+  topColor.set(visual.skyTopColor);
   horizonColor.set(visual.skyColor);
-  lowerColor
-    .set(visual.groundColor)
-    .lerp(new THREE.Color(visual.skyColor), 0.55);
+  lowerColor.set(visual.skyLowerColor);
+  glowColor.set(visual.celestialGlowColor);
+  const glowStrength = skyDome.material.uniforms.glowStrength;
+  if (glowStrength === undefined || typeof glowStrength.value !== "number") {
+    throw new Error("Garden shader glow strength is unavailable.");
+  }
+  glowStrength.value = visual.celestialGlowStrength;
   scene.fog = new THREE.Fog(
-    visual.skyColor,
+    visual.fogColor,
     direction.lighting.fogNear,
     direction.lighting.fogFar,
   );
@@ -1230,8 +1697,10 @@ export function disposeObjectResources(root: THREE.Object3D): void {
   const materials = new Set<THREE.Material>();
   const textures = new Set<THREE.Texture>();
   root.traverse((object) => {
-    if (!(object instanceof THREE.Mesh || object instanceof THREE.Points)) return;
-    geometries.add(object.geometry);
+    if (object instanceof THREE.Mesh || object instanceof THREE.Points) {
+      geometries.add(object.geometry);
+    }
+    if (!(object instanceof THREE.Mesh || object instanceof THREE.Points || object instanceof THREE.Sprite)) return;
     const objectMaterials = Array.isArray(object.material) ? object.material : [object.material];
     for (const material of objectMaterials) materials.add(material);
   });

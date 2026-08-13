@@ -5,6 +5,35 @@ import Testing
 
 @Suite("Deterministic garden progression")
 struct ProgressionReducerTests {
+  @Test("Local garden phases use stable native clock boundaries")
+  func localGardenDayPhaseBoundaries() throws {
+    let timeZone = try #require(TimeZone(identifier: "Asia/Singapore"))
+    let phase: (Int) throws -> GardenDayPhase = { hour in
+      GardenDayPhase.presentation(
+        at: try localDate(
+          year: 2026,
+          month: 8,
+          day: 13,
+          hour: hour,
+          minute: 0,
+          timeZone: timeZone
+        ),
+        timeZone: timeZone
+      )
+    }
+
+    #expect(try phase(4) == .night)
+    #expect(try phase(5) == .dawn)
+    #expect(try phase(8) == .day)
+    #expect(try phase(17) == .dusk)
+    #expect(try phase(20) == .night)
+
+    var projection = context()
+    projection.localDayPhase = .night
+    let state = ProgressionReducer.reduce(events: [], context: projection)
+    #expect(state.localDayPhase == .night)
+  }
+
   @Test("Sub-three-minute sessions remain history-only")
   func shortSessionDoesNotGrow() throws {
     let start = Date(timeIntervalSince1970: 1_786_320_000)

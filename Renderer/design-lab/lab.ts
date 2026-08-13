@@ -1,5 +1,5 @@
 import { createGardenScene, type GardenRendererDiagnostics } from "../src/scene";
-import type { GardenState } from "../src/types";
+import type { GardenDayPhase, GardenState } from "../src/types";
 import type { GardenVisualDirection, GardenVisualDirectionID } from "../src/visual-design";
 import { paperSanctuary } from "../src/visual-directions/paper-sanctuary";
 import { twilightRefuge } from "../src/visual-directions/twilight-refuge";
@@ -18,6 +18,7 @@ declare global {
     arriveWithinGardenDesignLab?: {
       setPreset(preset: LabPreset): void;
       setMilestone(milestone: number): void;
+      setDayPhase(phase: GardenDayPhase): void;
       resetView(): void;
       diagnostics(): GardenRendererDiagnostics;
       ready: boolean;
@@ -36,6 +37,7 @@ const direction = requestedDirection === null ? verdantAtelier : directions[requ
 if (direction === undefined) throw new Error("Unknown Garden design direction.");
 const reduceMotion = query.get("reduceMotion") === "1" || matchMedia("(prefers-reduced-motion: reduce)").matches;
 const initialPreset = parsePreset(query.get("preset"));
+let localDayPhase = parseDayPhase(query.get("phase"));
 document.documentElement.dataset.theme = query.get("theme") === "light" ? "light" : "dark";
 
 const canvas = required("garden-canvas", HTMLCanvasElement);
@@ -66,6 +68,11 @@ const api = {
     }
     currentState = makeMilestoneState(milestone, reduceMotion);
     stateName.textContent = `milestone ${milestone}`;
+    scene.update(currentState);
+  },
+  setDayPhase(phase: GardenDayPhase): void {
+    localDayPhase = phase;
+    currentState = { ...currentState, localDayPhase };
     scene.update(currentState);
   },
   resetView(): void { scene.resetView(); },
@@ -104,6 +111,7 @@ function makeState(preset: LabPreset, reduced: boolean): GardenState {
     ),
     microGrowthOrdinal: value.ordinal,
     localTimePresentation: null,
+    localDayPhase,
     latestGrowthEvent: null,
     reduceMotion: reduced,
     qualityHint: "high",
@@ -131,6 +139,7 @@ function makeMilestoneState(milestone: number, reduced: boolean): GardenState {
     ),
     microGrowthOrdinal: day,
     localTimePresentation: null,
+    localDayPhase,
     latestGrowthEvent: null,
     reduceMotion: reduced,
     qualityHint: "high",
@@ -140,6 +149,13 @@ function makeMilestoneState(milestone: number, reduced: boolean): GardenState {
 function parsePreset(value: string | null): LabPreset {
   if (value === "empty" || value === "first-growth" || value === "pre-milestone" || value === "micro-growth" || value === "milestone-reveal" || value === "mature") return value;
   return "mature";
+}
+
+function parseDayPhase(value: string | null): GardenDayPhase {
+  if (value === "dawn" || value === "day" || value === "dusk" || value === "night") {
+    return value;
+  }
+  return "night";
 }
 
 function label(preset: LabPreset): string {

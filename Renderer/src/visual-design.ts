@@ -1,3 +1,4 @@
+import type { GardenDayPhase } from "./types";
 import type { GardenFeature, GardenWorldModel } from "./world-model";
 
 export type GardenVisualDirectionID =
@@ -56,25 +57,115 @@ export interface GardenVisualDirection {
 }
 
 export interface ResolvedVisualModel {
+  dayPhase: GardenDayPhase;
+  skyTopColor: string;
   skyColor: string;
+  skyLowerColor: string;
+  fogColor: string;
+  celestialGlowColor: string;
+  celestialGlowStrength: number;
+  starOpacity: number;
+  moonOpacity: number;
   groundColor: string;
   accentColor: string;
   foliageColors: string[];
+  hemisphereSkyColor: string;
+  hemisphereGroundColor: string;
+  hemisphereIntensity: number;
   sunColor: string;
   sunIntensity: number;
+  fillColor: string;
+  fillIntensity: number;
+  exposure: number;
 }
+
+interface GardenPhasePalette {
+  skyTop: string;
+  skyHorizon: string;
+  skyLower: string;
+  fog: string;
+  glow: string;
+  illuminationScale: number;
+  ambientScale: number;
+  fillScale: number;
+  exposureScale: number;
+  celestialOpacity: number;
+}
+
+const gardenPhasePalettes: Record<GardenDayPhase, GardenPhasePalette> = {
+  dawn: {
+    skyTop: "#4d6080",
+    skyHorizon: "#7f7d87",
+    skyLower: "#536c70",
+    fog: "#68787a",
+    glow: "#edb37d",
+    illuminationScale: 0.82,
+    ambientScale: 0.82,
+    fillScale: 0.68,
+    exposureScale: 0.96,
+    celestialOpacity: 0.14,
+  },
+  day: {
+    skyTop: "#83aebb",
+    skyHorizon: "#a1b8b2",
+    skyLower: "#6f8982",
+    fog: "#879e99",
+    glow: "#ead19a",
+    illuminationScale: 1.18,
+    ambientScale: 1.12,
+    fillScale: 0.28,
+    exposureScale: 1.08,
+    celestialOpacity: 0,
+  },
+  dusk: {
+    skyTop: "#26335b",
+    skyHorizon: "#595870",
+    skyLower: "#374754",
+    fog: "#474f5d",
+    glow: "#efad69",
+    illuminationScale: 0.7,
+    ambientScale: 0.74,
+    fillScale: 0.78,
+    exposureScale: 0.96,
+    celestialOpacity: 0.46,
+  },
+  night: {
+    skyTop: "#111936",
+    skyHorizon: "#334258",
+    skyLower: "#22363d",
+    fog: "#2c3d47",
+    glow: "#d9a16a",
+    illuminationScale: 0.34,
+    ambientScale: 0.58,
+    fillScale: 1,
+    exposureScale: 0.88,
+    celestialOpacity: 0.92,
+  },
+};
 
 export function resolveVisualModel(
   model: GardenWorldModel,
   direction: GardenVisualDirection,
 ): ResolvedVisualModel {
   const influence = clamp(direction.palette.influence, 0, 1);
+  const phase = gardenPhasePalettes[model.dayPhase];
+  const baseSkyColor = mixHex(
+    model.skyColor,
+    direction.palette.skyTint,
+    clamp(direction.palette.skyInfluence ?? influence, 0, 1),
+  );
+  const phaseInfluence = model.dayPhase === "day" ? 0.86 : 0.88;
+  const baseSunColor = mixHex(model.sunColor, direction.lighting.sunTint, influence);
   return {
-    skyColor: mixHex(
-      model.skyColor,
-      direction.palette.skyTint,
-      clamp(direction.palette.skyInfluence ?? influence, 0, 1),
-    ),
+    dayPhase: model.dayPhase,
+    skyTopColor: mixHex(direction.lighting.hemisphereSky, phase.skyTop, phaseInfluence),
+    skyColor: mixHex(baseSkyColor, phase.skyHorizon, phaseInfluence),
+    skyLowerColor: mixHex(direction.lighting.hemisphereGround, phase.skyLower, phaseInfluence),
+    fogColor: mixHex(baseSkyColor, phase.fog, 0.82),
+    celestialGlowColor: phase.glow,
+    celestialGlowStrength: model.dayPhase === "day" ? 0.26 : model.dayPhase === "night" ? 0.1 : 0.2,
+    starOpacity: phase.celestialOpacity,
+    moonOpacity: Math.max(model.dayPhase === "day" ? 0.025 : 0.18, phase.celestialOpacity),
     groundColor: mixHex(
       model.groundColor,
       direction.palette.groundTint,
@@ -92,8 +183,14 @@ export function resolveVisualModel(
         clamp(direction.palette.foliageInfluence ?? influence, 0, 1),
       ),
     ),
-    sunColor: mixHex(model.sunColor, direction.lighting.sunTint, influence),
-    sunIntensity: model.sunIntensity * direction.lighting.sunIntensityScale,
+    hemisphereSkyColor: mixHex(direction.lighting.hemisphereSky, phase.skyTop, 0.48),
+    hemisphereGroundColor: mixHex(direction.lighting.hemisphereGround, phase.skyLower, 0.42),
+    hemisphereIntensity: direction.lighting.hemisphereIntensity * phase.ambientScale,
+    sunColor: mixHex(baseSunColor, phase.glow, 0.34),
+    sunIntensity: model.sunIntensity * direction.lighting.sunIntensityScale * phase.illuminationScale,
+    fillColor: mixHex(direction.lighting.fillColor, phase.glow, 0.28),
+    fillIntensity: direction.lighting.fillIntensity * phase.fillScale,
+    exposure: direction.lighting.exposure * phase.exposureScale,
   };
 }
 

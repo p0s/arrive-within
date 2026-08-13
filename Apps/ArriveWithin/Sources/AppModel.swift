@@ -994,6 +994,11 @@ final class AppModel {
 
   func updateForForeground() async {
     await tick()
+    do {
+      try await refreshGarden()
+    } catch {
+      launchPhase = .failed
+    }
     await reconcileWeeklyReminders()
     await refreshProductDataStatus()
   }
@@ -1325,10 +1330,14 @@ final class AppModel {
 
   private func refreshGarden() async throws {
     guard let profile else { return }
-    try await refreshGarden(profile: profile)
+    try await refreshGarden(
+      profile: profile,
+      reduceMotion: gardenState?.reduceMotion ?? false
+    )
   }
 
   private func refreshGarden(profile: LocalProfile, reduceMotion: Bool = false) async throws {
+    let currentMoment = dependencies.clock.now().wallClock
     let events = try await dependencies.eventRepository.allEvents(
       profileGenerationID: profile.profileGenerationID
     )
@@ -1344,11 +1353,12 @@ final class AppModel {
         profileGenerationID: profile.profileGenerationID,
         customization: customization,
         reduceMotion: reduceMotion,
-        qualityHint: .balanced
+        qualityHint: .balanced,
+        localDayPhase: GardenDayPhase.presentation(at: currentMoment, timeZone: .current)
       )
     )
     let currentDay = try? PracticeDayKey.containing(
-      dependencies.clock.now().wallClock,
+      currentMoment,
       timeZone: .current
     )
     journeyProjection = JourneyReducer.reduce(
