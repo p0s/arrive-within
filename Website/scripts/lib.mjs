@@ -66,6 +66,14 @@ export async function hashTree(root, excludedTopLevel = new Set()) {
   return { algorithm: "SHA-256 over sorted UTF-8 relative-path, NUL, file-SHA-256, LF records", sha256: digest.digest("hex"), files: records };
 }
 
+export async function hashWebsiteSource() {
+  const excluded = new Set(["dist", "node_modules", ".vercel"]);
+  for (const entry of await readdir(ROOT, { withFileTypes: true })) {
+    if (entry.name === ".env" || entry.name.startsWith(".env.")) excluded.add(entry.name);
+  }
+  return hashTree(ROOT, excluded);
+}
+
 export function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")

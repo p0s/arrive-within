@@ -84,6 +84,23 @@
     "difference_from_deployed_artifact": "refreshed deterministic Twilight Garden video, poster, social preview, and their provenance",
     "production_readback": "8/8 routes and 3/3 refreshed media passed byte-identical readback"
   },
+  "unreleased_local_successor": {
+    "state": "brand-and-visual-polish-statically-verified-browser-review-pending",
+    "date": "2026-08-13",
+    "source_sha256": "6e4a6d0a34f7527ead9d73d5d6f5cdca5ae0e79038a2815982468e0cbb8b01c5",
+    "content_sha256": "3804864eec3eefdc720eebdf84e747a3aabeb4f86d11113aa63c97c4a39ac7b7",
+    "build_output_sha256": "3026c55a75253a73442efc82505a53fe47228af091f8141d5967a659986f98d4",
+    "source_files": 27,
+    "output_files": 28,
+    "clean_builds_compared": 2,
+    "byte_reproducible": true,
+    "static_validation": "passed",
+    "brand_assets": "2/2 selected Quiet Threshold icons matched canonical derived hashes and opaque RGB dimensions",
+    "browser_matrix": "not-rerun-pinned-browser-launch-denied-by-desktop-execution-sandbox",
+    "deployment": "not-performed-not-authorized",
+    "public_readback": "not-performed",
+    "difference_from_deployed_artifact": "selected visible/favicon/touch identity, product-led full-canvas hero, complete mobile navigation and 44-point link targets, reduced-motion-aware CSS motion, current public-repository copy, clean-checkout source hashing"
+  },
   "rollback": "Redeploy the immediately previous verified source/output hash to the same project, then read back all canonical routes.",
   "verification": [
     "bilingual route and link checks",

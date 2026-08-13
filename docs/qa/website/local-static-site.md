@@ -1,7 +1,7 @@
 # Bilingual static website — local verification
 
-Date: 2026-08-12
-Status: refreshed Twilight production artifact verified locally, deployed, and read back
+Date: 2026-08-13
+Status: deployed Twilight artifact retained; unreleased brand/visual successor statically verified
 
 ## Artifact
 
@@ -34,12 +34,25 @@ The current-source production-origin build was served only on loopback and inspe
 - Representative English desktop hero, growth, Timer/Stopwatch mode choice, and German mobile article layouts were visually inspected.
 - Review found a 15-point overflow in the German mobile open-source heading. The fix uses German-only automatic hyphenation with safe word wrapping; the full 16-case matrix then passed. English heading hyphenation is explicitly disabled.
 
-## Current local successor
+## Current deployed artifact
 
 After build 7 entered review, the renderer-derived Garden video, poster, and social preview were regenerated from the current Twilight source and synchronized into `Website/src/assets`. The successor has source SHA-256 `f87034ba7bbad7e9fdd51485a2f9ed02a2f4f103fa15e9632fab42950d6a237d`, content SHA-256 `c0facf9f554a2690b01d3575456c02a44d72f4f3b7b75d348b4b9fba43ebc812`, and complete 25-file production-origin build SHA-256 `59430428d7124fc08b6fb3d155f22eb8e63d56aafd1c9240cb0bfcb3486cc951`. Static validation, the 16-case browser matrix, and all four video load/seek cases pass locally. Deployment `dpl_DdCw74n9x8f862DJBLYynnSztA1e` is READY and aliased to `arrivewithin.com`; all eight route bodies and all three refreshed media assets were then downloaded without credentials and matched the local artifact byte-for-byte.
 
+## Unreleased brand and visual successor
+
+The 2026-08-13 website polish replaces the generic dot with exact byte copies of the selected B — Quiet Threshold 40 px and 180 px opaque RGB assets. The mark is now visible in the header/footer and linked as the browser favicon and Apple touch icon, with separate public-safe source/hash/trademark provenance. The home hero becomes one full-canvas garden composition with product-first hierarchy; mobile navigation keeps all destinations exposed in a bounded horizontal row; visible links receive 44-point minimum targets; CSS-only entrance, depth, and hover motion disable under Reduce Motion. English/German repository copy now reflects the independently read-back public canonical repository while retaining the no-App-Store-availability boundary.
+
+Two clean production-origin builds with exact Node 26.7.0 were byte-identical:
+
+- Source tree SHA-256: `6e4a6d0a34f7527ead9d73d5d6f5cdca5ae0e79038a2815982468e0cbb8b01c5` across 27 public source files; ignored environment, host-binding, dependency, and generated-output files are excluded.
+- Content SHA-256: `3804864eec3eefdc720eebdf84e747a3aabeb4f86d11113aa63c97c4a39ac7b7`
+- Complete 28-file build SHA-256: `3026c55a75253a73442efc82505a53fe47228af091f8141d5967a659986f98d4`
+- Static validation: passed for eight routes, eleven product/media assets, two selected brand icons, local-only runtime assets, bilingual metadata, CSP, privacy copy, and provenance/hash integrity.
+- Rendered matrix: not refreshed in this execution. The pinned Playwright browser launch was denied by the desktop execution sandbox after the non-socket route-fulfillment harness was prepared. The prior 16-case report remains historical evidence for the deployed artifact and is not relabeled as proof of this successor.
+- Deployment/public readback: not performed and not authorized by this website-edit request.
+
 ## Claim boundary
 
-This proves the deterministic, public-safe refreshed website artifact, the existing Vercel Hobby project binding, `arrivewithin.com` DNS/TLS, eight production routes, and the three current Twilight media assets. It does not prove public-repository availability, App Store availability, production narration, or a signed release candidate. No domain purchase, registration, unrelated project, or unrelated DNS mutation was performed.
+The deployed-artifact evidence proves the deterministic, public-safe refreshed website artifact, the existing Vercel Hobby project binding, `arrivewithin.com` DNS/TLS, eight production routes, and the three current Twilight media assets. Public-repository availability is proven separately by credential-free GitHub readback. Neither that evidence nor the unreleased local successor proves App Store availability, production narration, or a later signed release candidate. No domain purchase, registration, unrelated project, or unrelated DNS mutation was performed.
 
-The eight app-UI images remain synchronized to build-6 capture revision `720deeed8719b680ebe4359e1f572565780cc1015ce4ab0d83cb530335bfb405`; the renderer-derived media is current Twilight output. The live route/media hashes match the current production-origin local build.
+The eight app-UI images remain synchronized to build-6 capture revision `720deeed8719b680ebe4359e1f572565780cc1015ce4ab0d83cb530335bfb405`; the renderer-derived media is current Twilight output. Live route/media hashes match the deployed 25-file artifact. The 28-file brand/visual successor remains local until a separately authorized deploy and exact readback.
