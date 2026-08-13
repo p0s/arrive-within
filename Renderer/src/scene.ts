@@ -174,15 +174,16 @@ export function createGardenScene(
   };
 
   const onPointerDown = (event: PointerEvent): void => {
+    if (state.reduceMotion) return;
     pointerStart = { id: event.pointerId, x: event.clientX, angle: orbitAngle };
     canvas.setPointerCapture(event.pointerId);
   };
   const onPointerMove = (event: PointerEvent): void => {
-    if (pointerStart?.id !== event.pointerId) return;
-    orbitAngle = THREE.MathUtils.clamp(
-      pointerStart.angle + (event.clientX - pointerStart.x) * 0.004,
-      -0.62,
-      0.62,
+    if (state.reduceMotion || pointerStart?.id !== event.pointerId) return;
+    orbitAngle = resolveGardenOrbitAngle(
+      pointerStart.angle,
+      event.clientX - pointerStart.x,
+      state.reduceMotion,
     );
     updateCamera();
   };
@@ -265,17 +266,35 @@ export function createGardenScene(
     update(nextState): void {
       const previousState = state;
       state = nextState;
+      const reduceMotionActivated = !previousState.reduceMotion && state.reduceMotion;
+      if (reduceMotionActivated) {
+        if (pointerStart !== undefined && canvas.hasPointerCapture(pointerStart.id)) {
+          canvas.releasePointerCapture(pointerStart.id);
+        }
+        pointerStart = undefined;
+        orbitAngle = resolveGardenOrbitAngle(orbitAngle, 0, true);
+      }
       const nextVisualSignature = gardenVisualSignature(state);
       if (nextVisualSignature === visualSignature) {
+        let settledMotion = false;
         if (
           revealStartedAt !== undefined
           && settleGardenRevealForReducedMotion(
             world.root,
-            !previousState.reduceMotion && state.reduceMotion,
+            reduceMotionActivated,
           )
         ) {
           revealStartedAt = undefined;
-          if (renderingIsActive && !document.hidden && !contextIsLost) renderer.render(scene, camera);
+          settledMotion = true;
+        }
+        if (reduceMotionActivated) {
+          updateCamera();
+          settleBirds(world.birds, model);
+          settleGroundWildlife(world.groundWildlife);
+          settledMotion = true;
+        }
+        if (settledMotion && renderingIsActive && !document.hidden && !contextIsLost) {
+          renderer.render(scene, camera);
         }
         return;
       }
@@ -384,6 +403,15 @@ export function settleGardenRevealForReducedMotion(
   root.scale.setScalar(1);
   root.position.y = 0;
   return true;
+}
+
+export function resolveGardenOrbitAngle(
+  startAngle: number,
+  horizontalDelta: number,
+  reduceMotion: boolean,
+): number {
+  if (reduceMotion) return 0;
+  return THREE.MathUtils.clamp(startAngle + horizontalDelta * 0.004, -0.62, 0.62);
 }
 
 function cameraComposition(
@@ -1436,34 +1464,113 @@ function buildBirds(model: GardenWorldModel): THREE.Group {
     figure.add(rightWing);
 
     figure.scale.setScalar(bird.scale);
-    placeBird(figure, bird, bird.phase);
+    applyBirdPresentation(figure, resolveBirdSettledPresentation(bird));
     flock.add(figure);
   }
   return flock;
 }
 
-function placeBird(figure: THREE.Group, bird: GardenBird, phase: number): void {
-  figure.position.set(
-    Math.cos(phase) * bird.pathRadius,
-    bird.height + Math.sin(phase * 2) * 0.22,
-    Math.sin(phase) * bird.pathDepth - 0.7,
-  );
-  figure.rotation.y = -0.52 + Math.sin(phase) * 0.22;
-  figure.rotation.z = Math.sin(phase * 2) * 0.08;
+export interface GardenBirdPresentation {
+  position: [number, number, number];
+  yaw: number;
+  roll: number;
+  wingFlap: number;
+  state: "crossing" | "settled";
+}
+
+export function resolveBirdPresentation(bird: GardenBird, now: number): GardenBirdPresentation {
+  const cycleDuration = 32_000 / THREE.MathUtils.clamp(bird.speed, 0.5, 1.5);
+  const phaseOffset = positiveModulo(bird.phase, Math.PI * 2) / (Math.PI * 2) * cycleDuration;
+  const elapsed = Math.max(0, now) + phaseOffset;
+  const cycleIndex = Math.floor(elapsed / cycleDuration);
+  const cycleProgress = (elapsed % cycleDuration) / cycleDuration;
+  const direction = cycleIndex % 2 === 0 ? 1 : -1;
+  const flightFraction = 0.25;
+  const startX = -bird.pathRadius * direction;
+  const endX = bird.pathRadius * direction;
+  const startZ = -0.7 + bird.pathDepth * 0.32 * direction;
+  const endZ = -0.7 - bird.pathDepth * 0.32 * direction;
+  const travelYaw = direction > 0 ? -0.25 : Math.PI + 0.25;
+  const returnYaw = direction > 0 ? Math.PI + 0.25 : -0.25;
+
+  if (cycleProgress < flightFraction) {
+    const flightProgress = cycleProgress / flightFraction;
+    const eased = flightProgress * flightProgress * (3 - 2 * flightProgress);
+    return {
+      position: [
+        THREE.MathUtils.lerp(startX, endX, eased),
+        bird.height + Math.sin(flightProgress * Math.PI) * 0.36,
+        THREE.MathUtils.lerp(startZ, endZ, eased),
+      ],
+      yaw: travelYaw,
+      roll: Math.sin(flightProgress * Math.PI) * 0.055 * direction,
+      wingFlap: Math.sin(flightProgress * Math.PI * 6) * 0.22,
+      state: "crossing",
+    };
+  }
+
+  const restProgress = (cycleProgress - flightFraction) / (1 - flightFraction);
+  const turnProgress = THREE.MathUtils.smoothstep(restProgress, 0.2, 0.8);
+  return {
+    position: [endX, bird.height, endZ],
+    yaw: interpolateAngle(travelYaw, returnYaw, turnProgress),
+    roll: 0,
+    wingFlap: 0,
+    state: "settled",
+  };
+}
+
+export function resolveBirdSettledPresentation(bird: GardenBird): GardenBirdPresentation {
+  const direction = positiveModulo(bird.phase, Math.PI * 2) < Math.PI ? 1 : -1;
+  return {
+    position: [
+      bird.pathRadius * direction,
+      bird.height,
+      -0.7 - bird.pathDepth * 0.32 * direction,
+    ],
+    yaw: direction > 0 ? Math.PI + 0.25 : -0.25,
+    roll: 0,
+    wingFlap: 0,
+    state: "settled",
+  };
 }
 
 function animateBirds(flock: THREE.Group, model: GardenWorldModel, now: number): void {
   for (const [index, figure] of flock.children.entries()) {
     const bird = model.birds[index];
     if (!(figure instanceof THREE.Group) || bird === undefined) continue;
-    const phase = bird.phase + now * 0.000075 * bird.speed;
-    placeBird(figure, bird, phase);
-    const flap = Math.sin(now * 0.0068 * bird.speed + bird.phase) * 0.28;
-    const leftWing = figure.getObjectByName("bird-wing-left");
-    const rightWing = figure.getObjectByName("bird-wing-right");
-    if (leftWing !== undefined) leftWing.rotation.x = flap;
-    if (rightWing !== undefined) rightWing.rotation.x = -flap;
+    applyBirdPresentation(figure, resolveBirdPresentation(bird, now));
   }
+}
+
+function settleBirds(flock: THREE.Group, model: GardenWorldModel): void {
+  for (const [index, figure] of flock.children.entries()) {
+    const bird = model.birds[index];
+    if (!(figure instanceof THREE.Group) || bird === undefined) continue;
+    applyBirdPresentation(figure, resolveBirdSettledPresentation(bird));
+  }
+}
+
+function applyBirdPresentation(
+  figure: THREE.Group,
+  presentation: GardenBirdPresentation,
+): void {
+  figure.position.set(...presentation.position);
+  figure.rotation.y = presentation.yaw;
+  figure.rotation.z = presentation.roll;
+  const leftWing = figure.getObjectByName("bird-wing-left");
+  const rightWing = figure.getObjectByName("bird-wing-right");
+  if (leftWing !== undefined) leftWing.rotation.x = 0.1 + presentation.wingFlap;
+  if (rightWing !== undefined) rightWing.rotation.x = -0.1 - presentation.wingFlap;
+}
+
+function positiveModulo(value: number, modulus: number): number {
+  return ((value % modulus) + modulus) % modulus;
+}
+
+function interpolateAngle(from: number, to: number, progress: number): number {
+  const delta = positiveModulo(to - from + Math.PI, Math.PI * 2) - Math.PI;
+  return from + delta * progress;
 }
 
 function buildBirdWing(side: 1 | -1, material: THREE.Material): THREE.Group {
@@ -1559,6 +1666,16 @@ function animateGroundWildlife(wildlife: THREE.Group, now: number): void {
     child.scale.set(baseScale, baseScale * (1 + Math.sin(now * 0.0011 + phase) * 0.012), baseScale);
     const ear = child.getObjectByName("hare-ear-2");
     if (ear !== undefined) ear.rotation.y = Math.sin(now * 0.0008 + phase) * 0.1;
+  }
+}
+
+function settleGroundWildlife(wildlife: THREE.Group): void {
+  for (const child of wildlife.children) {
+    if (!(child instanceof THREE.Group)) continue;
+    const baseScale = Number(child.userData.baseScale ?? 1);
+    child.scale.setScalar(baseScale);
+    const ear = child.getObjectByName("hare-ear-2");
+    if (ear !== undefined) ear.rotation.y = 0;
   }
 }
 
