@@ -26,6 +26,8 @@ The app has a layered native audio path for opening/interval/closing bells, opti
 - `closing-bell-v1.wav`: `f193545d6f5feff8bbea1da58c8cf2575cc45dde75a23cf779ce145e4b2a1f2b`
 - `still-air-v1.m4a`: `bf4d184f989f98b915c299a103a58360a9d1e6c400e599884d9f1c5f404e65d0`
 
+The owner approved these exact three hashes as the shipping sound direction on 2026-08-13. No sound-lab alternative was promoted or bundled.
+
 The iOS Simulator verifies those exact bundled files and hashes but intentionally does not start `AVAudioEngine`. The installed iOS 26.5 simulator runtime aborts while negotiating remote I/O, and simulator output could not prove physical playback anyway. Device-target code compiles, but listening quality, route/lock/interruption behavior, notification delivery, and energy remain exact-candidate physical gates.
 
 No narration track is approved or counted complete. Voice rights, owner selection, English/German fluent listening, transcript alignment, and final package size remain separate gates.

@@ -96,7 +96,7 @@ jq -n --sort-keys \
   --argjson assets "$assets" \
   '{
     schema_version: 1,
-    status: "objective-candidates-human-selection-pending",
+    status: "objective-candidates-ready-for-selection",
     generated_at: $generated_at,
     generator: $ffmpeg,
     generator_path: $generator_path,
@@ -107,8 +107,8 @@ jq -n --sort-keys \
     ambience_target_role: "Optional low-level layer below narration with independent user volume; objective audition target near -32 LUFS-I.",
     assets: $assets,
     automated_checks: ["decode", "mono", "sample rate", "duration", "hash", "integrated loudness", "true peak", "bounded peak from synthesis limiter"],
-    pending_human_checks: ["loop seam", "fatigue", "speaker and route balance", "bell harshness", "narration intelligibility", "owner selection"],
-    release_boundary: "No candidate is selected or bundled by this lab. Only an explicitly selected and separately mastered asset may replace a shipping layer."
+    pending_human_checks: ["candidate loop seam", "candidate fatigue", "candidate speaker and route balance", "candidate bell harshness", "candidate narration intelligibility", "candidate owner selection before promotion"],
+    release_boundary: "This lab generates non-shipping candidates only. Marketing/SoundDesignLab/selection.json names the exact selected shipping baseline; a candidate may replace it only after a new explicit hash-bound selection and separate mastering pass."
   }' > "${output_directory}/manifest.json"
 
 print "Generated three ambience and three bell-family candidates in ${output_directory}."
