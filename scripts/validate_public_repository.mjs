@@ -1,5 +1,7 @@
 import { createHash } from "node:crypto";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { lstat, mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -9,7 +11,8 @@ import {
   publicRepositoryURL,
 } from "./lib/public-repository-link-policy.mjs";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const MODULE_PATH = fileURLToPath(import.meta.url);
+const ROOT = path.resolve(path.dirname(MODULE_PATH), "..");
 const REPORT_JSON = path.join(ROOT, ".evidence", "privacy", "public-repository-validation.json");
 const REPORT_TEXT = path.join(ROOT, ".evidence", "privacy", "public-repository-validation.txt");
 const PRIVATE_REPORT = path.join(ROOT, ".evidence", "privacy", "public-boundary-full.json");
@@ -47,6 +50,16 @@ const PRIVATE_PREFIXES = [
 ];
 const GENERATED_SEGMENTS = new Set([".build", ".git", ".next", ".pnpm-store", ".swiftpm", ".venv", ".vercel", "__pycache__", "DerivedData", "node_modules", "xcuserdata"]);
 const BINARY_EXTENSIONS = new Set([".aac", ".aiff", ".app", ".cer", ".der", ".gif", ".heic", ".ipa", ".jpeg", ".jpg", ".m4a", ".mobileprovision", ".mov", ".mp3", ".mp4", ".p12", ".pdf", ".png", ".wav", ".xcarchive", ".xcresult", ".zip"]);
+const DEFAULT_ARCHIVE_SCAN_LIMITS = Object.freeze({
+  maxDepth: 3,
+  maxTopLevelArchives: 64,
+  maxEntries: 2_048,
+  maxEntryBytes: 60_000_000,
+  maxExpandedBytes: 180_000_000,
+  maxListingBytes: 20_000_000,
+  subprocessTimeoutMilliseconds: 15_000,
+  maxWallMilliseconds: 60_000,
+});
 const GENERATED_CANDIDATE_ROOTS = [
   ["website-dist", "Website/dist"],
   ["app-store-screenshot-exports", "Marketing/AppStoreScreenshots/exports"],
@@ -198,6 +211,16 @@ function scannableSource(buffer, displayPath) {
   return buffer.toString("utf8");
 }
 
+function hasZipStructure(buffer) {
+  if (buffer.length < 4) return false;
+  const signature = buffer.subarray(0, 4).toString("hex");
+  if (signature === "504b0304" || signature === "504b0506" || signature === "504b0708") {
+    return true;
+  }
+  const endOfCentralDirectory = buffer.lastIndexOf(Buffer.from([0x50, 0x4b, 0x05, 0x06]));
+  return endOfCentralDirectory >= Math.max(0, buffer.length - 65_557);
+}
+
 function scanBuffer(buffer, displayPath, scope, hits) {
   const source = scannableSource(buffer, displayPath);
   for (const signature of detectPublicPrivacySignatures(source, displayPath)) {
@@ -214,23 +237,120 @@ function scanBuffer(buffer, displayPath, scope, hits) {
   }
 }
 
-function scanZipArchive(absolute, displayPath, hits) {
-  const listing = spawnSync("/usr/bin/unzip", ["-Z1", absolute], { encoding: "utf8", maxBuffer: 20_000_000 });
+function scanZipArchive(absolute, displayPath, hits, requestedLimits = {}) {
+  const limits = { ...DEFAULT_ARCHIVE_SCAN_LIMITS, ...requestedLimits };
+  const temporaryRoot = mkdtempSync(path.join(tmpdir(), "arrive-within-archive-scan-"));
+  const state = {
+    entries: 0,
+    expandedBytes: 0,
+    nestedSequence: 0,
+    limits,
+    temporaryRoot,
+    deadline: Date.now() + limits.maxWallMilliseconds,
+  };
+  try {
+    return scanZipArchiveFile(absolute, displayPath, hits, state, 0);
+  } finally {
+    rmSync(temporaryRoot, { recursive: true, force: true });
+  }
+}
+
+function scanZipArchiveFile(absolute, displayPath, hits, state, depth) {
+  const { limits } = state;
+  if (Date.now() >= state.deadline) {
+    hits.push({ scope: "release-archive", file: displayPath, pattern: "archive-time-limit-exceeded" });
+    return 0;
+  }
+  const listing = spawnSync("/usr/bin/unzip", ["-Z1", absolute], {
+    encoding: "utf8",
+    maxBuffer: limits.maxListingBytes,
+    timeout: Math.max(
+      1,
+      Math.min(limits.subprocessTimeoutMilliseconds, state.deadline - Date.now()),
+    ),
+  });
+  if (Date.now() >= state.deadline || listing.error?.code === "ETIMEDOUT") {
+    hits.push({ scope: "release-archive", file: displayPath, pattern: "archive-time-limit-exceeded" });
+    return 0;
+  }
   if (listing.status !== 0) {
     hits.push({ scope: "release-archive", file: displayPath, pattern: "unreadable-archive" });
     return 0;
   }
   const entries = listing.stdout.split(/\r?\n/).filter(Boolean);
+  if (state.entries + entries.length > limits.maxEntries) {
+    hits.push({ scope: "release-archive", file: displayPath, pattern: "archive-entry-limit-exceeded" });
+    return 0;
+  }
+  let scannedEntries = 0;
   for (const entry of entries) {
-    scanBuffer(Buffer.from(entry, "utf8"), `${displayPath}!${entry}`, "release-archive-name", hits);
-    const extracted = spawnSync("/usr/bin/unzip", ["-p", absolute, entry], { encoding: null, maxBuffer: 60_000_000 });
+    if (Date.now() >= state.deadline) {
+      hits.push({ scope: "release-archive", file: displayPath, pattern: "archive-time-limit-exceeded" });
+      return scannedEntries;
+    }
+    state.entries += 1;
+    scannedEntries += 1;
+    const entryDisplayPath = `${displayPath}!${entry}`;
+    scanBuffer(Buffer.from(entry, "utf8"), entryDisplayPath, "release-archive-name", hits);
+    const extracted = spawnSync("/usr/bin/unzip", ["-p", absolute, entry], {
+      encoding: null,
+      maxBuffer: limits.maxEntryBytes + 1,
+      timeout: Math.max(
+        1,
+        Math.min(limits.subprocessTimeoutMilliseconds, state.deadline - Date.now()),
+      ),
+    });
+    if (Date.now() >= state.deadline || extracted.error?.code === "ETIMEDOUT") {
+      hits.push({ scope: "release-archive", file: entryDisplayPath, pattern: "archive-time-limit-exceeded" });
+      return scannedEntries;
+    }
     if (extracted.status !== 0) {
-      hits.push({ scope: "release-archive", file: `${displayPath}!${entry}`, pattern: "unreadable-entry" });
+      hits.push({ scope: "release-archive", file: entryDisplayPath, pattern: "unreadable-entry" });
       continue;
     }
-    scanBuffer(extracted.stdout, `${displayPath}!${entry}`, "release-archive-content", hits);
+    if (!Buffer.isBuffer(extracted.stdout) || extracted.stdout.length > limits.maxEntryBytes) {
+      hits.push({ scope: "release-archive", file: entryDisplayPath, pattern: "archive-entry-size-limit-exceeded" });
+      continue;
+    }
+    if (state.expandedBytes + extracted.stdout.length > limits.maxExpandedBytes) {
+      hits.push({ scope: "release-archive", file: entryDisplayPath, pattern: "archive-expanded-size-limit-exceeded" });
+      return scannedEntries;
+    }
+    state.expandedBytes += extracted.stdout.length;
+
+    const namedAsZip = path.extname(entry).toLowerCase() === ".zip";
+    const containsZip = hasZipStructure(extracted.stdout);
+    if (namedAsZip || containsZip) {
+      if (!containsZip) {
+        hits.push({ scope: "release-archive", file: entryDisplayPath, pattern: "invalid-nested-archive" });
+        continue;
+      }
+      if (depth >= limits.maxDepth) {
+        hits.push({ scope: "release-archive", file: entryDisplayPath, pattern: "archive-depth-limit-exceeded" });
+        continue;
+      }
+      const nestedPath = path.join(
+        state.temporaryRoot,
+        `nested-${String(state.nestedSequence).padStart(4, "0")}.zip`,
+      );
+      state.nestedSequence += 1;
+      try {
+        writeFileSync(nestedPath, extracted.stdout, { flag: "wx", mode: 0o600 });
+        scannedEntries += scanZipArchiveFile(
+          nestedPath,
+          entryDisplayPath,
+          hits,
+          state,
+          depth + 1,
+        );
+      } finally {
+        rmSync(nestedPath, { force: true });
+      }
+      continue;
+    }
+    scanBuffer(extracted.stdout, entryDisplayPath, "release-archive-content", hits);
   }
-  return entries.length;
+  return scannedEntries;
 }
 
 async function sha256File(absolute) {
@@ -342,7 +462,9 @@ async function main() {
     }
     const bytes = await readFile(absolute);
     scanBuffer(bytes, relative, "public-source", privacyHits);
-    if (extension.toLowerCase() === ".zip") publicArchives.push({ relative, absolute });
+    if (extension.toLowerCase() === ".zip" || hasZipStructure(bytes)) {
+      publicArchives.push({ relative, absolute });
+    }
     if (BINARY_EXTENSIONS.has(extension) || !TEXT_EXTENSIONS.has(extension)) binaryFilesScanned += 1;
     else textFilesScanned += 1;
   }
@@ -365,7 +487,11 @@ async function main() {
     const bytes = await readFile(candidate.absolute);
     scanBuffer(bytes, displayPath, "generated-candidate", privacyHits);
     generatedFilesScanned += 1;
-    if (path.extname(candidate.absolute).toLowerCase() === ".zip") {
+    if (path.extname(candidate.absolute).toLowerCase() === ".zip" || hasZipStructure(bytes)) {
+      if (archivesScanned >= DEFAULT_ARCHIVE_SCAN_LIMITS.maxTopLevelArchives) {
+        privacyHits.push({ scope: "release-archive", file: displayPath, pattern: "archive-count-limit-exceeded" });
+        continue;
+      }
       archivesScanned += 1;
       archiveEntriesScanned += scanZipArchive(candidate.absolute, displayPath, privacyHits);
       scannedArchivePaths.add(candidate.absolute);
@@ -373,6 +499,10 @@ async function main() {
   }
   for (const archive of publicArchives) {
     if (scannedArchivePaths.has(archive.absolute)) continue;
+    if (archivesScanned >= DEFAULT_ARCHIVE_SCAN_LIMITS.maxTopLevelArchives) {
+      privacyHits.push({ scope: "release-archive", file: archive.relative, pattern: "archive-count-limit-exceeded" });
+      continue;
+    }
     archivesScanned += 1;
     archiveEntriesScanned += scanZipArchive(archive.absolute, archive.relative, privacyHits);
   }
@@ -450,7 +580,11 @@ async function main() {
   process.stdout.write(`Public repository validation passed: ${report.checks_passed}/${report.checks_total} checks across ${publicFiles.length} simulated public files; Git/history gate ${gitBoundary.status}.\n`);
 }
 
-main().catch((error) => {
-  console.error(error instanceof Error ? error.message : error);
-  process.exit(1);
-});
+export { DEFAULT_ARCHIVE_SCAN_LIMITS, scanZipArchive };
+
+if (process.argv[1] && path.resolve(process.argv[1]) === MODULE_PATH) {
+  main().catch((error) => {
+    console.error(error instanceof Error ? error.message : error);
+    process.exit(1);
+  });
+}
