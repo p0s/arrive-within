@@ -5,14 +5,14 @@
   "ambience_selection": {
     "id": "still-air-v1",
     "path": "Audio/still-air-v1.m4a",
-    "sha256": "bf4d184f989f98b915c299a103a58360a9d1e6c400e599884d9f1c5f404e65d0"
+    "sha256": "d6c40f1cacf4c3714346cd85d38f28619b447b9029edb4c5094574c107f9a044"
   },
   "bell_family_selection": {
     "id": "bundled-bell-v1",
     "opening": {
       "id": "opening-bell-v1",
       "path": "Audio/opening-bell-v1.wav",
-      "sha256": "bb1b61b3c8ae54c53b9a9c2cb5e8bd30a4892b6dc7003ed352b8c0e3746cfe42"
+      "sha256": "3e37e03dc80b50035a06cb055ad4b1df49670a142ef8a887a2fd9d26b29b0278"
     },
     "closing_and_interval": {
       "id": "closing-bell-v1",
@@ -34,7 +34,7 @@
     "bell-b-warm",
     "bell-c-airy"
   ],
-  "selection_effect": "The selected Still Air ambience and bell-v1 synthesis direction remain unchanged. After the owner reported that build 9's approximately -41 dBFS bell peaks were inaudible on a physical iPhone, both bell masters received 29 dB of deterministic output gain with limiter headroom; no lab candidate was promoted and the ambience bytes remain unchanged.",
-  "physical_qa": "Build 9 failed owner-observed physical iPhone bell audibility and completion stability. Replacement source passes the exact physical iPhone accelerated opening plus stopped-engine closing completion path without a crash; it still requires exact-candidate human built-in-speaker audibility, route, interruption, lock/background, mix-balance, haptic, and energy review.",
+  "selection_effect": "The selected Still Air ambience and bell-v1 synthesis direction remain unchanged. After the owner reported that build 9's approximately -41 dBFS bell peaks were inaudible on a physical iPhone, both bell masters received deterministic output gain with limiter headroom, and Still Air received a device-audible harmonic lift; no lab candidate was promoted.",
+  "physical_qa": "Build 9 failed owner-observed physical iPhone bell audibility and completion stability. Replacement source has exact-candidate physical-device regression coverage for the audio-session startup path; it still requires exact-candidate human built-in-speaker audibility, route, interruption, lock/background, mix-balance, haptic, and energy review.",
   "release_exclusion": "Every sound-lab candidate remains outside the app bundle; only the three hash-bound baseline assets named here are selected."
 }
