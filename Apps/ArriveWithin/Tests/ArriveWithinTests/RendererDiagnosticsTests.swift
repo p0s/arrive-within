@@ -4,7 +4,7 @@ import Testing
 
 @testable import ArriveWithin
 
-@Suite("Redacted renderer diagnostics")
+@Suite("Bounded renderer diagnostics")
 struct RendererDiagnosticsTests {
   @Test("Incoming events require the exact bounded typed bridge contract")
   func incomingEventContract() throws {
@@ -145,18 +145,10 @@ struct RendererDiagnosticsTests {
       recorder.record(.performance(frameMilliseconds: Double(value)))
     }
 
-    let snapshot = recorder.snapshot(
-      rendererReady: true,
-      nativeFallbackActive: false,
-      selectedQuality: .low,
-      contextRecoveryCount: 1
-    )
-
-    #expect(snapshot.records.count == RendererDiagnosticsRecorder.maximumRecordCount)
-    #expect(snapshot.records.last?.frameMilliseconds == 39)
-    #expect(snapshot.contextRecoveryCount == 1)
-    #expect(snapshot.latestInventory?.direction == "twilight-refuge")
-    #expect(snapshot.latestInventory?.drawCalls == 42)
+    #expect(recorder.records.count == RendererDiagnosticsRecorder.maximumRecordCount)
+    #expect(recorder.records.last?.frameMilliseconds == 39)
+    #expect(recorder.latestInventory?.direction == "twilight-refuge")
+    #expect(recorder.latestInventory?.drawCalls == 42)
   }
 
   @Test("Twenty recovery inventories stay bounded and return to one selected world")
@@ -182,43 +174,9 @@ struct RendererDiagnosticsTests {
       )
     }
 
-    let snapshot = recorder.snapshot(
-      rendererReady: true,
-      nativeFallbackActive: false,
-      selectedQuality: .balanced,
-      contextRecoveryCount: 20
-    )
-    #expect(snapshot.records.count == RendererDiagnosticsRecorder.maximumRecordCount)
-    #expect(snapshot.contextRecoveryCount == 20)
-    #expect(snapshot.latestInventory?.direction == "twilight-refuge")
-    #expect(snapshot.latestInventory?.rebuildCount == 21)
-    #expect(snapshot.latestInventory?.context == "available")
-  }
-
-  @Test("Export contains no product identifiers, journal content, or exact timestamps")
-  func exportIsPublicSafeAndSmall() throws {
-    var recorder = RendererDiagnosticsRecorder()
-    recorder.record(.diagnostic(.ready))
-    recorder.record(.error(.contextRecoveryTimedOut))
-    recorder.record(.performance(frameMilliseconds: 8.27))
-    let snapshot = recorder.snapshot(
-      rendererReady: false,
-      nativeFallbackActive: true,
-      selectedQuality: .balanced,
-      contextRecoveryCount: 0
-    )
-    let outputURL = FileManager.default.temporaryDirectory
-      .appending(path: "renderer-diagnostics-\(UUID().uuidString).json")
-    try RendererDiagnosticsExporter.export(snapshot, to: outputURL)
-    let data = try Data(contentsOf: outputURL)
-    let text = try #require(String(data: data, encoding: .utf8))
-
-    #expect(data.count <= RendererDiagnosticsExporter.maximumByteCount)
-    #expect(text.contains("context-recovery-timed-out"))
-    #expect(!text.contains("gardenID"))
-    #expect(!text.contains("profileGenerationID"))
-    #expect(!text.contains("journal"))
-    #expect(!text.contains("practiceEvent"))
-    #expect(!text.contains("timestamp"))
+    #expect(recorder.records.count == RendererDiagnosticsRecorder.maximumRecordCount)
+    #expect(recorder.latestInventory?.direction == "twilight-refuge")
+    #expect(recorder.latestInventory?.rebuildCount == 21)
+    #expect(recorder.latestInventory?.context == "available")
   }
 }

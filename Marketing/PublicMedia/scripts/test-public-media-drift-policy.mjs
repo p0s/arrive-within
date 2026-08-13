@@ -34,6 +34,7 @@ const historicalManifest = {
     ...manifest.source,
     renderer_source_sha256: FROZEN_RENDERER_SOURCE_SHA256,
     garden_state_schema_sha256: FROZEN_GARDEN_SCHEMA_SHA256,
+    renderer_source_files: Object.keys(FROZEN_SOURCE_FILE_SHA256),
   },
   post_generation_change: {
     classification: "post-publication-garden-media-regeneration-deferred",
@@ -55,12 +56,20 @@ const exact = {
 
 assert.equal(isExactPostPublicationMediaFreeze(exact), true, "the exact frozen-media boundary must pass");
 assert.equal(isExactPostPublicationMediaFreeze({ ...exact, currentRendererSourceSha256: `${CURRENT_RENDERER_SOURCE_SHA256.slice(0, -1)}0` }), false, "a near-match source digest must fail");
-assert.equal(isExactPostPublicationMediaFreeze({ ...exact, currentFileSha256: { ...currentFileSha256, "Renderer/src/bridge.ts": "0".repeat(64) } }), false, "an extra changed source file must fail");
+assert.equal(isExactPostPublicationMediaFreeze({ ...exact, currentFileSha256: { ...currentFileSha256, "Renderer/src/resilience.ts": "0".repeat(64) } }), false, "an extra changed source file must fail");
 assert.equal(isExactPostPublicationMediaFreeze({ ...exact, manifest: withAttestation({ valid_until: "expired" }) }), false, "an expired freeze must fail");
 assert.equal(isExactPostPublicationMediaFreeze({ ...exact, manifest: withAttestation({ fresh_browser_matrix: "passed" }) }), false, "host-denied browser proof must not be relabeled as passed");
 assert.equal(isExactPostPublicationMediaFreeze({ ...exact, manifest: withAttestation({ rationale: historicalManifest.post_generation_change.rationale.replace("not current Garden proof", "current") }) }), false, "the historical-media boundary must remain explicit");
 
-const matrixManifest = JSON.parse(readFileSync(join(projectRoot, "Marketing/RendererVisualMatrix/output/manifest.json"), "utf8"));
+const matrixManifest = {
+  ...historicalManifest,
+  post_generation_change: {
+    ...historicalManifest.post_generation_change,
+    classification: "post-publication-garden-visual-matrix-regeneration-deferred",
+    valid_until: "next-successful-current-source-renderer-matrix-regeneration",
+    rationale: "The retained historical milestone-variant matrix is not current Garden proof. The fresh browser matrix was skipped after host denial and was not relabeled as passed. Regenerate, visually review, and hash-bind the matrix at the next successful current-source renderer-matrix regeneration.",
+  },
+};
 const exactMatrix = { ...exact, manifest: matrixManifest };
 assert.equal(isExactPostPublicationVisualMatrixFreeze(exactMatrix), true, "the exact historical visual matrix must pass");
 assert.equal(isExactPostPublicationVisualMatrixFreeze({ ...exactMatrix, manifest: { ...matrixManifest, post_generation_change: { ...matrixManifest.post_generation_change, fresh_browser_matrix: "passed" } } }), false, "the historical visual matrix must not claim a fresh browser pass");

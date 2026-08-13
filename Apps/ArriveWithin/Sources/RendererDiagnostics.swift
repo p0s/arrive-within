@@ -175,17 +175,6 @@ struct RendererDiagnosticRecord: Codable, Equatable, Sendable {
   let quality: GardenQualityHint?
 }
 
-struct RendererDiagnosticsSnapshot: Codable, Equatable, Sendable {
-  let schemaVersion: Int
-  let rendererContractVersion: Int
-  let rendererReady: Bool
-  let nativeFallbackActive: Bool
-  let selectedQuality: GardenQualityHint
-  let contextRecoveryCount: Int
-  let latestInventory: RendererInventory?
-  let records: [RendererDiagnosticRecord]
-}
-
 struct RendererDiagnosticsRecorder: Sendable {
   static let maximumRecordCount = 32
 
@@ -240,43 +229,4 @@ struct RendererDiagnosticsRecorder: Sendable {
     }
   }
 
-  func snapshot(
-    rendererReady: Bool,
-    nativeFallbackActive: Bool,
-    selectedQuality: GardenQualityHint,
-    contextRecoveryCount: Int
-  ) -> RendererDiagnosticsSnapshot {
-    RendererDiagnosticsSnapshot(
-      schemaVersion: 1,
-      rendererContractVersion: GardenState.currentSchemaVersion,
-      rendererReady: rendererReady,
-      nativeFallbackActive: nativeFallbackActive,
-      selectedQuality: selectedQuality,
-      contextRecoveryCount: max(0, contextRecoveryCount),
-      latestInventory: latestInventory,
-      records: records
-    )
-  }
-}
-
-enum RendererDiagnosticsExporter {
-  static let maximumByteCount = 32 * 1_024
-
-  static func export(_ snapshot: RendererDiagnosticsSnapshot, to outputURL: URL) throws {
-    guard outputURL.pathExtension.lowercased() == "json" else {
-      throw RendererDiagnosticsExportError.invalidDestination
-    }
-    let encoder = JSONEncoder()
-    encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
-    let data = try encoder.encode(snapshot)
-    guard data.count <= maximumByteCount else {
-      throw RendererDiagnosticsExportError.reportTooLarge
-    }
-    try data.write(to: outputURL, options: .atomic)
-  }
-}
-
-enum RendererDiagnosticsExportError: Error, Equatable {
-  case invalidDestination
-  case reportTooLarge
 }

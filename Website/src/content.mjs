@@ -20,13 +20,11 @@ export const siteContent = {
       intro: "A dependable timer or an open-ended sit. Every qualifying practice becomes permanent, visible growth—without streak pressure, accounts, ads, or subscriptions.",
       primaryAction: "See how it grows",
       secondaryAction: "Read the privacy promise",
-      visualNote: "Actual Arrive Within UI · deterministic safe sample data",
       media: {
         kicker: "One garden, faithfully grown",
         title: "See practice become a living world.",
-        body: "Six real renderer states follow the same garden from before the first practice to day 30. The silent film uses safe sample state and no generated interpolation.",
-        label: "Silent garden-growth film showing six deterministic stages from before the first practice to practice day 30.",
-        caption: "Real renderer · deterministic safe sample state · 9.73 seconds · no audio",
+        body: "Follow the same garden from before the first practice through day 30.",
+        label: "Garden-growth film showing the same garden from before the first practice through practice day 30.",
         fallback: "Open the garden-growth film",
       },
       growth: {
@@ -130,13 +128,11 @@ export const siteContent = {
       intro: "Ein verlässlicher Timer oder eine offene Stoppuhr. Jede qualifizierende Praxis wird zu dauerhaftem, sichtbarem Wachstum – ohne Streak-Druck, Konto, Werbung oder Abo.",
       primaryAction: "Sieh, wie der Garten wächst",
       secondaryAction: "Lies unser Datenschutzversprechen",
-      visualNote: "Echte Arrive Within Oberfläche · sichere deterministische Beispieldaten",
       media: {
         kicker: "Ein Garten, verlässlich gewachsen",
         title: "Sieh, wie Praxis zu einer lebendigen Welt wird.",
-        body: "Sechs echte Renderer-Zustände zeigen denselben Garten vor der ersten Meditation bis zum 30. Praxistag. Der stumme Film nutzt sichere Beispieldaten und keine generierten Zwischenbilder.",
-        label: "Stummer Gartenfilm mit sechs deterministischen Stufen vor der ersten Meditation bis zum 30. Praxistag.",
-        caption: "Echter Renderer · sichere deterministische Beispieldaten · 9,73 Sekunden · ohne Ton",
+        body: "Begleite denselben Garten von vor der ersten Meditation bis zum 30. Praxistag.",
+        label: "Gartenfilm, der denselben Garten von vor der ersten Meditation bis zum 30. Praxistag zeigt.",
         fallback: "Gartenfilm öffnen",
       },
       growth: {

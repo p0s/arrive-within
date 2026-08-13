@@ -161,7 +161,6 @@ function homePage(locale) {
         <h1 id="hero-title"><span class="hero-product">Arrive Within</span><span class="hero-promise">${escapeHtml(home.title)}</span></h1>
         <p class="lede">${escapeHtml(home.intro)}</p>
         <div class="actions"><a class="primary-action light" href="#garden-film">${escapeHtml(home.primaryAction)}</a><a class="text-action on-dark" href="${routeFor(locale, "privacy")}">${escapeHtml(home.secondaryAction)}</a></div>
-        <p class="hero-proof">${escapeHtml(home.visualNote)}</p>
       </div>
     </section>
 
@@ -172,7 +171,6 @@ function homePage(locale) {
           <source src="/assets/garden-growth-v1.mp4" type="video/mp4">
           <a href="/assets/garden-growth-v1.mp4">${escapeHtml(home.media.fallback)}</a>
         </video>
-        <figcaption>${escapeHtml(home.media.caption)}</figcaption>
       </figure>
     </section>
 

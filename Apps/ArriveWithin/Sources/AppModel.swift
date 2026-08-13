@@ -52,6 +52,14 @@ final class AppModel {
 
   enum SettingsNotice: Equatable {
     case couldNotSaveLanguage
+    case couldNotSaveGardenStyle
+  }
+
+  enum PremiumGardenNotice: Equatable {
+    case purchasePending
+    case purchaseFailed
+    case restoreFoundNoPurchase
+    case restoreFailed
   }
 
   enum JournalRecordingPhase: Equatable {
@@ -85,6 +93,10 @@ final class AppModel {
   var preparationRemainingMilliseconds: Int64 = 0
   var timerPreferences: TimerPreferences = .standard
   var appLanguage: AppLanguage = .system
+  var gardenRenderStyle: GardenRenderStyle = .twilight
+  var premiumGardenAccess = PremiumGardenAccessSnapshot.unavailable
+  var premiumGardenNotice: PremiumGardenNotice?
+  var premiumGardenPurchaseIsInProgress = false
   var settingsNotice: SettingsNotice?
   var guidedPractices: [GuidedPractice] = []
   var favoriteGuidedPracticeIDs: Set<String> = []
@@ -117,7 +129,6 @@ final class AppModel {
   var rendererGeneration = 0
   var rendererSelectedQuality: GardenQualityHint = .balanced
   var rendererRecoveryCount = 0
-  var rendererDiagnosticsExportURL: URL?
 
   @ObservationIgnored private let dependencies: AppDependencies
   @ObservationIgnored private var ticker: Task<Void, Never>?
@@ -127,6 +138,7 @@ final class AppModel {
   @ObservationIgnored private var lastIntervalBellOrdinal: Int64 = 0
   @ObservationIgnored private var journalRecordingTicker: Task<Void, Never>?
   @ObservationIgnored private var rendererDiagnosticsRecorder = RendererDiagnosticsRecorder()
+  @ObservationIgnored private var premiumGardenUpdatesTask: Task<Void, Never>?
 
   init(dependencies: AppDependencies) {
     self.dependencies = dependencies
@@ -161,6 +173,13 @@ final class AppModel {
     } catch {
       appLanguage = .system
     }
+    do {
+      gardenRenderStyle = try await dependencies.appSettingsRepository.loadGardenRenderStyle()
+    } catch {
+      gardenRenderStyle = .twilight
+    }
+    await refreshPremiumGardenAccess()
+    startPremiumGardenEntitlementUpdates()
     #if DEBUG
       if let language = uiTestLanguageOverride() {
         appLanguage = language
@@ -411,6 +430,55 @@ final class AppModel {
       settingsNotice = .couldNotSaveLanguage
     }
   }
+
+  func setGardenRenderStyle(_ style: GardenRenderStyle) async {
+    guard !style.isPremium || premiumGardenAccess.isOwned else { return }
+    do {
+      try await dependencies.appSettingsRepository.saveGardenRenderStyle(style)
+      gardenRenderStyle = style
+      settingsNotice = nil
+    } catch {
+      settingsNotice = .couldNotSaveGardenStyle
+    }
+  }
+
+  func purchasePremiumGardenStyles(selecting style: GardenRenderStyle? = nil) async {
+    guard !premiumGardenPurchaseIsInProgress else { return }
+    premiumGardenPurchaseIsInProgress = true
+    premiumGardenNotice = nil
+    defer { premiumGardenPurchaseIsInProgress = false }
+    do {
+      switch try await dependencies.premiumGardenPurchaseClient.purchase() {
+      case .purchased(let snapshot):
+        applyPremiumGardenAccess(snapshot)
+        if let style, style.isPremium, snapshot.isOwned {
+          await setGardenRenderStyle(style)
+        }
+      case .pending:
+        premiumGardenNotice = .purchasePending
+      case .cancelled:
+        break
+      }
+    } catch {
+      premiumGardenNotice = .purchaseFailed
+    }
+  }
+
+  func restorePremiumGardenStyles() async {
+    guard !premiumGardenPurchaseIsInProgress else { return }
+    premiumGardenPurchaseIsInProgress = true
+    premiumGardenNotice = nil
+    defer { premiumGardenPurchaseIsInProgress = false }
+    do {
+      let snapshot = try await dependencies.premiumGardenPurchaseClient.restore()
+      applyPremiumGardenAccess(snapshot)
+      if !snapshot.isOwned { premiumGardenNotice = .restoreFoundNoPurchase }
+    } catch {
+      premiumGardenNotice = .restoreFailed
+    }
+  }
+
+  func dismissPremiumGardenNotice() { premiumGardenNotice = nil }
 
   func requestTimerEndAlertAuthorization() async -> Bool {
     let current = await dependencies.timerEndAlertController.authorizationState()
@@ -938,6 +1006,7 @@ final class AppModel {
       try await dependencies.appSettingsRepository.deleteAll()
       clearLoadedPrivateData()
       appLanguage = .system
+      gardenRenderStyle = .twilight
       productDataCounts = ProductDataCounts(
         profileGenerations: 0,
         practiceEvents: 0,
@@ -1001,6 +1070,7 @@ final class AppModel {
     }
     await reconcileWeeklyReminders()
     await refreshProductDataStatus()
+    await refreshPremiumGardenAccess()
   }
 
   func updateReduceMotion(_ reduceMotion: Bool) async {
@@ -1038,28 +1108,10 @@ final class AppModel {
     }
   }
 
-  func prepareRendererDiagnosticsExport() {
-    let snapshot = rendererDiagnosticsRecorder.snapshot(
-      rendererReady: rendererIsReady,
-      nativeFallbackActive: forceNativeGarden || rendererFailureMessage != nil,
-      selectedQuality: rendererSelectedQuality,
-      contextRecoveryCount: rendererRecoveryCount
-    )
-    let url = FileManager.default.temporaryDirectory
-      .appending(path: "arrive-within-renderer-diagnostics.json")
-    do {
-      try RendererDiagnosticsExporter.export(snapshot, to: url)
-      rendererDiagnosticsExportURL = url
-    } catch {
-      rendererDiagnosticsExportURL = nil
-    }
-  }
-
   func retryRenderer() {
     rendererIsReady = false
     rendererFailureMessage = nil
     forceNativeGarden = false
-    rendererDiagnosticsExportURL = nil
     rendererGeneration += 1
   }
 
@@ -1161,6 +1213,28 @@ final class AppModel {
     completionPresentation = nil
     recoveryAssessment = nil
     completeDataExportURL = nil
+  }
+
+  private func refreshPremiumGardenAccess() async {
+    applyPremiumGardenAccess(await dependencies.premiumGardenPurchaseClient.refresh())
+  }
+
+  private func applyPremiumGardenAccess(_ snapshot: PremiumGardenAccessSnapshot) {
+    premiumGardenAccess = snapshot
+    if gardenRenderStyle.isPremium, !snapshot.isOwned {
+      gardenRenderStyle = .twilight
+    }
+  }
+
+  private func startPremiumGardenEntitlementUpdates() {
+    guard premiumGardenUpdatesTask == nil else { return }
+    let updates = dependencies.premiumGardenPurchaseClient.entitlementUpdates()
+    premiumGardenUpdatesTask = Task { @MainActor [weak self] in
+      for await _ in updates {
+        guard !Task.isCancelled, let self else { return }
+        await self.refreshPremiumGardenAccess()
+      }
+    }
   }
 
   #if DEBUG

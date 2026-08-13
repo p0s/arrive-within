@@ -23,14 +23,18 @@ enum AppLanguage: String, Codable, CaseIterable, Identifiable, Sendable {
 protocol AppSettingsRepository: Sendable {
   func loadLanguage() async throws -> AppLanguage
   func saveLanguage(_ language: AppLanguage) async throws
+  func loadGardenRenderStyle() async throws -> GardenRenderStyle
+  func saveGardenRenderStyle(_ style: GardenRenderStyle) async throws
   func deleteAll() async throws
 }
 
 actor EphemeralAppSettingsRepository: AppSettingsRepository {
   private var language: AppLanguage
+  private var gardenRenderStyle: GardenRenderStyle
 
-  init(language: AppLanguage = .system) {
+  init(language: AppLanguage = .system, gardenRenderStyle: GardenRenderStyle = .twilight) {
     self.language = language
+    self.gardenRenderStyle = gardenRenderStyle
   }
 
   func loadLanguage() -> AppLanguage { language }
@@ -39,13 +43,21 @@ actor EphemeralAppSettingsRepository: AppSettingsRepository {
     self.language = language
   }
 
-  func deleteAll() { language = .system }
+  func loadGardenRenderStyle() -> GardenRenderStyle { gardenRenderStyle }
+
+  func saveGardenRenderStyle(_ style: GardenRenderStyle) { gardenRenderStyle = style }
+
+  func deleteAll() {
+    language = .system
+    gardenRenderStyle = .twilight
+  }
 }
 
 actor FileAppSettingsRepository: AppSettingsRepository {
   private struct Envelope: Codable {
     let schemaVersion: Int
     let language: AppLanguage
+    let gardenRenderStyle: GardenRenderStyle?
   }
 
   private let fileURL: URL
@@ -60,7 +72,7 @@ actor FileAppSettingsRepository: AppSettingsRepository {
     guard fileManager.fileExists(atPath: fileURL.path) else { return .system }
     do {
       let envelope = try JSONDecoder().decode(Envelope.self, from: Data(contentsOf: fileURL))
-      guard envelope.schemaVersion == 1 else { throw AppSettingsError.unsupportedSchema }
+      guard (1...2).contains(envelope.schemaVersion) else { throw AppSettingsError.unsupportedSchema }
       return envelope.language
     } catch let error as AppSettingsError {
       throw error
@@ -70,6 +82,29 @@ actor FileAppSettingsRepository: AppSettingsRepository {
   }
 
   func saveLanguage(_ language: AppLanguage) throws {
+    let style = (try? loadGardenRenderStyle()) ?? .twilight
+    try write(language: language, gardenRenderStyle: style)
+  }
+
+  func loadGardenRenderStyle() throws -> GardenRenderStyle {
+    guard fileManager.fileExists(atPath: fileURL.path) else { return .twilight }
+    do {
+      let envelope = try JSONDecoder().decode(Envelope.self, from: Data(contentsOf: fileURL))
+      guard (1...2).contains(envelope.schemaVersion) else { throw AppSettingsError.unsupportedSchema }
+      return envelope.gardenRenderStyle ?? .twilight
+    } catch let error as AppSettingsError {
+      throw error
+    } catch {
+      throw AppSettingsError.unreadable
+    }
+  }
+
+  func saveGardenRenderStyle(_ style: GardenRenderStyle) throws {
+    let language = (try? loadLanguage()) ?? .system
+    try write(language: language, gardenRenderStyle: style)
+  }
+
+  private func write(language: AppLanguage, gardenRenderStyle: GardenRenderStyle) throws {
     do {
       try fileManager.createDirectory(
         at: fileURL.deletingLastPathComponent(),
@@ -77,7 +112,9 @@ actor FileAppSettingsRepository: AppSettingsRepository {
       )
       let encoder = JSONEncoder()
       encoder.outputFormatting = [.sortedKeys]
-      try encoder.encode(Envelope(schemaVersion: 1, language: language))
+      try encoder.encode(
+        Envelope(schemaVersion: 2, language: language, gardenRenderStyle: gardenRenderStyle)
+      )
         .write(to: fileURL, options: .atomic)
       try fileManager.setAttributes(
         [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication],

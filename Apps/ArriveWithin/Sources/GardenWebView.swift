@@ -7,6 +7,7 @@ import WebKit
 
 struct GardenWebView: UIViewRepresentable {
   let state: GardenState
+  let renderStyle: GardenRenderStyle
   let isActive: Bool
   let resetViewRequest: Int
   let onReady: () -> Void
@@ -62,6 +63,7 @@ struct GardenWebView: UIViewRepresentable {
     webView.navigationDelegate = context.coordinator
     context.coordinator.webView = webView
     context.coordinator.pendingState = state
+    context.coordinator.pendingRenderStyle = renderStyle
     context.coordinator.pendingActiveState = isActive
 
     guard let rendererResources else {
@@ -78,8 +80,10 @@ struct GardenWebView: UIViewRepresentable {
 
   func updateUIView(_ webView: WKWebView, context: Context) {
     context.coordinator.pendingState = state
+    context.coordinator.pendingRenderStyle = renderStyle
     context.coordinator.pendingActiveState = isActive
     context.coordinator.sendPendingStateIfReady()
+    context.coordinator.sendPendingRenderStyleIfReady()
     context.coordinator.sendPendingActiveStateIfReady()
     context.coordinator.requestViewReset(resetViewRequest)
   }
@@ -101,8 +105,10 @@ struct GardenWebView: UIViewRepresentable {
     weak var webView: WKWebView?
     var allowedDirectory: URL?
     var pendingState: GardenState?
+    var pendingRenderStyle: GardenRenderStyle = .twilight
     var pendingActiveState = true
     var lastSentState: GardenState?
+    private var lastSentRenderStyle: GardenRenderStyle?
     private var lastSentActiveState: Bool?
     private var rendererIsReady = false
     private var contextRecoveryTask: Task<Void, Never>?
@@ -140,6 +146,7 @@ struct GardenWebView: UIViewRepresentable {
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
       rendererIsReady = false
       lastSentState = nil
+      lastSentRenderStyle = nil
       lastSentActiveState = nil
     }
 
@@ -195,6 +202,7 @@ struct GardenWebView: UIViewRepresentable {
         onObservation(.diagnostic(.ready))
         onReady()
         sendPendingStateIfReady()
+        sendPendingRenderStyleIfReady()
         sendPendingActiveStateIfReady()
         sendPendingViewResetIfReady()
         injectUITestContextCycleIfNeeded()
@@ -241,6 +249,28 @@ struct GardenWebView: UIViewRepresentable {
       } catch {
         onObservation(.error(.snapshotEncodingFailed))
         onFailure("The garden snapshot exceeded its safe bridge contract.")
+      }
+    }
+
+    func sendPendingRenderStyleIfReady() {
+      guard rendererIsReady,
+        let webView,
+        pendingRenderStyle != lastSentRenderStyle
+      else { return }
+      let style = pendingRenderStyle
+      webView.callAsyncJavaScript(
+        "window.arriveWithinGarden?.setRenderStyle(style); return true;",
+        arguments: ["style": style.rawValue],
+        in: nil,
+        in: Self.contentWorld
+      ) { [weak self] result in
+        guard let self else { return }
+        if case .success(let value) = result, value as? Bool == true {
+          self.lastSentRenderStyle = style
+        } else {
+          self.onObservation(.error(.snapshotDisplayFailed))
+          self.onFailure("The garden style could not be applied.")
+        }
       }
     }
 
@@ -317,8 +347,10 @@ struct GardenWebView: UIViewRepresentable {
         contextRecoveryTask?.cancel()
         rendererIsReady = true
         lastSentState = nil
+        lastSentRenderStyle = nil
         onReady()
         sendPendingStateIfReady()
+        sendPendingRenderStyleIfReady()
         sendPendingActiveStateIfReady()
         sendPendingViewResetIfReady()
       default:

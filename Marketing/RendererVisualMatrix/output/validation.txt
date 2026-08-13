@@ -2,9 +2,7 @@ status: generated-local-renderer-visual-matrix
 milestones: 15
 authored_variants: 30
 frames: 30
-renderer_source_sha256: 9867787a40ba0220f23f90270b996bc60d62dd3ea2d791c6c58ed96b4c8b9f31
+renderer_source_sha256: ceb4332aecd2c734563b94486e8a877ee10fd5cdb22692bc93c21345b3f8ef27
 external_requests_observed: 0
-current_source_state: regeneration-deferred-host-denial
-current_garden_proof: separate
 human_review: pending
 release_ready: false

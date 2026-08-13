@@ -8,16 +8,26 @@
   "source_revision_kind": "sha256-capture-source-manifest",
   "source_manifest_path": "capture-source-manifest.json",
   "post_capture_change": {
-    "classification": "submitted-build-7-post-publication-garden-change",
-    "current_source_revision": "7836b15372e8bcddfbbbb528ace3575a4c2f3a2d9a9ba9f0845ec71e5a8d55d0",
+    "classification": "submitted-build-7-post-submission-source-change",
+    "current_source_revision": "00dcc81d10e5aa2470b6add166df50e6ca01c0cdf9598f75e4f9250a6cda6532",
     "changed_paths": [
+      "Apps/ArriveWithin/Resources/de.lproj/Localizable.strings",
+      "Apps/ArriveWithin/Resources/en.lproj/Localizable.strings",
       "Apps/ArriveWithin/Sources/AppDependencies.swift",
       "Apps/ArriveWithin/Sources/AppModel.swift",
+      "Apps/ArriveWithin/Sources/AppSettings.swift",
+      "Apps/ArriveWithin/Sources/GardenView.swift",
+      "Apps/ArriveWithin/Sources/GardenWebView.swift",
       "Apps/ArriveWithin/Sources/GuidedLibraryView.swift",
       "Apps/ArriveWithin/Sources/MeditationAudioController.swift",
       "Apps/ArriveWithin/Sources/PracticeView.swift",
+      "Apps/ArriveWithin/Sources/PremiumGardenStyles.swift",
+      "Apps/ArriveWithin/Sources/PremiumGardenStylesView.swift",
       "Apps/ArriveWithin/Sources/RendererDiagnostics.swift",
+      "Apps/ArriveWithin/Sources/SettingsView.swift",
+      "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinUITests.swift",
       "ArriveWithin.xcodeproj/project.pbxproj",
+      "ArriveWithin.xcodeproj/xcshareddata/xcschemes/ArriveWithin.xcscheme",
       "Config/ArriveWithin.entitlements.local",
       "Config/Base.xcconfig",
       "Config/Local.xcconfig",
@@ -34,9 +44,10 @@
     "submitted_build": 7,
     "submitted_state_at_freeze": "WAITING_FOR_REVIEW",
     "valid_until": "next-editable-app-store-metadata-opportunity",
-    "app_store_connect_mutation": "none",
+    "submitted_listing_mutation": "none",
+    "separate_iap_state": "READY_TO_SUBMIT_NOT_ATTACHED",
     "next_action": "recapture-and-review-at-next-editable-metadata-opportunity",
-    "rationale": "Exact build 7 was already WAITING_FOR_REVIEW and must not be replaced, cancelled, edited, or resubmitted. The post-publication Garden is deliberately not represented by the submitted App Store screenshots; App Store Connect remained untouched. The retained 24 images remain the checksum-bound submitted-build artifact, not proof of the later source, and fresh current-source captures must be generated, reviewed, and bound at the next editable metadata opportunity."
+    "rationale": "Exact build 7 was already WAITING_FOR_REVIEW and must not be replaced, cancelled, edited, or resubmitted. The post-submission Garden is deliberately not represented by the submitted App Store screenshots; the submitted App Store listing and screenshots remained untouched. The READY_TO_SUBMIT IAP is separate and not attached. The retained 24 images remain the checksum-bound submitted-build artifact, not proof of the later source, and fresh current-source captures must be generated, reviewed, and bound at the next editable metadata opportunity."
   },
   "result_bundles": [
     {

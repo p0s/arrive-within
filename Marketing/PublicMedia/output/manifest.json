@@ -11,6 +11,7 @@
       "Renderer/public/garden.css",
       "Renderer/src/bridge.ts",
       "Renderer/src/main.ts",
+      "Renderer/src/render-style.ts",
       "Renderer/src/resilience.ts",
       "Renderer/src/scene.ts",
       "Renderer/src/seeded.ts",
@@ -22,7 +23,7 @@
       "Renderer/src/world-model.ts",
       "Shared/GardenState.schema.json"
     ],
-    "renderer_source_sha256": "e001e54e6cbecd30a8080dd5e3f9014650bcc253ca28cbe86c27185b231fc284",
+    "renderer_source_sha256": "ceb4332aecd2c734563b94486e8a877ee10fd5cdb22692bc93c21345b3f8ef27",
     "garden_state_schema_sha256": "a73eb83fd1326b3c113663db54005a93024862fa630d8f92a4f3cf1fecc08fee",
     "product_state": "safe synthetic GardenState values accepted by the shipping typed bridge and rendered by the real bundled Three.js renderer"
   },
@@ -91,7 +92,7 @@
         "id": "30-living-world",
         "label": "Practice day 30",
         "path": "output/frames/06-30-living-world.png",
-        "sha256": "dfb9930e7e1ba035645a47b1e9257ab2e6eddd55546130c68efce23b25711124",
+        "sha256": "45aefeff0ec7a39cd21989147a96021a568fdda2e5ee0f81ef5f17ca3be5469c",
         "state_sha256": "4e3eb9407b34e676f6b4b040ae77837308e7f6641f9dc848c0164c8ce55186b4",
         "journey_day": 30,
         "highest_milestone": 15
@@ -118,20 +119,20 @@
   },
   "output": {
     "output/garden-growth-v1.mp4": {
-      "bytes": 923399,
-      "sha256": "bdec19d0ec1b607576aa55db3dd77e96029389d2c9bfd6f5f66058859cd05554"
+      "bytes": 923354,
+      "sha256": "86d124074309b067d939e70aec077c324efe801d37a42f7f22b0d8fcb17c7edd"
     },
     "output/garden-growth-poster.png": {
-      "bytes": 173989,
-      "sha256": "ad70e45bf3e47a174e8353085741a349d8a281ea5d58d6a587817cb090e2fe2e"
+      "bytes": 173997,
+      "sha256": "6f6b87dbd6a2d25c04a14b99bb2e019807f01c1ada60a4d3ae37fba2fa5f8b49"
     },
     "output/social-preview.png": {
-      "bytes": 187436,
-      "sha256": "8549570c7268b703afb11c27d6d145d7a6a0f14b57c21345998f975ba78bcf35"
+      "bytes": 187416,
+      "sha256": "4de29448720a226dcaa73baf572c331c4158a53298f7a73be19c4759a83ae005"
     },
     "output/growth-contact-sheet.jpg": {
       "bytes": 65389,
-      "sha256": "cb2d36acb5a6631b882ca53a83046d6c10f43f053fd5199c1157685b2a00018a"
+      "sha256": "000f806077ca062c784308fe2d12e413602c3d8f8c618b85ab00af6d5be97a2b"
     }
   },
   "rights": {

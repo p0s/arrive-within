@@ -44,6 +44,7 @@ try {
     { id: "early", preset: "first-growth" },
     { id: "mature", preset: "mature" },
   ];
+  const styles = ["twilight", "hand-drawn", "stop-motion", "crochet", "claymation"];
   const phases = ["day", "night"];
   const results = [];
 
@@ -54,10 +55,11 @@ try {
       reducedMotion: "reduce",
     });
     const page = await context.newPage();
-    for (const state of states) {
-      for (const phase of phases) {
+    for (const style of styles) {
+      for (const state of states) {
+        for (const phase of phases) {
         const url = new URL(`http://127.0.0.1:${port}/design-lab/`);
-        url.searchParams.set("direction", "twilight-refuge");
+        url.searchParams.set("style", style);
         url.searchParams.set("preset", state.preset);
         url.searchParams.set("phase", phase);
         url.searchParams.set("reduceMotion", "1");
@@ -67,37 +69,40 @@ try {
         await page.waitForTimeout(180);
 
         const baseline = await diagnostics(page);
-        assert(baseline.dayPhase === phase, `${viewport.id}/${state.id}/${phase} resolved the wrong phase`);
-        assert(baseline.revealActive === false, `${viewport.id}/${state.id}/${phase} retained motion`);
+        const label = `${viewport.id}/${style}/${state.id}/${phase}`;
+        assert(baseline.dayPhase === phase, `${label} resolved the wrong phase`);
+        assert(baseline.revealActive === false, `${label} retained motion`);
+        assert(baseline.worldRootCount === 1, `${label} retained more than one world root`);
         const canvas = await page.locator("#garden-canvas").boundingBox();
-        assert(canvas !== null, `${viewport.id}/${state.id}/${phase} has no rendered canvas`);
+        assert(canvas !== null, `${label} has no rendered canvas`);
 
         const reducedOrbit = await orbit(page, canvas, 0.5, 0.8);
-        assert(reducedOrbit.orbitAngle === 0, `${viewport.id}/${state.id}/${phase} moved the camera under Reduce Motion`);
+        assert(reducedOrbit.orbitAngle === 0, `${label} moved the camera under Reduce Motion`);
         await page.evaluate(() => window.arriveWithinGardenDesignLab?.setReduceMotion(false));
 
         const right = await orbit(page, canvas, 0.5, 0.8);
-        assert(right.orbitAngle > 0, `${viewport.id}/${state.id}/${phase} did not orbit right`);
-        assertLightingInvariant(baseline, right, `${viewport.id}/${state.id}/${phase}/right`);
+        assert(right.orbitAngle > 0, `${label} did not orbit right`);
+        assertLightingInvariant(baseline, right, `${label}/right`);
 
         await page.evaluate(() => window.arriveWithinGardenDesignLab?.resetView());
         const reset = await diagnostics(page);
-        assert(reset.orbitAngle === 0, `${viewport.id}/${state.id}/${phase} did not reset`);
-        assertLightingInvariant(baseline, reset, `${viewport.id}/${state.id}/${phase}/reset`);
+        assert(reset.orbitAngle === 0, `${label} did not reset`);
+        assertLightingInvariant(baseline, reset, `${label}/reset`);
 
         const left = await orbit(page, canvas, 0.5, 0.2);
-        assert(left.orbitAngle < 0, `${viewport.id}/${state.id}/${phase} did not orbit left`);
-        assertLightingInvariant(baseline, left, `${viewport.id}/${state.id}/${phase}/left`);
+        assert(left.orbitAngle < 0, `${label} did not orbit left`);
+        assertLightingInvariant(baseline, left, `${label}/left`);
         await page.evaluate(() => window.arriveWithinGardenDesignLab?.resetView());
         await page.evaluate(() => window.arriveWithinGardenDesignLab?.setReduceMotion(true));
 
-        const filename = `${viewport.id}-${state.id}-${phase}.png`;
+        const filename = `${viewport.id}-${style}-${state.id}-${phase}.png`;
         const screenshotPath = join(outputRoot, filename);
         await page.screenshot({ path: screenshotPath, fullPage: true });
         const screenshot = await readFile(screenshotPath);
         assert(screenshot.byteLength > 20_000, `${filename} is not a substantive render`);
         results.push({
           viewport: viewport.id,
+          style,
           width: viewport.width,
           height: viewport.height,
           state: state.id,
@@ -105,7 +110,9 @@ try {
           screenshot: filename,
           sha256: createHash("sha256").update(screenshot).digest("hex"),
           lighting: stableLighting(baseline),
+          topology: stableTopology(baseline),
         });
+        }
       }
     }
     await context.close();
@@ -116,17 +123,18 @@ try {
   const manifest = {
     schema_version: 1,
     fidelity: "headless Chromium WebGL2 design-lab with production scene and selected visual direction",
-    direction: "twilight-refuge",
+    direction: "one-world-five-material-styles",
     matrix: results,
     assertions: {
-      rendered_matrix: "3 viewports x 2 maturity states x 2 local phases",
+      rendered_matrix: "5 styles x 3 viewports x 2 maturity states x 2 local phases",
       orbit: "reset, left, and right preserve exposure and every authored world-light value",
       reduce_motion: "activation settles an in-progress milestone reveal and locks the authored camera",
       screenshot_hashes: "day/night and early/mature renders are distinct for every viewport",
+      topology: "every render retains one world root and the same authoritative feature/detail/wildlife counts",
     },
   };
   await writeFile(join(outputRoot, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
-  process.stdout.write(`PASS Garden rendered QA: 12 renders, stable orbit lighting, Reduce Motion interruption; output=${outputRoot}\n`);
+  process.stdout.write(`PASS Garden rendered QA: 60 renders, stable topology and orbit lighting, Reduce Motion interruption; output=${outputRoot}\n`);
 } finally {
   await browser?.close();
   server.kill("SIGTERM");
@@ -183,18 +191,34 @@ function stableLighting(value) {
   };
 }
 
+function stableTopology(value) {
+  return {
+    worldRootCount: value.worldRootCount,
+    worldFeatureCount: value.worldFeatureCount,
+    worldDetailCount: value.worldDetailCount,
+    worldBirdCount: value.worldBirdCount,
+    worldGroundAnimalCount: value.worldGroundAnimalCount,
+  };
+}
+
 function assertLightingInvariant(expected, actual, label) {
   assert(
     JSON.stringify(stableLighting(actual)) === JSON.stringify(stableLighting(expected)),
     `${label} changed world lighting or exposure`,
   );
   assert(actual.rebuildCount === expected.rebuildCount, `${label} rebuilt the world during orbit`);
+  assert(
+    JSON.stringify(stableTopology(actual)) === JSON.stringify(stableTopology(expected)),
+    `${label} changed authoritative world topology`,
+  );
 }
 
 function assertDistinctRenderedStates(results) {
   for (const viewport of new Set(results.map((result) => result.viewport))) {
-    const viewportResults = results.filter((result) => result.viewport === viewport);
-    assert(new Set(viewportResults.map((result) => result.sha256)).size === 4, `${viewport} render states are not distinct`);
+    for (const style of new Set(results.map((result) => result.style))) {
+      const viewportResults = results.filter((result) => result.viewport === viewport && result.style === style);
+      assert(new Set(viewportResults.map((result) => result.sha256)).size === 4, `${viewport}/${style} render states are not distinct`);
+    }
   }
 }
 

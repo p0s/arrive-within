@@ -22,6 +22,7 @@ export interface GardenSceneEvents {
 
 export interface GardenSceneController {
   update(state: GardenState): void;
+  setVisualDirection(direction: GardenVisualDirection): void;
   setActive(active: boolean): void;
   resetView(): void;
   diagnostics(): GardenRendererDiagnostics;
@@ -46,6 +47,11 @@ export interface GardenRendererDiagnostics {
   rebuildCount: number;
   context: "available" | "lost" | "disposed";
   effectivePixelRatio: number;
+  worldRootCount: number;
+  worldFeatureCount: number;
+  worldDetailCount: number;
+  worldBirdCount: number;
+  worldGroundAnimalCount: number;
   revealActive: boolean;
 }
 
@@ -55,7 +61,7 @@ export function createGardenScene(
   canvas: HTMLCanvasElement,
   initialState: GardenState,
   events: GardenSceneEvents,
-  visualDirection: GardenVisualDirection,
+  initialVisualDirection: GardenVisualDirection,
 ): GardenSceneController {
   const context = canvas.getContext("webgl2", {
     alpha: false,
@@ -83,6 +89,7 @@ export function createGardenScene(
   const camera = new THREE.PerspectiveCamera(31, 1, 0.1, 60);
 
   let state = initialState;
+  let visualDirection = initialVisualDirection;
   let visualSignature = gardenVisualSignature(state);
   let model = deriveWorldModel(state);
   let composition = cameraComposition(model, visualDirection);
@@ -219,7 +226,10 @@ export function createGardenScene(
     animationFrame = requestAnimationFrame(animate);
     if (!renderingIsActive || document.hidden || contextIsLost) return;
 
-    const targetFrameRate = state.reduceMotion ? 12 : state.qualityHint === "low" ? 30 : 60;
+    const qualityFrameRate = state.qualityHint === "low" ? 30 : 60;
+    const targetFrameRate = state.reduceMotion
+      ? 12
+      : Math.min(qualityFrameRate, visualDirection.motion.framesPerSecond ?? qualityFrameRate);
     const minimumFrameInterval = 1_000 / targetFrameRate;
     if (now - lastRendered < minimumFrameInterval) return;
 
@@ -241,12 +251,14 @@ export function createGardenScene(
       }
     }
     if (!state.reduceMotion) {
-      const breeze = Math.sin(now * 0.00042) * model.windStrength;
+      const cadence = visualDirection.motion.framesPerSecond;
+      const motionNow = cadence === undefined ? now : Math.floor(now / (1_000 / cadence)) * (1_000 / cadence);
+      const breeze = Math.sin(motionNow * 0.00042) * model.windStrength;
       world.canopy.rotation.z = breeze * visualDirection.motion.canopyAmplitude;
       world.canopy.rotation.x = breeze * visualDirection.motion.canopyAmplitude * 0.42;
-      world.particles.rotation.y = now * 0.000025 * visualDirection.motion.particleSpeed;
-      animateBirds(world.birds, model, now);
-      animateGroundWildlife(world.groundWildlife, now);
+      world.particles.rotation.y = motionNow * 0.000025 * visualDirection.motion.particleSpeed;
+      animateBirds(world.birds, model, motionNow);
+      animateGroundWildlife(world.groundWildlife, motionNow);
     }
     renderer.render(scene, camera);
     const frameMilliseconds = Math.min(100, performance.now() - renderStarted);
@@ -263,6 +275,25 @@ export function createGardenScene(
   animationFrame = requestAnimationFrame(animate);
 
   return {
+    setVisualDirection(nextDirection): void {
+      if (nextDirection.id === visualDirection.id) return;
+      visualDirection = nextDirection;
+      composition = cameraComposition(model, visualDirection);
+      scene.remove(world.root);
+      disposeObjectResources(world.root);
+      world = buildWorld(model, visualDirection);
+      rebuildCount += 1;
+      scene.add(world.root);
+      configureQuality(renderer, sun, model, visualDirection);
+      configureAtmosphere(renderer, scene, skyDome, hemisphere, sun, fill, model, visualDirection);
+      fill.position.set(...visualDirection.lighting.fillPosition);
+      if (state.reduceMotion) {
+        world.root.scale.setScalar(1);
+        world.root.position.set(0, 0, 0);
+      }
+      updateCamera();
+      renderer.render(scene, camera);
+    },
     update(nextState): void {
       const previousState = state;
       state = nextState;
@@ -353,6 +384,11 @@ export function createGardenScene(
         rebuildCount,
         context: disposed ? "disposed" : contextIsLost ? "lost" : "available",
         effectivePixelRatio: renderer.getPixelRatio(),
+        worldRootCount: scene.children.filter((child) => child.name === "deterministic-garden-world").length,
+        worldFeatureCount: model.features.length,
+        worldDetailCount: model.details.length,
+        worldBirdCount: model.birds.length,
+        worldGroundAnimalCount: model.groundAnimals.length,
         revealActive: revealStartedAt !== undefined,
       };
     },
@@ -467,9 +503,9 @@ function buildWorld(model: GardenWorldModel, direction: GardenVisualDirection): 
       new THREE.MeshStandardMaterial({
         color: groundColor,
         map: groundTexture,
-        roughness: 1,
+        roughness: direction.material?.roughness ?? 1,
         metalness: 0,
-        flatShading: direction.foliageForm !== "painted-botanical",
+        flatShading: direction.material?.flatShading ?? direction.foliageForm !== "painted-botanical",
       }),
     );
     ground.position.y = -0.25 - layer * 0.07;
@@ -490,9 +526,10 @@ function buildWorld(model: GardenWorldModel, direction: GardenVisualDirection): 
     trunkGeometry,
     new THREE.MeshStandardMaterial({
       color: direction.palette.trunk,
-      roughness: 0.96,
+      map: direction.material === undefined ? null : createProceduralSurfaceTexture(direction.id),
+      roughness: direction.material?.roughness ?? 0.96,
       metalness: 0,
-      flatShading: true,
+      flatShading: direction.material?.flatShading ?? true,
     }),
   );
   trunk.position.y = model.trunkHeight / 2;
@@ -504,14 +541,15 @@ function buildWorld(model: GardenWorldModel, direction: GardenVisualDirection): 
   root.add(canopy);
   const foliageAccents = buildFoliageAccents(model, visual.foliageColors, direction);
   if (foliageAccents !== null) root.add(foliageAccents);
-  const branches = buildInstancedBranches(model, direction.palette.trunk);
+  const branches = buildInstancedBranches(model, direction);
   if (branches !== null) root.add(branches);
 
   const plantGeometry = groundPlantGeometry(direction.foliageForm);
   const plantMaterial = new THREE.MeshStandardMaterial({
-    roughness: direction.foliageForm === "paper-relief" ? 1 : 0.86,
+    map: direction.material === undefined ? null : createProceduralSurfaceTexture(direction.id),
+    roughness: direction.material?.roughness ?? (direction.foliageForm === "paper-relief" ? 1 : 0.86),
     metalness: 0,
-    flatShading: true,
+    flatShading: direction.material?.flatShading ?? true,
     side: THREE.DoubleSide,
   });
   const plants = new THREE.InstancedMesh(plantGeometry, plantMaterial, model.groundPlants.length);
@@ -532,12 +570,19 @@ function buildWorld(model: GardenWorldModel, direction: GardenVisualDirection): 
   plants.receiveShadow = true;
   root.add(plants);
 
+  const fireflyDetails = model.details.filter((detail) => detail.kind === "fireflies");
   const particlePositions = new Float32Array(model.quality.particleCount * 3);
   for (let index = 0; index < model.quality.particleCount; index += 1) {
+    const detail = fireflyDetails[index % Math.max(1, fireflyDetails.length)];
+    const repeatOffset = fireflyDetails.length === 0
+      ? 0
+      : Math.floor(index / fireflyDetails.length) * 0.035;
     const angle = index * 2.399963;
-    particlePositions[index * 3] = Math.cos(angle) * (1.8 + (index % 4) * 0.38);
-    particlePositions[index * 3 + 1] = 0.7 + (index % 7) * 0.42;
-    particlePositions[index * 3 + 2] = Math.sin(angle) * (1.2 + (index % 3) * 0.44);
+    particlePositions[index * 3] = (detail?.x ?? Math.cos(angle) * (1.8 + (index % 4) * 0.38))
+      + Math.cos(angle) * repeatOffset;
+    particlePositions[index * 3 + 1] = detail?.y ?? 0.7 + (index % 7) * 0.42;
+    particlePositions[index * 3 + 2] = (detail?.z ?? Math.sin(angle) * (1.2 + (index % 3) * 0.44))
+      + Math.sin(angle) * repeatOffset;
   }
   const particleGeometry = new THREE.BufferGeometry();
   particleGeometry.setAttribute("position", new THREE.BufferAttribute(particlePositions, 3));
@@ -563,8 +608,8 @@ function buildWorld(model: GardenWorldModel, direction: GardenVisualDirection): 
     root.add(detailObject);
   }
 
-  const birds = buildBirds(model);
-  const groundWildlife = buildGroundWildlife(model);
+  const birds = buildBirds(model, direction);
+  const groundWildlife = buildGroundWildlife(model, direction);
   root.add(birds, groundWildlife);
 
   return { root, canopy, particles, birds, groundWildlife };
@@ -622,7 +667,7 @@ function buildDetailObjects(
 
 function buildInstancedBranches(
   model: GardenWorldModel,
-  color: string,
+  direction: GardenVisualDirection,
 ): THREE.InstancedMesh | null {
   const segments = model.foliage.flatMap((cluster, index) =>
     index > 0 && index % 2 === 0
@@ -634,7 +679,7 @@ function buildInstancedBranches(
         ),
         end: new THREE.Vector3(cluster.x * 0.82, cluster.y * 0.94, cluster.z * 0.82),
         radius: model.trunkRadius * (index % 4 === 0 ? 0.24 : 0.19),
-        color,
+        color: direction.palette.trunk,
       }]
       : [],
   );
@@ -880,16 +925,17 @@ function buildCanopy(
   const surfaceTexture = createProceduralSurfaceTexture(direction.id);
   const material = new THREE.MeshStandardMaterial({
     map: surfaceTexture,
-    roughness: direction.foliageForm === "paper-relief" ? 1 : 0.9,
+    roughness: direction.material?.roughness ?? (direction.foliageForm === "paper-relief" ? 1 : 0.9),
     metalness: 0,
-    flatShading: direction.foliageForm !== "painted-botanical",
+    flatShading: direction.material?.flatShading ?? direction.foliageForm !== "painted-botanical",
     side: direction.foliageForm === "paper-relief" ? THREE.DoubleSide : THREE.FrontSide,
   });
   const leaves = new THREE.InstancedMesh(geometry, material, model.foliage.length * leafCount);
-  const cutEdges = direction.foliageForm === "paper-relief"
+  const outlineColor = direction.material?.outlineColor;
+  const cutEdges = direction.foliageForm === "paper-relief" || outlineColor !== undefined
     ? new THREE.InstancedMesh(
       geometry,
-      new THREE.MeshBasicMaterial({ color: "#4c4a37", side: THREE.BackSide }),
+      new THREE.MeshBasicMaterial({ color: outlineColor ?? "#4c4a37", side: THREE.BackSide }),
       model.foliage.length * leafCount,
     )
     : null;
@@ -940,7 +986,15 @@ function buildCanopy(
       matrix.multiplyMatrices(parent.matrix, leaf.matrix);
       leaves.setMatrixAt(instance, matrix);
       leaves.setColorAt(instance, leafColor);
-      if (cutEdges !== null) cutEdges.setMatrixAt(instance, matrix);
+      if (cutEdges !== null) {
+        const outlineMatrix = matrix.clone();
+        outlineMatrix.scale(new THREE.Vector3(
+          direction.material?.outlineScale ?? 1.018,
+          direction.material?.outlineScale ?? 1.018,
+          direction.material?.outlineScale ?? 1.018,
+        ));
+        cutEdges.setMatrixAt(instance, outlineMatrix);
+      }
       instance += 1;
     }
   }
@@ -1042,7 +1096,8 @@ function createProceduralSurfaceTexture(
   if (context === null) throw new Error("Garden surface texture context is unavailable.");
   context.fillStyle = "#ffffff";
   context.fillRect(0, 0, 128, 128);
-  let randomState = direction === "verdant-atelier" ? 0x4a31b : direction === "paper-sanctuary" ? 0x8f21d : 0xc1743;
+  const treatment = materialTreatmentFor(direction);
+  let randomState = directionSeed(direction, 0xc1743);
   const random = (): number => {
     randomState ^= randomState << 13;
     randomState ^= randomState >>> 17;
@@ -1050,7 +1105,7 @@ function createProceduralSurfaceTexture(
     return (randomState >>> 0) / 0xffff_ffff;
   };
 
-  if (direction === "paper-sanctuary") {
+  if (treatment === "inked-paper" || direction === "paper-sanctuary") {
     context.lineWidth = 0.65;
     for (let index = 0; index < 86; index += 1) {
       const y = random() * 128;
@@ -1066,6 +1121,33 @@ function createProceduralSurfaceTexture(
     context.moveTo(64, 10);
     context.bezierCurveTo(60, 42, 69, 84, 64, 118);
     context.stroke();
+    context.strokeStyle = "rgba(45, 48, 43, 0.16)";
+    context.lineWidth = 0.72;
+    for (let index = 0; index < 18; index += 1) {
+      const offset = index * 8 + random() * 3;
+      context.beginPath();
+      context.moveTo(-8, offset);
+      context.lineTo(136, offset - 38);
+      context.stroke();
+    }
+  } else if (treatment === "crochet-yarn") {
+    context.strokeStyle = "rgba(75, 68, 58, 0.18)";
+    context.lineWidth = 1.5;
+    for (let row = 4; row < 132; row += 10) {
+      for (let column = 4; column < 132; column += 10) {
+        context.beginPath();
+        context.arc(column + (row % 20 === 4 ? 0 : 5), row, 3.8, 0.2, Math.PI * 1.82);
+        context.stroke();
+      }
+    }
+  } else if (treatment === "clay") {
+    context.strokeStyle = "rgba(79, 63, 56, 0.1)";
+    context.lineWidth = 0.85;
+    for (let radius = 12; radius < 78; radius += 6) {
+      context.beginPath();
+      context.ellipse(66, 64, radius, radius * 0.72, 0.18, 0.2, Math.PI * 1.84);
+      context.stroke();
+    }
   } else {
     const count = direction === "verdant-atelier" ? 120 : 72;
     for (let index = 0; index < count; index += 1) {
@@ -1095,6 +1177,7 @@ function createProceduralSurfaceTexture(
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
   texture.repeat.set(1.8, 1.8);
+  texture.repeat.setScalar(direction === "twilight-refuge" ? 1.8 : (gardenDirectionTextureScale(direction)));
   texture.needsUpdate = true;
   return texture;
 }
@@ -1109,15 +1192,15 @@ function createProceduralGroundTexture(
   if (context === null) throw new Error("Garden ground texture context is unavailable.");
   context.fillStyle = "#f5f3e8";
   context.fillRect(0, 0, canvas.width, canvas.height);
-  let randomState = direction === "verdant-atelier" ? 0x72491 :
-    direction === "paper-sanctuary" ? 0xb381d : 0x9a2f7;
+  const treatment = materialTreatmentFor(direction);
+  let randomState = directionSeed(direction, 0x9a2f7);
   const random = (): number => {
     randomState ^= randomState << 13;
     randomState ^= randomState >>> 17;
     randomState ^= randomState << 5;
     return (randomState >>> 0) / 0xffff_ffff;
   };
-  const markCount = direction === "paper-sanctuary" ? 105 : 150;
+  const markCount = treatment === "crochet-yarn" ? 96 : direction === "paper-sanctuary" ? 105 : 150;
   for (let index = 0; index < markCount; index += 1) {
     const alpha = direction === "twilight-refuge" ? 0.035 : 0.028 + random() * 0.042;
     context.fillStyle = direction === "twilight-refuge"
@@ -1146,13 +1229,78 @@ function createProceduralGroundTexture(
       context.stroke();
     }
   }
+  if (treatment === "inked-paper") {
+    context.strokeStyle = "rgba(57, 57, 50, 0.11)";
+    context.lineWidth = 0.7;
+    for (let row = 0; row < canvas.height + 48; row += 14) {
+      context.beginPath();
+      context.moveTo(0, row);
+      context.lineTo(canvas.width, row - 46);
+      context.stroke();
+    }
+  } else if (treatment === "crochet-yarn") {
+    context.strokeStyle = "rgba(67, 62, 53, 0.14)";
+    context.lineWidth = 1.5;
+    for (let row = 5; row < canvas.height; row += 12) {
+      for (let column = 5; column < canvas.width; column += 12) {
+        context.beginPath();
+        context.arc(column + (row % 24 === 5 ? 0 : 6), row, 4.5, 0, Math.PI * 1.82);
+        context.stroke();
+      }
+    }
+  } else if (treatment === "clay") {
+    context.strokeStyle = "rgba(72, 62, 55, 0.07)";
+    context.lineWidth = 1;
+    for (let radius = 16; radius < 136; radius += 10) {
+      context.beginPath();
+      context.arc(96, 96, radius, 0.18, Math.PI * 1.84);
+      context.stroke();
+    }
+  } else if (treatment === "miniature-stop-motion") {
+    context.fillStyle = "rgba(76, 65, 54, 0.1)";
+    for (let index = 0; index < 58; index += 1) {
+      context.fillRect(random() * canvas.width, random() * canvas.height, 1.2, 1.2);
+    }
+  }
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(3.6, 3.6);
+  texture.repeat.setScalar(direction === "twilight-refuge" ? 3.6 : gardenDirectionTextureScale(direction));
   texture.needsUpdate = true;
   return texture;
+}
+
+function directionSeed(direction: GardenVisualDirection["id"], fallback: number): number {
+  const seeds: Partial<Record<GardenVisualDirection["id"], number>> = {
+    "verdant-atelier": 0x4a31b,
+    "paper-sanctuary": 0x8f21d,
+    "hand-drawn": 0x51c3d,
+    "stop-motion": 0x72f19,
+    crochet: 0xa41e7,
+    claymation: 0xd29b3,
+  };
+  return seeds[direction] ?? fallback;
+}
+
+function materialTreatmentFor(direction: GardenVisualDirection["id"]): NonNullable<GardenVisualDirection["material"]>["treatment"] {
+  switch (direction) {
+  case "hand-drawn": return "inked-paper";
+  case "stop-motion": return "miniature-stop-motion";
+  case "crochet": return "crochet-yarn";
+  case "claymation": return "clay";
+  default: return "natural";
+  }
+}
+
+function gardenDirectionTextureScale(direction: GardenVisualDirection["id"]): number {
+  switch (direction) {
+  case "hand-drawn": return 2.4;
+  case "stop-motion": return 1.7;
+  case "crochet": return 3.2;
+  case "claymation": return 1.5;
+  default: return 1.8;
+  }
 }
 
 function organicGroundGeometry(
@@ -1625,21 +1773,24 @@ function buildGardenPavilion(
   const timber = new THREE.Color(detail.color).lerp(new THREE.Color("#5e493a"), 0.64);
   const timberMaterial = new THREE.MeshStandardMaterial({
     color: timber,
-    roughness: 0.92,
+    map: direction.material === undefined ? null : createProceduralSurfaceTexture(direction.id),
+    roughness: direction.material?.roughness ?? 0.92,
     metalness: 0,
-    flatShading: true,
+    flatShading: direction.material?.flatShading ?? true,
   });
   const stoneMaterial = new THREE.MeshStandardMaterial({
     color: new THREE.Color(visual.groundColor).offsetHSL(0, -0.08, 0.14),
-    roughness: 1,
+    map: direction.material === undefined ? null : createProceduralSurfaceTexture(direction.id),
+    roughness: direction.material?.roughness ?? 1,
     metalness: 0,
-    flatShading: true,
+    flatShading: direction.material?.flatShading ?? true,
   });
   const roofMaterial = new THREE.MeshStandardMaterial({
     color: visual.dayPhase === "day" ? "#3c4b4d" : "#2b393e",
-    roughness: 0.94,
+    map: direction.material === undefined ? null : createProceduralSurfaceTexture(direction.id),
+    roughness: direction.material?.roughness ?? 0.94,
     metalness: 0,
-    flatShading: true,
+    flatShading: direction.material?.flatShading ?? true,
     side: THREE.DoubleSide,
   });
 
@@ -1749,13 +1900,22 @@ function floatingLeafGeometry(): THREE.ShapeGeometry {
   return new THREE.ShapeGeometry(shape, 5);
 }
 
-function buildBirds(model: GardenWorldModel): THREE.Group {
+function buildBirds(model: GardenWorldModel, direction: GardenVisualDirection): THREE.Group {
   const flock = new THREE.Group();
   flock.name = "air-ii-bird-flock";
   for (const [index, bird] of model.birds.entries()) {
     const figure = new THREE.Group();
     figure.name = `garden-bird-${index + 1}`;
-    const material = new THREE.MeshBasicMaterial({ color: bird.color, side: THREE.DoubleSide });
+    const material = direction.material === undefined
+      ? new THREE.MeshBasicMaterial({ color: bird.color, side: THREE.DoubleSide })
+      : new THREE.MeshStandardMaterial({
+        color: bird.color,
+        map: createProceduralSurfaceTexture(direction.id),
+        roughness: direction.material.roughness,
+        metalness: 0,
+        flatShading: direction.material.flatShading,
+        side: THREE.DoubleSide,
+      });
     const body = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 5), material);
     body.scale.set(0.42, 0.15, 0.13);
     body.rotation.z = -0.08;
@@ -1912,11 +2072,11 @@ function buildBirdWing(side: 1 | -1, material: THREE.Material): THREE.Group {
   return wing;
 }
 
-function buildGroundWildlife(model: GardenWorldModel): THREE.Group {
+function buildGroundWildlife(model: GardenWorldModel, direction: GardenVisualDirection): THREE.Group {
   const wildlife = new THREE.Group();
   wildlife.name = "space-iii-grass-wildlife";
   for (const [index, animal] of model.groundAnimals.entries()) {
-    const hare = buildHare(animal);
+    const hare = buildHare(animal, direction);
     hare.name = `garden-hare-${index + 1}`;
     hare.userData.motionPhase = index * 2.41 + animal.rotation;
     hare.userData.baseScale = animal.scale;
@@ -1925,13 +2085,14 @@ function buildGroundWildlife(model: GardenWorldModel): THREE.Group {
   return wildlife;
 }
 
-function buildHare(animal: GardenGroundAnimal): THREE.Group {
+function buildHare(animal: GardenGroundAnimal, direction: GardenVisualDirection): THREE.Group {
   const hare = new THREE.Group();
   const material = new THREE.MeshStandardMaterial({
     color: animal.color,
-    roughness: 0.96,
+    map: direction.material === undefined ? null : createProceduralSurfaceTexture(direction.id),
+    roughness: direction.material?.roughness ?? 0.96,
     metalness: 0,
-    flatShading: true,
+    flatShading: direction.material?.flatShading ?? true,
   });
   const body = new THREE.Mesh(new THREE.SphereGeometry(1, 9, 6), material);
   const haunch = new THREE.Mesh(new THREE.SphereGeometry(1, 9, 6), material);

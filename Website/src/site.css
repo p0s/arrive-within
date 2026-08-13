@@ -61,7 +61,6 @@ section[id] { scroll-margin-top: 24px; }
 .text-action { min-height: 44px; display: inline-flex; align-items: center; font-weight: 720; }
 .text-action.on-dark { color: var(--cream-100); }
 .status-note { margin-top: 32px; max-width: 620px; font-size: .88rem; line-height: 1.5; opacity: .6; }
-.hero-proof { margin: 26px 0 0; padding-top: 18px; max-width: 520px; border-top: 1px solid var(--line-dark); font-size: .78rem; line-height: 1.45; opacity: .58; }
 .device { overflow: hidden; border: 12px solid #020b07; background: #020b07; }
 .device.phone { max-width: 430px; border-radius: 68px 68px 22px 22px; }
 .device.phone.compact { max-width: 360px; }
@@ -72,7 +71,6 @@ section[id] { scroll-margin-top: 24px; }
 .growth-film-section .section-heading { max-width: 850px; }
 .growth-film { margin: 64px 0 0; }
 .growth-film video { width: 100%; border: 1px solid rgb(16 35 27 / 24%); border-radius: 18px; background: var(--forest-950); box-shadow: 0 28px 80px rgb(16 35 27 / 14%); }
-.growth-film figcaption { margin-top: 16px; color: rgb(16 35 27 / 68%); font-size: .82rem; line-height: 1.5; }
 .section-copy h2, .section-heading h2, .open-section h2 { margin-bottom: 30px; font-size: clamp(3rem, 5.4vw, 5.55rem); font-weight: 820; letter-spacing: -.058em; line-height: .94; }
 .section-copy > p:not(.eyebrow), .section-heading > p:not(.eyebrow), .open-section > p:not(.eyebrow) { font-size: clamp(1.08rem, 1.7vw, 1.35rem); line-height: 1.58; opacity: .78; }
 .wide-device { margin: 0; overflow: hidden; border: 1px solid rgb(7 27 20 / 22%); border-radius: 28px; background: var(--forest-950); box-shadow: 0 28px 70px rgb(7 27 20 / 16%); }
@@ -179,12 +177,7 @@ section[id] { scroll-margin-top: 24px; }
   .article-hero h1 { font-size: clamp(3.1rem, 16vw, 4.8rem); }
   .section-copy h2, .section-heading h2, .open-section h2 { font-size: clamp(2.7rem, 13vw, 4rem); }
   .actions { margin-top: 28px; align-items: flex-start; flex-direction: column; gap: 12px; }
-  .hero-proof { margin-top: 18px; padding-top: 14px; }
   .device.phone { border-width: 8px; border-radius: 44px 44px 16px 16px; }
   .growth-film video, .wide-device, .journal-visual { border-radius: 12px; }
   .article-shell { padding-top: 74px; padding-bottom: 90px; }
-}
-
-@media (max-width: 360px) {
-  .hero-proof { display: none; }
 }

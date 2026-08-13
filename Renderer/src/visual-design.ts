@@ -4,7 +4,18 @@ import type { GardenFeature, GardenWorldModel } from "./world-model";
 export type GardenVisualDirectionID =
   | "verdant-atelier"
   | "paper-sanctuary"
-  | "twilight-refuge";
+  | "twilight-refuge"
+  | "hand-drawn"
+  | "stop-motion"
+  | "crochet"
+  | "claymation";
+
+export type GardenMaterialTreatment =
+  | "natural"
+  | "inked-paper"
+  | "miniature-stop-motion"
+  | "crochet-yarn"
+  | "clay";
 
 export type FoliageForm = "painted-botanical" | "paper-relief" | "twilight-silhouette";
 
@@ -52,6 +63,15 @@ export interface GardenVisualDirection {
   motion: {
     canopyAmplitude: number;
     particleSpeed: number;
+    framesPerSecond?: number;
+  };
+  material?: {
+    treatment: GardenMaterialTreatment;
+    roughness: number;
+    flatShading: boolean;
+    textureScale: number;
+    outlineColor?: string;
+    outlineScale?: number;
   };
   detailOverrides: Partial<Record<GardenFeature, string>>;
 }
@@ -230,6 +250,8 @@ export function directionEvidence(direction: GardenVisualDirection): Record<stri
     id: direction.id,
     meaning: direction.meaning,
     foliageForm: direction.foliageForm,
+    materialTreatment: direction.material?.treatment ?? "natural",
+    motionFramesPerSecond: direction.motion.framesPerSecond ?? 60,
     groundLayers: direction.composition.groundLayers,
     reducedMotionBehavior: "static-state-with-direct-update",
     bridgeAuthority: "unchanged-garden-state-v1",

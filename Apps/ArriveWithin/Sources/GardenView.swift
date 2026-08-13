@@ -31,6 +31,7 @@ struct GardenView: View {
         } else {
           GardenWebView(
             state: state,
+            renderStyle: model.gardenRenderStyle,
             isActive: model.selectedSection == .garden && scenePhase == .active,
             resetViewRequest: 0,
             onReady: model.reportRendererReady,
@@ -176,38 +177,6 @@ struct GardenView: View {
       .prominentActionButton()
       .controlSize(.regular)
       .accessibilityIdentifier("garden.renderer.retry")
-      Button {
-        model.prepareRendererDiagnosticsExport()
-      } label: {
-        Label("garden.renderer.diagnostics.prepare", systemImage: "doc.text.magnifyingglass")
-          .fixedSize(horizontal: false, vertical: true)
-          .multilineTextAlignment(.center)
-          .padding(.vertical, 4)
-      }
-      .font(.footnote.weight(.semibold))
-      .foregroundStyle(.primary)
-      .frame(maxWidth: .infinity, minHeight: AppTheme.Size.minimumTouchTarget)
-      .contentShape(Rectangle())
-      .accessibilityIdentifier("garden.renderer.diagnostics.prepare")
-      if let diagnostics = model.rendererDiagnosticsExportURL {
-        ShareLink(item: diagnostics) {
-          Label("garden.renderer.diagnostics.share", systemImage: "square.and.arrow.up")
-            .fixedSize(horizontal: false, vertical: true)
-            .multilineTextAlignment(.center)
-            .padding(.vertical, 4)
-        }
-        .font(.footnote.weight(.semibold))
-        .foregroundStyle(.primary)
-        .frame(maxWidth: .infinity, minHeight: AppTheme.Size.minimumTouchTarget)
-        .contentShape(Rectangle())
-        .accessibilityIdentifier("garden.renderer.diagnostics.share")
-      }
-      Text("garden.renderer.diagnostics.detail")
-        .font(.body.weight(.semibold))
-        .foregroundStyle(Color(uiColor: .label))
-        .multilineTextAlignment(.center)
-        .fixedSize(horizontal: false, vertical: true)
-        .frame(maxWidth: 320)
     }
     .padding(12)
     .frame(maxWidth: 420)

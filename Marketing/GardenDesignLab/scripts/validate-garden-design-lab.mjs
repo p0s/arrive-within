@@ -53,7 +53,7 @@ assert(Math.max(...diagnostics.map((item) => item.drawCalls)) <= 40, "Garden dra
 assert(Math.max(...diagnostics.map((item) => item.textures)) <= 8, "Garden texture budget regressed above 8");
 assert(Math.max(...diagnostics.map((item) => item.geometries)) <= 40, "Garden geometry budget regressed above 40");
 const validationText = readFileSync(join(labRoot, "output/validation.txt"), "utf8");
-assert(!exactPostPublicationFreeze || (validationText.includes("current_source_state: regeneration-deferred-host-denial") && validationText.includes("current_garden_proof: separate")), "Garden lab validation text must preserve the historical/current proof boundary");
+assert(!exactPostPublicationFreeze || (validationText.includes("current_source_state: historical-selection-lab-preserved") && validationText.includes("current_garden_proof: separate-60-render-matrix-passed")), "Garden lab validation text must preserve the historical/current proof boundary");
 
 process.stdout.write("Garden design-lab validation passed: 3 directions, 15 milestones each, 6 clips, bounded renderer inventory.\n");
 

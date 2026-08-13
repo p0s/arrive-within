@@ -48,7 +48,7 @@ struct AppSettingsTests {
     try await repository.saveLanguage(.german)
     #expect(try await FileAppSettingsRepository(fileURL: file).loadLanguage() == .german)
     #expect(String(decoding: try Data(contentsOf: file), as: UTF8.self)
-      == #"{"language":"german","schemaVersion":1}"#)
+      == #"{"gardenRenderStyle":"twilight","language":"german","schemaVersion":2}"#)
 
     let attributes = try FileManager.default.attributesOfItem(atPath: file.path)
     #if targetEnvironment(simulator)
@@ -66,6 +66,22 @@ struct AppSettingsTests {
     #endif
   }
 
+  @Test("Garden style migrates from schema one and round-trips independently")
+  func gardenStyleMigrationAndRoundTrip() async throws {
+    let directory = FileManager.default.temporaryDirectory
+      .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+    let file = directory.appending(path: "app-settings-v1.json")
+    defer { try? FileManager.default.removeItem(at: directory) }
+    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    try Data(#"{"language":"english","schemaVersion":1}"#.utf8).write(to: file)
+
+    let repository = FileAppSettingsRepository(fileURL: file)
+    #expect(try await repository.loadGardenRenderStyle() == .twilight)
+    try await repository.saveGardenRenderStyle(.crochet)
+    #expect(try await repository.loadGardenRenderStyle() == .crochet)
+    #expect(try await repository.loadLanguage() == .english)
+  }
+
   @Test("Unsupported and malformed settings never become an implicit language choice")
   func invalidSettingsAreRejected() async throws {
     let directory = FileManager.default.temporaryDirectory
@@ -74,7 +90,7 @@ struct AppSettingsTests {
     defer { try? FileManager.default.removeItem(at: directory) }
     try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
 
-    try Data(#"{"language":"english","schemaVersion":2}"#.utf8).write(to: file)
+    try Data(#"{"language":"english","schemaVersion":3}"#.utf8).write(to: file)
     do {
       _ = try await FileAppSettingsRepository(fileURL: file).loadLanguage()
       Issue.record("Unsupported settings schema unexpectedly loaded")

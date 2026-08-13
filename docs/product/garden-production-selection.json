@@ -16,7 +16,14 @@
   },
   "selection_date": "2026-08-11",
   "shipping_authority": "Renderer/src/shipping-visual.ts",
+  "premium_profile_authority": "Renderer/src/render-style.ts",
+  "premium_material_profiles": [
+    "hand-drawn",
+    "stop-motion",
+    "crochet",
+    "claymation"
+  ],
   "release_exclusive": true,
-  "unselected_source_policy": "Alternate compositions remain public design-lab source but must be unreachable from the shipping renderer entry and absent from the app bundle.",
-  "claim_boundary": "C — Twilight Refuge is the owner-selected production composition and the shipping source authority now imports only it. A and B remain non-shipping design-lab references. Fresh build, bundle/archive exclusion, accessibility, performance, TestFlight, and App Store proof remain pending."
+  "unselected_source_policy": "Alternate compositions remain public design-lab source and stay unreachable. Premium profiles may enter the bundle only as material, palette, and cadence treatments over Twilight topology.",
+  "claim_boundary": "C — Twilight Refuge remains the owner-selected production composition and free default. Four premium material profiles share its authoritative world model, composition, object set, progression, phase, and accessibility meaning. A and B remain non-shipping design-lab references. App Store product creation, exact distributed-candidate proof, TestFlight, and App Store proof remain pending."
 }

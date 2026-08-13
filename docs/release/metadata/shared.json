@@ -37,15 +37,22 @@
     },
     "release_rule": "The three URLs are bound to the exact public HTTPS readback. Metadata remains non-attachable until the separately required candidate, localized metadata, screenshots, review details, and claim gates pass."
   },
-  "storekit_absence": {
+  "storekit_contract": {
     "required": true,
-    "forbidden": [
-      "StoreKit framework linkage or imports",
-      "StoreKit product identifiers or configuration",
-      "purchase, paywall, restore, subscription, manage-plan, or donation UI",
-      "entitlement state or transaction observers",
-      "App Store Connect in-app purchase records"
-    ]
+    "product_id": "com.philipps.arrivewithin.garden.materialstyles",
+    "app_store_connect_id": "6801014376",
+    "type": "NON_CONSUMABLE",
+    "base_price": {
+      "amount": "4.99",
+      "currency": "USD",
+      "territory": "USA"
+    },
+    "family_sharable": false,
+    "available_territories": 175,
+    "available_in_new_territories": true,
+    "locales": ["de-DE", "en-US"],
+    "app_store_connect_state": "READY_TO_SUBMIT",
+    "current_app_review_attachment": false
   },
   "current_rules": {
     "verified_at": "2026-08-10",
