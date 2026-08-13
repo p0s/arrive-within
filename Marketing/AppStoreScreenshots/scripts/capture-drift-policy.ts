@@ -1,5 +1,5 @@
 export type SubmittedBuildCaptureFreeze = {
-  classification: "submitted-build-7-post-publication-garden-change";
+  classification: "submitted-build-7-post-submission-source-changes";
   current_source_revision: string;
   changed_paths: string[];
   submitted_version: "1.0";
@@ -11,16 +11,22 @@ export type SubmittedBuildCaptureFreeze = {
   rationale: string;
 };
 
-export const POST_PUBLICATION_GARDEN_SOURCE_REVISION =
-  "7836b15372e8bcddfbbbb528ace3575a4c2f3a2d9a9ba9f0845ec71e5a8d55d0";
+export const POST_SUBMISSION_SOURCE_REVISION =
+  "9eec7a09f147e2999b529f4e3d63bceba0d7be1a05f5a54bd710f6043f17a894";
 
-export const POST_PUBLICATION_GARDEN_CHANGED_PATHS = [
+export const POST_SUBMISSION_CHANGED_PATHS = [
+  "Apps/ArriveWithin/Resources/Audio/audio-assets.json",
+  "Apps/ArriveWithin/Resources/Audio/closing-bell-v1.wav",
+  "Apps/ArriveWithin/Resources/Audio/opening-bell-v1.wav",
+  "Apps/ArriveWithin/Resources/de.lproj/Localizable.strings",
+  "Apps/ArriveWithin/Resources/en.lproj/Localizable.strings",
   "Apps/ArriveWithin/Sources/AppDependencies.swift",
   "Apps/ArriveWithin/Sources/AppModel.swift",
   "Apps/ArriveWithin/Sources/GuidedLibraryView.swift",
   "Apps/ArriveWithin/Sources/MeditationAudioController.swift",
   "Apps/ArriveWithin/Sources/PracticeView.swift",
   "Apps/ArriveWithin/Sources/RendererDiagnostics.swift",
+  "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinUITests.swift",
   "ArriveWithin.xcodeproj/project.pbxproj",
   "Config/ArriveWithin.entitlements.local",
   "Config/Base.xcconfig",
@@ -30,6 +36,7 @@ export const POST_PUBLICATION_GARDEN_CHANGED_PATHS = [
   "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/ProgressionReducer.swift",
   "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/WeeklyReminderSchedule.swift",
   "Packages/ArriveWithinCore/Sources/ArriveWithinGardenBridge/GardenDescription.swift",
+  "Packages/ArriveWithinCore/Sources/ArriveWithinMeditation/AudioLifecyclePolicy.swift",
   "Renderer/dist/renderer-manifest.json",
   "Renderer/dist/renderer.js",
   "project.yml",
@@ -41,6 +48,7 @@ const REQUIRED_RATIONALE_FRAGMENTS = [
   "must not be replaced, cancelled, edited, or resubmitted",
   "post-publication Garden",
   "not represented by the submitted App Store screenshots",
+  "timer audio correction",
   "App Store Connect remained untouched",
   "next editable metadata opportunity",
 ] as const;
@@ -51,11 +59,11 @@ export function isExactSubmittedBuildCaptureFreeze(
   changedPaths: string[],
 ): boolean {
   return Boolean(
-    attestation?.classification === "submitted-build-7-post-publication-garden-change" &&
-      attestation.current_source_revision === POST_PUBLICATION_GARDEN_SOURCE_REVISION &&
-      currentSourceRevision === POST_PUBLICATION_GARDEN_SOURCE_REVISION &&
-      JSON.stringify(attestation.changed_paths) === JSON.stringify(POST_PUBLICATION_GARDEN_CHANGED_PATHS) &&
-      JSON.stringify(changedPaths) === JSON.stringify(POST_PUBLICATION_GARDEN_CHANGED_PATHS) &&
+    attestation?.classification === "submitted-build-7-post-submission-source-changes" &&
+      attestation.current_source_revision === POST_SUBMISSION_SOURCE_REVISION &&
+      currentSourceRevision === POST_SUBMISSION_SOURCE_REVISION &&
+      JSON.stringify(attestation.changed_paths) === JSON.stringify(POST_SUBMISSION_CHANGED_PATHS) &&
+      JSON.stringify(changedPaths) === JSON.stringify(POST_SUBMISSION_CHANGED_PATHS) &&
       attestation.submitted_version === "1.0" &&
       attestation.submitted_build === 7 &&
       attestation.submitted_state_at_freeze === "WAITING_FOR_REVIEW" &&

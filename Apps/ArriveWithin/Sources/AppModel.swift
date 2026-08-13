@@ -70,6 +70,9 @@ final class AppModel {
     case interrupted
     case outputRouteLost
     case audioSystemReset
+    case guidedInterrupted
+    case guidedOutputRouteLost
+    case guidedAudioSystemReset
     case backgroundEndAlertDenied
     case guidedCatalogUnavailable
   }
@@ -529,7 +532,10 @@ final class AppModel {
     guard var session = activeSession, session.phase == .paused else { return }
     do {
       do {
-        try dependencies.audioController.resume(session: session)
+        try dependencies.audioController.resume(
+          session: session,
+          elapsedMilliseconds: session.activeMilliseconds
+        )
         audioNotice = nil
       } catch {
         if session.mode == .guided {
@@ -1549,19 +1555,62 @@ final class AppModel {
   }
 
   private func handleAudioSystemEvent(_ event: MeditationAudioSystemEvent) {
-    let actions = AudioLifecyclePolicy.actions(for: activeSession?.phase, event: event)
+    let session = activeSession
+    let actions = AudioLifecyclePolicy.actions(
+      for: session?.mode,
+      phase: session?.phase,
+      event: event
+    )
     if actions.contains(.stopPlayback) { dependencies.audioController.pause() }
     if actions.contains(.rebuildPlayback) { dependencies.audioController.rebuild() }
     if actions.contains(.pauseSession) {
-      Task { [weak self] in await self?.pausePractice() }
+      Task { [weak self] in await self?.pausePractice(forAudioEvent: event) }
     }
-    if actions.contains(.waitForUserResume) {
-      audioNotice =
-        switch event {
-        case .interruptionBegan, .interruptionEnded: .interrupted
-        case .outputRouteLost, .outputRouteAvailable: .outputRouteLost
-        case .engineConfigurationChanged, .mediaServicesReset: .audioSystemReset
-        }
+    if actions.contains(.resumePlayback) {
+      Task { [weak self] in await self?.resumeAudioForRunningPractice() }
+    }
+    if actions.contains(.waitForUserResume), !actions.contains(.pauseSession) {
+      audioNotice = pausedAudioNotice(for: event)
+    } else if session?.phase == .running,
+      session?.mode == .timer || session?.mode == .stopwatch
+    {
+      switch event {
+      case .interruptionBegan: audioNotice = .interrupted
+      case .outputRouteLost: audioNotice = .outputRouteLost
+      case .engineConfigurationChanged, .mediaServicesReset: audioNotice = .audioSystemReset
+      case .interruptionEnded, .outputRouteAvailable: break
+      }
+    }
+  }
+
+  private func pausePractice(forAudioEvent event: MeditationAudioSystemEvent) async {
+    await pausePractice()
+    guard activeSession?.phase == .paused else {
+      audioNotice = .playbackUnavailable
+      return
+    }
+    audioNotice = pausedAudioNotice(for: event)
+  }
+
+  private func pausedAudioNotice(for event: MeditationAudioSystemEvent) -> AudioNotice {
+    switch event {
+    case .interruptionBegan, .interruptionEnded: .guidedInterrupted
+    case .outputRouteLost, .outputRouteAvailable: .guidedOutputRouteLost
+    case .engineConfigurationChanged, .mediaServicesReset: .guidedAudioSystemReset
+    }
+  }
+
+  private func resumeAudioForRunningPractice() async {
+    guard let session = activeSession, session.phase == .running else { return }
+    do {
+      let elapsed = try session.elapsedMilliseconds(at: dependencies.clock.now())
+      try dependencies.audioController.resume(
+        session: session,
+        elapsedMilliseconds: elapsed
+      )
+      audioNotice = nil
+    } catch {
+      audioNotice = .playbackUnavailable
     }
   }
 

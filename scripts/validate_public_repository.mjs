@@ -441,14 +441,14 @@ async function main() {
   ];
   check(
     "procedural-audio-owner-selection",
-    soundSelection.status === "owner-selected-bundled-baseline"
+    soundSelection.status === "owner-selected-bundled-baseline-remastered-after-device-failure"
       && soundSelection.selection_date === "2026-08-13"
       && selectedAudio.every((selected) => {
         const bundled = audioByID.get(selected?.id);
         return bundled?.path === selected?.path && bundled?.sha256 === selected?.sha256;
       })
       && soundSelection.unselected_lab_candidate_ids?.length === 6
-      && soundSelection.physical_qa?.startsWith("pending"),
+      && soundSelection.physical_qa?.includes("requires exact-candidate"),
     "sound selection must bind the exact three bundled hashes, exclude all lab alternatives, and preserve physical QA truth",
   );
   const websiteProvenance = JSON.parse(await requireText("Website/src/assets/provenance.json"));

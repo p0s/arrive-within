@@ -145,8 +145,8 @@ struct AppModelVerticalSliceTests {
     #expect(alertController.scheduled.last?.1 == 120)
   }
 
-  @Test("Audio interruptions, route loss, and media reset pause durably and require user resume")
-  func audioSystemEventsNeverResumeOrCompleteImplicitly() async throws {
+  @Test("Timer timing continues while interrupted audio rebuilds and resumes safely")
+  func timerAudioEventsNeverPauseOrDuplicateCompletion() async throws {
     let eventRepository = InMemoryPracticeEventRepository()
     let sessionRepository = TestSessionRepository()
     let audioController = RecordingMeditationAudioController()
@@ -180,40 +180,42 @@ struct AppModelVerticalSliceTests {
     clock.advance(milliseconds: 60_000)
     audioController.emit(.interruptionBegan)
     try await Task.sleep(for: .milliseconds(30))
-    #expect(model.activeSession?.phase == .paused)
-    #expect(model.activeSession?.activeMilliseconds == 60_000)
+    #expect(model.activeSession?.phase == .running)
+    #expect(try model.activeSession?.elapsedMilliseconds(at: clock.now()) == 60_000)
     #expect(model.audioNotice == .interrupted)
+    #expect(audioController.rebuildCount == 1)
     #expect(await eventRepository.allEvents(profileGenerationID: model.profile!.profileGenerationID).isEmpty)
 
     audioController.emit(.interruptionEnded)
-    try await Task.sleep(for: .milliseconds(10))
-    #expect(model.activeSession?.phase == .paused)
-    #expect(audioController.resumeCount == 0)
-    await model.resumePractice()
+    try await Task.sleep(for: .milliseconds(30))
     #expect(model.activeSession?.phase == .running)
     #expect(audioController.resumeCount == 1)
+    #expect(audioController.resumeElapsedMilliseconds == [60_000])
+    #expect(model.audioNotice == nil)
 
     clock.advance(milliseconds: 60_000)
     audioController.emit(.outputRouteLost)
     try await Task.sleep(for: .milliseconds(30))
-    #expect(model.activeSession?.phase == .paused)
-    #expect(model.activeSession?.activeMilliseconds == 120_000)
+    #expect(model.activeSession?.phase == .running)
+    #expect(try model.activeSession?.elapsedMilliseconds(at: clock.now()) == 120_000)
     #expect(model.audioNotice == .outputRouteLost)
+    #expect(audioController.rebuildCount == 2)
     audioController.emit(.outputRouteAvailable)
-    try await Task.sleep(for: .milliseconds(10))
-    #expect(model.activeSession?.phase == .paused)
-    #expect(audioController.resumeCount == 1)
+    try await Task.sleep(for: .milliseconds(30))
+    #expect(model.activeSession?.phase == .running)
+    #expect(audioController.resumeCount == 2)
+    #expect(audioController.resumeElapsedMilliseconds == [60_000, 120_000])
 
-    await model.resumePractice()
     clock.advance(milliseconds: 30_000)
     audioController.emit(.mediaServicesReset)
     try await Task.sleep(for: .milliseconds(30))
-    #expect(model.activeSession?.phase == .paused)
-    #expect(model.activeSession?.activeMilliseconds == 150_000)
-    #expect(model.audioNotice == .audioSystemReset)
-    #expect(audioController.rebuildCount == 1)
+    #expect(model.activeSession?.phase == .running)
+    #expect(try model.activeSession?.elapsedMilliseconds(at: clock.now()) == 150_000)
+    #expect(audioController.rebuildCount == 3)
+    #expect(audioController.resumeCount == 3)
+    #expect(audioController.resumeElapsedMilliseconds == [60_000, 120_000, 150_000])
+    #expect(model.audioNotice == nil)
 
-    await model.resumePractice()
     clock.advance(milliseconds: 30_000)
     await model.finishPractice()
     let events = await eventRepository.allEvents(
@@ -711,6 +713,7 @@ private final class RecordingMeditationAudioController: MeditationAudioControlli
   var beginCount = 0
   var pauseCount = 0
   var resumeCount = 0
+  var resumeElapsedMilliseconds: [Int64] = []
   var rebuildCount = 0
   var narrationVolumes: [Double] = []
   var ambienceVolumes: [Double] = []
@@ -721,9 +724,10 @@ private final class RecordingMeditationAudioController: MeditationAudioControlli
     beginCount += 1
   }
   func pause() { pauseCount += 1 }
-  func resume(session: MeditationSession) throws {
+  func resume(session: MeditationSession, elapsedMilliseconds: Int64) throws {
     _ = session
     resumeCount += 1
+    resumeElapsedMilliseconds.append(elapsedMilliseconds)
   }
   func setNarrationVolume(_ volume: Double) { narrationVolumes.append(volume) }
   func setAmbienceVolume(_ volume: Double) { ambienceVolumes.append(volume) }

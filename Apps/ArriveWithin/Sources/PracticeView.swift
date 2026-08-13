@@ -797,6 +797,9 @@ private struct AudioNoticeView: View {
     case .interrupted: "audio.notice.interrupted"
     case .outputRouteLost: "audio.notice.route.lost"
     case .audioSystemReset: "audio.notice.system.reset"
+    case .guidedInterrupted: "audio.notice.guided.interrupted"
+    case .guidedOutputRouteLost: "audio.notice.guided.route.lost"
+    case .guidedAudioSystemReset: "audio.notice.guided.system.reset"
     case .backgroundEndAlertDenied: "audio.notice.background.alert.denied"
     case .guidedCatalogUnavailable: "audio.notice.guided.catalog.unavailable"
     }
@@ -805,9 +808,11 @@ private struct AudioNoticeView: View {
   private var icon: String {
     switch notice {
     case .guidedNarrationPendingApproval: "waveform.badge.exclamationmark"
-    case .playbackUnavailable, .audioSystemReset: "speaker.slash"
+    case .playbackUnavailable, .audioSystemReset, .guidedAudioSystemReset: "speaker.slash"
     case .interrupted: "pause.circle"
     case .outputRouteLost: "headphones.slash"
+    case .guidedInterrupted: "pause.circle"
+    case .guidedOutputRouteLost: "headphones.slash"
     case .backgroundEndAlertDenied: "bell.slash"
     case .guidedCatalogUnavailable: "doc.badge.exclamationmark"
     }

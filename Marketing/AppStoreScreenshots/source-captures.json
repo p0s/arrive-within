@@ -8,15 +8,21 @@
   "source_revision_kind": "sha256-capture-source-manifest",
   "source_manifest_path": "capture-source-manifest.json",
   "post_capture_change": {
-    "classification": "submitted-build-7-post-publication-garden-change",
-    "current_source_revision": "7836b15372e8bcddfbbbb528ace3575a4c2f3a2d9a9ba9f0845ec71e5a8d55d0",
+    "classification": "submitted-build-7-post-submission-source-changes",
+    "current_source_revision": "9eec7a09f147e2999b529f4e3d63bceba0d7be1a05f5a54bd710f6043f17a894",
     "changed_paths": [
+      "Apps/ArriveWithin/Resources/Audio/audio-assets.json",
+      "Apps/ArriveWithin/Resources/Audio/closing-bell-v1.wav",
+      "Apps/ArriveWithin/Resources/Audio/opening-bell-v1.wav",
+      "Apps/ArriveWithin/Resources/de.lproj/Localizable.strings",
+      "Apps/ArriveWithin/Resources/en.lproj/Localizable.strings",
       "Apps/ArriveWithin/Sources/AppDependencies.swift",
       "Apps/ArriveWithin/Sources/AppModel.swift",
       "Apps/ArriveWithin/Sources/GuidedLibraryView.swift",
       "Apps/ArriveWithin/Sources/MeditationAudioController.swift",
       "Apps/ArriveWithin/Sources/PracticeView.swift",
       "Apps/ArriveWithin/Sources/RendererDiagnostics.swift",
+      "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinUITests.swift",
       "ArriveWithin.xcodeproj/project.pbxproj",
       "Config/ArriveWithin.entitlements.local",
       "Config/Base.xcconfig",
@@ -26,6 +32,7 @@
       "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/ProgressionReducer.swift",
       "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/WeeklyReminderSchedule.swift",
       "Packages/ArriveWithinCore/Sources/ArriveWithinGardenBridge/GardenDescription.swift",
+      "Packages/ArriveWithinCore/Sources/ArriveWithinMeditation/AudioLifecyclePolicy.swift",
       "Renderer/dist/renderer-manifest.json",
       "Renderer/dist/renderer.js",
       "project.yml"
@@ -36,7 +43,7 @@
     "valid_until": "next-editable-app-store-metadata-opportunity",
     "app_store_connect_mutation": "none",
     "next_action": "recapture-and-review-at-next-editable-metadata-opportunity",
-    "rationale": "Exact build 7 was already WAITING_FOR_REVIEW and must not be replaced, cancelled, edited, or resubmitted. The post-publication Garden is deliberately not represented by the submitted App Store screenshots; App Store Connect remained untouched. The retained 24 images remain the checksum-bound submitted-build artifact, not proof of the later source, and fresh current-source captures must be generated, reviewed, and bound at the next editable metadata opportunity."
+    "rationale": "Exact build 7 was already WAITING_FOR_REVIEW and must not be replaced, cancelled, edited, or resubmitted. The post-publication Garden and timer audio correction are deliberately not represented by the submitted App Store screenshots; App Store Connect remained untouched. The retained 24 images remain the checksum-bound submitted-build artifact, not proof of the later source, and fresh current-source captures must be generated, reviewed, and bound at the next editable metadata opportunity."
   },
   "result_bundles": [
     {

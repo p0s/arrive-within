@@ -19,7 +19,7 @@ protocol MeditationAudioControlling: AnyObject {
   func validate(session: MeditationSession) throws
   func begin(session: MeditationSession) throws
   func pause()
-  func resume(session: MeditationSession) throws
+  func resume(session: MeditationSession, elapsedMilliseconds: Int64) throws
   func setNarrationVolume(_ volume: Double)
   func setAmbienceVolume(_ volume: Double)
   func playIntervalBell()
@@ -94,12 +94,13 @@ final class NativeMeditationAudioController: NSObject, MeditationAudioControllin
       currentSession = session
       return
     }
-    if !graphIsReady { rebuildGraph() }
+    rebuildGraph()
     currentSession = session
     do {
       try configureAudioSession(for: session)
       try loadBuffers(for: session)
-      try startGraph(for: session, isResume: false)
+      guard connectGraphToLoadedMedia() else { return }
+      try startGraph(for: session, resumedAtMilliseconds: nil)
     } catch {
       stop()
       throw error
@@ -116,7 +117,7 @@ final class NativeMeditationAudioController: NSObject, MeditationAudioControllin
     engine.pause()
   }
 
-  func resume(session: MeditationSession) throws {
+  func resume(session: MeditationSession, elapsedMilliseconds: Int64) throws {
     currentSession = session
     guard Self.rendersAudioOnCurrentTarget else { return }
     let requiresContinuousAudio =
@@ -127,7 +128,8 @@ final class NativeMeditationAudioController: NSObject, MeditationAudioControllin
         rebuildGraph()
         try configureAudioSession(for: session)
         try loadBuffers(for: session)
-        try startGraph(for: session, isResume: true)
+        guard connectGraphToLoadedMedia() else { return }
+        try startGraph(for: session, resumedAtMilliseconds: elapsedMilliseconds)
       } catch {
         stop()
         throw error
@@ -169,28 +171,9 @@ final class NativeMeditationAudioController: NSObject, MeditationAudioControllin
       let closingBell
     else { return }
     do {
-      try audioSession.setActive(true)
-      audioSessionIsActive = true
-      if !engine.isRunning { try engine.start() }
-      bellPlayer.stop()
-      let generation = playbackGeneration
-      bellPlayer.scheduleBuffer(closingBell, completionCallbackType: .dataPlayedBack) {
-        [weak self] _ in
-        Task { @MainActor in
-          guard let self, self.playbackGeneration == generation else { return }
-          self.engine.stop()
-          if self.audioSessionIsActive {
-            try? self.audioSession.setActive(false, options: .notifyOthersOnDeactivation)
-            self.audioSessionIsActive = false
-          }
-        }
-      }
-      bellPlayer.play()
+      try playOneShotBell(closingBell, stopControllerWhenFinished: false)
     } catch {
-      if audioSessionIsActive {
-        try? audioSession.setActive(false, options: .notifyOthersOnDeactivation)
-        audioSessionIsActive = false
-      }
+      stop()
     }
   }
 
@@ -213,26 +196,51 @@ final class NativeMeditationAudioController: NSObject, MeditationAudioControllin
     }
 
     do {
-      if !graphIsReady { rebuildGraph() }
       let buffer = try closingBell ?? loadBuffer(id: "closing-bell-v1")
       closingBell = buffer
-      if !engine.isRunning {
-        try audioSession.setActive(true)
-        audioSessionIsActive = true
-        try engine.start()
-      }
-      bellPlayer.stop()
-      let generation = playbackGeneration
-      bellPlayer.scheduleBuffer(buffer, completionCallbackType: .dataPlayedBack) { [weak self] _ in
-        Task { @MainActor in
-          guard let self, self.playbackGeneration == generation else { return }
-          self.stop()
-        }
-      }
-      bellPlayer.play()
+      try playOneShotBell(buffer, stopControllerWhenFinished: true)
     } catch {
       stop()
     }
+  }
+
+  private func playOneShotBell(
+    _ buffer: AVAudioPCMBuffer,
+    stopControllerWhenFinished: Bool
+  ) throws {
+    if !graphIsReady {
+      rebuildGraph()
+      engine.connect(bellPlayer, to: engine.mainMixerNode, format: buffer.format)
+      graphIsReady = true
+    }
+    let shouldStartEngine = !engine.isRunning
+    if shouldStartEngine {
+      try audioSession.setActive(true)
+      audioSessionIsActive = true
+    }
+    bellPlayer.stop()
+    let generation = playbackGeneration
+    bellPlayer.scheduleBuffer(buffer, completionCallbackType: .dataPlayedBack) {
+      [weak self] _ in
+      Task { @MainActor in
+        guard let self, self.playbackGeneration == generation else { return }
+        if stopControllerWhenFinished {
+          self.stop()
+        } else {
+          self.engine.stop()
+          if self.audioSessionIsActive {
+            try? self.audioSession.setActive(false, options: .notifyOthersOnDeactivation)
+            self.audioSessionIsActive = false
+          }
+        }
+      }
+    }
+
+    if shouldStartEngine {
+      engine.prepare()
+      try engine.start()
+    }
+    bellPlayer.play()
   }
 
   func stop() {
@@ -316,7 +324,11 @@ final class NativeMeditationAudioController: NSObject, MeditationAudioControllin
     scheduledClosingBell = false
   }
 
-  private func startGraph(for session: MeditationSession, isResume: Bool) throws {
+  private func startGraph(
+    for session: MeditationSession,
+    resumedAtMilliseconds: Int64?
+  ) throws {
+    let isResume = resumedAtMilliseconds != nil
     var bellHasScheduledContent = false
     if let ambience {
       ambiencePlayer.scheduleBuffer(ambience, at: nil, options: [.loops])
@@ -327,7 +339,7 @@ final class NativeMeditationAudioController: NSObject, MeditationAudioControllin
       let startFrame = min(
         narrationFile.length,
         AVAudioFramePosition(
-          Double(isResume ? session.activeMilliseconds : 0)
+          Double(resumedAtMilliseconds ?? 0)
             * narrationFile.processingFormat.sampleRate / 1_000
         )
       )
@@ -471,10 +483,30 @@ final class NativeMeditationAudioController: NSObject, MeditationAudioControllin
     engine.attach(bellPlayer)
     engine.attach(ambiencePlayer)
     engine.attach(narrationPlayer)
-    engine.connect(bellPlayer, to: engine.mainMixerNode, format: nil)
-    engine.connect(ambiencePlayer, to: engine.mainMixerNode, format: nil)
-    engine.connect(narrationPlayer, to: engine.mainMixerNode, format: nil)
-    graphIsReady = true
+    graphIsReady = false
+  }
+
+  @discardableResult
+  private func connectGraphToLoadedMedia() -> Bool {
+    var connected = false
+    if let bellFormat = (openingBell ?? closingBell)?.format {
+      engine.connect(bellPlayer, to: engine.mainMixerNode, format: bellFormat)
+      connected = true
+    }
+    if let ambience {
+      engine.connect(ambiencePlayer, to: engine.mainMixerNode, format: ambience.format)
+      connected = true
+    }
+    if let narrationFile {
+      engine.connect(
+        narrationPlayer,
+        to: engine.mainMixerNode,
+        format: narrationFile.processingFormat
+      )
+      connected = true
+    }
+    graphIsReady = connected
+    return connected
   }
 
   private static var rendersAudioOnCurrentTarget: Bool {
@@ -550,7 +582,9 @@ final class NativeMeditationAudioController: NSObject, MeditationAudioControllin
   }
 
   @objc private func handleEngineConfigurationChange(_ notification: Notification) {
-    _ = notification
+    guard let changedEngine = notification.object as? AVAudioEngine,
+      changedEngine === engine
+    else { return }
     eventHandler?(.engineConfigurationChanged)
   }
 }
@@ -562,7 +596,10 @@ final class NoOpMeditationAudioController: MeditationAudioControlling {
   func validate(session: MeditationSession) throws { _ = session }
   func begin(session: MeditationSession) throws { _ = session }
   func pause() {}
-  func resume(session: MeditationSession) throws { _ = session }
+  func resume(session: MeditationSession, elapsedMilliseconds: Int64) throws {
+    _ = session
+    _ = elapsedMilliseconds
+  }
   func setNarrationVolume(_ volume: Double) { _ = volume }
   func setAmbienceVolume(_ volume: Double) { _ = volume }
   func playIntervalBell() {}
@@ -585,7 +622,10 @@ final class UnavailableMeditationAudioController: MeditationAudioControlling {
 
   func begin(session: MeditationSession) throws { try validate(session: session) }
   func pause() {}
-  func resume(session: MeditationSession) throws { try validate(session: session) }
+  func resume(session: MeditationSession, elapsedMilliseconds: Int64) throws {
+    _ = elapsedMilliseconds
+    try validate(session: session)
+  }
   func setNarrationVolume(_ volume: Double) { _ = volume }
   func setAmbienceVolume(_ volume: Double) { _ = volume }
   func playIntervalBell() {}

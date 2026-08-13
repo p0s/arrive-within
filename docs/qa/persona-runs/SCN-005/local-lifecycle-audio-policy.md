@@ -4,6 +4,10 @@ Date: 2026-08-10
 Status: Passed for deterministic lifecycle policy and hosted app integration; physical audio closure remains
 Product tree: current uncommitted local source; Git lineage does not exist and is not claimed
 
+## 2026-08-13 policy correction
+
+The owner-observed build-9 timer continued running while the interruption notice claimed it was paused. Timer and stopwatch timing now remain authoritative through audio interruption, route loss, or media reset; their audio graph stops and rebuilds independently, then resumes from current elapsed time when a safe route returns. Guided narration still pauses because silently advancing spoken content would lose the practice. The paused notice is now published only after a guided-session pause is durably reflected in authoritative state.
+
 ## Outcome
 
 A running three-minute timer durably pauses on an interruption, output-route loss, and media-services reset. Interruption end and route availability never resume it implicitly. Only an explicit user resume restarts active-time accounting; media reset rebuilds the audio controller before that resume. The completed session records exactly 180,000 active milliseconds and a late duplicate lifecycle callback cannot insert a second qualifying event.

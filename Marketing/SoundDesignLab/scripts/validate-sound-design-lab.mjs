@@ -16,7 +16,10 @@ const shippingManifest = JSON.parse(
 assert(manifest.schema_version === 1, "unsupported sound-lab manifest");
 assert(sha256(join(projectRoot, manifest.generator_path)) === manifest.generator_sha256, "sound-lab generator hash drifted");
 assert(manifest.status === "objective-candidates-ready-for-selection", "sound-lab claim state drifted");
-assert(selection.status === "owner-selected-bundled-baseline", "sound selection state drifted");
+assert(
+  selection.status === "owner-selected-bundled-baseline-remastered-after-device-failure",
+  "sound selection state drifted",
+);
 assert(selection.selection_date === "2026-08-13", "sound selection date drifted");
 assert(manifest.assets.length === 9, "sound lab must contain three ambiences and three two-bell families");
 
@@ -77,9 +80,12 @@ assert(
   "candidate promotion must retain a new owner-selection gate",
 );
 assert(manifest.release_boundary.includes("non-shipping candidates only"), "sound release exclusion is missing");
-assert(selection.physical_qa.startsWith("pending"), "selection must not overstate physical audio QA");
+assert(
+  selection.physical_qa.includes("still requires exact-candidate human"),
+  "selection must not overstate physical audio QA",
+);
 
-process.stdout.write("Sound design-lab validation passed: exact bundled baseline owner-selected; 3 ambience and 3 bell-family alternatives remain non-shipping; physical QA pending.\n");
+process.stdout.write("Sound design-lab validation passed: remastered bundled baseline stays selected; 3 ambience and 3 bell-family alternatives remain non-shipping; exact-candidate human audio QA pending.\n");
 
 function verifyShippingSelection(selected) {
   const bundled = shippingByID.get(selected.id);

@@ -11,7 +11,7 @@ final class ArriveWithinUITests: XCTestCase {
     app.launchArguments = [
       "-ui-test-reset",
       "-ui-test-seed", "424242",
-      "-ui-test-time-scale", "120",
+      "-ui-test-time-scale", "15",
     ]
     app.launch()
 
@@ -20,7 +20,7 @@ final class ArriveWithinUITests: XCTestCase {
     begin.tap()
 
     XCTAssertTrue(app.staticTexts["session.timer"].waitForExistence(timeout: 5))
-    XCTAssertTrue(app.staticTexts["session.completed"].waitForExistence(timeout: 8))
+    XCTAssertTrue(app.staticTexts["session.completed"].waitForExistence(timeout: 25))
     app.buttons["session.return.garden"].tap()
 
     XCTAssertTrue(app.webViews["garden.renderer.ready"].waitForExistence(timeout: 8))
