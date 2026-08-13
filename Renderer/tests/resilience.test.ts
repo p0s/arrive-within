@@ -4,7 +4,12 @@ import {
   AdaptiveQualityController,
   WebGLContextRecoveryState,
 } from "../src/resilience";
-import { disposeObjectResources } from "../src/scene";
+import {
+  disposeObjectResources,
+  resolveBirdPresentation,
+  resolveBirdSettledPresentation,
+  resolveGardenOrbitAngle,
+} from "../src/scene";
 
 describe("renderer resilience", () => {
   it("reduces quality only after sustained render-budget pressure", () => {
@@ -70,5 +75,43 @@ describe("renderer resilience", () => {
     expect(geometryDisposed).toHaveBeenCalledTimes(1);
     expect(materialDisposed).toHaveBeenCalledTimes(1);
     expect(textureDisposed).toHaveBeenCalledTimes(1);
+  });
+
+  it("locks the authored camera while Reduce Motion is active", () => {
+    expect(resolveGardenOrbitAngle(0, 120, false)).toBeCloseTo(0.48);
+    expect(resolveGardenOrbitAngle(0.4, 120, true)).toBe(0);
+    expect(resolveGardenOrbitAngle(-0.4, -120, true)).toBe(0);
+  });
+
+  it("alternates sparse bird crossings with deterministic settled poses", () => {
+    const bird = {
+      pathRadius: 4,
+      pathDepth: 2.5,
+      height: 4,
+      phase: 0,
+      speed: 1,
+      scale: 0.2,
+      color: "#283e43",
+    };
+    const start = resolveBirdPresentation(bird, 0);
+    const crossing = resolveBirdPresentation(bird, 4_000);
+    const settledEarly = resolveBirdPresentation(bird, 10_000);
+    const settledLate = resolveBirdPresentation(bird, 24_000);
+    const returnStart = resolveBirdPresentation(bird, 32_000);
+
+    expect(start.state).toBe("crossing");
+    expect(crossing.state).toBe("crossing");
+    expect(crossing.position[0]).toBeGreaterThan(start.position[0]);
+    expect(settledEarly.state).toBe("settled");
+    expect(settledLate.state).toBe("settled");
+    expect(settledEarly.position).toEqual(settledLate.position);
+    expect(settledEarly.wingFlap).toBe(0);
+    expect(settledLate.wingFlap).toBe(0);
+    expect(returnStart.position).toEqual(settledLate.position);
+
+    const reducedMotionPose = resolveBirdSettledPresentation({ ...bird, phase: 4 });
+    expect(reducedMotionPose.state).toBe("settled");
+    expect(reducedMotionPose.wingFlap).toBe(0);
+    expect(reducedMotionPose.roll).toBe(0);
   });
 });
