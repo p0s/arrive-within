@@ -90,6 +90,10 @@ interface GardenPhasePalette {
   fillScale: number;
   exposureScale: number;
   celestialOpacity: number;
+  groundTarget: string;
+  groundBlend: number;
+  foliageTarget: string;
+  foliageBlend: number;
 }
 
 const gardenPhasePalettes: Record<GardenDayPhase, GardenPhasePalette> = {
@@ -104,18 +108,26 @@ const gardenPhasePalettes: Record<GardenDayPhase, GardenPhasePalette> = {
     fillScale: 0.68,
     exposureScale: 0.96,
     celestialOpacity: 0.14,
+    groundTarget: "#657567",
+    groundBlend: 0.18,
+    foliageTarget: "#6f8268",
+    foliageBlend: 0.12,
   },
   day: {
-    skyTop: "#83aebb",
-    skyHorizon: "#a1b8b2",
-    skyLower: "#6f8982",
-    fog: "#879e99",
+    skyTop: "#91bbc5",
+    skyHorizon: "#b3c8c0",
+    skyLower: "#829d93",
+    fog: "#98aaa5",
     glow: "#ead19a",
-    illuminationScale: 1.18,
-    ambientScale: 1.12,
-    fillScale: 0.28,
-    exposureScale: 1.08,
+    illuminationScale: 1.34,
+    ambientScale: 1.28,
+    fillScale: 0.24,
+    exposureScale: 1.14,
     celestialOpacity: 0,
+    groundTarget: "#748a72",
+    groundBlend: 0.34,
+    foliageTarget: "#7b997b",
+    foliageBlend: 0.26,
   },
   dusk: {
     skyTop: "#26335b",
@@ -128,6 +140,10 @@ const gardenPhasePalettes: Record<GardenDayPhase, GardenPhasePalette> = {
     fillScale: 0.78,
     exposureScale: 0.96,
     celestialOpacity: 0.46,
+    groundTarget: "#45554b",
+    groundBlend: 0.14,
+    foliageTarget: "#5b6d59",
+    foliageBlend: 0.1,
   },
   night: {
     skyTop: "#111936",
@@ -135,11 +151,15 @@ const gardenPhasePalettes: Record<GardenDayPhase, GardenPhasePalette> = {
     skyLower: "#22363d",
     fog: "#2c3d47",
     glow: "#d9a16a",
-    illuminationScale: 0.34,
-    ambientScale: 0.58,
+    illuminationScale: 0.42,
+    ambientScale: 0.7,
     fillScale: 1,
-    exposureScale: 0.88,
+    exposureScale: 0.96,
     celestialOpacity: 0.92,
+    groundTarget: "#304b46",
+    groundBlend: 0.24,
+    foliageTarget: "#4b6351",
+    foliageBlend: 0.2,
   },
 };
 
@@ -156,6 +176,11 @@ export function resolveVisualModel(
   );
   const phaseInfluence = model.dayPhase === "day" ? 0.86 : 0.88;
   const baseSunColor = mixHex(model.sunColor, direction.lighting.sunTint, influence);
+  const baseGroundColor = mixHex(
+    model.groundColor,
+    direction.palette.groundTint,
+    clamp(direction.palette.groundInfluence ?? influence, 0, 1),
+  );
   return {
     dayPhase: model.dayPhase,
     skyTopColor: mixHex(direction.lighting.hemisphereSky, phase.skyTop, phaseInfluence),
@@ -166,23 +191,20 @@ export function resolveVisualModel(
     celestialGlowStrength: model.dayPhase === "day" ? 0.26 : model.dayPhase === "night" ? 0.1 : 0.2,
     starOpacity: phase.celestialOpacity,
     moonOpacity: Math.max(model.dayPhase === "day" ? 0.025 : 0.18, phase.celestialOpacity),
-    groundColor: mixHex(
-      model.groundColor,
-      direction.palette.groundTint,
-      clamp(direction.palette.groundInfluence ?? influence, 0, 1),
-    ),
+    groundColor: mixHex(baseGroundColor, phase.groundTarget, phase.groundBlend),
     accentColor: mixHex(
       model.accentColor,
       direction.palette.accentTint,
       clamp(direction.palette.accentInfluence ?? influence, 0, 1),
     ),
-    foliageColors: model.foliage.map((cluster) =>
-      mixHex(
+    foliageColors: model.foliage.map((cluster) => {
+      const base = mixHex(
         cluster.color,
         direction.palette.foliageTint,
         clamp(direction.palette.foliageInfluence ?? influence, 0, 1),
-      ),
-    ),
+      );
+      return mixHex(base, phase.foliageTarget, phase.foliageBlend);
+    }),
     hemisphereSkyColor: mixHex(direction.lighting.hemisphereSky, phase.skyTop, 0.48),
     hemisphereGroundColor: mixHex(direction.lighting.hemisphereGround, phase.skyLower, 0.42),
     hemisphereIntensity: direction.lighting.hemisphereIntensity * phase.ambientScale,

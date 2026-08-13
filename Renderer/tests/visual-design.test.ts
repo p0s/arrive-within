@@ -88,9 +88,9 @@ describe("selectable visual directions", () => {
     }
   });
 
-  it("does not rebuild geometry for repeated or motion-preference-only snapshots", () => {
+  it("rebuilds a static authored pose when Reduce Motion changes", () => {
     expect(gardenVisualSignature(state)).toBe(gardenVisualSignature(structuredClone(state)));
-    expect(gardenVisualSignature(state)).toBe(
+    expect(gardenVisualSignature(state)).not.toBe(
       gardenVisualSignature({ ...state, reduceMotion: !state.reduceMotion }),
     );
     expect(gardenVisualSignature(state)).not.toBe(
