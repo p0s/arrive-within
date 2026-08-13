@@ -46,6 +46,7 @@ export interface GardenRendererDiagnostics {
   rebuildCount: number;
   context: "available" | "lost" | "disposed";
   effectivePixelRatio: number;
+  revealActive: boolean;
 }
 
 const baseCameraPosition = new THREE.Vector3(5.7, 4.4, 8.6);
@@ -225,12 +226,18 @@ export function createGardenScene(
 
     const renderStarted = performance.now();
     if (revealStartedAt !== undefined) {
-      const progress = THREE.MathUtils.clamp((now - revealStartedAt) / revealDuration, 0, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const scale = THREE.MathUtils.lerp(revealScale, 1, eased);
-      world.root.scale.setScalar(scale);
-      world.root.position.y = THREE.MathUtils.lerp(-0.06, 0, eased);
-      if (progress >= 1) revealStartedAt = undefined;
+      if (state.reduceMotion) {
+        revealStartedAt = undefined;
+        world.root.scale.setScalar(1);
+        world.root.position.y = 0;
+      } else {
+        const progress = THREE.MathUtils.clamp((now - revealStartedAt) / revealDuration, 0, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const scale = THREE.MathUtils.lerp(revealScale, 1, eased);
+        world.root.scale.setScalar(scale);
+        world.root.position.y = THREE.MathUtils.lerp(-0.06, 0, eased);
+        if (progress >= 1) revealStartedAt = undefined;
+      }
     }
     if (!state.reduceMotion) {
       const breeze = Math.sin(now * 0.00042) * model.windStrength;
@@ -259,7 +266,19 @@ export function createGardenScene(
       const previousState = state;
       state = nextState;
       const nextVisualSignature = gardenVisualSignature(state);
-      if (nextVisualSignature === visualSignature) return;
+      if (nextVisualSignature === visualSignature) {
+        if (
+          revealStartedAt !== undefined
+          && settleGardenRevealForReducedMotion(
+            world.root,
+            !previousState.reduceMotion && state.reduceMotion,
+          )
+        ) {
+          revealStartedAt = undefined;
+          if (renderingIsActive && !document.hidden && !contextIsLost) renderer.render(scene, camera);
+        }
+        return;
+      }
       visualSignature = nextVisualSignature;
       model = deriveWorldModel(state);
       composition = cameraComposition(model, visualDirection);
@@ -321,6 +340,7 @@ export function createGardenScene(
         rebuildCount,
         context: disposed ? "disposed" : contextIsLost ? "lost" : "available",
         effectivePixelRatio: renderer.getPixelRatio(),
+        revealActive: revealStartedAt !== undefined,
       };
     },
     dispose(): void {
@@ -354,6 +374,16 @@ export function gardenVisualSignature(state: GardenState): string {
     localDayPhase: state.localDayPhase ?? "day",
     qualityHint: state.qualityHint,
   });
+}
+
+export function settleGardenRevealForReducedMotion(
+  root: THREE.Object3D,
+  reduceMotionActivated: boolean,
+): boolean {
+  if (!reduceMotionActivated) return false;
+  root.scale.setScalar(1);
+  root.position.y = 0;
+  return true;
 }
 
 function cameraComposition(

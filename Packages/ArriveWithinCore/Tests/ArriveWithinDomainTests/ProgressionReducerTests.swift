@@ -7,8 +7,9 @@ import Testing
 struct ProgressionReducerTests {
   @Test("Local garden phases use stable native clock boundaries")
   func localGardenDayPhaseBoundaries() throws {
-    let timeZone = try #require(TimeZone(identifier: "Asia/Singapore"))
-    let phase: (Int) throws -> GardenDayPhase = { hour in
+    let singapore = try #require(TimeZone(identifier: "Asia/Singapore"))
+    let losAngeles = try #require(TimeZone(identifier: "America/Los_Angeles"))
+    let phase: (Int, TimeZone) throws -> GardenDayPhase = { hour, timeZone in
       GardenDayPhase.presentation(
         at: try localDate(
           year: 2026,
@@ -22,11 +23,24 @@ struct ProgressionReducerTests {
       )
     }
 
-    #expect(try phase(4) == .night)
-    #expect(try phase(5) == .dawn)
-    #expect(try phase(8) == .day)
-    #expect(try phase(17) == .dusk)
-    #expect(try phase(20) == .night)
+    for timeZone in [singapore, losAngeles] {
+      #expect(try phase(4, timeZone) == .night)
+      #expect(try phase(5, timeZone) == .dawn)
+      #expect(try phase(8, timeZone) == .day)
+      #expect(try phase(17, timeZone) == .dusk)
+      #expect(try phase(20, timeZone) == .night)
+    }
+
+    let sameInstant = try localDate(
+      year: 2026,
+      month: 8,
+      day: 13,
+      hour: 8,
+      minute: 30,
+      timeZone: singapore
+    )
+    #expect(GardenDayPhase.presentation(at: sameInstant, timeZone: singapore) == .day)
+    #expect(GardenDayPhase.presentation(at: sameInstant, timeZone: losAngeles) == .dusk)
 
     var projection = context()
     projection.localDayPhase = .night
