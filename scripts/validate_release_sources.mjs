@@ -22,7 +22,7 @@ const blockers = [
   "future CloudKit deletion protocol and exact-candidate two-device proof before reactivation",
   "App Review approval, storefront availability, and storefront installation readback",
   "remaining exact physical audio, performance, and assistive-technology matrices",
-  "Git lineage and history audit unavailable until a separately authorized first commit",
+  "future product pushes require a fresh tracked-tree and reachable-history privacy audit",
 ];
 
 function pathFromRoot(path) {
@@ -334,11 +334,16 @@ record(
     && releaseTrain.stages.slice(2, 7).every((stage) => typeof stage.readback === "string")
     && typeof releaseTrain.stages[7].readback === "string"
     && releaseTrain.stages.slice(8, 10).every((stage) => typeof stage.readback === "string")
-    && releaseTrain.stages.slice(10).every((stage) => stage.readback === null),
+    && releaseTrain.stages.slice(10, 12).every((stage) => stage.readback === null)
+    && typeof releaseTrain.stages[12].readback === "string"
+    && releaseTrain.stages[12].readback.includes("canonical repository is public")
+    && releaseTrain.stages[12].readback.includes("6d7ba49967f3082e39dcb0437402a97593897276")
+    && releaseTrain.stages[12].readback.includes("root remains immutable reachable history")
+    && releaseTrain.stages[12].readback.includes("No GitHub Actions workflow or run exists"),
   "live identity, signing readiness, V1 CloudKit disablement, and the exact selected internal build must retain honest readback",
 );
 record("release-train.authority", releaseTrain.stages.every((stage) => typeof stage.authorization === "string" && stage.authorization.length > 0), "every release stage must carry an explicit authorization boundary");
-record("release-train.repository-authority", releaseTrain.stages.slice(0, 12).every((stage) => !stage.status.startsWith("unauthorized") && !stage.status.startsWith("prohibited")) && releaseTrain.stages[12].status === "authorized-exact-origin-main-push-pending" && releaseTrain.stages[12].authorization.includes("exact-existing-origin-and-main-push") && releaseTrain.stages[12].authorization.includes("github-actions-settings-visibility-tags-releases-and-other-publication-mutations-remain-prohibited"), "repository authority must permit only the owner-authorized signed initial commit and exact origin/main push while GitHub Actions and unrelated publication mutations remain prohibited");
+record("release-train.repository-authority", releaseTrain.stages.slice(0, 12).every((stage) => !stage.status.startsWith("unauthorized") && !stage.status.startsWith("prohibited")) && releaseTrain.stages[12].status === "verified-public-origin-main-signed-root" && releaseTrain.stages[12].authorization.includes("exact-existing-origin-main-push-and-public-visibility") && releaseTrain.stages[12].authorization.includes("github-actions-tags-releases-and-unrelated-repository-settings-remain-separate"), "repository authority must bind the completed signed root publication while preserving GitHub Actions, tags, releases, and unrelated settings as separate boundaries");
 record(
   "release-train.candidate-unbound",
   releaseTrain.candidate_manifest === null
@@ -423,7 +428,7 @@ const report = {
   blockers,
   failures,
   checks,
-  claim_boundary: "This deterministic source check validates the repository's exact build-7 release-train readbacks but does not itself reproduce the frozen build-7 archive/IPA, live ASC or TestFlight state, physical-device observation, website deployment, App Review outcome, storefront, human audio/rights review, Git lineage, or public repository release.",
+  claim_boundary: "This deterministic source check validates the repository's exact build-7 release-train and completed public-repository readbacks but does not itself reproduce the frozen build-7 archive/IPA, live ASC or TestFlight state, physical-device observation, website deployment, App Review outcome, storefront, human audio/rights review, or the external GitHub readback.",
 };
 
 if (process.argv.includes("--write-report")) {
