@@ -12,9 +12,10 @@ export type SubmittedBuildCaptureFreeze = {
 };
 
 export const POST_PUBLICATION_GARDEN_SOURCE_REVISION =
-  "81baf10ef17ab940e3b92fc3f3b1b167010ea43ec4ecee5e48269bfb67fce2d0";
+  "7836b15372e8bcddfbbbb528ace3575a4c2f3a2d9a9ba9f0845ec71e5a8d55d0";
 
 export const POST_PUBLICATION_GARDEN_CHANGED_PATHS = [
+  "Apps/ArriveWithin/Sources/AppDependencies.swift",
   "Apps/ArriveWithin/Sources/AppModel.swift",
   "Apps/ArriveWithin/Sources/GuidedLibraryView.swift",
   "Apps/ArriveWithin/Sources/MeditationAudioController.swift",

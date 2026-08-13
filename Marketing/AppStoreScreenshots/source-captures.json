@@ -9,8 +9,9 @@
   "source_manifest_path": "capture-source-manifest.json",
   "post_capture_change": {
     "classification": "submitted-build-7-post-publication-garden-change",
-    "current_source_revision": "81baf10ef17ab940e3b92fc3f3b1b167010ea43ec4ecee5e48269bfb67fce2d0",
+    "current_source_revision": "7836b15372e8bcddfbbbb528ace3575a4c2f3a2d9a9ba9f0845ec71e5a8d55d0",
     "changed_paths": [
+      "Apps/ArriveWithin/Sources/AppDependencies.swift",
       "Apps/ArriveWithin/Sources/AppModel.swift",
       "Apps/ArriveWithin/Sources/GuidedLibraryView.swift",
       "Apps/ArriveWithin/Sources/MeditationAudioController.swift",

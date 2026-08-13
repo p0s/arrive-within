@@ -1879,7 +1879,7 @@
   },
   "post_generation_change": {
     "classification": "post-publication-garden-visual-matrix-regeneration-deferred",
-    "current_renderer_source_sha256": "a1a5410462a061db3dbc446b76b41d873b3116af63a31efb1cda0d019ec20134",
+    "current_renderer_source_sha256": "e001e54e6cbecd30a8080dd5e3f9014650bcc253ca28cbe86c27185b231fc284",
     "current_garden_state_schema_sha256": "a73eb83fd1326b3c113663db54005a93024862fa630d8f92a4f3cf1fecc08fee",
     "changed_paths": [
       "Renderer/src/main.ts",

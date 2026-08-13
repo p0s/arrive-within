@@ -72,6 +72,10 @@ try {
         const canvas = await page.locator("#garden-canvas").boundingBox();
         assert(canvas !== null, `${viewport.id}/${state.id}/${phase} has no rendered canvas`);
 
+        const reducedOrbit = await orbit(page, canvas, 0.5, 0.8);
+        assert(reducedOrbit.orbitAngle === 0, `${viewport.id}/${state.id}/${phase} moved the camera under Reduce Motion`);
+        await page.evaluate(() => window.arriveWithinGardenDesignLab?.setReduceMotion(false));
+
         const right = await orbit(page, canvas, 0.5, 0.8);
         assert(right.orbitAngle > 0, `${viewport.id}/${state.id}/${phase} did not orbit right`);
         assertLightingInvariant(baseline, right, `${viewport.id}/${state.id}/${phase}/right`);
@@ -85,6 +89,7 @@ try {
         assert(left.orbitAngle < 0, `${viewport.id}/${state.id}/${phase} did not orbit left`);
         assertLightingInvariant(baseline, left, `${viewport.id}/${state.id}/${phase}/left`);
         await page.evaluate(() => window.arriveWithinGardenDesignLab?.resetView());
+        await page.evaluate(() => window.arriveWithinGardenDesignLab?.setReduceMotion(true));
 
         const filename = `${viewport.id}-${state.id}-${phase}.png`;
         const screenshotPath = join(outputRoot, filename);
@@ -116,7 +121,7 @@ try {
     assertions: {
       rendered_matrix: "3 viewports x 2 maturity states x 2 local phases",
       orbit: "reset, left, and right preserve exposure and every authored world-light value",
-      reduce_motion: "activation settles an in-progress milestone reveal immediately",
+      reduce_motion: "activation settles an in-progress milestone reveal and locks the authored camera",
       screenshot_hashes: "day/night and early/mature renders are distinct for every viewport",
     },
   };

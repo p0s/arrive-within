@@ -117,11 +117,31 @@ describe("deterministic authored world model", () => {
     });
 
     expect(beforeAirTwo.birds).toHaveLength(0);
-    expect(airTwo.birds).toHaveLength(3);
+    expect(airTwo.birds).toHaveLength(2);
     expect(beforeSpaceThree.groundAnimals).toHaveLength(0);
     expect(beforeSpaceThree.details.some((detail) => detail.kind === "sanctuary")).toBe(false);
     expect(completeWorld.groundAnimals.map((animal) => animal.kind)).toEqual(["hare", "hare"]);
     expect(completeWorld.details.filter((detail) => detail.kind === "sanctuary")).toHaveLength(1);
+  });
+
+  it("composes one connected water garden instead of unrelated radial symbols", () => {
+    const mature = deriveWorldModel({
+      ...state,
+      journeyDay: 30,
+      highestMilestone: 15,
+      qualityHint: "high",
+    });
+    const pond = mature.details.find((detail) => detail.kind === "pond");
+    const ripples = mature.details.filter((detail) => detail.kind === "ripples");
+    const stones = mature.details.filter((detail) => detail.kind === "stones");
+
+    expect(pond).toBeDefined();
+    expect(ripples.length).toBeGreaterThanOrEqual(2);
+    expect(ripples.every((ripple) =>
+      Math.hypot(ripple.x - (pond?.x ?? 0), ripple.z - (pond?.z ?? 0)) < 0.85
+    )).toBe(true);
+    expect(stones[0]?.x).toBeGreaterThan(stones.at(-1)?.x ?? Infinity);
+    expect(stones.some((stone) => Math.hypot(stone.x, stone.z) < 1.4)).toBe(true);
   });
 
   it("keeps local time presentational rather than changing permanent growth", () => {

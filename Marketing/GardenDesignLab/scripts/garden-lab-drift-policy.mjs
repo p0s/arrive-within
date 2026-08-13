@@ -10,8 +10,8 @@ export const FROZEN_GARDEN_LAB_SOURCE_SHA256 = {
 };
 
 export const CURRENT_GARDEN_LAB_SOURCE_SHA256 = {
-  "Renderer/src/scene.ts": "e50ce5013d8c8c7d8541738d6f604915a51e3bb1c7b584376589c4da35d39175",
-  "Renderer/src/visual-design.ts": "41dd249555fc05724d32028494c79488aa83db850b012cdcaffb764a07eee6e6",
+  "Renderer/src/scene.ts": "68102be6e8a91630c6a4704c9576c93e38562a624e9912f893e5d7140ae48464",
+  "Renderer/src/visual-design.ts": "dd43a2c1c97379f0e175517fbbf174726e4edd20a11878a3fb450e92a81044ab",
   "Renderer/src/visual-directions/verdant-atelier.ts": "77bfd7f71f19e6742d8e281b0cf895c174fd17018362e60630a17f636b3ee088",
   "Renderer/src/visual-directions/paper-sanctuary.ts": "6b732a1bc22e0f100a710c1bb0592ad497f9a513552cbcdcc5b3fdc598b4c271",
   "Renderer/src/visual-directions/twilight-refuge.ts": "8055683e5858fa85bf347bad9ef3114163645f042a21defe192a596b2595f39a",
