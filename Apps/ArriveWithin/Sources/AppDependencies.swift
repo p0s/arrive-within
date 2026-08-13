@@ -26,6 +26,7 @@ struct AppDependencies {
   let sessionRepository: any MeditationSessionRepository
   let preferencesRepository: any MeditationPreferencesRepository
   let appSettingsRepository: any AppSettingsRepository
+  let premiumGardenPurchaseClient: any PremiumGardenPurchaseClient
   let guidedFavoritesRepository: any GuidedFavoritesRepository
   let gardenCustomizationRepository: any GardenCustomizationRepository
   let journalRepository: any JournalEntryRepository
@@ -51,6 +52,7 @@ struct AppDependencies {
     sessionRepository: any MeditationSessionRepository,
     preferencesRepository: any MeditationPreferencesRepository,
     appSettingsRepository: any AppSettingsRepository = EphemeralAppSettingsRepository(),
+    premiumGardenPurchaseClient: any PremiumGardenPurchaseClient = FixedPremiumGardenPurchaseClient(),
     guidedFavoritesRepository: any GuidedFavoritesRepository = EphemeralGuidedFavoritesRepository(),
     gardenCustomizationRepository: any GardenCustomizationRepository = EphemeralGardenCustomizationRepository(),
     journalRepository: any JournalEntryRepository = EphemeralJournalEntryRepository(),
@@ -73,6 +75,7 @@ struct AppDependencies {
     self.sessionRepository = sessionRepository
     self.preferencesRepository = preferencesRepository
     self.appSettingsRepository = appSettingsRepository
+    self.premiumGardenPurchaseClient = premiumGardenPurchaseClient
     self.guidedFavoritesRepository = guidedFavoritesRepository
     self.gardenCustomizationRepository = gardenCustomizationRepository
     self.journalRepository = journalRepository
@@ -181,6 +184,7 @@ struct AppDependencies {
       appSettingsRepository: FileAppSettingsRepository(
         fileURL: root.appending(path: "app-settings-v1.json")
       ),
+      premiumGardenPurchaseClient: premiumGardenPurchaseClient(arguments: arguments),
       guidedFavoritesRepository: CoreDataGuidedFavoritesRepository(store: productStore),
       gardenCustomizationRepository: CoreDataGardenCustomizationRepository(store: productStore),
       journalRepository: CoreDataJournalEntryRepository(
@@ -248,6 +252,33 @@ struct AppDependencies {
       }
     #endif
     return NativeWeeklyReminderNotificationController()
+  }
+
+  private static func premiumGardenPurchaseClient(
+    arguments: [String]
+  ) -> any PremiumGardenPurchaseClient {
+    #if DEBUG
+      if arguments.contains("-ui-test-premium-owned") {
+        return FixedPremiumGardenPurchaseClient(
+          snapshot: PremiumGardenAccessSnapshot(
+            isOwned: true,
+            productIsAvailable: true,
+            displayPrice: PremiumGardenProduct.proposedUSDPrice
+          )
+        )
+      }
+      if arguments.contains("-ui-test-premium-available") {
+        return FixedPremiumGardenPurchaseClient(
+          snapshot: PremiumGardenAccessSnapshot(
+            isOwned: false,
+            productIsAvailable: true,
+            displayPrice: PremiumGardenProduct.proposedUSDPrice
+          ),
+          purchaseSucceeds: arguments.contains("-ui-test-premium-purchase-succeeds")
+        )
+      }
+    #endif
+    return StoreKitPremiumGardenPurchaseClient()
   }
 
   #if DEBUG

@@ -31,6 +31,7 @@ struct GardenView: View {
         } else {
           GardenWebView(
             state: state,
+            renderStyle: model.gardenRenderStyle,
             isActive: model.selectedSection == .garden && scenePhase == .active,
             resetViewRequest: 0,
             onReady: model.reportRendererReady,

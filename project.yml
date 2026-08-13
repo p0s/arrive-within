@@ -138,6 +138,7 @@ schemes:
         ArriveWithinUITests: [test]
     run:
       config: Debug
+      storeKitConfiguration: Config/PremiumGardenStyles.storekit
     test:
       gatherCoverageData: false
       targets:

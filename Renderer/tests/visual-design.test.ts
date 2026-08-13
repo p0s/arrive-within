@@ -9,6 +9,7 @@ import {
 import { paperSanctuary } from "../src/visual-directions/paper-sanctuary";
 import { twilightRefuge } from "../src/visual-directions/twilight-refuge";
 import { verdantAtelier } from "../src/visual-directions/verdant-atelier";
+import { gardenRenderStyles, resolveGardenRenderStyle } from "../src/render-style";
 import { deriveWorldModel } from "../src/world-model";
 import { validateGardenState } from "../src/validation";
 
@@ -58,6 +59,46 @@ describe("selectable visual directions", () => {
     ]);
     expect(new Set(directions.map((direction) => direction.foliageForm)).size).toBe(3);
     expect(new Set(directions.map((direction) => resolveVisualModel(deriveWorldModel(state), direction).skyColor)).size).toBe(3);
+  });
+
+  it("keeps premium treatments on one shared world topology", () => {
+    const premium = [
+      gardenRenderStyles["hand-drawn"],
+      gardenRenderStyles["stop-motion"],
+      gardenRenderStyles.crochet,
+      gardenRenderStyles.claymation,
+    ];
+    for (const direction of premium) {
+      expect(direction.foliageForm).toBe(twilightRefuge.foliageForm);
+      expect(direction.composition.groundLayers).toBe(twilightRefuge.composition.groundLayers);
+      expect(direction.composition.cameraDistanceScale).toBe(
+        twilightRefuge.composition.cameraDistanceScale,
+      );
+      expect(direction.composition.cameraHeightOffset).toBe(
+        twilightRefuge.composition.cameraHeightOffset,
+      );
+      expect(direction.composition.targetHeightOffset).toBe(
+        twilightRefuge.composition.targetHeightOffset,
+      );
+    }
+    expect(new Set(premium.map((direction) => direction.material?.treatment)).size).toBe(4);
+    expect(gardenRenderStyles["stop-motion"].motion.framesPerSecond).toBe(8);
+  });
+
+  it("falls back to the free Twilight profile for unknown native input", () => {
+    expect(resolveGardenRenderStyle("twilight")).toBe(twilightRefuge);
+    expect(resolveGardenRenderStyle("unknown-style")).toBe(twilightRefuge);
+  });
+
+  it("styles the same authoritative world model without mutation", () => {
+    const world = deriveWorldModel(state);
+    const original = structuredClone(world);
+    const featureCounts = Object.values(gardenRenderStyles).map((direction) => {
+      resolveVisualModel(world, direction);
+      return world.features.length;
+    });
+    expect(new Set(featureCounts)).toEqual(new Set([world.features.length]));
+    expect(world).toEqual(original);
   });
 
   it("keeps one GardenState and the same complete milestone matrix across every skin", () => {

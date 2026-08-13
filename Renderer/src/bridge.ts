@@ -1,10 +1,13 @@
 import type { GardenSnapshotEnvelope, RendererEventEnvelope } from "./types";
+import type { GardenRenderStyleID } from "./render-style";
 import { decodeSnapshotEnvelope, GardenContractError } from "./validation";
 
 declare global {
   interface Window {
     arriveWithinGarden?: {
       receiveSnapshot(input: string | unknown): void;
+      setRenderStyle(style: GardenRenderStyleID): void;
+      diagnostics(): object | null;
       setActive(active: boolean): void;
       resetView(): void;
     };
@@ -13,6 +16,8 @@ declare global {
 
 export interface GardenBridgeActions {
   applySnapshot(envelope: GardenSnapshotEnvelope): void;
+  setRenderStyle(style: GardenRenderStyleID): void;
+  diagnostics(): object | null;
   setActive(active: boolean): void;
   resetView(): void;
   showError(message: string): void;
@@ -50,6 +55,12 @@ export function installGardenBridge(actions: GardenBridgeActions): GardenBridgeC
         actions.showError(message);
         emit("error", { code: "invalid-snapshot", message, recoverable: true });
       }
+    },
+    setRenderStyle(style): void {
+      actions.setRenderStyle(style);
+    },
+    diagnostics(): object | null {
+      return actions.diagnostics();
     },
     setActive(active): void {
       actions.setActive(active);
