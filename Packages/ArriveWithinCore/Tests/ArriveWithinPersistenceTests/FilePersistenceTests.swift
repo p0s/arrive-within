@@ -333,9 +333,8 @@ struct FilePersistenceTests {
       let validator = Process()
       validator.executableURL = URL(fileURLWithPath: "/usr/bin/unzip")
       validator.arguments = ["-t", output.path]
-      let validationOutput = Pipe()
-      validator.standardOutput = validationOutput
-      validator.standardError = validationOutput
+      validator.standardOutput = FileHandle.nullDevice
+      validator.standardError = FileHandle.nullDevice
       try validator.run()
       validator.waitUntilExit()
       #expect(validator.terminationStatus == 0)
@@ -602,9 +601,8 @@ struct FilePersistenceTests {
       let validator = Process()
       validator.executableURL = URL(fileURLWithPath: "/usr/bin/unzip")
       validator.arguments = ["-t", firstOutput.path]
-      let validationOutput = Pipe()
-      validator.standardOutput = validationOutput
-      validator.standardError = validationOutput
+      validator.standardOutput = FileHandle.nullDevice
+      validator.standardError = FileHandle.nullDevice
       try validator.run()
       validator.waitUntilExit()
       #expect(validator.terminationStatus == 0)
