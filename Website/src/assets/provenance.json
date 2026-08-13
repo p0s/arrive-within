@@ -3,8 +3,10 @@
   "source_revision": "720deeed8719b680ebe4359e1f572565780cc1015ce4ab0d83cb530335bfb405",
   "rights": "First-party Arrive Within rendered app UI; public redistribution is intended under the repository media license after final repository licensing review.",
   "capture_state": "Guarded iOS 26.5 simulator UI with deterministic safe synthetic product data; not physical-device, CloudKit, signed-candidate, or App Store evidence.",
-  "public_media_source_state": "pre-enhancement-renderer-media-current-regeneration-deferred-host-denial",
-  "public_media_next_action": "Regenerate, review, hash-bind, and resynchronize the three renderer-derived assets after the next successful current-source browser capture.",
+  "public_media_source_state": "current-source-renderer-media-regenerated-and-reviewed-locally",
+  "public_media_source_revision": "e001e54e6cbecd30a8080dd5e3f9014650bcc253ca28cbe86c27185b231fc284",
+  "public_media_review": "Current Three.js Garden media was regenerated with external requests blocked and visually checked for the pavilion, mature tree silhouette, sparse wildlife, water, and sky balance.",
+  "public_media_next_action": "Keep the synchronized renderer-derived media bound to the current Garden source; regenerate after future renderer changes.",
   "assets": [
     {
       "file": "garden-en-iphone.png",
@@ -57,19 +59,19 @@
     {
       "file": "garden-growth-v1.mp4",
       "source": "Marketing/PublicMedia/output/garden-growth-v1.mp4",
-      "sha256": "6e9e21f5ac1beaf01394fd523ad44cd9a146a8fb34e9a05a652ff1ee15e414e7",
+      "sha256": "bdec19d0ec1b607576aa55db3dd77e96029389d2c9bfd6f5f66058859cd05554",
       "alt": "Silent deterministic progression of the real Arrive Within garden from before the first practice to practice day 30."
     },
     {
       "file": "garden-growth-poster.png",
       "source": "Marketing/PublicMedia/output/garden-growth-poster.png",
-      "sha256": "98f5ee70618a292cbde409e83f01786afed0e84e3ecc0e70aacaec12e2a8f8e1",
+      "sha256": "ad70e45bf3e47a174e8353085741a349d8a281ea5d58d6a587817cb090e2fe2e",
       "alt": "The mature deterministic Arrive Within garden used as the growth-film poster."
     },
     {
       "file": "social-preview.png",
       "source": "Marketing/PublicMedia/output/social-preview.png",
-      "sha256": "f345b19a378ca431ca51ea8785eb352865023ed4e84b4ada8ecbbd10bce1511f",
+      "sha256": "8549570c7268b703afb11c27d6d145d7a6a0f14b57c21345998f975ba78bcf35",
       "alt": "Arrive Within social preview with the mature deterministic garden and the words Meditation that grows."
     }
   ]

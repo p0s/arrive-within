@@ -1,7 +1,7 @@
 # Bilingual static website — local verification
 
 Date: 2026-08-13
-Status: deployed Twilight artifact retained; unreleased brand/visual successor statically verified
+Status: current Garden media refreshed and locally verified; deployment readback remains separate
 
 ## Artifact
 
@@ -15,9 +15,9 @@ Status: deployed Twilight artifact retained; unreleased brand/visual successor s
 
 The exact Node 26.7.0 runtime ran the dependency-free build and validation scripts directly and successfully; the installed project package state remains pinned by the pnpm 11.20.0 lockfile, and this verification performed no dependency resolution.
 
-- Source tree SHA-256: `852734086aea864863db252197935728a77ab5c8df5f48413bd9e645be0c4c1d`
-- Content SHA-256: `941f7f236fe71993b35b37f46e4e8e199d66b0f72b15b3512f23835fd1e0e8c6`
-- Complete 25-file build SHA-256: `4e6c33937800655078380031178e04d67553833b8c02790a587e95fa97e468c1`
+- Source tree SHA-256: `258ffde1474acd4ee178db84e4ab465f9a9f3f5914a5a7cce00c829693928c5c`
+- Content SHA-256: `8bd645d39e8d880cfa9b48afd1b9685111f6db4bdcbc3304fd34fc47f49982ab`
+- Complete 28-file build SHA-256: `8824c79da5d3955e34a63e5c74028f09a9969064ed1b8b16c489b5bf9506ca0c`
 - The production-origin build passed the deterministic validator and all eight route bodies read back byte-for-byte from `arrivewithin.com`.
 - The validator passed exact route/link, injected-origin canonical/hreflang, landmark, local-image/alt, local-video/control, provenance/hash, privacy-copy, no-active-content, no-tracking, no-external-runtime-asset, and Vercel security-header checks.
 
@@ -26,33 +26,33 @@ The exact Node 26.7.0 runtime ran the dependency-free build and validation scrip
 The current-source production-origin build was served only on loopback and inspected through a real browser at desktop `1440×1000` and mobile `390×844` dimensions.
 
 - The reproducible report is `docs/qa/website/browser-matrix.json`.
-- All 16 route/viewport combinations had one main landmark, one H1, the correct document language, a visible footer, local images with nonempty alt text, and no horizontal overflow.
+- All 24 route/viewport combinations had one main landmark, one H1, the correct document language, a visible footer, local images with nonempty alt text, and no horizontal overflow.
 - English-to-German and German-to-English navigation completed with the expected localized title and H1.
 - Browser console warning/error count: 0.
 - External request count: 0; every non-loopback request would have been blocked and failed the matrix.
 - All four home-page viewport/language cases loaded the 1280×720, 9.733-second video metadata and sought to a decoded five-second frame while remaining paused; controls were present and autoplay was absent.
 - Representative English desktop hero, growth, Timer/Stopwatch mode choice, and German mobile article layouts were visually inspected.
-- Review found a 15-point overflow in the German mobile open-source heading. The fix uses German-only automatic hyphenation with safe word wrapping; the full 16-case matrix then passed. English heading hyphenation is explicitly disabled.
+- Review found a 15-point overflow in the German mobile open-source heading. The fix uses German-only automatic hyphenation with safe word wrapping; the full 24-case matrix then passed. English heading hyphenation is explicitly disabled.
 
 ## Retained production media
 
-After build 7 entered review, the renderer-derived Garden video, poster, and social preview were regenerated from the then-current Twilight source and synchronized into `Website/src/assets`. That production artifact passed its static and 16-case browser matrices and was read back byte-for-byte. The later post-publication Garden changes renderer and schema source, so these retained assets are now explicitly historical product media rather than current-source Garden proof. A fresh browser capture was skipped after host denial, not passed; the next successful current-source regeneration must be visually reviewed, hash-bound, and resynchronized before replacing the three assets.
+After the Garden refinement merged, the renderer-derived Garden video, poster, and social preview were regenerated from the current Twilight source with external requests blocked and synchronized into `Website/src/assets`. The refreshed poster visibly includes the open timber pavilion, mature tree silhouette, sparse hares/birds, water, and balanced sky. This is local product-media evidence; it is not physical-device, signed-candidate, App Store, or deployment proof.
 
 ## Unreleased brand and visual successor
 
 The 2026-08-13 website polish replaces the generic dot with exact byte copies of the selected B — Quiet Threshold 40 px and 180 px opaque RGB assets. The mark is now visible in the header/footer and linked as the browser favicon and Apple touch icon, with separate public-safe source/hash/trademark provenance. The home hero becomes one full-canvas garden composition with product-first hierarchy; mobile navigation keeps all destinations exposed in a bounded horizontal row; visible links receive 44-point minimum targets; CSS-only entrance, depth, and hover motion disable under Reduce Motion. English/German repository copy now reflects the independently read-back public canonical repository while retaining the no-App-Store-availability boundary.
 
-Two clean production-origin builds with exact Node 26.7.0 were byte-identical:
+The current local build with exact Node 26.7.0 was validated after the current Garden media refresh:
 
-- Source tree SHA-256: `e890d6dc76c33297eac8b2d4df9b6c174524176f91c4d0e7d2709deacc3d960d` across 27 public source files; ignored environment, host-binding, dependency, and generated-output files are excluded.
-- Content SHA-256: `1f372f1b95b475b2472c27222cbba676452944d838d86f12383907f2673a5195`
-- Complete 28-file build SHA-256: `cdacc5b9920cc3b9b960b5073af69515e27f44b5c684f3a81f78ca14956646e6`
+- Source tree SHA-256: `258ffde1474acd4ee178db84e4ab465f9a9f3f5914a5a7cce00c829693928c5c` across the current public source files; ignored environment, host-binding, dependency, and generated-output files are excluded.
+- Content SHA-256: `8bd645d39e8d880cfa9b48afd1b9685111f6db4bdcbc3304fd34fc47f49982ab`
+- Complete 28-file build SHA-256: `8824c79da5d3955e34a63e5c74028f09a9969064ed1b8b16c489b5bf9506ca0c`
 - Static validation: passed for eight routes, eleven product/media assets, two selected brand icons, local-only runtime assets, bilingual metadata, CSP, privacy copy, and provenance/hash integrity.
-- Rendered matrix: not refreshed in this execution. The pinned Playwright browser launch was denied by the desktop execution sandbox after the non-socket route-fulfillment harness was prepared. The prior 16-case report remains historical evidence for the deployed artifact and is not relabeled as proof of this successor.
+- Rendered matrix: refreshed in this execution. The pinned Playwright browser completed all 24 route/viewport cases, six video load/seek cases, reduced-motion checks, visible icon checks, 44px link targets, and zero external requests.
 - Deployment/public readback: not performed and not authorized by this website-edit request.
 
 ## Claim boundary
 
 The deployed-artifact evidence proves the deterministic, public-safe refreshed website artifact, the existing Vercel Hobby project binding, `arrivewithin.com` DNS/TLS, eight production routes, and the three current Twilight media assets. Public-repository availability is proven separately by credential-free GitHub readback. Neither that evidence nor the unreleased local successor proves App Store availability, production narration, or a later signed release candidate. No domain purchase, registration, unrelated project, or unrelated DNS mutation was performed.
 
-The eight app-UI images remain synchronized to build-6 capture revision `720deeed8719b680ebe4359e1f572565780cc1015ce4ab0d83cb530335bfb405`; the renderer-derived media remains byte-bound pre-enhancement output. The post-publication Garden has separate rendered and deterministic proof and is not represented by these retained assets.
+The eight app-UI images remain synchronized to capture revision `720deeed8719b680ebe4359e1f572565780cc1015ce4ab0d83cb530335bfb405`; the renderer-derived media is now byte-bound to current renderer source `e001e54e6cbecd30a8080dd5e3f9014650bcc253ca28cbe86c27185b231fc284`. App-UI screenshots and renderer-media evidence remain separate claims.
