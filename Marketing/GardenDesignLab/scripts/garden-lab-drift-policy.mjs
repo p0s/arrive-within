@@ -10,7 +10,7 @@ export const FROZEN_GARDEN_LAB_SOURCE_SHA256 = {
 };
 
 export const CURRENT_GARDEN_LAB_SOURCE_SHA256 = {
-  "Renderer/src/scene.ts": "e50ce5013d8c8c7d8541738d6f604915a51e3bb1c7b584376589c4da35d39175",
+  "Renderer/src/scene.ts": "5fa3c97cca1ac9e214841beca96be1f7a41393ad4ea266c276df9f3b71131326",
   "Renderer/src/visual-design.ts": "41dd249555fc05724d32028494c79488aa83db850b012cdcaffb764a07eee6e6",
   "Renderer/src/visual-directions/verdant-atelier.ts": "77bfd7f71f19e6742d8e281b0cf895c174fd17018362e60630a17f636b3ee088",
   "Renderer/src/visual-directions/paper-sanctuary.ts": "6b732a1bc22e0f100a710c1bb0592ad497f9a513552cbcdcc5b3fdc598b4c271",

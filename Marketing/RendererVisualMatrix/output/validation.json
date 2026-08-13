@@ -85,7 +85,7 @@
   ],
   "human_review": "pending",
   "release_ready": false,
-  "manifest_sha256": "c6ec0fe369a4e084aa817ec9c352413df94570296d55f503cc5cd9461c24564d",
+  "manifest_sha256": "915eec5f6442587025888b2901d3950a5fc61a5471f6501e4fd5ebb80721d31d",
   "failures": [],
   "checks": [
     {
