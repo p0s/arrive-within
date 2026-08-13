@@ -1,10 +1,12 @@
 import { makeDeterministicRandom } from "./seeded";
-import type { GardenQualityHint, GardenState } from "./types";
+import type { GardenDayPhase, GardenQualityHint, GardenState } from "./types";
 
 export interface QualityProfile {
   pixelRatioLimit: number;
   backgroundVegetationCount: number;
   particleCount: number;
+  birdCount: number;
+  groundAnimalCount: number;
   shadowMapSize: number;
 }
 
@@ -51,6 +53,26 @@ export interface GardenDetail {
   color: string;
 }
 
+export interface GardenBird {
+  pathRadius: number;
+  pathDepth: number;
+  height: number;
+  phase: number;
+  speed: number;
+  scale: number;
+  color: string;
+}
+
+export interface GardenGroundAnimal {
+  kind: "hare";
+  pose: "seated" | "grazing";
+  x: number;
+  z: number;
+  scale: number;
+  rotation: number;
+  color: string;
+}
+
 export interface GardenWorldModel {
   trunkHeight: number;
   trunkRadius: number;
@@ -58,7 +80,10 @@ export interface GardenWorldModel {
   groundPlants: GroundPlant[];
   features: GardenFeature[];
   details: GardenDetail[];
+  birds: GardenBird[];
+  groundAnimals: GardenGroundAnimal[];
   quality: QualityProfile;
+  dayPhase: GardenDayPhase;
   skyColor: string;
   groundColor: string;
   accentColor: string;
@@ -72,18 +97,24 @@ const qualityProfiles: Record<GardenQualityHint, QualityProfile> = {
     pixelRatioLimit: 1,
     backgroundVegetationCount: 12,
     particleCount: 0,
+    birdCount: 1,
+    groundAnimalCount: 1,
     shadowMapSize: 512,
   },
   balanced: {
     pixelRatioLimit: 1.5,
     backgroundVegetationCount: 28,
     particleCount: 8,
+    birdCount: 3,
+    groundAnimalCount: 2,
     shadowMapSize: 1_024,
   },
   high: {
     pixelRatioLimit: 2,
     backgroundVegetationCount: 48,
     particleCount: 18,
+    birdCount: 5,
+    groundAnimalCount: 2,
     shadowMapSize: 2_048,
   },
 };
@@ -166,7 +197,8 @@ export function deriveWorldModel(state: GardenState): GardenWorldModel {
     });
   }
 
-  const details = deriveDetails(state, features, quality);
+  const details = deriveDetails(state, features, quality, foliage);
+  const { birds, groundAnimals } = deriveWildlife(state, features, quality);
   const warm = features.includes("warm-light");
   const variantBCount = Object.values(state.activeCustomization).filter((id) => id.endsWith("-b")).length;
 
@@ -177,7 +209,10 @@ export function deriveWorldModel(state: GardenState): GardenWorldModel {
     groundPlants,
     features,
     details,
+    birds,
+    groundAnimals,
     quality,
+    dayPhase: state.localDayPhase ?? "day",
     skyColor: palette.sky,
     groundColor: palette.ground,
     accentColor: variantBCount % 2 === 1 ? "#d6a66e" : palette.accent,
@@ -191,6 +226,7 @@ function deriveDetails(
   state: GardenState,
   features: GardenFeature[],
   quality: QualityProfile,
+  foliage: FoliageCluster[],
 ): GardenDetail[] {
   const details: GardenDetail[] = [];
   const density = state.qualityHint === "low" ? 0.55 : state.qualityHint === "high" ? 1 : 0.78;
@@ -233,12 +269,126 @@ function deriveDetails(
   addRadial("ripples", 4, 3.55, 4.05, "#b7d4c8", 0.45, 0.92, 0.045);
   addRadial("warm-light", 3, 2.4, 4.4, "#f3bd71", 0.75, 1.25, 1.2);
   addRadial("fireflies", quality.particleCount, 1.2, 4.7, "#f3d47a", 0.035, 0.07, 1.1);
-  addRadial("blossoms", 16, 0.55, 2.05, "#e3a778", 0.08, 0.17, 2.7);
+  if (features.includes("blossoms")) {
+    const selectedVariant = state.activeCustomization["9"] ?? "m09-a";
+    const random = makeDeterministicRandom(state.gardenSeed, `canopy-blossoms-${selectedVariant}`);
+    const resolvedCount = Math.max(1, Math.round(18 * density));
+    for (let index = 0; index < resolvedCount; index += 1) {
+      const cluster = foliage[(index * 7) % foliage.length];
+      if (cluster === undefined) continue;
+      details.push({
+        kind: "blossoms",
+        x: cluster.x + random.signed(cluster.scale * 0.42),
+        y: cluster.y + random.signed(cluster.scale * 0.34),
+        z: cluster.z + random.signed(cluster.scale * 0.35),
+        scale: random.range(0.035, 0.072),
+        rotation: random.range(0, Math.PI * 2),
+        color: selectedVariant.endsWith("-b") ? "#d5a383" : "#c98576",
+      });
+    }
+  }
   addRadial("wind", 4, 2.4, 5.2, "#d6e2cf", 0.6, 1.15, 1.6);
-  addRadial("drifting-life", 9, 2.1, 5.1, "#c9b86f", 0.08, 0.24, 2.5);
-  addRadial("clouds", 7, 5.2, 7.4, "#d8e1d7", 0.65, 1.25, 5.6);
-  addRadial("twilight-stars", 22, 5.8, 9.2, "#f2e8c4", 0.025, 0.065, 6.1);
-  addRadial("moon", 1, 7.2, 7.2, "#efe2bd", 0.62, 0.62, 6.8);
-  addRadial("sanctuary", 12, 2.3, 5.4, "#d2b479", 0.16, 0.42, 0.18);
+  addRadial("drifting-life", 5, 2.1, 5.1, "#91895f", 0.08, 0.19, 2.5);
+  if (features.includes("clouds")) {
+    const selectedVariant = state.activeCustomization["12"] ?? "m12-a";
+    const random = makeDeterministicRandom(state.gardenSeed, `air-iii-cloud-banks-${selectedVariant}`);
+    const resolvedCount = Math.max(2, Math.round(5 * density));
+    for (let index = 0; index < resolvedCount; index += 1) {
+      const horizontal = random.range(-6.2, 6.2);
+      details.push({
+        kind: "clouds",
+        x: -4.7 + horizontal * 0.83 + random.signed(0.3),
+        y: random.range(4.8, 6.6),
+        z: -7.4 - horizontal * 0.55 + random.signed(0.28),
+        scale: random.range(0.56, 0.88),
+        rotation: random.range(-0.28, 0.28),
+        color: selectedVariant.endsWith("-b") ? "#c8d2d0" : "#d8e1d7",
+      });
+    }
+  }
+  if (features.includes("twilight-stars")) {
+    const selectedVariant = state.activeCustomization["13"] ?? "m13-a";
+    const random = makeDeterministicRandom(state.gardenSeed, `space-i-stars-${selectedVariant}`);
+    const resolvedCount = Math.max(1, Math.round(48 * density));
+    for (let index = 0; index < resolvedCount; index += 1) {
+      const horizontal = random.range(-7.4, 7.4);
+      details.push({
+        kind: "twilight-stars",
+        x: -5.4 + horizontal * 0.83 + random.signed(0.45),
+        y: random.range(4.4, 9.6),
+        z: -8.3 - horizontal * 0.55 + random.signed(0.4),
+        scale: random.range(0.01, 0.026),
+        rotation: random.range(0, Math.PI * 2),
+        color: selectedVariant.endsWith("-b") && index % 5 === 0 ? "#d8d7c7" : "#f2e8c4",
+      });
+    }
+  }
+  if (features.includes("moon")) {
+    const selectedVariant = state.activeCustomization["14"] ?? "m14-a";
+    details.push({
+      kind: "moon",
+      x: selectedVariant.endsWith("-b") ? 6.1 : -5.8,
+      y: 7.35,
+      z: -5.4,
+      scale: selectedVariant.endsWith("-b") ? 0.46 : 0.52,
+      rotation: selectedVariant.endsWith("-b") ? 0.24 : -0.2,
+      color: "#efe2bd",
+    });
+  }
+  if (features.includes("sanctuary")) {
+    const selectedVariant = state.activeCustomization["15"] ?? "m15-a";
+    details.push({
+      kind: "sanctuary",
+      x: selectedVariant.endsWith("-b") ? -3.55 : -3.95,
+      y: 0.02,
+      z: selectedVariant.endsWith("-b") ? -2.15 : -1.7,
+      scale: selectedVariant.endsWith("-b") ? 0.94 : 1,
+      rotation: selectedVariant.endsWith("-b") ? -0.08 : 0.1,
+      color: "#9a7252",
+    });
+  }
   return details;
+}
+
+function deriveWildlife(
+  state: GardenState,
+  features: GardenFeature[],
+  quality: QualityProfile,
+): { birds: GardenBird[]; groundAnimals: GardenGroundAnimal[] } {
+  const birds: GardenBird[] = [];
+  if (features.includes("drifting-life")) {
+    const random = makeDeterministicRandom(state.gardenSeed, "air-ii-bird-flock-v1");
+    for (let index = 0; index < quality.birdCount; index += 1) {
+      birds.push({
+        pathRadius: random.range(3.3, 5.1),
+        pathDepth: random.range(1.9, 3.3),
+        height: random.range(3.25, 5.1),
+        phase: random.range(0, Math.PI * 2),
+        speed: random.range(0.74, 1.08),
+        scale: random.range(0.16, 0.23),
+        color: index % 2 === 0 ? "#283e43" : "#50625f",
+      });
+    }
+  }
+
+  const groundAnimals: GardenGroundAnimal[] = [];
+  if (features.includes("sanctuary")) {
+    const random = makeDeterministicRandom(state.gardenSeed, "space-iii-grass-hares-v1");
+    const positions = [
+      { x: 1.82, z: -0.84, rotation: -1.08, pose: "seated" as const },
+      { x: -1.62, z: 0.9, rotation: 1.14, pose: "grazing" as const },
+    ];
+    for (const position of positions.slice(0, quality.groundAnimalCount)) {
+      groundAnimals.push({
+        kind: "hare",
+        pose: position.pose,
+        x: position.x + random.signed(0.16),
+        z: position.z + random.signed(0.14),
+        scale: random.range(0.48, 0.6),
+        rotation: position.rotation + random.signed(0.1),
+        color: random.next() > 0.5 ? "#77736a" : "#666b64",
+      });
+    }
+  }
+  return { birds, groundAnimals };
 }

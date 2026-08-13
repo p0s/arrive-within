@@ -1,4 +1,5 @@
 export type GardenQualityHint = "low" | "balanced" | "high";
+export type GardenDayPhase = "dawn" | "day" | "dusk" | "night";
 
 export interface GardenGrowthEvent {
   practiceEventID: string;
@@ -22,6 +23,7 @@ export interface GardenState {
   activeCustomization: Record<string, string>;
   microGrowthOrdinal: number;
   localTimePresentation?: string | null;
+  localDayPhase?: GardenDayPhase;
   latestGrowthEvent?: GardenGrowthEvent | null;
   reduceMotion: boolean;
   qualityHint: GardenQualityHint;

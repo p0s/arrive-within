@@ -40,6 +40,7 @@ public enum ProgressionReducer {
       activeCustomization: validCustomization,
       microGrowthOrdinal: qualifying.count,
       localTimePresentation: latest?.practiceDay.localDate,
+      localDayPhase: context.localDayPhase,
       latestGrowthEvent: latest.flatMap { event in
         guard let latestIndex, let latestJourneyDay else { return nil }
         let previousJourneyDay = qualifying.dropLast().contains(where: {

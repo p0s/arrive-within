@@ -20,6 +20,7 @@ struct GardenBridgeContractTests {
       activeCustomization: [1: "m01-a"],
       microGrowthOrdinal: 2,
       localTimePresentation: "2026-08-10",
+      localDayPhase: .night,
       latestGrowthEvent: nil,
       reduceMotion: false,
       qualityHint: .balanced
@@ -31,6 +32,7 @@ struct GardenBridgeContractTests {
 
     #expect(decoded.requestID == requestID)
     #expect(decoded.payload.state == state)
+    #expect(decoded.payload.state.localDayPhase == .night)
     #expect(encoded.count < GardenBridgeCodec.maximumMessageBytes)
   }
 
@@ -48,6 +50,7 @@ struct GardenBridgeContractTests {
       activeCustomization: [:],
       microGrowthOrdinal: 3,
       localTimePresentation: "2026-08-10",
+      localDayPhase: .dusk,
       latestGrowthEvent: nil,
       reduceMotion: true,
       qualityHint: .low

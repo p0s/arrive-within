@@ -20,6 +20,13 @@ describe("GardenState contract", () => {
     expect(() => validateGardenState(unsafe)).toThrow(GardenContractError);
   });
 
+  it("accepts native day phases and rejects invented atmosphere phases", () => {
+    expect(validateGardenState({ ...fixture, localDayPhase: "dawn" }).localDayPhase).toBe("dawn");
+    expect(() => validateGardenState({ ...fixture, localDayPhase: "midnight-blue" })).toThrow(
+      GardenContractError,
+    );
+  });
+
   it("requires a bounded typed bridge envelope", () => {
     const envelope = decodeSnapshotEnvelope({
       type: "state-snapshot",
