@@ -6,5 +6,7 @@ poster_sha256: 98f5ee70618a292cbde409e83f01786afed0e84e3ecc0e70aacaec12e2a8f8e1
 social_preview_sha256: f345b19a378ca431ca51ea8785eb352865023ed4e84b4ada8ecbbd10bce1511f
 contact_sheet_sha256: 1b2d2b16146e7470095a1e7dc0dd00181eed571030b555d97f6fd1c3ec72b1bc
 external_requests_observed: 0
+current_source_state: regeneration-deferred-host-denial
+current_garden_proof: separate
 human_review: pending
 release_ready: false

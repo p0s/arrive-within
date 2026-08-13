@@ -6,7 +6,7 @@
     "status": "build-7-physical-ipad-verified-and-waiting-for-review",
     "claim_boundary": "Build 7 binds the final 672-file pre-Git public tree, includes exact third-party notices, and passes archive plus distribution-IPA inspection with the selected Twilight renderer, no narration, no CloudKit/push entitlement, and no debug/test fixture. Apple reports it VALID, APP_STORE_ELIGIBLE, IN_BETA_TESTING, attached to version 1.0, and WAITING_FOR_REVIEW; CoreDevice reads exact build 7 on the authorized iPad and the owner confirmed its real Three.js Garden.",
     "evidence": "docs/qa/persona-runs/SCN-001/local-simulator-probe.md",
-    "next_action": "Await App Review while guarded narration production continues for a later audio-complete build; prepare but do not create first Git history until separately authorized."
+    "next_action": "Await App Review while guarded narration production continues for a later audio-complete build; preserve signed public main and use focused branch/PR review for later product changes."
   },
   "current_batch": {
     "id": "selected-twilight-build-7-notice-complete-replacement-and-guarded-audio",
@@ -67,7 +67,7 @@
     "checks_passed": 120,
     "checks_failed": 0,
     "shipping_source_file_count": 69,
-    "shipping_source_sha256": "a43da6ba26cc6a85af68eaa237d66381fc9d403a1771a3879ad310499bdac86c",
+    "shipping_source_sha256": "03eb55935889b025d074d77ef9551e007ee0c7edca7f4c38c9e89f884cf6b87f",
     "release_ready": false,
     "candidate_bound": false
   },
@@ -90,16 +90,16 @@
   "terminal_local_state": {
     "status": "selected-twilight-build-7-waiting-for-review-build1-upgrade-proved-audio-checkpoint-fast-path-running-g22",
     "root_gate": "passed-single-coherent-build-7-frozen-source-gate",
-    "acceptance_verified": 9,
-    "acceptance_blocked_external": 11,
+    "acceptance_verified": 11,
+    "acceptance_blocked_external": 10,
     "acceptance_in_progress": 8,
-    "acceptance_open": 1,
+    "acceptance_open": 0,
     "acceptance_removed_by_contract": 2,
-    "scenarios_verified": 4,
-    "scenarios_blocked_external": 12,
+    "scenarios_verified": 5,
+    "scenarios_blocked_external": 11,
     "scenarios_in_progress": 2,
     "scenarios_open": 0,
     "release_ready": false,
-    "claim_boundary": "Build 7 is the exact attached zero-narration App Store candidate. Apple reports it VALID, APP_STORE_ELIGIBLE, IN_BETA_TESTING, and WAITING_FOR_REVIEW with AFTER_APPROVAL; all 24 approved screenshot checksums read back COMPLETE. CoreDevice reads exact build 7 on the authorized iPad and the owner confirmed its real Three.js Garden. The refreshed Twilight website is live with byte-exact route/media readback. The byte-verified exact build-1 persistence source produced a synthetic hash-bound fixture that build 7 opens with semantic state, duplicate safety, marker cleanup, and second-reopen stability; exact seeded TestFlight upgrade remains separate. A genuine 1,205.536-second selected-renderer local-browser soak retained one rebuild, a live context, identical bounded resource counts, and zero errors/external requests; app-hosted and physical budgets remain separate. A verified private narration packet contains at least 23 EN and 5 DE complete candidates totaling 235.0 minutes, and the sole lifecycle owner continues beyond that snapshot through the real-proven two-unit checkpoint-only fast path; it releases MPS state after at most two exact hash-verified units under the unchanged 11 GiB stop line and performs full PCM validation/assembly at finalization. No private review packet approves a human or rights gate. The formal security workbench is owner-waived/skipped rather than passed; future Git-history audit, human audio/rights review, App Review approval, and storefront remain separate."
+    "claim_boundary": "Build 7 is the exact attached zero-narration App Store candidate. Apple reports it VALID, APP_STORE_ELIGIBLE, IN_BETA_TESTING, and WAITING_FOR_REVIEW with AFTER_APPROVAL; all 24 approved screenshot checksums read back COMPLETE. CoreDevice reads exact build 7 on the authorized iPad and the owner confirmed its real Three.js Garden. The refreshed Twilight website is live with byte-exact route/media readback. The byte-verified exact build-1 persistence source produced a synthetic hash-bound fixture that build 7 opens with semantic state, duplicate safety, marker cleanup, and second-reopen stability; exact seeded TestFlight upgrade remains separate. A genuine 1,205.536-second selected-renderer local-browser soak retained one rebuild, a live context, identical bounded resource counts, and zero errors/external requests; app-hosted and physical budgets remain separate. Initial canonical-repository readback confirmed public visibility and origin/main at SSH-signed root commit 6d7ba49967f3082e39dcb0437402a97593897276 after tracked/history privacy review and tracked-only clone reproduction; that root remains reachable as reviewed commits advance main, and no GitHub Actions workflow or run exists. A verified private narration packet contains at least 23 EN and 5 DE complete candidates totaling 235.0 minutes, and the sole lifecycle owner continues beyond that snapshot through the real-proven two-unit checkpoint-only fast path; it releases MPS state after at most two exact hash-verified units under the unchanged 11 GiB stop line and performs full PCM validation/assembly at finalization. No private review packet approves a human or rights gate. The formal security workbench is owner-waived/skipped rather than passed; future product pushes require fresh tracked/history review, while human audio/rights review, App Review approval, and storefront remain separate."
   }
 }

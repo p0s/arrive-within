@@ -4,6 +4,10 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { listProspectivePublicFiles } from "./lib/prospective-public-files.mjs";
+import {
+  detectPublicPrivacySignatures,
+  publicRepositoryURL,
+} from "./lib/public-repository-link-policy.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const REPORT_JSON = path.join(ROOT, ".evidence", "privacy", "public-repository-validation.json");
@@ -49,12 +53,7 @@ const GENERATED_CANDIDATE_ROOTS = [
   ["public-media-output", "Marketing/PublicMedia/output"],
   ["renderer-visual-output", "Marketing/RendererVisualMatrix/output"],
 ];
-const ownerHandle = String.fromCharCode(112, 48, 115);
 const permittedThirdPartyLicenseEmail = ["floatdrop", "gmail.com"].join("@");
-const deviceAliases = [
-  String.fromCharCode(112, 115, 97, 110),
-  String.fromCharCode(112, 112, 97, 100),
-];
 
 const checks = [];
 const failures = [];
@@ -113,36 +112,6 @@ async function collectCandidateFiles(directory, label, prefix = "") {
     else if (entry.isFile()) files.push({ label, relative, absolute });
   }
   return files;
-}
-
-function escapeRegExp(value) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-function privacyPatterns() {
-  const personalHome = ["", "(?:Users|home)", "[A-Za-z0-9._-]+", ""].join("/");
-  const privateRoot = ["", "private", ""].join("/");
-  const temporaryRoot = ["", "tmp", ""].join("/");
-  const fileScheme = ["file", ":", "//"].join("");
-  const remoteFragment = `${ownerHandle}/arrive-within`;
-  const teamIdentifierKey = String.fromCharCode(84, 101, 97, 109, 73, 100, 101, 110, 116, 105, 102, 105, 101, 114);
-  const prefixIdentifierKey = String.fromCharCode(65, 112, 112, 108, 105, 99, 97, 116, 105, 111, 110, 73, 100, 101, 110, 116, 105, 102, 105, 101, 114, 80, 114, 101, 102, 105, 120);
-  return [
-    { id: "owner-handle", pattern: new RegExp(escapeRegExp(ownerHandle), "i") },
-    { id: "device-alias", pattern: new RegExp(`\\b(?:${deviceAliases.map(escapeRegExp).join("|")})\\b`, "i") },
-    { id: "personal-home", pattern: new RegExp(personalHome) },
-    { id: "private-absolute-path", pattern: new RegExp(`(?:^|[\\s\"'=])${escapeRegExp(privateRoot)}`) },
-    { id: "temporary-absolute-path", pattern: new RegExp(`(?:^|[\\s\"'=])${escapeRegExp(temporaryRoot)}`) },
-    { id: "file-scheme", pattern: new RegExp(escapeRegExp(fileScheme), "i") },
-    { id: "repository-owner-location", pattern: new RegExp(escapeRegExp(remoteFragment), "i") },
-    { id: "private-key", pattern: /-----BEGIN (?:RSA |OPENSSH |EC |DSA )?PRIVATE KEY-----/ },
-    { id: "github-token", pattern: /\bgh[pousr]_[A-Za-z0-9]{20,}\b/ },
-    { id: "openai-token", pattern: /\bsk-[A-Za-z0-9_-]{20,}\b/ },
-    { id: "aws-key", pattern: /\bAKIA[0-9A-Z]{16}\b/ },
-    { id: "development-team-id", pattern: new RegExp(["DEVELOPMENT_TEAM", "\\s*=\\s*", "[A-Z0-9]{10}", "\\b"].join("")) },
-    { id: "provisioning-identifier", pattern: new RegExp([`(?:${teamIdentifierKey}|${prefixIdentifierKey}|com\\.apple\\.developer\\.team-identifier)`, "[^\\n]{0,80}", "(?:<string>|=|:)\\s*", "[A-Z0-9]{10}", "\\b"].join(""), "i") },
-    { id: "device-identifier-evidence", pattern: new RegExp(["(?:UDID|device[_ -]?identifier)", "[^\\n]{0,80}", "[0-9A-F]{8}-[0-9A-F-]{27,}"].join(""), "i") },
-  ];
 }
 
 function printableMetadata(buffer, minimumLength = 4) {
@@ -231,10 +200,8 @@ function scannableSource(buffer, displayPath) {
 
 function scanBuffer(buffer, displayPath, scope, hits) {
   const source = scannableSource(buffer, displayPath);
-  for (const forbidden of privacyPatterns()) {
-    if (forbidden.pattern.test(source) || forbidden.pattern.test(displayPath)) {
-      hits.push({ scope, file: displayPath, pattern: forbidden.id });
-    }
+  for (const signature of detectPublicPrivacySignatures(source, displayPath)) {
+    hits.push({ scope, file: displayPath, pattern: signature });
   }
   const emailPattern = /\b[A-Z0-9._%+-]+@([A-Z0-9.-]+\.[A-Z]{2,})\b/gi;
   for (const match of source.matchAll(emailPattern)) {
@@ -316,6 +283,7 @@ async function main() {
 
   const readme = await requireText("README.md");
   check("readme-pre-release-truth", readme.includes("active pre-release verification") && readme.includes("does **not** claim App Store"), "README must keep release evidence bounded");
+  check("readme-public-repository", readme.includes(publicRepositoryURL), "README must document the exact canonical public repository");
   check("readme-root-check", readme.includes("./scripts/check"), "README must document the root gate");
   check("readme-media", readme.includes("01-growth-arrive-en-us-iphone-6.9-1320x2868.png") && readme.includes("02-growth-take-root-en-us-iphone-6.9-1320x2868.png") && readme.includes("garden-growth-v1.mp4"), "README must lead with two selected actual-app screenshots and retain the canonical garden film");
   check("minimal-root-docs", ["CODE_OF_CONDUCT.md", "GOAL.md", "PRIVACY.md", "TRADEMARKS.md", "LICENSE-MEDIA.md", "ARCHITECTURE.md", "ART_DIRECTION.md", "CONTENT_GUIDE.md", "ASSET_POLICY.md"].every((file) => !publicSet.has(file)), "redundant or focused project documents must stay out of the public root");
@@ -345,7 +313,20 @@ async function main() {
   const audioManifest = JSON.parse(await requireText("Apps/ArriveWithin/Resources/Audio/audio-assets.json"));
   check("procedural-audio-rights", typeof audioManifest.rights === "string" && audioManifest.rights.includes("no samples"), "bundled audio must record original deterministic synthesis");
   const websiteProvenance = JSON.parse(await requireText("Website/src/assets/provenance.json"));
-  check("website-provenance", websiteProvenance.assets?.length === 11 && websiteProvenance.assets.every((item) => /^[a-f0-9]{64}$/.test(item.sha256)), "website assets must have complete hash provenance");
+  const websiteBrandProvenance = JSON.parse(await requireText("Website/src/assets/brand-provenance.json"));
+  check(
+    "website-provenance",
+    websiteProvenance.assets?.length === 11
+      && websiteProvenance.assets.every((item) => /^[a-f0-9]{64}$/.test(item.sha256))
+      && websiteBrandProvenance.selection === "B — Quiet Threshold"
+      && websiteBrandProvenance.canonical_source === "Apps/ArriveWithin/Resources/AppIcon.icon"
+      && websiteBrandProvenance.assets?.length === 2
+      && websiteBrandProvenance.assets.every((item) => /^[a-f0-9]{64}$/.test(item.sha256) && item.alpha === false)
+      && websiteBrandProvenance.rights?.includes("trademark rights remain reserved"),
+    "website product media and selected identity assets must have complete bounded hash, rights, and trademark provenance",
+  );
+  const websiteContent = await requireText("Website/src/content.mjs");
+  check("website-public-repository", websiteContent.includes(publicRepositoryURL), "website source must link only to the exact canonical public repository");
 
   const privacyHits = [];
   const publicArchives = [];

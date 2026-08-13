@@ -36,6 +36,33 @@ struct GardenBridgeContractTests {
     #expect(encoded.count < GardenBridgeCodec.maximumMessageBytes)
   }
 
+  @Test("A pre-day-phase snapshot still decodes with the legacy presentation default")
+  func legacySnapshotWithoutDayPhase() throws {
+    let state = GardenState(
+      gardenID: ArriveWithinFixtures.gardenID,
+      gardenSeed: 424_242,
+      profileGenerationID: ArriveWithinFixtures.generationID,
+      qualifyingSessionCount: 2,
+      totalQualifyingSeconds: 480,
+      journeyDay: 2,
+      highestMilestone: 1,
+      unlockedVariants: ["m01-a", "m01-b"],
+      activeCustomization: [1: "m01-a"],
+      microGrowthOrdinal: 2,
+      localTimePresentation: "2026-08-10",
+      latestGrowthEvent: nil,
+      reduceMotion: false,
+      qualityHint: .balanced
+    )
+
+    let encoded = try GardenBridgeCodec.encodeSnapshot(
+      state,
+      requestID: UUID(uuidString: "60000000-0000-4000-8000-000000000002")!
+    )
+    #expect(!String(decoding: encoded, as: UTF8.self).contains("localDayPhase"))
+    #expect(try GardenBridgeCodec.decodeSnapshot(encoded).payload.state.localDayPhase == nil)
+  }
+
   @Test("Native description exposes equivalent English and German progress")
   func bilingualFallbackDescription() {
     let state = GardenState(

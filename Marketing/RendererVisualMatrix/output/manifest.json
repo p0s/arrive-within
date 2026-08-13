@@ -1877,5 +1877,22 @@
       "motion comfort"
     ]
   },
+  "post_generation_change": {
+    "classification": "post-publication-garden-visual-matrix-regeneration-deferred",
+    "current_renderer_source_sha256": "a1a5410462a061db3dbc446b76b41d873b3116af63a31efb1cda0d019ec20134",
+    "current_garden_state_schema_sha256": "a73eb83fd1326b3c113663db54005a93024862fa630d8f92a4f3cf1fecc08fee",
+    "changed_paths": [
+      "Renderer/src/main.ts",
+      "Renderer/src/scene.ts",
+      "Renderer/src/types.ts",
+      "Renderer/src/visual-design.ts",
+      "Renderer/src/world-model.ts",
+      "Shared/GardenState.schema.json"
+    ],
+    "fresh_browser_matrix": "skipped-host-denial-not-passed",
+    "current_garden_proof": "separate-provenance-bound-rendered-artifacts-and-deterministic-orbit-diagnostics",
+    "valid_until": "next-successful-current-source-renderer-matrix-regeneration",
+    "rationale": "The retained historical milestone-variant matrix remains byte-bound pre-enhancement evidence but is not current Garden proof. The fresh browser matrix was skipped after host denial and was not relabeled as passed. Regenerate, visually review, and hash-bind the matrix at the next successful current-source renderer-matrix regeneration."
+  },
   "claim_boundary": "This matrix proves deterministic local rendering of all authored milestones and variants. It does not prove owner art approval, physical performance, signed-candidate behavior, App Store state, deployment, or public readback."
 }

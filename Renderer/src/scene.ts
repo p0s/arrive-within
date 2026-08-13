@@ -46,6 +46,7 @@ export interface GardenRendererDiagnostics {
   rebuildCount: number;
   context: "available" | "lost" | "disposed";
   effectivePixelRatio: number;
+  revealActive: boolean;
 }
 
 const baseCameraPosition = new THREE.Vector3(5.7, 4.4, 8.6);
@@ -226,12 +227,18 @@ export function createGardenScene(
 
     const renderStarted = performance.now();
     if (revealStartedAt !== undefined) {
-      const progress = THREE.MathUtils.clamp((now - revealStartedAt) / revealDuration, 0, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const scale = THREE.MathUtils.lerp(revealScale, 1, eased);
-      world.root.scale.setScalar(scale);
-      world.root.position.y = THREE.MathUtils.lerp(-0.06, 0, eased);
-      if (progress >= 1) revealStartedAt = undefined;
+      if (state.reduceMotion) {
+        revealStartedAt = undefined;
+        world.root.scale.setScalar(1);
+        world.root.position.y = 0;
+      } else {
+        const progress = THREE.MathUtils.clamp((now - revealStartedAt) / revealDuration, 0, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const scale = THREE.MathUtils.lerp(revealScale, 1, eased);
+        world.root.scale.setScalar(scale);
+        world.root.position.y = THREE.MathUtils.lerp(-0.06, 0, eased);
+        if (progress >= 1) revealStartedAt = undefined;
+      }
     }
     if (!state.reduceMotion) {
       const breeze = Math.sin(now * 0.00042) * model.windStrength;
@@ -266,6 +273,16 @@ export function createGardenScene(
         }
         pointerStart = undefined;
         orbitAngle = resolveGardenOrbitAngle(orbitAngle, 0, true);
+        if (
+          revealStartedAt !== undefined
+          && settleGardenRevealForReducedMotion(world.root, true)
+        ) {
+          revealStartedAt = undefined;
+        }
+        settleGardenMotionPose(world, model);
+        if (renderingIsActive && !document.hidden && !contextIsLost) {
+          renderer.render(scene, camera);
+        }
       }
       const nextVisualSignature = gardenVisualSignature(state);
       if (nextVisualSignature === visualSignature) return;
@@ -336,6 +353,7 @@ export function createGardenScene(
         rebuildCount,
         context: disposed ? "disposed" : contextIsLost ? "lost" : "available",
         effectivePixelRatio: renderer.getPixelRatio(),
+        revealActive: revealStartedAt !== undefined,
       };
     },
     dispose(): void {
@@ -367,9 +385,18 @@ export function gardenVisualSignature(state: GardenState): string {
     activeCustomization: customization,
     microGrowthOrdinal: state.microGrowthOrdinal,
     localDayPhase: state.localDayPhase ?? "day",
-    reduceMotion: state.reduceMotion,
     qualityHint: state.qualityHint,
   });
+}
+
+export function settleGardenRevealForReducedMotion(
+  root: THREE.Object3D,
+  reduceMotionActivated: boolean,
+): boolean {
+  if (!reduceMotionActivated) return false;
+  root.scale.setScalar(1);
+  root.position.y = 0;
+  return true;
 }
 
 export function resolveGardenOrbitAngle(
@@ -407,6 +434,14 @@ interface BuiltWorld {
   particles: THREE.Points;
   birds: THREE.Group;
   groundWildlife: THREE.Group;
+}
+
+function settleGardenMotionPose(world: BuiltWorld, model: GardenWorldModel): void {
+  world.canopy.rotation.x = 0;
+  world.canopy.rotation.z = 0;
+  world.particles.rotation.y = 0;
+  settleBirds(world.birds, model);
+  settleGroundWildlife(world.groundWildlife);
 }
 
 function buildWorld(model: GardenWorldModel, direction: GardenVisualDirection): BuiltWorld {
@@ -1827,6 +1862,14 @@ function animateBirds(flock: THREE.Group, model: GardenWorldModel, now: number):
   }
 }
 
+function settleBirds(flock: THREE.Group, model: GardenWorldModel): void {
+  for (const [index, figure] of flock.children.entries()) {
+    const bird = model.birds[index];
+    if (!(figure instanceof THREE.Group) || bird === undefined) continue;
+    applyBirdPresentation(figure, resolveBirdSettledPresentation(bird));
+  }
+}
+
 function applyBirdPresentation(
   figure: THREE.Group,
   presentation: GardenBirdPresentation,
@@ -1952,6 +1995,16 @@ function animateGroundWildlife(wildlife: THREE.Group, now: number): void {
     child.scale.set(baseScale, baseScale * (1 + Math.sin(now * 0.0011 + phase) * 0.012), baseScale);
     const ear = child.getObjectByName("hare-ear-2");
     if (ear !== undefined) ear.rotation.y = Math.sin(now * 0.0008 + phase) * 0.1;
+  }
+}
+
+function settleGroundWildlife(wildlife: THREE.Group): void {
+  for (const child of wildlife.children) {
+    if (!(child instanceof THREE.Group)) continue;
+    const baseScale = Number(child.userData.baseScale ?? 1);
+    child.scale.setScalar(baseScale);
+    const ear = child.getObjectByName("hare-ear-2");
+    if (ear !== undefined) ear.rotation.y = 0;
   }
 }
 

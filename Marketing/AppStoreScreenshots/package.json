@@ -13,6 +13,7 @@
     "typecheck": "tsc --noEmit",
     "validate:plan": "tsx scripts/validate-plan.ts",
     "validate:narratives": "tsx scripts/validate-narrative-alternatives.ts",
+    "test:drift-policy": "tsx scripts/test-capture-drift-policy.ts",
     "validate:captures": "tsx scripts/validate-captures.ts",
     "validate:exports": "tsx scripts/validate-export-matrix.ts",
     "validate:reproducibility": "tsx scripts/verify-reproducibility.ts --check",

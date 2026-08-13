@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "status": "passed-local-public-media-contract",
-  "checks_passed": 51,
+  "checks_passed": 52,
   "checks_failed": 0,
   "human_review": "pending",
   "release_ready": false,
-  "manifest_sha256": "a464f276f47d64316de456b747bc52f20349267add42f06f13f1d6f141e6bede",
+  "manifest_sha256": "f41f827a603834db55f53ad921296503965c1c93e7824a876051c3c89dd55030",
   "failures": [],
   "checks": [
     {
@@ -51,12 +51,17 @@
     {
       "id": "schema-hash",
       "passed": true,
-      "detail": "GardenState schema hash must match"
+      "detail": "GardenState schema must match or retain the one exact historical-media boundary"
     },
     {
       "id": "renderer-source-hash",
       "passed": true,
-      "detail": "renderer source hash must match the manifest"
+      "detail": "renderer source must match or retain the one exact historical-media boundary"
+    },
+    {
+      "id": "post-generation-boundary",
+      "passed": true,
+      "detail": "source drift must be absent or exactly bound as deferred historical media"
     },
     {
       "id": "frame-1-mapping",
@@ -261,7 +266,7 @@
     {
       "id": "validation-text",
       "passed": true,
-      "detail": "plain-text validation must preserve human and release boundaries"
+      "detail": "plain-text validation must preserve human, release, and current-source boundaries"
     }
   ]
 }

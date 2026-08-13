@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "selection": "B — Quiet Threshold",
+  "canonical_source": "Apps/ArriveWithin/Resources/AppIcon.icon",
+  "derived_manifest": "docs/brand/app-icon-derived/_manifest.json",
+  "transformation": "Exact byte copies of deterministic Sharp 0.35.3 default-appearance outputs; no website-specific visual transform.",
+  "rights": "First-party selected Arrive Within identity asset. Public source distribution is permitted; trademark rights remain reserved.",
+  "assets": [
+    {
+      "file": "brand-icon-40.png",
+      "source": "docs/brand/app-icon-derived/AppIcon-Default-40.png",
+      "sha256": "35e2be5edddbde0818b1c157a518cb6101c6ecba9c786360372705da8853ac2c",
+      "width": 40,
+      "height": 40,
+      "color_space": "RGB",
+      "alpha": false,
+      "role": "browser favicon"
+    },
+    {
+      "file": "brand-icon-180.png",
+      "source": "docs/brand/app-icon-derived/AppIcon-Default-180.png",
+      "sha256": "04feea75ed9f652b8c21175d87fa2a7541030b7382228e6d6c4e432b6bb2bbd4",
+      "width": 180,
+      "height": 180,
+      "color_space": "RGB",
+      "alpha": false,
+      "role": "Apple touch icon and visible website brand mark"
+    }
+  ]
+}

@@ -9,6 +9,7 @@ import {
   resolveBirdPresentation,
   resolveBirdSettledPresentation,
   resolveGardenOrbitAngle,
+  settleGardenRevealForReducedMotion,
 } from "../src/scene";
 
 describe("renderer resilience", () => {
@@ -75,6 +76,19 @@ describe("renderer resilience", () => {
     expect(geometryDisposed).toHaveBeenCalledTimes(1);
     expect(materialDisposed).toHaveBeenCalledTimes(1);
     expect(textureDisposed).toHaveBeenCalledTimes(1);
+  });
+
+  it("settles an active growth reveal when Reduce Motion becomes enabled", () => {
+    const root = new THREE.Group();
+    root.scale.setScalar(0.93);
+    root.position.y = -0.06;
+
+    expect(settleGardenRevealForReducedMotion(root, false)).toBe(false);
+    expect(root.scale.x).toBe(0.93);
+    expect(root.position.y).toBe(-0.06);
+    expect(settleGardenRevealForReducedMotion(root, true)).toBe(true);
+    expect(root.scale.toArray()).toEqual([1, 1, 1]);
+    expect(root.position.y).toBe(0);
   });
 
   it("locks the authored camera while Reduce Motion is active", () => {
