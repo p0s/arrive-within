@@ -313,7 +313,18 @@ async function main() {
   const audioManifest = JSON.parse(await requireText("Apps/ArriveWithin/Resources/Audio/audio-assets.json"));
   check("procedural-audio-rights", typeof audioManifest.rights === "string" && audioManifest.rights.includes("no samples"), "bundled audio must record original deterministic synthesis");
   const websiteProvenance = JSON.parse(await requireText("Website/src/assets/provenance.json"));
-  check("website-provenance", websiteProvenance.assets?.length === 11 && websiteProvenance.assets.every((item) => /^[a-f0-9]{64}$/.test(item.sha256)), "website assets must have complete hash provenance");
+  const websiteBrandProvenance = JSON.parse(await requireText("Website/src/assets/brand-provenance.json"));
+  check(
+    "website-provenance",
+    websiteProvenance.assets?.length === 11
+      && websiteProvenance.assets.every((item) => /^[a-f0-9]{64}$/.test(item.sha256))
+      && websiteBrandProvenance.selection === "B — Quiet Threshold"
+      && websiteBrandProvenance.canonical_source === "Apps/ArriveWithin/Resources/AppIcon.icon"
+      && websiteBrandProvenance.assets?.length === 2
+      && websiteBrandProvenance.assets.every((item) => /^[a-f0-9]{64}$/.test(item.sha256) && item.alpha === false)
+      && websiteBrandProvenance.rights?.includes("trademark rights remain reserved"),
+    "website product media and selected identity assets must have complete bounded hash, rights, and trademark provenance",
+  );
   const websiteContent = await requireText("Website/src/content.mjs");
   check("website-public-repository", websiteContent.includes(publicRepositoryURL), "website source must link only to the exact canonical public repository");
 

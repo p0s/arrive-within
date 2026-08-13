@@ -24,7 +24,7 @@ export const siteContent = {
       media: {
         kicker: "One garden, faithfully grown",
         title: "See practice become a living world.",
-        body: "Six deterministic states from the real Arrive Within renderer show the same garden from before the first practice through practice day 30. The silent film uses safe sample state, contains no generated interpolation, and makes no physical-device performance claim.",
+        body: "Six real renderer states follow the same garden from before the first practice to day 30. The silent film uses safe sample state and no generated interpolation.",
         label: "Silent garden-growth film showing six deterministic stages from before the first practice to practice day 30.",
         caption: "Real renderer · deterministic safe sample state · 9.73 seconds · no audio",
         fallback: "Open the garden-growth film",
@@ -102,7 +102,7 @@ export const siteContent = {
       title: "The public repository is the real product.",
       intro: "Arrive Within is developed in one canonical public repository whose tracked history is safe to inspect from the first commit.",
       principles: [
-        { title: "No demo fork", text: "The native app, renderer, content contracts, website, tests, and release evidence live together. There is no private product implementation behind a public shell." },
+        { title: "No demo fork", text: "The native app, renderer, content contracts, website, tests, and release evidence live together in this repository. There is no private product behind a public shell." },
         { title: "Reproducible evidence", text: "Deterministic fixtures and public-safe ledgers separate local tests, simulator proof, physical devices, CloudKit, TestFlight, App Store, and deployment readback." },
         { title: "Rights before assets", text: "No copied reference art, uncertain voice material, proprietary behavior, or unreviewed media enters the public history." },
         { title: "Privacy as architecture", text: "The app is local-first, has no tracking or custom user-data backend, and keeps the renderer outside product authority." },
@@ -134,7 +134,7 @@ export const siteContent = {
       media: {
         kicker: "Ein Garten, verlässlich gewachsen",
         title: "Sieh, wie Praxis zu einer lebendigen Welt wird.",
-        body: "Sechs deterministische Zustände aus dem echten Arrive Within Renderer zeigen denselben Garten vor der ersten Meditation bis zum 30. Praxistag. Der stumme Film nutzt sichere Beispieldaten, enthält keine generierte Zwischenanimation und macht keine Aussage zur Leistung auf echten Geräten.",
+        body: "Sechs echte Renderer-Zustände zeigen denselben Garten vor der ersten Meditation bis zum 30. Praxistag. Der stumme Film nutzt sichere Beispieldaten und keine generierten Zwischenbilder.",
         label: "Stummer Gartenfilm mit sechs deterministischen Stufen vor der ersten Meditation bis zum 30. Praxistag.",
         caption: "Echter Renderer · sichere deterministische Beispieldaten · 9,73 Sekunden · ohne Ton",
         fallback: "Gartenfilm öffnen",
@@ -212,7 +212,7 @@ export const siteContent = {
       title: "Das öffentliche Repository ist das echte Produkt.",
       intro: "Arrive Within wird in einem kanonischen öffentlichen Repository entwickelt, dessen gesamte nachverfolgte Historie ab dem ersten Commit sicher einsehbar ist.",
       principles: [
-        { title: "Kein Demo-Fork", text: "Native App, Renderer, Inhaltsverträge, Website, Tests und Freigabenachweise gehören zusammen. Hinter einer öffentlichen Hülle liegt keine private Produktimplementierung." },
+        { title: "Kein Demo-Fork", text: "Native App, Renderer, Inhaltsverträge, Website, Tests und Freigabenachweise gehören zu diesem Repository. Hinter einer öffentlichen Hülle liegt kein privates Produkt." },
         { title: "Reproduzierbare Nachweise", text: "Deterministische Fixtures und öffentlich sichere Ledgers trennen lokale Tests, Simulator, echte Geräte, CloudKit, TestFlight, App Store und Deployment-Readback." },
         { title: "Rechte vor Assets", text: "Kopierte Referenzkunst, unklare Stimmen, proprietäres Verhalten und ungeprüfte Medien gelangen nicht in die öffentliche Historie." },
         { title: "Datenschutz als Architektur", text: "Die App ist lokal ausgerichtet, hat kein Tracking und keinen eigenen Nutzerdaten-Server; der Renderer besitzt keine Produktwahrheit." },
