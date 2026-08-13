@@ -45,7 +45,7 @@ try {
     { id: "mature", preset: "mature" },
   ];
   const styles = ["twilight", "hand-drawn", "stop-motion", "crochet", "claymation"];
-  const phases = ["day", "night"];
+  const phases = ["day", "dusk", "night"];
   const results = [];
 
   for (const viewport of viewports) {
@@ -73,6 +73,32 @@ try {
         assert(baseline.dayPhase === phase, `${label} resolved the wrong phase`);
         assert(baseline.revealActive === false, `${label} retained motion`);
         assert(baseline.worldRootCount === 1, `${label} retained more than one world root`);
+
+        const alternateStyle = style === "twilight" ? "hand-drawn" : "twilight";
+        await page.evaluate((value) => window.arriveWithinGardenDesignLab?.setStyle(value), alternateStyle);
+        const switched = await diagnostics(page);
+        const expectedAlternateDirection = alternateStyle === "twilight" ? "twilight-refuge" : alternateStyle;
+        assert(switched.direction === expectedAlternateDirection, `${label} did not switch styles`);
+        assert(switched.worldRootCount === 1, `${label} retained duplicate world roots after switching`);
+        assert(switched.rebuildCount === baseline.rebuildCount + 1, `${label} did not atomically rebuild once`);
+        await page.evaluate((value) => window.arriveWithinGardenDesignLab?.setStyle(value), style);
+        const restored = await diagnostics(page);
+        const expectedDirection = style === "twilight" ? "twilight-refuge" : style;
+        assert(restored.direction === expectedDirection, `${label} did not restore its style`);
+        assert(restored.worldRootCount === 1, `${label} retained duplicate roots after style restore`);
+        assert(restored.rebuildCount === baseline.rebuildCount + 2, `${label} style restore rebuilt unexpectedly`);
+
+        await page.evaluate(() => window.arriveWithinGardenDesignLab?.setQuality("low"));
+        const lowQuality = await diagnostics(page);
+        assert(lowQuality.styleDetailEnabled === false, `${label} kept style detail at low quality`);
+        assert(lowQuality.worldRootCount === 1, `${label} retained duplicate roots at low quality`);
+        assert(lowQuality.worldFeatureCount === baseline.worldFeatureCount, `${label} lost authored features at low quality`);
+        if (baseline.styleTextureCount > 0) {
+          assert(lowQuality.styleTextureCount < baseline.styleTextureCount, `${label} did not reduce style textures at low quality`);
+        }
+        await page.evaluate(() => window.arriveWithinGardenDesignLab?.setQuality("high"));
+        const orbitBaseline = await diagnostics(page);
+        assert(orbitBaseline.styleDetailEnabled === true, `${label} did not restore style detail`);
         const canvas = await page.locator("#garden-canvas").boundingBox();
         assert(canvas !== null, `${label} has no rendered canvas`);
 
@@ -82,16 +108,16 @@ try {
 
         const right = await orbit(page, canvas, 0.5, 0.8);
         assert(right.orbitAngle > 0, `${label} did not orbit right`);
-        assertLightingInvariant(baseline, right, `${label}/right`);
+        assertLightingInvariant(orbitBaseline, right, `${label}/right`);
 
         await page.evaluate(() => window.arriveWithinGardenDesignLab?.resetView());
         const reset = await diagnostics(page);
         assert(reset.orbitAngle === 0, `${label} did not reset`);
-        assertLightingInvariant(baseline, reset, `${label}/reset`);
+        assertLightingInvariant(orbitBaseline, reset, `${label}/reset`);
 
         const left = await orbit(page, canvas, 0.5, 0.2);
         assert(left.orbitAngle < 0, `${label} did not orbit left`);
-        assertLightingInvariant(baseline, left, `${label}/left`);
+        assertLightingInvariant(orbitBaseline, left, `${label}/left`);
         await page.evaluate(() => window.arriveWithinGardenDesignLab?.resetView());
         await page.evaluate(() => window.arriveWithinGardenDesignLab?.setReduceMotion(true));
 
@@ -109,8 +135,8 @@ try {
           phase,
           screenshot: filename,
           sha256: createHash("sha256").update(screenshot).digest("hex"),
-          lighting: stableLighting(baseline),
-          topology: stableTopology(baseline),
+          lighting: stableLighting(orbitBaseline),
+          topology: stableTopology(orbitBaseline),
         });
         }
       }
@@ -126,15 +152,17 @@ try {
     direction: "one-world-five-material-styles",
     matrix: results,
     assertions: {
-      rendered_matrix: "5 styles x 3 viewports x 2 maturity states x 2 local phases",
+      rendered_matrix: "5 styles x 3 viewports x 2 maturity states x 3 local phases",
       orbit: "reset, left, and right preserve exposure and every authored world-light value",
+      style_switch: "each switch and restore leaves exactly one live world root and releases the previous style root",
+      low_quality: "low quality removes style detail and texture work while retaining authored milestone features",
       reduce_motion: "activation settles an in-progress milestone reveal and locks the authored camera",
-      screenshot_hashes: "day/night and early/mature renders are distinct for every viewport",
+      screenshot_hashes: "day/dusk/night and early/mature renders are distinct for every viewport",
       topology: "every render retains one world root and the same authoritative feature/detail/wildlife counts",
     },
   };
   await writeFile(join(outputRoot, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
-  process.stdout.write(`PASS Garden rendered QA: 60 renders, stable topology and orbit lighting, Reduce Motion interruption; output=${outputRoot}\n`);
+  process.stdout.write(`PASS Garden rendered QA: 90 renders, stable topology and orbit lighting, Reduce Motion interruption; output=${outputRoot}\n`);
 } finally {
   await browser?.close();
   server.kill("SIGTERM");
@@ -217,7 +245,7 @@ function assertDistinctRenderedStates(results) {
   for (const viewport of new Set(results.map((result) => result.viewport))) {
     for (const style of new Set(results.map((result) => result.style))) {
       const viewportResults = results.filter((result) => result.viewport === viewport && result.style === style);
-      assert(new Set(viewportResults.map((result) => result.sha256)).size === 4, `${viewport}/${style} render states are not distinct`);
+      assert(new Set(viewportResults.map((result) => result.sha256)).size === 6, `${viewport}/${style} early/mature day/dusk/night render states are not distinct`);
     }
   }
 }

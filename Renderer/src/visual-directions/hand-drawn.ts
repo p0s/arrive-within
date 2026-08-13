@@ -1,4 +1,4 @@
-import type { GardenVisualDirection } from "../visual-design";
+import { createGardenStyleProfile, type GardenVisualDirection } from "../visual-design";
 
 export const handDrawn: GardenVisualDirection = {
   id: "hand-drawn",
@@ -24,7 +24,30 @@ export const handDrawn: GardenVisualDirection = {
   motion: { canopyAmplitude: 0.48, particleSpeed: 0.62 },
   material: {
     treatment: "inked-paper", roughness: 1, flatShading: true, textureScale: 2.4,
-    outlineColor: "#3f423b", outlineScale: 1.025,
+    outlineColor: "#29455c", outlineScale: 1.025,
   },
+  styleProfile: createGardenStyleProfile({
+    surfacePattern: "paper-hatch",
+    edgeMode: "ink-outline",
+    shadingBands: 4,
+    geometryTreatment: "cel-stepped",
+    detailDensity: 0.86,
+    motionCadence: { framesPerSecond: 24, propJitter: 0, inkWobble: 0.008, squashStretch: 0 },
+    skyAccents: { horizonTint: "#d9d1ba", celestialTint: "#e8b878", strength: 0.72 },
+    waterAccents: { tint: "#547b86", opacity: 0.92, rippleScale: 1.06 },
+    seeds: { texture: 0x51c3d, motion: 0x1d4e9, geometry: 0x3a51b },
+    materialRoles: {
+      canopy: { roughness: 1, flatShading: true, textureScale: 2.1, textureOpacity: 0.92 },
+      trunk: { roughness: 1, flatShading: true, textureScale: 1.7, textureOpacity: 0.9 },
+      ground: { roughness: 1, flatShading: true, textureScale: 2.2, textureOpacity: 0.78 },
+      grass: { roughness: 1, flatShading: true, textureScale: 2.4, textureOpacity: 0.72 },
+      water: { roughness: 0.46, flatShading: true, textureScale: 1.6, textureOpacity: 0.66 },
+      pavilion: { roughness: 1, flatShading: true, textureScale: 1.8, textureOpacity: 0.9 },
+      path: { roughness: 1, flatShading: true, textureScale: 2.2, textureOpacity: 0.84 },
+      rock: { roughness: 1, flatShading: true, textureScale: 1.7, textureOpacity: 0.9 },
+      wildlife: { roughness: 1, flatShading: true, textureScale: 1.8, textureOpacity: 0.88 },
+      celestial: { roughness: 1, flatShading: true, textureScale: 1, textureOpacity: 0 },
+    },
+  }),
   detailOverrides: { stream: "#718d8d", pond: "#6a8585", blossoms: "#b77868", clouds: "#d2cfc2" },
 };

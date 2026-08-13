@@ -12,6 +12,7 @@ import {
   type GardenGroundAnimal,
   type GardenWorldModel,
 } from "./world-model";
+import { GardenStyleMaterialFactory } from "./style-material";
 
 export interface GardenSceneEvents {
   contextLost(): void;
@@ -53,6 +54,13 @@ export interface GardenRendererDiagnostics {
   worldBirdCount: number;
   worldGroundAnimalCount: number;
   revealActive: boolean;
+  surfacePattern: string;
+  edgeMode: string;
+  shadingBands: number;
+  geometryTreatment: string;
+  styleDetailEnabled: boolean;
+  styleTextureCount: number;
+  motionCadence: number;
 }
 
 const baseCameraPosition = new THREE.Vector3(5.7, 4.4, 8.6);
@@ -227,9 +235,10 @@ export function createGardenScene(
     if (!renderingIsActive || document.hidden || contextIsLost) return;
 
     const qualityFrameRate = state.qualityHint === "low" ? 30 : 60;
+    const styleCadence = world.styleMaterials.profile.motionCadence.framesPerSecond;
     const targetFrameRate = state.reduceMotion
       ? 12
-      : Math.min(qualityFrameRate, visualDirection.motion.framesPerSecond ?? qualityFrameRate);
+      : Math.min(qualityFrameRate, styleCadence, visualDirection.motion.framesPerSecond ?? qualityFrameRate);
     const minimumFrameInterval = 1_000 / targetFrameRate;
     if (now - lastRendered < minimumFrameInterval) return;
 
@@ -251,11 +260,11 @@ export function createGardenScene(
       }
     }
     if (!state.reduceMotion) {
-      const cadence = visualDirection.motion.framesPerSecond;
-      const motionNow = cadence === undefined ? now : Math.floor(now / (1_000 / cadence)) * (1_000 / cadence);
+      const motionNow = Math.floor(now / (1_000 / styleCadence)) * (1_000 / styleCadence);
       const breeze = Math.sin(motionNow * 0.00042) * model.windStrength;
       world.canopy.rotation.z = breeze * visualDirection.motion.canopyAmplitude;
       world.canopy.rotation.x = breeze * visualDirection.motion.canopyAmplitude * 0.42;
+      applyStyleMotion(world, motionNow);
       world.particles.rotation.y = motionNow * 0.000025 * visualDirection.motion.particleSpeed;
       animateBirds(world.birds, model, motionNow);
       animateGroundWildlife(world.groundWildlife, motionNow);
@@ -280,7 +289,7 @@ export function createGardenScene(
       visualDirection = nextDirection;
       composition = cameraComposition(model, visualDirection);
       scene.remove(world.root);
-      disposeObjectResources(world.root);
+      disposeWorld(world);
       world = buildWorld(model, visualDirection);
       rebuildCount += 1;
       scene.add(world.root);
@@ -321,7 +330,7 @@ export function createGardenScene(
       model = deriveWorldModel(state);
       composition = cameraComposition(model, visualDirection);
       scene.remove(world.root);
-      disposeObjectResources(world.root);
+      disposeWorld(world);
       world = buildWorld(model, visualDirection);
       rebuildCount += 1;
       scene.add(world.root);
@@ -390,6 +399,15 @@ export function createGardenScene(
         worldBirdCount: model.birds.length,
         worldGroundAnimalCount: model.groundAnimals.length,
         revealActive: revealStartedAt !== undefined,
+        surfacePattern: world.styleMaterials.profile.surfacePattern,
+        edgeMode: world.styleMaterials.profile.edgeMode,
+        shadingBands: world.styleMaterials.profile.shadingBands,
+        geometryTreatment: world.styleMaterials.profile.geometryTreatment,
+        styleDetailEnabled: world.styleMaterials.hasStyleDetail(),
+        styleTextureCount: world.root.userData.arriveWithinStyleTextureKeys instanceof Set
+          ? world.root.userData.arriveWithinStyleTextureKeys.size
+          : 0,
+        motionCadence: world.styleMaterials.profile.motionCadence.framesPerSecond,
       };
     },
     dispose(): void {
@@ -403,7 +421,7 @@ export function createGardenScene(
       canvas.removeEventListener("pointercancel", onPointerUp);
       canvas.removeEventListener("webglcontextlost", onContextLost);
       canvas.removeEventListener("webglcontextrestored", onContextRestored);
-      disposeObjectResources(world.root);
+      disposeWorld(world);
       disposeObjectResources(skyDome);
       renderer.dispose();
     },
@@ -470,6 +488,8 @@ interface BuiltWorld {
   particles: THREE.Points;
   birds: THREE.Group;
   groundWildlife: THREE.Group;
+  styleMaterials: GardenStyleMaterialFactory;
+  styleTargets: THREE.Object3D[];
 }
 
 function settleGardenMotionPose(world: BuiltWorld, model: GardenWorldModel): void {
@@ -478,13 +498,23 @@ function settleGardenMotionPose(world: BuiltWorld, model: GardenWorldModel): voi
   world.particles.rotation.y = 0;
   settleBirds(world.birds, model);
   settleGroundWildlife(world.groundWildlife);
+  settleStyleMotion(world);
+}
+
+function disposeWorld(world: BuiltWorld): void {
+  disposeObjectResources(world.root);
+  world.styleMaterials.release();
 }
 
 function buildWorld(model: GardenWorldModel, direction: GardenVisualDirection): BuiltWorld {
   const root = new THREE.Group();
   root.name = "deterministic-garden-world";
+  const styleMaterials = new GardenStyleMaterialFactory(direction, root, qualityHintFor(model));
   const visual = resolveVisualModel(model, direction);
-  const groundTexture = createProceduralGroundTexture(direction.id);
+  const twilight = direction.id === "twilight-refuge";
+  const groundTexture = twilight
+    ? createProceduralGroundTexture(direction.id)
+    : styleMaterials.texture("ground");
 
   for (let layer = 0; layer < direction.composition.groundLayers; layer += 1) {
     const groundColor = new THREE.Color(visual.groundColor).offsetHSL(
@@ -500,21 +530,29 @@ function buildWorld(model: GardenWorldModel, direction: GardenVisualDirection): 
         direction.foliageForm === "paper-relief" ? 36 : 48,
         layer,
       ),
-      new THREE.MeshStandardMaterial({
-        color: groundColor,
-        map: groundTexture,
-        roughness: direction.material?.roughness ?? 1,
-        metalness: 0,
-        flatShading: direction.material?.flatShading ?? direction.foliageForm !== "painted-botanical",
-      }),
+      twilight
+        ? new THREE.MeshStandardMaterial({
+          color: groundColor,
+          map: groundTexture,
+          roughness: 1,
+          metalness: 0,
+          flatShading: direction.foliageForm !== "painted-botanical",
+        })
+        : styleMaterials.standard("ground", { color: groundColor }),
     );
     ground.position.y = -0.25 - layer * 0.07;
     ground.receiveShadow = true;
     root.add(ground);
   }
 
-  root.add(buildHeroClearing(visual.groundColor));
-  if (model.features.includes("stones")) root.add(buildGardenPath(visual.groundColor));
+  root.add(twilight
+    ? buildHeroClearing(visual.groundColor)
+    : buildHeroClearing(visual.groundColor, styleMaterials));
+  if (model.features.includes("stones")) {
+    root.add(twilight
+      ? buildGardenPath(visual.groundColor)
+      : buildGardenPath(visual.groundColor, styleMaterials));
+  }
 
   const trunkGeometry = new THREE.CylinderGeometry(
     model.trunkRadius * 0.56,
@@ -524,34 +562,45 @@ function buildWorld(model: GardenWorldModel, direction: GardenVisualDirection): 
   );
   const trunk = new THREE.Mesh(
     trunkGeometry,
-    new THREE.MeshStandardMaterial({
-      color: direction.palette.trunk,
-      map: direction.material === undefined ? null : createProceduralSurfaceTexture(direction.id),
-      roughness: direction.material?.roughness ?? 0.96,
-      metalness: 0,
-      flatShading: direction.material?.flatShading ?? true,
-    }),
+    twilight
+      ? new THREE.MeshStandardMaterial({
+        color: direction.palette.trunk,
+        map: null,
+        roughness: 0.96,
+        metalness: 0,
+        flatShading: true,
+      })
+      : styleMaterials.standard("trunk", { color: direction.palette.trunk }),
   );
   trunk.position.y = model.trunkHeight / 2;
   trunk.castShadow = true;
   trunk.receiveShadow = true;
   root.add(trunk);
+  if (styleMaterials.hasInkOutline()) {
+    const trunkOutline = new THREE.Mesh(trunkGeometry, styleMaterials.outline("trunk"));
+    trunkOutline.name = "hero-tree-ink-edge";
+    trunkOutline.position.copy(trunk.position);
+    trunkOutline.scale.setScalar(direction.material?.outlineScale ?? 1.035);
+    root.add(trunkOutline);
+  }
 
-  const canopy = buildCanopy(model, visual.foliageColors, direction);
+  const canopy = buildCanopy(model, visual.foliageColors, direction, styleMaterials);
   root.add(canopy);
   const foliageAccents = buildFoliageAccents(model, visual.foliageColors, direction);
   if (foliageAccents !== null) root.add(foliageAccents);
-  const branches = buildInstancedBranches(model, direction);
+  const branches = buildInstancedBranches(model, direction, styleMaterials);
   if (branches !== null) root.add(branches);
 
   const plantGeometry = groundPlantGeometry(direction.foliageForm);
-  const plantMaterial = new THREE.MeshStandardMaterial({
-    map: direction.material === undefined ? null : createProceduralSurfaceTexture(direction.id),
-    roughness: direction.material?.roughness ?? (direction.foliageForm === "paper-relief" ? 1 : 0.86),
-    metalness: 0,
-    flatShading: direction.material?.flatShading ?? true,
-    side: THREE.DoubleSide,
-  });
+  const plantMaterial = twilight
+    ? new THREE.MeshStandardMaterial({
+      map: null,
+      roughness: 0.86,
+      metalness: 0,
+      flatShading: true,
+      side: THREE.DoubleSide,
+    })
+    : styleMaterials.standard("grass", { side: THREE.DoubleSide });
   const plants = new THREE.InstancedMesh(plantGeometry, plantMaterial, model.groundPlants.length);
   const transform = new THREE.Object3D();
   model.groundPlants.forEach((plant, index) => {
@@ -604,15 +653,71 @@ function buildWorld(model: GardenWorldModel, direction: GardenVisualDirection): 
   );
   root.add(particles);
 
-  for (const detailObject of buildDetailObjects(model, direction)) {
+  for (const detailObject of buildDetailObjects(model, direction, styleMaterials)) {
     root.add(detailObject);
   }
 
-  const birds = buildBirds(model, direction);
-  const groundWildlife = buildGroundWildlife(model, direction);
+  const birds = buildBirds(model, direction, styleMaterials);
+  const groundWildlife = buildGroundWildlife(model, direction, styleMaterials);
   root.add(birds, groundWildlife);
 
-  return { root, canopy, particles, birds, groundWildlife };
+  const styleTargets = [
+    canopy,
+    root.getObjectByName("space-iii-open-timber-pavilion"),
+  ].filter((target): target is THREE.Object3D => target !== undefined);
+  for (const target of styleTargets) {
+    target.userData.styleBasePosition = target.position.toArray();
+    target.userData.styleBaseRotation = [target.rotation.x, target.rotation.y, target.rotation.z];
+    target.userData.styleBaseScale = target.scale.toArray();
+  }
+  return { root, canopy, particles, birds, groundWildlife, styleMaterials, styleTargets };
+}
+
+function qualityHintFor(model: GardenWorldModel): "low" | "balanced" | "high" {
+  if (model.quality.pixelRatioLimit <= 1) return "low";
+  if (model.quality.pixelRatioLimit >= 2) return "high";
+  return "balanced";
+}
+
+function applyStyleMotion(world: BuiltWorld, now: number): void {
+  const cadence = world.styleMaterials.profile.motionCadence;
+  const seed = world.styleMaterials.profile.seeds.motion;
+  if (cadence.inkWobble > 0) {
+    world.canopy.rotation.z += Math.sin(now * 0.0017 + seed) * cadence.inkWobble;
+    world.canopy.rotation.x += Math.cos(now * 0.0013 + seed * 0.7) * cadence.inkWobble * 0.5;
+  }
+  for (const [index, target] of world.styleTargets.entries()) {
+    const basePosition = target.userData.styleBasePosition as number[] | undefined;
+    if (basePosition !== undefined && cadence.propJitter > 0) {
+      target.position.set(
+        (basePosition[0] ?? 0) + Math.sin(now * 0.0021 + seed + index) * cadence.propJitter,
+        (basePosition[1] ?? 0) + Math.cos(now * 0.0018 + seed * 0.6 + index) * cadence.propJitter * 0.45,
+        (basePosition[2] ?? 0) + Math.sin(now * 0.0015 + seed * 0.4 + index) * cadence.propJitter,
+      );
+    }
+    if (target === world.canopy && cadence.squashStretch > 0) {
+      const baseScale = target.userData.styleBaseScale as number[] | undefined;
+      if (baseScale !== undefined) {
+        const squash = Math.sin(now * 0.0011 + seed) * cadence.squashStretch;
+        target.scale.set(
+          (baseScale[0] ?? 1) * (1 - squash * 0.46),
+          (baseScale[1] ?? 1) * (1 + squash),
+          (baseScale[2] ?? 1) * (1 - squash * 0.24),
+        );
+      }
+    }
+  }
+}
+
+function settleStyleMotion(world: BuiltWorld): void {
+  for (const target of world.styleTargets) {
+    const position = target.userData.styleBasePosition as number[] | undefined;
+    const rotation = target.userData.styleBaseRotation as number[] | undefined;
+    const scale = target.userData.styleBaseScale as number[] | undefined;
+    if (position !== undefined) target.position.set(position[0] ?? 0, position[1] ?? 0, position[2] ?? 0);
+    if (rotation !== undefined) target.rotation.set(rotation[0] ?? 0, rotation[1] ?? 0, rotation[2] ?? 0);
+    if (scale !== undefined) target.scale.set(scale[0] ?? 1, scale[1] ?? 1, scale[2] ?? 1);
+  }
 }
 
 const instancedDetailKinds = new Set<GardenDetail["kind"]>([
@@ -628,11 +733,15 @@ const instancedDetailKinds = new Set<GardenDetail["kind"]>([
 function buildDetailObjects(
   model: GardenWorldModel,
   direction: GardenVisualDirection,
+  styleMaterials: GardenStyleMaterialFactory,
 ): THREE.Object3D[] {
   const visual = resolveVisualModel(model, direction);
   const details = model.details.filter((detail) => {
     if (detail.kind === "twilight-stars") return visual.starOpacity > 0.01;
     if (detail.kind === "fireflies") return false;
+    if (!styleMaterials.hasStyleDetail()) {
+      return !["undergrowth", "ripples", "blossoms", "wind", "drifting-life", "clouds"].includes(detail.kind);
+    }
     return true;
   });
   const objects: THREE.Object3D[] = [];
@@ -646,6 +755,8 @@ function buildDetailObjects(
           radius: 0.045 * detail.scale,
           color: resolveDetailColor(detail.color, detail.kind, direction),
         })),
+        styleMaterials,
+        "trunk",
       ),
     );
   }
@@ -653,13 +764,13 @@ function buildDetailObjects(
   for (const kind of instancedDetailKinds) {
     const matching = details.filter((detail) => detail.kind === kind);
     if (matching.length > 0) {
-      objects.push(buildInstancedDetailKind(kind, matching, direction, model));
+      objects.push(buildInstancedDetailKind(kind, matching, direction, model, styleMaterials));
     }
   }
 
   for (const detail of details) {
     if (detail.kind !== "roots" && !instancedDetailKinds.has(detail.kind)) {
-      objects.push(buildDetail(detail, direction, model));
+      objects.push(buildDetail(detail, direction, model, styleMaterials));
     }
   }
   return objects;
@@ -668,6 +779,7 @@ function buildDetailObjects(
 function buildInstancedBranches(
   model: GardenWorldModel,
   direction: GardenVisualDirection,
+  styleMaterials: GardenStyleMaterialFactory,
 ): THREE.InstancedMesh | null {
   const segments = model.foliage.flatMap((cluster, index) =>
     index > 0 && index % 2 === 0
@@ -683,7 +795,7 @@ function buildInstancedBranches(
       }]
       : [],
   );
-  return segments.length > 0 ? buildInstancedCylinders(segments) : null;
+  return segments.length > 0 ? buildInstancedCylinders(segments, styleMaterials, "trunk") : null;
 }
 
 function buildInstancedCylinders(
@@ -693,9 +805,11 @@ function buildInstancedCylinders(
     radius: number;
     color: string;
   }>,
+  styleMaterials?: GardenStyleMaterialFactory,
+  role: "trunk" | "rock" = "rock",
 ): THREE.InstancedMesh {
   const geometry = new THREE.CylinderGeometry(0.7, 1, 1, 7);
-  const material = new THREE.MeshStandardMaterial({
+  const material = styleMaterials?.standard(role) ?? new THREE.MeshStandardMaterial({
     color: "#ffffff",
     roughness: 0.96,
     metalness: 0,
@@ -725,11 +839,15 @@ function buildInstancedDetailKind(
   details: GardenDetail[],
   direction: GardenVisualDirection,
   model: GardenWorldModel,
+  styleMaterials: GardenStyleMaterialFactory,
 ): THREE.Object3D {
-  if (kind === "clouds") return buildCloudBanks(details, direction, model);
-  const geometry = detailGeometry(kind);
-  const material = detailMaterial(kind, model, direction);
+  if (kind === "clouds") return buildCloudBanks(details, direction, model, styleMaterials);
+  const geometry = detailGeometry(kind, styleMaterials);
+  const material = detailMaterial(kind, model, direction, styleMaterials);
   const mesh = new THREE.InstancedMesh(geometry, material, details.length);
+  const outline = kind === "stones" && styleMaterials.hasInkOutline()
+    ? new THREE.InstancedMesh(geometry, styleMaterials.outline("rock"), details.length)
+    : null;
   const transform = new THREE.Object3D();
   details.forEach((detail, index) => {
     transform.position.set(detail.x, detail.y, detail.z);
@@ -762,6 +880,11 @@ function buildInstancedDetailKind(
     }
     transform.updateMatrix();
     mesh.setMatrixAt(index, transform.matrix);
+    if (outline !== null) {
+      const outlineMatrix = transform.matrix.clone();
+      outlineMatrix.scale(new THREE.Vector3(1.045, 1.045, 1.045));
+      outline.setMatrixAt(index, outlineMatrix);
+    }
     mesh.setColorAt(
       index,
       new THREE.Color(resolveDetailColor(detail.color, detail.kind, direction)),
@@ -769,8 +892,15 @@ function buildInstancedDetailKind(
   });
   mesh.instanceMatrix.needsUpdate = true;
   if (mesh.instanceColor !== null) mesh.instanceColor.needsUpdate = true;
+  if (outline !== null) outline.instanceMatrix.needsUpdate = true;
   mesh.castShadow = ["stones", "undergrowth", "blossoms", "sanctuary"].includes(kind);
   mesh.receiveShadow = kind === "stones";
+  if (outline !== null) {
+    const group = new THREE.Group();
+    group.name = "garden-rock-ink-edges";
+    group.add(outline, mesh);
+    return group;
+  }
   return mesh;
 }
 
@@ -778,6 +908,7 @@ function buildCloudBanks(
   details: GardenDetail[],
   direction: GardenVisualDirection,
   model: GardenWorldModel,
+  styleMaterials: GardenStyleMaterialFactory,
 ): THREE.Group {
   const group = new THREE.Group();
   group.name = "air-iii-authored-cloud-banks";
@@ -836,13 +967,23 @@ function createCloudBankTexture(): THREE.CanvasTexture {
   return texture;
 }
 
-function detailGeometry(kind: GardenDetail["kind"]): THREE.BufferGeometry {
+function detailGeometry(
+  kind: GardenDetail["kind"],
+  styleMaterials?: GardenStyleMaterialFactory,
+): THREE.BufferGeometry {
+  const treatment = styleMaterials?.profile.geometryTreatment;
   switch (kind) {
-  case "stones": return new THREE.DodecahedronGeometry(0.46, 0);
+  case "stones":
+    return treatment === "rounded-inflated" || treatment === "moulded-clay"
+      ? new THREE.SphereGeometry(0.46, 12, 8)
+      : new THREE.DodecahedronGeometry(0.46, 0);
   case "undergrowth": return gardenGrassTuftGeometry(7, 1.05, 0.16);
   case "fireflies": return new THREE.SphereGeometry(1, 7, 5);
   case "blossoms":
-  case "sanctuary": return new THREE.DodecahedronGeometry(1, 0);
+  case "sanctuary":
+    return treatment === "rounded-inflated" || treatment === "moulded-clay"
+      ? new THREE.SphereGeometry(1, 12, 8)
+      : new THREE.DodecahedronGeometry(1, 0);
   case "drifting-life": return floatingLeafGeometry();
   case "clouds": return new THREE.SphereGeometry(1, 12, 7);
   case "twilight-stars": return new THREE.SphereGeometry(1, 6, 4);
@@ -854,27 +995,41 @@ function detailMaterial(
   kind: GardenDetail["kind"],
   model: GardenWorldModel,
   direction: GardenVisualDirection,
+  styleMaterials?: GardenStyleMaterialFactory,
 ): THREE.Material {
   const visual = resolveVisualModel(model, direction);
   switch (kind) {
   case "fireflies":
-    return new THREE.MeshBasicMaterial({ color: "#ffffff" });
+    return styleMaterials?.basic("celestial", { color: "#ffffff" })
+      ?? new THREE.MeshBasicMaterial({ color: "#ffffff" });
   case "twilight-stars":
-    return new THREE.MeshBasicMaterial({
+    return styleMaterials?.basic("celestial", {
+      color: "#ffffff",
+      transparent: true,
+      opacity: visual.starOpacity,
+      depthWrite: false,
+    }) ?? new THREE.MeshBasicMaterial({
       color: "#ffffff",
       transparent: true,
       opacity: visual.starOpacity,
       depthWrite: false,
     });
   case "clouds":
-    return new THREE.MeshBasicMaterial({
+    return styleMaterials?.basic("celestial", {
+      color: "#ffffff",
+      transparent: true,
+      opacity: visual.dayPhase === "day" ? 0.2 : visual.dayPhase === "night" ? 0.09 : 0.15,
+      depthWrite: false,
+    }) ?? new THREE.MeshBasicMaterial({
       color: "#ffffff",
       transparent: true,
       opacity: visual.dayPhase === "day" ? 0.2 : visual.dayPhase === "night" ? 0.09 : 0.15,
       depthWrite: false,
     });
   case "drifting-life":
-    return new THREE.MeshStandardMaterial({
+    return styleMaterials?.standard("wildlife", direction.id === "twilight-refuge"
+      ? { color: "#ffffff", roughness: 0.92, side: THREE.DoubleSide }
+      : { color: "#ffffff", side: THREE.DoubleSide }) ?? new THREE.MeshStandardMaterial({
       color: "#ffffff",
       roughness: 0.92,
       metalness: 0,
@@ -882,7 +1037,10 @@ function detailMaterial(
       side: THREE.DoubleSide,
     });
   default:
-    return new THREE.MeshStandardMaterial({
+    return styleMaterials?.standard(kind === "stones" ? "rock" : "grass", {
+      color: "#ffffff",
+      side: kind === "undergrowth" ? THREE.DoubleSide : THREE.FrontSide,
+    }) ?? new THREE.MeshStandardMaterial({
       color: "#ffffff",
       roughness: 0.94,
       metalness: 0,
@@ -896,13 +1054,17 @@ function buildCanopy(
   model: GardenWorldModel,
   colors: string[],
   direction: GardenVisualDirection,
+  styleMaterials: GardenStyleMaterialFactory,
 ): THREE.Group {
   const group = new THREE.Group();
   group.name = "hero-canopy";
-  const leafCount = direction.foliageForm === "painted-botanical" ? 5 :
-    direction.foliageForm === "paper-relief" ? 5 : 1;
+  const treatment = styleMaterials.profile.geometryTreatment;
+  const leafCount = treatment === "cel-stepped"
+    ? 3
+    : direction.foliageForm === "painted-botanical" ? 5
+    : direction.foliageForm === "paper-relief" ? 5 : 1;
   let geometry: THREE.BufferGeometry;
-  if (direction.foliageForm === "paper-relief") {
+  if (treatment === "cel-stepped" || direction.foliageForm === "paper-relief") {
     const shape = new THREE.Shape();
     shape.moveTo(0, -0.72);
     shape.bezierCurveTo(0.72, -0.28, 0.76, 0.48, 0, 0.82);
@@ -918,24 +1080,32 @@ function buildCanopy(
     });
     geometry.center();
   } else {
-    geometry = direction.foliageForm === "painted-botanical"
+    geometry = treatment === "faceted-miniature"
+      ? new THREE.DodecahedronGeometry(1, 0)
+      : treatment === "rounded-inflated" || treatment === "moulded-clay"
+      ? new THREE.SphereGeometry(1, 12, 8)
+      : direction.foliageForm === "painted-botanical"
       ? new THREE.IcosahedronGeometry(1, 2)
       : organicCanopyLobeGeometry();
   }
-  const surfaceTexture = createProceduralSurfaceTexture(direction.id);
-  const material = new THREE.MeshStandardMaterial({
-    map: surfaceTexture,
-    roughness: direction.material?.roughness ?? (direction.foliageForm === "paper-relief" ? 1 : 0.9),
-    metalness: 0,
-    flatShading: direction.material?.flatShading ?? direction.foliageForm !== "painted-botanical",
-    side: direction.foliageForm === "paper-relief" ? THREE.DoubleSide : THREE.FrontSide,
-  });
+  const material = direction.id === "twilight-refuge"
+    ? new THREE.MeshStandardMaterial({
+      map: createProceduralSurfaceTexture(direction.id),
+      roughness: 0.9,
+      metalness: 0,
+      flatShading: true,
+      side: THREE.FrontSide,
+    })
+    : styleMaterials.standard("canopy", {
+      side: treatment === "cel-stepped" || direction.foliageForm === "paper-relief"
+        ? THREE.DoubleSide
+        : THREE.FrontSide,
+    });
   const leaves = new THREE.InstancedMesh(geometry, material, model.foliage.length * leafCount);
-  const outlineColor = direction.material?.outlineColor;
-  const cutEdges = direction.foliageForm === "paper-relief" || outlineColor !== undefined
+  const cutEdges = styleMaterials.hasInkOutline() || direction.foliageForm === "paper-relief"
     ? new THREE.InstancedMesh(
       geometry,
-      new THREE.MeshBasicMaterial({ color: outlineColor ?? "#4c4a37", side: THREE.BackSide }),
+      styleMaterials.outline("canopy"),
       model.foliage.length * leafCount,
     )
     : null;
@@ -960,7 +1130,7 @@ function buildCanopy(
           ? centeredLeafIndex * 0.022
           : -leafIndex * 0.018,
       );
-      if (direction.foliageForm === "paper-relief") {
+      if (treatment === "cel-stepped" || direction.foliageForm === "paper-relief") {
         leaf.position.set(
           centeredLeafIndex * 0.38,
           (leafIndex % 2) * 0.18,
@@ -975,10 +1145,15 @@ function buildCanopy(
           leafIndex === 0 ? 0 : Math.sin(angle * 0.7) * 0.16 + 0.08,
           Math.sin(angle) * radius * 0.48,
         );
+        const roundedScale = treatment === "rounded-inflated"
+          ? [1.08, 1.14, 0.94]
+          : treatment === "moulded-clay"
+          ? [1.08, 1.02, 0.98]
+          : direction.composition.canopyScale;
         leaf.scale.set(
-          direction.composition.canopyScale[0] * (leafIndex === 0 ? 1.02 : 0.68),
-          direction.composition.canopyScale[1] * (leafIndex === 0 ? 1.06 : 0.72),
-          direction.composition.canopyScale[2] * (leafIndex === 0 ? 0.9 : 0.62),
+          roundedScale[0] * (leafIndex === 0 ? 1.02 : 0.68),
+          roundedScale[1] * (leafIndex === 0 ? 1.06 : 0.72),
+          roundedScale[2] * (leafIndex === 0 ? 0.9 : 0.62),
         );
         leaf.rotation.set(angle * 0.06, angle * 0.3, angle * 0.1);
       }
@@ -989,9 +1164,9 @@ function buildCanopy(
       if (cutEdges !== null) {
         const outlineMatrix = matrix.clone();
         outlineMatrix.scale(new THREE.Vector3(
-          direction.material?.outlineScale ?? 1.018,
-          direction.material?.outlineScale ?? 1.018,
-          direction.material?.outlineScale ?? 1.018,
+          direction.material?.outlineScale ?? 1.026,
+          direction.material?.outlineScale ?? 1.026,
+          direction.material?.outlineScale ?? 1.026,
         ));
         cutEdges.setMatrixAt(instance, outlineMatrix);
       }
@@ -1328,7 +1503,10 @@ function organicGroundGeometry(
   return geometry;
 }
 
-function buildHeroClearing(groundColor: string): THREE.Mesh {
+function buildHeroClearing(
+  groundColor: string,
+  styleMaterials?: GardenStyleMaterialFactory,
+): THREE.Mesh {
   const shape = new THREE.Shape();
   const segments = 40;
   for (let index = 0; index < segments; index += 1) {
@@ -1342,7 +1520,12 @@ function buildHeroClearing(groundColor: string): THREE.Mesh {
   shape.closePath();
   const clearing = new THREE.Mesh(
     new THREE.ShapeGeometry(shape, 8),
-    new THREE.MeshStandardMaterial({
+    styleMaterials?.standard("ground", {
+      color: new THREE.Color(groundColor).lerp(new THREE.Color("#9da58c"), 0.13),
+      transparent: true,
+      opacity: 0.7,
+      side: THREE.DoubleSide,
+    }) ?? new THREE.MeshStandardMaterial({
       color: new THREE.Color(groundColor).lerp(new THREE.Color("#9da58c"), 0.13),
       roughness: 1,
       metalness: 0,
@@ -1358,7 +1541,10 @@ function buildHeroClearing(groundColor: string): THREE.Mesh {
   return clearing;
 }
 
-function buildGardenPath(groundColor: string): THREE.Mesh {
+function buildGardenPath(
+  groundColor: string,
+  styleMaterials?: GardenStyleMaterialFactory,
+): THREE.Object3D {
   const curve = new THREE.CatmullRomCurve3([
     new THREE.Vector3(5.35, 0.014, 2.18),
     new THREE.Vector3(3.72, 0.015, 1.54),
@@ -1375,7 +1561,12 @@ function buildGardenPath(groundColor: string): THREE.Mesh {
       0.31,
       (progress) => 0.18 + Math.sin(progress * Math.PI) * 0.82 + Math.sin(progress * 5.8) * 0.03,
     ),
-    new THREE.MeshStandardMaterial({
+    styleMaterials?.standard("path", {
+      color: new THREE.Color(groundColor).lerp(new THREE.Color("#b0aa91"), 0.35),
+      transparent: true,
+      opacity: 0.62,
+      side: THREE.DoubleSide,
+    }) ?? new THREE.MeshStandardMaterial({
       color: new THREE.Color(groundColor).lerp(new THREE.Color("#b0aa91"), 0.35),
       roughness: 1,
       metalness: 0,
@@ -1386,6 +1577,16 @@ function buildGardenPath(groundColor: string): THREE.Mesh {
   );
   path.name = "earth-ii-sheltered-garden-path";
   path.receiveShadow = true;
+  if (styleMaterials?.hasInkOutline()) {
+    const pathEdge = new THREE.LineSegments(
+      new THREE.EdgesGeometry(path.geometry, 22),
+      new THREE.LineBasicMaterial({ color: "#29455c", transparent: true, opacity: 0.82 }),
+    );
+    pathEdge.name = "garden-path-ink-edge";
+    const group = new THREE.Group();
+    group.add(path, pathEdge);
+    return group;
+  }
   return path;
 }
 
@@ -1445,6 +1646,7 @@ function buildDetail(
   detail: GardenDetail,
   direction: GardenVisualDirection,
   model: GardenWorldModel,
+  styleMaterials: GardenStyleMaterialFactory,
 ): THREE.Object3D {
   const position = new THREE.Vector3(detail.x, detail.y, detail.z);
   const color = resolveDetailColor(detail.color, detail.kind, direction);
@@ -1455,18 +1657,14 @@ function buildDetail(
       position,
       0.045 * detail.scale,
       color,
+      styleMaterials.standard("trunk", { color }),
     );
     return root;
   }
   case "stones": {
     const stone = new THREE.Mesh(
-      new THREE.DodecahedronGeometry(0.46, 0),
-      new THREE.MeshStandardMaterial({
-        color,
-        roughness: 1,
-        metalness: 0,
-        flatShading: true,
-      }),
+      detailGeometry("stones", styleMaterials),
+      styleMaterials.standard("rock", { color }),
     );
     stone.position.copy(position);
     stone.rotation.set(detail.rotation * 0.12, detail.rotation, detail.rotation * 0.08);
@@ -1478,13 +1676,7 @@ function buildDetail(
   case "undergrowth": {
     const plant = new THREE.Mesh(
       gardenGrassTuftGeometry(7, 1.05, 0.16),
-      new THREE.MeshStandardMaterial({
-        color,
-        roughness: 0.94,
-        metalness: 0,
-        flatShading: true,
-        side: THREE.DoubleSide,
-      }),
+      styleMaterials.standard("grass", { color, side: THREE.DoubleSide }),
     );
     plant.position.copy(position);
     plant.position.y = 0.025;
@@ -1511,11 +1703,18 @@ function buildDetail(
     const visual = resolveVisualModel(model, direction);
     const water = new THREE.Mesh(
       streamRibbonGeometry(curve, 64, 0.22, widthProfile),
-      new THREE.MeshStandardMaterial({
-        color: new THREE.Color(color).lerp(new THREE.Color(visual.groundColor), 0.12),
+      styleMaterials.standard("water", {
+        color: direction.id === "twilight-refuge"
+          ? new THREE.Color(color).lerp(new THREE.Color(visual.groundColor), 0.12)
+          : new THREE.Color(color)
+            .lerp(new THREE.Color(styleMaterials.profile.waterAccents.tint), 0.26)
+            .lerp(new THREE.Color(visual.groundColor), 0.12),
         transparent: true,
-        opacity: direction.composition.waterOpacity * 0.72,
-        roughness: 0.3,
+        opacity: direction.composition.waterOpacity * 0.72
+          * (direction.id === "twilight-refuge" ? 1 : styleMaterials.profile.waterAccents.opacity),
+        roughness: direction.id === "twilight-refuge"
+          ? 0.3
+          : styleMaterials.profile.materialRoles.water.roughness,
         side: THREE.DoubleSide,
       }),
     );
@@ -1524,10 +1723,8 @@ function buildDetail(
 
     const bank = new THREE.Mesh(
       streamRibbonGeometry(curve, 64, 0.32, widthProfile),
-      new THREE.MeshStandardMaterial({
+      styleMaterials.standard("ground", {
         color: new THREE.Color(visual.groundColor).lerp(new THREE.Color("#475d55"), 0.32),
-        roughness: 1,
-        metalness: 0,
         transparent: true,
         opacity: 0.78,
         side: THREE.DoubleSide,
@@ -1546,11 +1743,16 @@ function buildDetail(
   case "pond": {
     const pond = new THREE.Mesh(
       organicPondGeometry(1.45 * detail.scale),
-      new THREE.MeshStandardMaterial({
-        color,
+      styleMaterials.standard("water", {
+        color: direction.id === "twilight-refuge"
+          ? color
+          : new THREE.Color(color).lerp(new THREE.Color(styleMaterials.profile.waterAccents.tint), 0.26),
         transparent: true,
-        opacity: direction.composition.waterOpacity,
-        roughness: 0.28,
+        opacity: direction.composition.waterOpacity
+          * (direction.id === "twilight-refuge" ? 1 : styleMaterials.profile.waterAccents.opacity),
+        roughness: direction.id === "twilight-refuge"
+          ? 0.28
+          : styleMaterials.profile.materialRoles.water.roughness,
         side: THREE.DoubleSide,
       }),
     );
@@ -1562,14 +1764,14 @@ function buildDetail(
   case "ripples": {
     const ripple = new THREE.Mesh(
       new THREE.RingGeometry(
-        detail.scale * 0.38,
-        detail.scale * 0.405,
+        detail.scale * 0.38 * (direction.id === "twilight-refuge" ? 1 : styleMaterials.profile.waterAccents.rippleScale),
+        detail.scale * 0.405 * (direction.id === "twilight-refuge" ? 1 : styleMaterials.profile.waterAccents.rippleScale),
         36,
         1,
         detail.rotation,
         Math.PI * 1.34,
       ),
-      new THREE.MeshBasicMaterial({
+      styleMaterials.basic("water", {
         color,
         transparent: true,
         opacity: 0.28,
@@ -1585,7 +1787,7 @@ function buildDetail(
   case "warm-light": {
     const lightPatch = new THREE.Mesh(
       new THREE.CircleGeometry(detail.scale * 0.62, 28),
-      new THREE.MeshBasicMaterial({
+      styleMaterials.basic("celestial", {
         color,
         transparent: true,
         opacity: model.dayPhase === "day" ? 0.025 : 0.08,
@@ -1600,7 +1802,7 @@ function buildDetail(
   case "fireflies": {
     const firefly = new THREE.Mesh(
       new THREE.SphereGeometry(detail.scale, 7, 5),
-      new THREE.MeshBasicMaterial({ color }),
+      styleMaterials.basic("celestial", { color }),
     );
     firefly.position.copy(position);
     firefly.position.y += Math.sin(detail.rotation * 3) * 1.3;
@@ -1608,13 +1810,8 @@ function buildDetail(
   }
   case "blossoms": {
     const blossom = new THREE.Mesh(
-      new THREE.DodecahedronGeometry(detail.scale, 0),
-      new THREE.MeshStandardMaterial({
-        color,
-        roughness: 0.88,
-        metalness: 0,
-        flatShading: true,
-      }),
+      detailGeometry("blossoms", styleMaterials),
+      styleMaterials.standard("wildlife", { color }),
     );
     blossom.position.copy(position);
     blossom.position.y += Math.abs(Math.sin(detail.rotation)) * 1.9;
@@ -1628,7 +1825,7 @@ function buildDetail(
     );
     const ribbon = new THREE.Mesh(
       new THREE.TubeGeometry(curve, 24, 0.008, 3, false),
-      new THREE.MeshBasicMaterial({
+      styleMaterials.basic("celestial", {
         color,
         transparent: true,
         opacity: model.dayPhase === "day" ? 0.1 : 0.16,
@@ -1642,13 +1839,7 @@ function buildDetail(
   case "drifting-life": {
     const leaf = new THREE.Mesh(
       floatingLeafGeometry(),
-      new THREE.MeshStandardMaterial({
-        color,
-        roughness: 0.92,
-        metalness: 0,
-        flatShading: true,
-        side: THREE.DoubleSide,
-      }),
+      styleMaterials.standard("wildlife", { color, side: THREE.DoubleSide }),
     );
     leaf.position.copy(position);
     leaf.scale.setScalar(detail.scale);
@@ -1658,7 +1849,7 @@ function buildDetail(
   case "clouds": {
     const cloud = new THREE.Mesh(
       new THREE.SphereGeometry(detail.scale, 12, 7),
-      new THREE.MeshBasicMaterial({
+      styleMaterials.basic("celestial", {
         color,
         transparent: true,
         opacity: 0.12,
@@ -1672,7 +1863,7 @@ function buildDetail(
   case "twilight-stars": {
     const star = new THREE.Mesh(
       new THREE.SphereGeometry(detail.scale, 6, 4),
-      new THREE.MeshBasicMaterial({ color }),
+      styleMaterials.basic("celestial", { color }),
     );
     star.position.copy(position);
     return star;
@@ -1708,7 +1899,7 @@ function buildDetail(
     return moon;
   }
   case "sanctuary": {
-    return buildGardenPavilion(detail, direction, model);
+    return buildGardenPavilion(detail, direction, model, styleMaterials);
   }
   }
 }
@@ -1766,33 +1957,46 @@ function buildGardenPavilion(
   detail: GardenDetail,
   direction: GardenVisualDirection,
   model: GardenWorldModel,
+  styleMaterials: GardenStyleMaterialFactory,
 ): THREE.Group {
   const pavilion = new THREE.Group();
   pavilion.name = "space-iii-open-timber-pavilion";
   const visual = resolveVisualModel(model, direction);
+  const twilight = direction.id === "twilight-refuge";
   const timber = new THREE.Color(detail.color).lerp(new THREE.Color("#5e493a"), 0.64);
-  const timberMaterial = new THREE.MeshStandardMaterial({
-    color: timber,
-    map: direction.material === undefined ? null : createProceduralSurfaceTexture(direction.id),
-    roughness: direction.material?.roughness ?? 0.92,
-    metalness: 0,
-    flatShading: direction.material?.flatShading ?? true,
-  });
-  const stoneMaterial = new THREE.MeshStandardMaterial({
-    color: new THREE.Color(visual.groundColor).offsetHSL(0, -0.08, 0.14),
-    map: direction.material === undefined ? null : createProceduralSurfaceTexture(direction.id),
-    roughness: direction.material?.roughness ?? 1,
-    metalness: 0,
-    flatShading: direction.material?.flatShading ?? true,
-  });
-  const roofMaterial = new THREE.MeshStandardMaterial({
-    color: visual.dayPhase === "day" ? "#3c4b4d" : "#2b393e",
-    map: direction.material === undefined ? null : createProceduralSurfaceTexture(direction.id),
-    roughness: direction.material?.roughness ?? 0.94,
-    metalness: 0,
-    flatShading: direction.material?.flatShading ?? true,
-    side: THREE.DoubleSide,
-  });
+  const timberMaterial = twilight
+    ? new THREE.MeshStandardMaterial({
+      color: timber,
+      map: null,
+      roughness: 0.92,
+      metalness: 0,
+      flatShading: true,
+    })
+    : styleMaterials.standard("pavilion", { color: timber });
+  const stoneMaterial = twilight
+    ? new THREE.MeshStandardMaterial({
+      color: new THREE.Color(visual.groundColor).offsetHSL(0, -0.08, 0.14),
+      map: null,
+      roughness: 1,
+      metalness: 0,
+      flatShading: true,
+    })
+    : styleMaterials.standard("rock", {
+      color: new THREE.Color(visual.groundColor).offsetHSL(0, -0.08, 0.14),
+    });
+  const roofMaterial = twilight
+    ? new THREE.MeshStandardMaterial({
+      color: visual.dayPhase === "day" ? "#3c4b4d" : "#2b393e",
+      map: null,
+      roughness: 0.94,
+      metalness: 0,
+      flatShading: true,
+      side: THREE.DoubleSide,
+    })
+    : styleMaterials.standard("pavilion", {
+      color: visual.dayPhase === "day" ? "#3c4b4d" : "#2b393e",
+      side: THREE.DoubleSide,
+    });
 
   const plinth = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.16, 1.5), stoneMaterial);
   plinth.position.y = 0.12;
@@ -1802,12 +2006,16 @@ function buildGardenPavilion(
 
   const floor = new THREE.Mesh(
     new THREE.BoxGeometry(2.18, 0.1, 1.3),
-    new THREE.MeshStandardMaterial({
-      color: timber.clone().offsetHSL(0, -0.04, 0.08),
-      roughness: 0.9,
-      metalness: 0,
-      flatShading: true,
-    }),
+    twilight
+      ? new THREE.MeshStandardMaterial({
+        color: timber.clone().offsetHSL(0, -0.04, 0.08),
+        roughness: 0.9,
+        metalness: 0,
+        flatShading: true,
+      })
+      : styleMaterials.standard("pavilion", {
+        color: timber.clone().offsetHSL(0, -0.04, 0.08),
+      }),
   );
   floor.position.y = 0.27;
   floor.receiveShadow = true;
@@ -1853,6 +2061,15 @@ function buildGardenPavilion(
   roof.position.y = 1.72;
   roof.castShadow = true;
   pavilion.add(roof);
+  if (styleMaterials.hasInkOutline()) {
+    const roofEdge = new THREE.LineSegments(
+      new THREE.EdgesGeometry(roofGeometry, 18),
+      new THREE.LineBasicMaterial({ color: "#29455c", transparent: true, opacity: 0.88 }),
+    );
+    roofEdge.name = "pavilion-ink-edge";
+    roofEdge.position.copy(roof.position);
+    pavilion.add(roofEdge);
+  }
 
   for (const z of [-0.88, 0.88]) {
     const fascia = new THREE.Mesh(new THREE.BoxGeometry(2.96, 0.07, 0.07), roofMaterial);
@@ -1874,13 +2091,21 @@ function buildGardenPavilion(
 
   const interiorWarmth = new THREE.Mesh(
     new THREE.PlaneGeometry(1.25, 0.72),
-    new THREE.MeshBasicMaterial({
-      color: visual.celestialGlowColor,
-      transparent: true,
-      opacity: visual.dayPhase === "day" ? 0.045 : 0.18,
-      depthWrite: false,
-      side: THREE.DoubleSide,
-    }),
+    twilight
+      ? new THREE.MeshBasicMaterial({
+        color: visual.celestialGlowColor,
+        transparent: true,
+        opacity: visual.dayPhase === "day" ? 0.045 : 0.18,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+      })
+      : styleMaterials.basic("celestial", {
+        color: visual.celestialGlowColor,
+        transparent: true,
+        opacity: visual.dayPhase === "day" ? 0.045 : 0.18,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+      }),
   );
   interiorWarmth.name = "pavilion-quiet-interior-warmth";
   interiorWarmth.position.set(0, 0.98, -0.53);
@@ -1900,28 +2125,40 @@ function floatingLeafGeometry(): THREE.ShapeGeometry {
   return new THREE.ShapeGeometry(shape, 5);
 }
 
-function buildBirds(model: GardenWorldModel, direction: GardenVisualDirection): THREE.Group {
+function buildBirds(
+  model: GardenWorldModel,
+  direction: GardenVisualDirection,
+  styleMaterials: GardenStyleMaterialFactory,
+): THREE.Group {
   const flock = new THREE.Group();
   flock.name = "air-ii-bird-flock";
   for (const [index, bird] of model.birds.entries()) {
     const figure = new THREE.Group();
     figure.name = `garden-bird-${index + 1}`;
-    const material = direction.material === undefined
+    const material = direction.id === "twilight-refuge"
       ? new THREE.MeshBasicMaterial({ color: bird.color, side: THREE.DoubleSide })
-      : new THREE.MeshStandardMaterial({
-        color: bird.color,
-        map: createProceduralSurfaceTexture(direction.id),
-        roughness: direction.material.roughness,
-        metalness: 0,
-        flatShading: direction.material.flatShading,
-        side: THREE.DoubleSide,
-      });
-    const body = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 5), material);
+      : styleMaterials.standard("wildlife", { color: bird.color, side: THREE.DoubleSide });
+    const birdGeometry = styleMaterials.profile.geometryTreatment === "faceted-miniature"
+      ? new THREE.DodecahedronGeometry(1, 0)
+      : new THREE.SphereGeometry(1, 8, 5);
+    const body = new THREE.Mesh(birdGeometry, material);
     body.scale.set(0.42, 0.15, 0.13);
     body.rotation.z = -0.08;
+    if (styleMaterials.hasInkOutline()) {
+      const bodyEdge = new THREE.Mesh(birdGeometry, styleMaterials.outline("wildlife"));
+      bodyEdge.position.copy(body.position);
+      bodyEdge.rotation.copy(body.rotation);
+      bodyEdge.scale.copy(body.scale).multiplyScalar(1.05);
+      figure.add(bodyEdge);
+    }
     figure.add(body);
 
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.16, 7, 5), material);
+    const head = new THREE.Mesh(
+      styleMaterials.profile.geometryTreatment === "faceted-miniature"
+        ? new THREE.DodecahedronGeometry(0.16, 0)
+        : new THREE.SphereGeometry(0.16, 7, 5),
+      material,
+    );
     head.position.x = 0.48;
     figure.add(head);
 
@@ -2072,11 +2309,15 @@ function buildBirdWing(side: 1 | -1, material: THREE.Material): THREE.Group {
   return wing;
 }
 
-function buildGroundWildlife(model: GardenWorldModel, direction: GardenVisualDirection): THREE.Group {
+function buildGroundWildlife(
+  model: GardenWorldModel,
+  direction: GardenVisualDirection,
+  styleMaterials: GardenStyleMaterialFactory,
+): THREE.Group {
   const wildlife = new THREE.Group();
   wildlife.name = "space-iii-grass-wildlife";
   for (const [index, animal] of model.groundAnimals.entries()) {
-    const hare = buildHare(animal, direction);
+    const hare = buildHare(animal, direction, styleMaterials);
     hare.name = `garden-hare-${index + 1}`;
     hare.userData.motionPhase = index * 2.41 + animal.rotation;
     hare.userData.baseScale = animal.scale;
@@ -2085,19 +2326,30 @@ function buildGroundWildlife(model: GardenWorldModel, direction: GardenVisualDir
   return wildlife;
 }
 
-function buildHare(animal: GardenGroundAnimal, direction: GardenVisualDirection): THREE.Group {
+function buildHare(
+  animal: GardenGroundAnimal,
+  direction: GardenVisualDirection,
+  styleMaterials: GardenStyleMaterialFactory,
+): THREE.Group {
   const hare = new THREE.Group();
-  const material = new THREE.MeshStandardMaterial({
-    color: animal.color,
-    map: direction.material === undefined ? null : createProceduralSurfaceTexture(direction.id),
-    roughness: direction.material?.roughness ?? 0.96,
-    metalness: 0,
-    flatShading: direction.material?.flatShading ?? true,
-  });
-  const body = new THREE.Mesh(new THREE.SphereGeometry(1, 9, 6), material);
-  const haunch = new THREE.Mesh(new THREE.SphereGeometry(1, 9, 6), material);
-  const head = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 6), material);
-  const earGeometry = new THREE.SphereGeometry(1, 7, 5);
+  const material = direction.id === "twilight-refuge"
+    ? new THREE.MeshStandardMaterial({
+      color: animal.color,
+      roughness: 0.96,
+      metalness: 0,
+      flatShading: true,
+    })
+    : styleMaterials.standard("wildlife", { color: animal.color });
+  const treatment = styleMaterials.profile.geometryTreatment;
+  const wildlifeGeometry = treatment === "faceted-miniature"
+    ? new THREE.DodecahedronGeometry(1, 0)
+    : new THREE.SphereGeometry(1, treatment === "rounded-inflated" || treatment === "moulded-clay" ? 12 : 9, 6);
+  const body = new THREE.Mesh(wildlifeGeometry, material);
+  const haunch = new THREE.Mesh(wildlifeGeometry, material);
+  const head = new THREE.Mesh(wildlifeGeometry, material);
+  const earGeometry = treatment === "faceted-miniature"
+    ? new THREE.DodecahedronGeometry(1, 0)
+    : new THREE.SphereGeometry(1, 7, 5);
 
   if (animal.pose === "seated") {
     body.position.set(0, 0.38, 0);
@@ -2113,6 +2365,13 @@ function buildHare(animal: GardenGroundAnimal, direction: GardenVisualDirection)
     head.position.set(0.38, 0.25, 0);
   }
   head.scale.set(0.2, 0.22, 0.2);
+  if (styleMaterials.hasInkOutline()) {
+    const bodyEdge = new THREE.Mesh(wildlifeGeometry, styleMaterials.outline("wildlife"));
+    bodyEdge.position.copy(body.position);
+    bodyEdge.rotation.copy(body.rotation);
+    bodyEdge.scale.copy(body.scale).multiplyScalar(1.045);
+    hare.add(bodyEdge);
+  }
   hare.add(body, haunch, head);
 
   for (const [index, z] of [-0.075, 0.075].entries()) {
@@ -2130,12 +2389,14 @@ function buildHare(animal: GardenGroundAnimal, direction: GardenVisualDirection)
 
   const tail = new THREE.Mesh(
     new THREE.SphereGeometry(0.11, 7, 5),
-    new THREE.MeshStandardMaterial({
-      color: "#a69b8b",
-      roughness: 0.98,
-      metalness: 0,
-      flatShading: true,
-    }),
+    direction.id === "twilight-refuge"
+      ? new THREE.MeshStandardMaterial({
+        color: "#a69b8b",
+        roughness: 0.98,
+        metalness: 0,
+        flatShading: true,
+      })
+      : styleMaterials.standard("wildlife", { color: "#a69b8b" }),
   );
   tail.position.set(-0.45, 0.32, 0);
   hare.add(tail);
@@ -2174,12 +2435,13 @@ function cylinderBetween(
   end: THREE.Vector3,
   radius: number,
   color = "#6a4d39",
+  material?: THREE.Material,
 ): THREE.Mesh {
   const direction = end.clone().sub(start);
   const geometry = new THREE.CylinderGeometry(radius * 0.7, radius, direction.length(), 7);
   const branch = new THREE.Mesh(
     geometry,
-    new THREE.MeshStandardMaterial({
+    material ?? new THREE.MeshStandardMaterial({
       color,
       roughness: 0.96,
       metalness: 0,
@@ -2355,7 +2617,9 @@ export function disposeObjectResources(root: THREE.Object3D): void {
   for (const geometry of geometries) geometry.dispose();
   for (const material of materials) {
     for (const value of Object.values(material)) {
-      if (value instanceof THREE.Texture) textures.add(value);
+      if (value instanceof THREE.Texture && value.userData.arriveWithinSharedStyleTexture !== true) {
+        textures.add(value);
+      }
     }
     material.dispose();
   }

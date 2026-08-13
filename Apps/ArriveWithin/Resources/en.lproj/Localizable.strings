@@ -55,6 +55,7 @@
 "garden.styles.unlock" = "Unlock all four";
 "garden.styles.unavailable" = "Purchases aren’t available right now. Twilight remains fully usable.";
 "garden.styles.restore" = "Restore Purchase";
+"garden.styles.preview.missing" = "Preview unavailable";
 "garden.styles.purchase.detail" = "One-time purchase. No subscription. Your App Store verifies ownership, including offline after verification.";
 "garden.styles.paywall.title" = "Four tactile ways to feel your Garden";
 "garden.styles.paywall.body" = "Switch the material and rhythm while keeping the same tree, milestones, local sky, and quiet ecology.";

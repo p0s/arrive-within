@@ -1,6 +1,6 @@
 import { createGardenScene, type GardenRendererDiagnostics } from "../src/scene";
 import { resolveGardenRenderStyle } from "../src/render-style";
-import type { GardenDayPhase, GardenState } from "../src/types";
+import type { GardenDayPhase, GardenQualityHint, GardenState } from "../src/types";
 import type { GardenVisualDirection, GardenVisualDirectionID } from "../src/visual-design";
 import { paperSanctuary } from "../src/visual-directions/paper-sanctuary";
 import { twilightRefuge } from "../src/visual-directions/twilight-refuge";
@@ -20,6 +20,8 @@ declare global {
       setPreset(preset: LabPreset): void;
       setMilestone(milestone: number): void;
       setDayPhase(phase: GardenDayPhase): void;
+      setStyle(style: string): void;
+      setQuality(quality: GardenQualityHint): void;
       setReduceMotion(reduced: boolean): void;
       resetView(): void;
       diagnostics(): GardenRendererDiagnostics;
@@ -43,6 +45,7 @@ if (direction === undefined) throw new Error("Unknown Garden design direction.")
 let reduceMotion = query.get("reduceMotion") === "1" || matchMedia("(prefers-reduced-motion: reduce)").matches;
 const initialPreset = parsePreset(query.get("preset"));
 let localDayPhase = parseDayPhase(query.get("phase"));
+let qualityHint = parseQuality(query.get("quality"));
 document.documentElement.dataset.theme = query.get("theme") === "light" ? "light" : "dark";
 
 const canvas = required("garden-canvas", HTMLCanvasElement);
@@ -78,6 +81,14 @@ const api = {
   setDayPhase(phase: GardenDayPhase): void {
     localDayPhase = phase;
     currentState = { ...currentState, localDayPhase };
+    scene.update(currentState);
+  },
+  setStyle(style: string): void {
+    scene.setVisualDirection(resolveGardenRenderStyle(style));
+  },
+  setQuality(quality: GardenQualityHint): void {
+    qualityHint = quality;
+    currentState = { ...currentState, qualityHint };
     scene.update(currentState);
   },
   setReduceMotion(reduced: boolean): void {
@@ -124,7 +135,7 @@ function makeState(preset: LabPreset, reduced: boolean): GardenState {
     localDayPhase,
     latestGrowthEvent: null,
     reduceMotion: reduced,
-    qualityHint: "high",
+    qualityHint,
   };
 }
 
@@ -166,6 +177,11 @@ function parseDayPhase(value: string | null): GardenDayPhase {
     return value;
   }
   return "night";
+}
+
+function parseQuality(value: string | null): GardenQualityHint {
+  if (value === "low" || value === "balanced" || value === "high") return value;
+  return "high";
 }
 
 function label(preset: LabPreset): string {

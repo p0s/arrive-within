@@ -55,6 +55,7 @@
 "garden.styles.unlock" = "Alle vier freischalten";
 "garden.styles.unavailable" = "Käufe sind derzeit nicht verfügbar. Dämmerung bleibt vollständig nutzbar.";
 "garden.styles.restore" = "Kauf wiederherstellen";
+"garden.styles.preview.missing" = "Vorschau nicht verfügbar";
 "garden.styles.purchase.detail" = "Einmalkauf. Kein Abo. Der App Store bestätigt den Besitz – nach der Bestätigung auch offline.";
 "garden.styles.paywall.title" = "Vier haptische Arten, deinen Garten zu erleben";
 "garden.styles.paywall.body" = "Wechsle Material und Rhythmus. Baum, Meilensteine, lokaler Himmel und stille Tierwelt bleiben dieselben.";
