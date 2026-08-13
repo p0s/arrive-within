@@ -1,14 +1,40 @@
 {
   "schema_version": 1,
-  "status": "owner-selection-pending",
-  "ambience_selection": null,
-  "bell_family_selection": null,
+  "status": "owner-selected-bundled-baseline",
+  "selection_date": "2026-08-13",
+  "ambience_selection": {
+    "id": "still-air-v1",
+    "path": "Audio/still-air-v1.m4a",
+    "sha256": "bf4d184f989f98b915c299a103a58360a9d1e6c400e599884d9f1c5f404e65d0"
+  },
+  "bell_family_selection": {
+    "id": "bundled-bell-v1",
+    "opening": {
+      "id": "opening-bell-v1",
+      "path": "Audio/opening-bell-v1.wav",
+      "sha256": "b94002d4a8fcbe8b916def7caede307bf846a8d2a7cb729237bd4d866f6baf44"
+    },
+    "closing_and_interval": {
+      "id": "closing-bell-v1",
+      "path": "Audio/closing-bell-v1.wav",
+      "sha256": "f193545d6f5feff8bbea1da58c8cf2575cc45dde75a23cf779ce145e4b2a1f2b"
+    }
+  },
   "eligible_ambience_ids": [
     "ambience-a-still-air",
     "ambience-b-forest-breath",
     "ambience-c-water-light"
   ],
   "eligible_bell_family_ids": ["bell-a-clear", "bell-b-warm", "bell-c-airy"],
-  "selection_effect": "A selection authorizes a separate mastering and shipping-asset integration pass; it does not pass human listening, route balance, rights, archive, TestFlight, or App Store gates.",
-  "release_exclusion": "Until an owner selection is recorded, every lab candidate remains outside the app bundle."
+  "unselected_lab_candidate_ids": [
+    "ambience-a-still-air",
+    "ambience-b-forest-breath",
+    "ambience-c-water-light",
+    "bell-a-clear",
+    "bell-b-warm",
+    "bell-c-airy"
+  ],
+  "selection_effect": "The owner approved the exact already-bundled Still Air ambience and bell-v1 family as the shipping sound direction. No lab candidate is promoted and no app asset bytes change.",
+  "physical_qa": "pending exact-device loop, fatigue, route, interruption, lock/background, mix-balance, haptic, and energy review",
+  "release_exclusion": "Every sound-lab candidate remains outside the app bundle; only the three hash-bound baseline assets named here are selected."
 }

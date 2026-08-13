@@ -432,6 +432,25 @@ async function main() {
   check("renderer-visual-matrix-boundary", rendererVisualMatrix.human_review?.state === "pending" && rendererVisualMatrix.claim_boundary?.includes("does not prove owner art approval"), "renderer matrix must preserve owner-review and release boundaries");
   const audioManifest = JSON.parse(await requireText("Apps/ArriveWithin/Resources/Audio/audio-assets.json"));
   check("procedural-audio-rights", typeof audioManifest.rights === "string" && audioManifest.rights.includes("no samples"), "bundled audio must record original deterministic synthesis");
+  const soundSelection = JSON.parse(await requireText("Marketing/SoundDesignLab/selection.json"));
+  const audioByID = new Map(audioManifest.assets.map((asset) => [asset.id, asset]));
+  const selectedAudio = [
+    soundSelection.ambience_selection,
+    soundSelection.bell_family_selection?.opening,
+    soundSelection.bell_family_selection?.closing_and_interval,
+  ];
+  check(
+    "procedural-audio-owner-selection",
+    soundSelection.status === "owner-selected-bundled-baseline"
+      && soundSelection.selection_date === "2026-08-13"
+      && selectedAudio.every((selected) => {
+        const bundled = audioByID.get(selected?.id);
+        return bundled?.path === selected?.path && bundled?.sha256 === selected?.sha256;
+      })
+      && soundSelection.unselected_lab_candidate_ids?.length === 6
+      && soundSelection.physical_qa?.startsWith("pending"),
+    "sound selection must bind the exact three bundled hashes, exclude all lab alternatives, and preserve physical QA truth",
+  );
   const websiteProvenance = JSON.parse(await requireText("Website/src/assets/provenance.json"));
   const websiteBrandProvenance = JSON.parse(await requireText("Website/src/assets/brand-provenance.json"));
   check(

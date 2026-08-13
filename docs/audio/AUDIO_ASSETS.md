@@ -1,10 +1,10 @@
 # Original audio asset ledger
 
-Status: Engineering assets generated; human listening approval pending
+Status: Exact bundled sound direction owner-approved; physical-device audio QA pending
 
 `scripts/generate_original_audio_assets.sh` deterministically synthesizes the opening bell, closing/interval bell, and optional `Still Air` ambience. They use no samples, field recordings, reference voices, cloned voices, or third-party media. The generated manifest records the exact FFmpeg build and SHA-256 for each bundled file.
 
-These assets establish the real layered playback and lifecycle path; they are not silently treated as final artistic approval. Before release, a human listener must review them on the exact candidate through built-in speaker, wired output where available, Bluetooth, lock, interruption, and route-loss scenarios. The ambience loop seam, perceptual loudness, fatigue, and relationship to approved narration require explicit review.
+On 2026-08-13 the owner approved the exact hash-bound `Still Air` ambience and `bell-v1` family as the shipping sound direction. The non-shipping sound-lab alternatives remain excluded. This selection does not claim physical-device evidence: before release, the exact candidate still requires review through built-in speaker, wired output where available, Bluetooth, lock, interruption, and route-loss scenarios. The ambience loop seam, perceptual loudness, fatigue, haptic relationship, and balance with approved narration also remain explicit device gates.
 
 The iOS Simulator validates the exact bundled files and hashes but intentionally does not start `AVAudioEngine`: simulator remote-I/O cannot prove physical playback and the installed iOS 26.5 runtime aborts while negotiating the audio device. Real playback is compiled for device targets and remains a candidate-bound physical evidence gate.
 
