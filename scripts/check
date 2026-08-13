@@ -57,7 +57,16 @@ python3 scripts/test_guided_content_release_boundary.py
 node scripts/validate_localizations.mjs
 
 print "== Swift domain, persistence, meditation, content, and bridge =="
-swift test --package-path Packages/ArriveWithinCore --no-parallel
+swiftpm_sandbox_arguments=()
+case "${ARRIVE_WITHIN_SWIFTPM_SANDBOX:-enabled}" in
+  enabled) ;;
+  disabled) swiftpm_sandbox_arguments=(--disable-sandbox) ;;
+  *)
+    print -u2 "ARRIVE_WITHIN_SWIFTPM_SANDBOX must be enabled or disabled."
+    exit 64
+    ;;
+esac
+swift test --package-path Packages/ArriveWithinCore --no-parallel "${swiftpm_sandbox_arguments[@]}"
 
 print "== Renderer =="
 pnpm --dir Renderer verify
