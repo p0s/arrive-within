@@ -84,12 +84,7 @@ export type SourceCaptures = {
   source_revision: string | null;
   source_revision_kind: string;
   source_manifest_path: string | null;
-  post_capture_nonvisual_change?: {
-    classification: "nonvisual-packaging-and-diagnostics-change";
-    current_source_revision: string;
-    changed_paths: string[];
-    rationale: string;
-  };
+  post_capture_change?: import("./capture-drift-policy").SubmittedBuildCaptureFreeze;
   result_bundles: Array<{
     device: DeviceId;
     name: string;

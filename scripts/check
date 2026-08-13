@@ -83,6 +83,7 @@ print "== App Store screenshot source and output matrix =="
   node node_modules/typescript/bin/tsc --noEmit
   node --import tsx scripts/validate-plan.ts
   node --import tsx scripts/validate-narrative-alternatives.ts
+  node --import tsx scripts/test-capture-drift-policy.ts
   node --import tsx scripts/validate-captures.ts
   node --import tsx scripts/validate-export-matrix.ts
   node --import tsx scripts/verify-reproducibility.ts --check
