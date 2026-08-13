@@ -3,6 +3,8 @@
   "source_revision": "720deeed8719b680ebe4359e1f572565780cc1015ce4ab0d83cb530335bfb405",
   "rights": "First-party Arrive Within rendered app UI; public redistribution is intended under the repository media license after final repository licensing review.",
   "capture_state": "Guarded iOS 26.5 simulator UI with deterministic safe synthetic product data; not physical-device, CloudKit, signed-candidate, or App Store evidence.",
+  "public_media_source_state": "pre-enhancement-renderer-media-current-regeneration-deferred-host-denial",
+  "public_media_next_action": "Regenerate, review, hash-bind, and resynchronize the three renderer-derived assets after the next successful current-source browser capture.",
   "assets": [
     {
       "file": "garden-en-iphone.png",

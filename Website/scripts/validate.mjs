@@ -83,7 +83,12 @@ async function main() {
   }
 
   const provenance = JSON.parse(await readFile(path.join(ROOT, "src", "assets", "provenance.json"), "utf8"));
-  if (provenance.schema_version !== 1 || provenance.assets.length !== 11) throw new Error("website asset provenance must contain eight app-UI images plus three public-media assets");
+  if (
+    provenance.schema_version !== 1 ||
+    provenance.assets.length !== 11 ||
+    provenance.public_media_source_state !== "pre-enhancement-renderer-media-current-regeneration-deferred-host-denial" ||
+    !provenance.public_media_next_action.includes("next successful current-source browser capture")
+  ) throw new Error("website asset provenance must contain the exact submitted-media and deferred-regeneration boundary");
   for (const asset of provenance.assets) {
     const canonicalSource = path.join(path.resolve(ROOT, ".."), asset.source);
     const sourceFile = path.join(ROOT, "src", "assets", asset.file);

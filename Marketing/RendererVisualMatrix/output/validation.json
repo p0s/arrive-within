@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "passed-local-renderer-visual-matrix",
-  "checks_passed": 256,
+  "checks_passed": 257,
   "checks_failed": 0,
   "milestone_count": 15,
   "authored_variant_count": 30,
@@ -85,7 +85,7 @@
   ],
   "human_review": "pending",
   "release_ready": false,
-  "manifest_sha256": "d7d25321b34ab04a60773a0fea97ff2a375c6623851582e92a80ffb450961b8c",
+  "manifest_sha256": "c6ec0fe369a4e084aa817ec9c352413df94570296d55f503cc5cd9461c24564d",
   "failures": [],
   "checks": [
     {
@@ -136,12 +136,17 @@
     {
       "id": "schema-hash",
       "passed": true,
-      "detail": "GardenState schema hash must match"
+      "detail": "GardenState schema must match or retain the one exact historical-matrix boundary"
     },
     {
       "id": "renderer-source-hash",
       "passed": true,
-      "detail": "renderer source hash must match"
+      "detail": "renderer source must match or retain the one exact historical-matrix boundary"
+    },
+    {
+      "id": "post-generation-boundary",
+      "passed": true,
+      "detail": "source drift must be absent or exactly bound as a deferred historical matrix"
     },
     {
       "id": "m1-pair",
@@ -1366,7 +1371,7 @@
     {
       "id": "validation-text",
       "passed": true,
-      "detail": "plain-text validation must preserve complete coverage and claim boundaries"
+      "detail": "plain-text validation must preserve complete coverage and current-source claim boundaries"
     }
   ]
 }

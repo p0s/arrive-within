@@ -5,6 +5,8 @@ import { readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
+import { isExactPostPublicationVisualMatrixFreeze } from "../../PublicMedia/scripts/public-media-drift-policy.mjs";
+
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const matrixRoot = resolve(scriptDirectory, "..");
 const projectRoot = resolve(matrixRoot, "../..");
@@ -34,9 +36,24 @@ check("rights", manifest.rights.code_license === "MIT" && manifest.rights.media_
 const generatorPath = join(projectRoot, manifest.source.generator);
 check("generator-hash", sha256File(generatorPath) === manifest.source.generator_sha256, "generator hash must match");
 check("plan-hash", sha256File(join(projectRoot, manifest.source.plan)) === manifest.source.plan_sha256, "plan hash must match");
-check("schema-hash", sha256File(join(projectRoot, "Shared/GardenState.schema.json")) === manifest.source.garden_state_schema_sha256, "GardenState schema hash must match");
+const currentGardenSchemaSha256 = sha256File(join(projectRoot, "Shared/GardenState.schema.json"));
 const rendererSource = manifest.source.renderer_source_files.map((path) => `${path}\0${readFileSync(join(projectRoot, path))}`).join("\0");
-check("renderer-source-hash", sha256Bytes(rendererSource) === manifest.source.renderer_source_sha256, "renderer source hash must match");
+const currentRendererSourceSha256 = sha256Bytes(rendererSource);
+const currentFileSha256 = Object.fromEntries(
+  manifest.source.renderer_source_files.map((path) => [path, sha256File(join(projectRoot, path))]),
+);
+const sourceMatches =
+  currentGardenSchemaSha256 === manifest.source.garden_state_schema_sha256 &&
+  currentRendererSourceSha256 === manifest.source.renderer_source_sha256;
+const exactPostPublicationFreeze = isExactPostPublicationVisualMatrixFreeze({
+  manifest,
+  currentRendererSourceSha256,
+  currentGardenSchemaSha256,
+  currentFileSha256,
+});
+check("schema-hash", currentGardenSchemaSha256 === manifest.source.garden_state_schema_sha256 || exactPostPublicationFreeze, "GardenState schema must match or retain the one exact historical-matrix boundary");
+check("renderer-source-hash", currentRendererSourceSha256 === manifest.source.renderer_source_sha256 || exactPostPublicationFreeze, "renderer source must match or retain the one exact historical-matrix boundary");
+check("post-generation-boundary", sourceMatches ? manifest.post_generation_change === undefined : exactPostPublicationFreeze, "source drift must be absent or exactly bound as a deferred historical matrix");
 
 for (const milestone of plan.milestones) {
   const pair = manifest.capture.frames.filter((frame) => frame.milestone_id === milestone.id);
@@ -94,7 +111,7 @@ for (const variant of ["a", "b"]) {
 }
 
 const validationText = readFileSync(join(outputRoot, "validation.txt"), "utf8");
-check("validation-text", validationText.includes("milestones: 15") && validationText.includes("authored_variants: 30") && validationText.includes("external_requests_observed: 0") && validationText.includes("human_review: pending") && validationText.includes("release_ready: false"), "plain-text validation must preserve complete coverage and claim boundaries");
+check("validation-text", validationText.includes("milestones: 15") && validationText.includes("authored_variants: 30") && validationText.includes("external_requests_observed: 0") && validationText.includes("human_review: pending") && validationText.includes("release_ready: false") && (!exactPostPublicationFreeze || (validationText.includes("current_source_state: regeneration-deferred-host-denial") && validationText.includes("current_garden_proof: separate"))), "plain-text validation must preserve complete coverage and current-source claim boundaries");
 
 const report = {
   schema_version: 1,

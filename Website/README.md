@@ -14,6 +14,8 @@ The dependency-free build writes ignored `dist/`, exact English/German home, sup
 
 After intentionally regenerating the canonical public renderer media, run `node Marketing/PublicMedia/scripts/sync-website-media.mjs` from the repository root. The synchronizer copies only the three declared public-media files and rewrites their exact SHA-256 provenance; website validation then rejects any source/copy drift.
 
+The retained video, poster, and social preview are first-party pre-enhancement renderer media. They are not used as proof of the post-publication Garden. A fresh current-source browser regeneration was skipped after host denial rather than reported as passed; after the next successful capture, visually review and hash-bind the new media before running the synchronizer.
+
 After intentionally recapturing the canonical App Store UI source, run `node Marketing/AppStoreScreenshots/scripts/sync-website-ui.mjs` from the repository root. The synchronizer copies only the eight declared first-party UI images and rewrites their exact capture revision and SHA-256 provenance.
 
 ## Boundaries

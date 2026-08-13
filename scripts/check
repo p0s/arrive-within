@@ -90,12 +90,14 @@ print "== App Store screenshot source and output matrix =="
 )
 
 print "== Public media =="
+node Marketing/PublicMedia/scripts/test-public-media-drift-policy.mjs
 node Marketing/PublicMedia/scripts/validate-public-media.mjs
 
 print "== Renderer milestone and variant visual matrix =="
 node Marketing/RendererVisualMatrix/scripts/validate-renderer-visual-matrix.mjs
 
 print "== Selectable Garden and sound design labs =="
+node Marketing/GardenDesignLab/scripts/test-garden-lab-drift-policy.mjs
 node Marketing/GardenDesignLab/scripts/validate-garden-design-lab.mjs
 zsh scripts/generate_sound_design_lab.sh
 node Marketing/SoundDesignLab/scripts/validate-sound-design-lab.mjs

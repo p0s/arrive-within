@@ -34,12 +34,12 @@ The current-source production-origin build was served only on loopback and inspe
 - Representative English desktop hero, growth, Timer/Stopwatch mode choice, and German mobile article layouts were visually inspected.
 - Review found a 15-point overflow in the German mobile open-source heading. The fix uses German-only automatic hyphenation with safe word wrapping; the full 16-case matrix then passed. English heading hyphenation is explicitly disabled.
 
-## Current local successor
+## Retained production media
 
-After build 7 entered review, the renderer-derived Garden video, poster, and social preview were regenerated from the current Twilight source and synchronized into `Website/src/assets`. The successor has source SHA-256 `f87034ba7bbad7e9fdd51485a2f9ed02a2f4f103fa15e9632fab42950d6a237d`, content SHA-256 `c0facf9f554a2690b01d3575456c02a44d72f4f3b7b75d348b4b9fba43ebc812`, and complete 25-file production-origin build SHA-256 `59430428d7124fc08b6fb3d155f22eb8e63d56aafd1c9240cb0bfcb3486cc951`. Static validation, the 16-case browser matrix, and all four video load/seek cases pass locally. Deployment `dpl_DdCw74n9x8f862DJBLYynnSztA1e` is READY and aliased to `arrivewithin.com`; all eight route bodies and all three refreshed media assets were then downloaded without credentials and matched the local artifact byte-for-byte.
+After build 7 entered review, the renderer-derived Garden video, poster, and social preview were regenerated from the then-current Twilight source and synchronized into `Website/src/assets`. That production artifact passed its static and 16-case browser matrices and was read back byte-for-byte. The later post-publication Garden changes renderer and schema source, so these retained assets are now explicitly historical product media rather than current-source Garden proof. A fresh browser capture was skipped after host denial, not passed; the next successful current-source regeneration must be visually reviewed, hash-bound, and resynchronized before replacing the three assets.
 
 ## Claim boundary
 
 This proves the deterministic, public-safe refreshed website artifact, the existing Vercel Hobby project binding, `arrivewithin.com` DNS/TLS, eight production routes, and the three current Twilight media assets. It does not prove public-repository availability, App Store availability, production narration, or a signed release candidate. No domain purchase, registration, unrelated project, or unrelated DNS mutation was performed.
 
-The eight app-UI images remain synchronized to build-6 capture revision `720deeed8719b680ebe4359e1f572565780cc1015ce4ab0d83cb530335bfb405`; the renderer-derived media is current Twilight output. The live route/media hashes match the current production-origin local build.
+The eight app-UI images remain synchronized to build-6 capture revision `720deeed8719b680ebe4359e1f572565780cc1015ce4ab0d83cb530335bfb405`; the renderer-derived media remains byte-bound pre-enhancement output. The post-publication Garden has separate rendered and deterministic proof and is not represented by these retained assets.
