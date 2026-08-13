@@ -35,6 +35,7 @@ final class NativeMeditationAudioController: NSObject, MeditationAudioControllin
   private let audioSession: AVAudioSession
   private let assets: BundledAudioAssetResolver
   private var engine = AVAudioEngine()
+  private var openingBellPlayer = AVAudioPlayerNode()
   private var bellPlayer = AVAudioPlayerNode()
   private var ambiencePlayer = AVAudioPlayerNode()
   private var narrationPlayer = AVAudioPlayerNode()
@@ -111,6 +112,7 @@ final class NativeMeditationAudioController: NSObject, MeditationAudioControllin
     guard graphIsReady else { return }
     narrationVolumeRamp?.cancel()
     ambienceVolumeRamp?.cancel()
+    openingBellPlayer.pause()
     bellPlayer.pause()
     ambiencePlayer.pause()
     narrationPlayer.pause()
@@ -183,6 +185,7 @@ final class NativeMeditationAudioController: NSObject, MeditationAudioControllin
       return
     }
     if graphIsReady {
+      openingBellPlayer.stop()
       ambiencePlayer.stop()
       narrationPlayer.stop()
     }
@@ -250,6 +253,7 @@ final class NativeMeditationAudioController: NSObject, MeditationAudioControllin
     narrationVolumeRamp = nil
     ambienceVolumeRamp = nil
     if graphIsReady {
+      openingBellPlayer.stop()
       bellPlayer.stop()
       ambiencePlayer.stop()
       narrationPlayer.stop()
@@ -278,10 +282,14 @@ final class NativeMeditationAudioController: NSObject, MeditationAudioControllin
       session.configuration.audio.otherAudioPolicy == .mixWithOthers
       ? [.mixWithOthers]
       : []
+    let routeSharingPolicy: AVAudioSession.RouteSharingPolicy =
+      session.configuration.audio.otherAudioPolicy == .mixWithOthers
+      ? .default
+      : .longFormAudio
     try audioSession.setCategory(
       .playback,
       mode: session.mode == .guided ? .spokenAudio : .default,
-      policy: .longFormAudio,
+      policy: routeSharingPolicy,
       options: options
     )
     try audioSession.setActive(true)
@@ -354,9 +362,11 @@ final class NativeMeditationAudioController: NSObject, MeditationAudioControllin
       }
     }
     if let openingBell, !isResume {
-      bellHasScheduledContent = true
       let generation = playbackGeneration
-      bellPlayer.scheduleBuffer(openingBell, completionCallbackType: .dataPlayedBack) {
+      openingBellPlayer.scheduleBuffer(
+        openingBell,
+        completionCallbackType: .dataPlayedBack
+      ) {
         [weak self] _ in
         Task { @MainActor in
           guard let self,
@@ -418,6 +428,7 @@ final class NativeMeditationAudioController: NSObject, MeditationAudioControllin
     try engine.start()
     if ambience != nil { ambiencePlayer.play() }
     if narrationFile != nil { narrationPlayer.play() }
+    if openingBell != nil, !isResume { openingBellPlayer.play() }
     if bellHasScheduledContent { bellPlayer.play() }
     if ambience != nil { rampAmbience(to: effectiveAmbienceVolume(for: session)) }
     if narrationFile != nil { rampNarration(to: narrationVolume) }
@@ -477,9 +488,11 @@ final class NativeMeditationAudioController: NSObject, MeditationAudioControllin
   private func rebuildGraph() {
     guard Self.rendersAudioOnCurrentTarget else { return }
     engine = AVAudioEngine()
+    openingBellPlayer = AVAudioPlayerNode()
     bellPlayer = AVAudioPlayerNode()
     ambiencePlayer = AVAudioPlayerNode()
     narrationPlayer = AVAudioPlayerNode()
+    engine.attach(openingBellPlayer)
     engine.attach(bellPlayer)
     engine.attach(ambiencePlayer)
     engine.attach(narrationPlayer)
@@ -489,8 +502,16 @@ final class NativeMeditationAudioController: NSObject, MeditationAudioControllin
   @discardableResult
   private func connectGraphToLoadedMedia() -> Bool {
     var connected = false
-    if let bellFormat = (openingBell ?? closingBell)?.format {
-      engine.connect(bellPlayer, to: engine.mainMixerNode, format: bellFormat)
+    if let openingBell {
+      engine.connect(
+        openingBellPlayer,
+        to: engine.mainMixerNode,
+        format: openingBell.format
+      )
+      connected = true
+    }
+    if let closingBell {
+      engine.connect(bellPlayer, to: engine.mainMixerNode, format: closingBell.format)
       connected = true
     }
     if let ambience {

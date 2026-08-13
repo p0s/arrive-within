@@ -10,6 +10,58 @@ import Testing
 @Suite("Native timer-to-garden vertical slice")
 @MainActor
 struct AppModelVerticalSliceTests {
+  #if !targetEnvironment(simulator)
+    @Test("A prepared timer starts bundled sound without a fallback notice on device")
+    func preparedTimerStartsNativeAudioOnDevice() async throws {
+      let eventRepository = InMemoryPracticeEventRepository()
+      let clock = VirtualSessionClock(
+        moment: SessionMoment(
+          monotonicMilliseconds: 1_000,
+          wallClock: Date(timeIntervalSince1970: 1_786_320_000)
+        )
+      )
+      let audioController = try NativeMeditationAudioController(bundle: .main)
+      defer { audioController.stop() }
+      let model = AppModel(
+        dependencies: AppDependencies(
+          profileRepository: TestProfileRepository(),
+          eventRepository: eventRepository,
+          sessionRepository: TestSessionRepository(),
+          preferencesRepository: TestPreferencesRepository(),
+          completionCoordinator: SessionCompletionCoordinator(repository: eventRepository),
+          clock: clock,
+          dataDirectory: FileManager.default.temporaryDirectory
+            .appending(path: UUID().uuidString, directoryHint: .isDirectory),
+          audioController: audioController,
+          timerEndAlertController: NoOpTimerEndAlertController(),
+          hapticController: NoOpMeditationHapticController()
+        )
+      )
+      let audio = try MeditationAudioConfiguration(
+        intervalBellMinutes: 1,
+        ambienceID: "still-air-v1",
+        ambienceVolume: 0.3,
+        otherAudioPolicy: .mixWithOthers,
+        backgroundEndAlertEnabled: true
+      )
+
+      await model.start()
+      try await model.startPractice(
+        mode: .timer,
+        targetMinutes: 3,
+        configuration: MeditationSessionConfiguration(
+          preparation: .fiveSeconds,
+          audio: audio
+        )
+      )
+      clock.advance(milliseconds: 5_000)
+      try await Task.sleep(for: .milliseconds(350))
+
+      #expect(model.activeSession?.phase == .running)
+      #expect(model.audioNotice == nil)
+    }
+  #endif
+
   @Test("A three-minute completion visibly and durably advances the projection")
   func completionAdvancesGarden() async throws {
     let eventRepository = InMemoryPracticeEventRepository()

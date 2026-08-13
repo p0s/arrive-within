@@ -14,8 +14,10 @@ Timer completion and local progress must never depend on audio availability. Gui
 - Guided narration pauses durably on the same events and waits for an explicit user resume.
 - User-facing notices describe the authoritative session state. A guided-pause notice appears only after the paused session has been saved.
 - Every player node connects with its loaded media's explicit format. A stopped or rebuilt engine schedules a one-shot bell buffer before engine preparation and start. Bell failure remains best-effort and cannot own session completion or progress.
+- Mixed-with-other-apps playback uses the default route-sharing policy because iOS rejects `.longFormAudio` with `.mixWithOthers` (`NSOSStatusErrorDomain -50`). Non-mixed playback retains `.longFormAudio` for background continuity.
+- The opening bell has a dedicated player node. It starts immediately with the ambience graph and cannot be delayed by the future interval/closing schedule on the continuous bell node.
 - Engine-configuration notifications are accepted only from the meditation controller's current engine.
-- Shipping bell assets have automated hash, format, peak, and RMS bounds in addition to later exact-device listening QA.
+- Shipping bell and ambience assets have automated hash, format, and headroom-safe loudness bounds in addition to later exact-device listening QA.
 
 ## Consequences
 

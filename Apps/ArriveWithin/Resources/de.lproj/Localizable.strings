@@ -77,10 +77,13 @@
 "practice.duration" = "Dauer";
 "practice.minutes.format" = "%d Min.";
 "practice.custom.duration.format" = "Eigene Dauer: %d Min.";
-"practice.preparation" = "Vorbereitung";
-"practice.preparation.seconds.format" = "%d Sekunden";
-"practice.interval" = "Intervallklang";
-"practice.interval.minutes.format" = "Alle %d Min.";
+"practice.preparation" = "Startverzögerung";
+"practice.preparation.immediate" = "Sofort beginnen";
+"practice.preparation.seconds.format" = "Nach %d Sekunden beginnen";
+"practice.interval" = "Häufigkeit des Intervallklangs";
+"practice.interval.off" = "Kein Intervallklang";
+"practice.interval.one.minute" = "Klang jede Minute";
+"practice.interval.minutes.format" = "Klang alle %d Minuten";
 "practice.opening.bell" = "Anfangsklang";
 "practice.closing.bell" = "Abschlussklang";
 "practice.ambience" = "Klangraum „Stille Luft“";
@@ -265,7 +268,7 @@
 "recovery.discard" = "Ohne Speichern beenden";
 
 "audio.notice.guided.pending" = "Geführte Meditationen sind verfügbar, sobald eine rechtlich geeignete Stimme gewählt und die Aufnahme zweisprachig geprüft wurde.";
-"audio.notice.unavailable" = "Der Ton ist nicht verfügbar. Zeitmessung und lokaler Fortschritt laufen sicher weiter; eine Audio-Zuverlässigkeit wird nicht behauptet.";
+"audio.notice.unavailable" = "Der Ton konnte für diese Praxis nicht starten. Timer und Fortschritt laufen weiter.";
 "audio.notice.interrupted" = "Die Audioausgabe wurde unterbrochen. Die Zeitmessung läuft weiter; der Ton kehrt zurück, sobald iOS ihn wieder freigibt.";
 "audio.notice.route.lost" = "Der Audioausgang hat sich geändert. Die Zeitmessung läuft weiter; der Ton wird erst über einen sicheren Ausgang fortgesetzt.";
 "audio.notice.system.reset" = "Das Audiosystem wurde neu gestartet. Die Zeitmessung läuft weiter, während der Ton wiederhergestellt wird.";

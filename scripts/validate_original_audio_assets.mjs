@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { spawnSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
@@ -67,21 +68,53 @@ function analyzePCM16MonoWAV(bytes, id) {
   return { peakDBFS, rmsDBFS };
 }
 
+function analyzeAmbience(filePath, id) {
+  const result = spawnSync(
+    "ffmpeg",
+    ["-hide_banner", "-nostats", "-i", filePath, "-af", "volumedetect", "-f", "null", "-"],
+    { encoding: "utf8" }
+  );
+  assert(result.status === 0, `${id} could not be decoded by FFmpeg`);
+  const meanMatch = result.stderr.match(/mean_volume:\s*(-?[0-9.]+) dB/);
+  const peakMatch = result.stderr.match(/max_volume:\s*(-?[0-9.]+) dB/);
+  assert(meanMatch && peakMatch, `${id} loudness could not be measured`);
+  const meanDBFS = Number(meanMatch[1]);
+  const peakDBFS = Number(peakMatch[1]);
+  assert(
+    peakDBFS >= -18 && peakDBFS <= -6,
+    `${id} peak ${peakDBFS.toFixed(1)} dBFS is outside the audible, headroom-safe band`
+  );
+  assert(
+    meanDBFS >= -28 && meanDBFS <= -16,
+    `${id} mean ${meanDBFS.toFixed(1)} dBFS is outside the mastered ambience band`
+  );
+  return { peakDBFS, meanDBFS };
+}
+
 const manifest = JSON.parse(await readFile(path.join(audioRoot, "audio-assets.json"), "utf8"));
 assert(manifest.schema_version === 1, "audio asset manifest schema must be 1");
 assert(manifest.assets?.length === 3, "audio asset manifest must contain exactly three assets");
 
 const measurements = [];
+let ambienceMeasurement;
 for (const asset of manifest.assets) {
-  const bytes = await readFile(path.join(audioRoot, path.basename(asset.path)));
+  const filePath = path.join(audioRoot, path.basename(asset.path));
+  const bytes = await readFile(filePath);
   assert(sha256(bytes) === asset.sha256, `${asset.id} hash does not match the manifest`);
   if (asset.role === "opening-bell" || asset.role === "closing-and-interval-bell") {
     measurements.push({ id: asset.id, ...analyzePCM16MonoWAV(bytes, asset.id) });
+  } else if (asset.role === "optional-looping-ambience") {
+    ambienceMeasurement = { id: asset.id, ...analyzeAmbience(filePath, asset.id) };
   }
 }
 assert(measurements.length === 2, "both mastered bell roles must be present");
+assert(ambienceMeasurement, "the mastered ambience role must be present");
 console.log(
-  measurements
-    .map(({ id, peakDBFS, rmsDBFS }) => `${id} peak=${peakDBFS.toFixed(1)}dBFS rms=${rmsDBFS.toFixed(1)}dBFS`)
-    .join("; ")
+  [
+    ...measurements.map(
+      ({ id, peakDBFS, rmsDBFS }) =>
+        `${id} peak=${peakDBFS.toFixed(1)}dBFS rms=${rmsDBFS.toFixed(1)}dBFS`
+    ),
+    `${ambienceMeasurement.id} peak=${ambienceMeasurement.peakDBFS.toFixed(1)}dBFS mean=${ambienceMeasurement.meanDBFS.toFixed(1)}dBFS`,
+  ].join("; ")
 );
