@@ -2,7 +2,7 @@
 id: G12
 language: en
 revision: 1
-status: draft
+status: production-candidate
 target_minutes: 10
 ---
 # Breathing Through Stress

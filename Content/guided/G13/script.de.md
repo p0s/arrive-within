@@ -2,7 +2,7 @@
 id: G13
 language: de
 revision: 1
-status: draft
+status: production-candidate
 target_minutes: 12
 ---
 # Halt in der Ungewissheit

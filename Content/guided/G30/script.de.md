@@ -2,7 +2,7 @@
 id: G30
 language: de
 revision: 1
-status: draft
+status: production-candidate
 target_minutes: 15
 ---
 # Trauer und Zartheit

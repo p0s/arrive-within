@@ -2,7 +2,7 @@
 id: G21
 language: de
 revision: 1
-status: draft
+status: production-candidate
 target_minutes: 8
 ---
 # Atem im Bauch

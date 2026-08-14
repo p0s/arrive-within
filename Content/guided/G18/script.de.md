@@ -2,7 +2,7 @@
 id: G18
 language: de
 revision: 1
-status: draft
+status: production-candidate
 target_minutes: 7
 ---
 # Schultern, Kiefer, Hände

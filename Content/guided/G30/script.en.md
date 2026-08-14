@@ -2,7 +2,7 @@
 id: G30
 language: en
 revision: 1
-status: draft
+status: production-candidate
 target_minutes: 15
 ---
 # Grief and Tenderness

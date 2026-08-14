@@ -2,7 +2,7 @@
 id: G02
 language: de
 revision: 1
-status: draft
+status: production-candidate
 target_minutes: 5
 ---
 # Atemzug für Atemzug

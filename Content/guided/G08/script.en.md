@@ -2,7 +2,7 @@
 id: G08
 language: en
 revision: 1
-status: draft
+status: production-candidate
 target_minutes: 15
 ---
 # A Complete First Practice

@@ -2,7 +2,7 @@
 id: G10
 language: en
 revision: 1
-status: draft
+status: production-candidate
 target_minutes: 7
 ---
 # A Pause Under Pressure
