@@ -223,6 +223,8 @@ async function main() {
   bundles.push(await ingestResult(captures, ipadResult, "ipad-13", plan.required_capture_ids));
 
   captures.state = "candidate-ready";
+  delete captures.human_visual_review;
+  delete captures.post_capture_change;
   captures.source_revision = sourceManifest.source_revision;
   captures.source_revision_kind = "sha256-capture-source-manifest";
   captures.source_manifest_path = "capture-source-manifest.json";

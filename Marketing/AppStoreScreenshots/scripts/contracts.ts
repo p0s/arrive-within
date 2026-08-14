@@ -84,6 +84,12 @@ export type SourceCaptures = {
   source_revision: string | null;
   source_revision_kind: string;
   source_manifest_path: string | null;
+  human_visual_review?: {
+    state: "approved";
+    reviewer: string;
+    reviewed_on: string;
+    notes: string;
+  };
   post_capture_change?: import("./capture-drift-policy").SubmittedBuildCaptureFreeze;
   result_bundles: Array<{
     device: DeviceId;

@@ -1,77 +1,31 @@
 {
   "schema_version": 2,
-  "state": "candidate-ready",
-  "capture_method": "Guarded XCUITest using a pooled iPhone 17 Pro simulator on iOS 26.5 and the authorized physical iPad Pro 13-inch (M4) on iOS 26.6, with deterministic safe synthetic product state",
+  "state": "human-reviewed",
+  "capture_method": "Guarded XCUITest using a pooled iPhone 17 Pro simulator and an iPad Pro 13-inch (M5) simulator on iOS 26.5, with deterministic safe synthetic product state",
   "capture_test": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish and testCaptureAllRequiredMarketingStatesGerman — selected Garden/growth shipping states only",
-  "status_bar_profile": "Actual visible system status from each exact passed capture run; no synthetic status-bar overlay. The iPhone simulator and physical iPad capture timestamps differ, and the final marketing compositions preserve those source status bars.",
-  "source_revision": "720deeed8719b680ebe4359e1f572565780cc1015ce4ab0d83cb530335bfb405",
+  "status_bar_profile": "Actual visible system status from each exact passed capture run using the simulator system status-bar override fixed at 09:41 local; no synthetic status-bar overlay.",
+  "source_revision": "c422692239d5f317c6ebb7e18b245826040245268c1bf9781bcb3c682e2588a1",
   "source_revision_kind": "sha256-capture-source-manifest",
   "source_manifest_path": "capture-source-manifest.json",
-  "post_capture_change": {
-    "classification": "submitted-build-7-post-submission-source-changes",
-    "current_source_revision": "6223d24a0de27da0d2b8b34e196dffcdc430086431d261d418162abcc38978e6",
-    "changed_paths": [
-      "Apps/ArriveWithin/Resources/Audio/audio-assets.json",
-      "Apps/ArriveWithin/Resources/Audio/closing-bell-v1.wav",
-      "Apps/ArriveWithin/Resources/Audio/opening-bell-v1.wav",
-      "Apps/ArriveWithin/Resources/Audio/still-air-v1.m4a",
-      "Apps/ArriveWithin/Resources/GardenPreviews/garden-preview-claymation.png",
-      "Apps/ArriveWithin/Resources/GardenPreviews/garden-preview-crochet.png",
-      "Apps/ArriveWithin/Resources/GardenPreviews/garden-preview-hand-drawn.png",
-      "Apps/ArriveWithin/Resources/GardenPreviews/garden-preview-stop-motion.png",
-      "Apps/ArriveWithin/Resources/GardenPreviews/garden-preview-twilight.png",
-      "Apps/ArriveWithin/Resources/de.lproj/Localizable.strings",
-      "Apps/ArriveWithin/Resources/en.lproj/Localizable.strings",
-      "Apps/ArriveWithin/Sources/AppDependencies.swift",
-      "Apps/ArriveWithin/Sources/AppModel.swift",
-      "Apps/ArriveWithin/Sources/AppSettings.swift",
-      "Apps/ArriveWithin/Sources/GardenView.swift",
-      "Apps/ArriveWithin/Sources/GardenWebView.swift",
-      "Apps/ArriveWithin/Sources/GuidedLibraryView.swift",
-      "Apps/ArriveWithin/Sources/MeditationAudioController.swift",
-      "Apps/ArriveWithin/Sources/PracticeView.swift",
-      "Apps/ArriveWithin/Sources/PremiumGardenStyles.swift",
-      "Apps/ArriveWithin/Sources/PremiumGardenStylesView.swift",
-      "Apps/ArriveWithin/Sources/RendererDiagnostics.swift",
-      "Apps/ArriveWithin/Sources/SettingsView.swift",
-      "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinUITests.swift",
-      "ArriveWithin.xcodeproj/project.pbxproj",
-      "ArriveWithin.xcodeproj/xcshareddata/xcschemes/ArriveWithin.xcscheme",
-      "Config/ArriveWithin.entitlements.local",
-      "Config/Base.xcconfig",
-      "Config/Local.xcconfig",
-      "Packages/ArriveWithinCore/Package.swift",
-      "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/GardenState.swift",
-      "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/ProgressionReducer.swift",
-      "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/WeeklyReminderSchedule.swift",
-      "Packages/ArriveWithinCore/Sources/ArriveWithinGardenBridge/GardenDescription.swift",
-      "Packages/ArriveWithinCore/Sources/ArriveWithinMeditation/AudioLifecyclePolicy.swift",
-      "Renderer/dist/renderer-manifest.json",
-      "Renderer/dist/renderer.js",
-      "project.yml"
-    ],
-    "submitted_version": "1.0",
-    "submitted_build": 7,
-    "submitted_state_at_freeze": "WAITING_FOR_REVIEW",
-    "valid_until": "next-editable-app-store-metadata-opportunity",
-    "submitted_listing_mutation": "none",
-    "separate_iap_state": "READY_TO_SUBMIT_NOT_ATTACHED",
-    "next_action": "recapture-and-review-at-next-editable-metadata-opportunity",
-    "rationale": "Exact build 7 was already WAITING_FOR_REVIEW and must not be replaced, cancelled, edited, or resubmitted. The post-submission Garden and timer audio correction are deliberately not represented by the submitted App Store screenshots; the submitted App Store listing and screenshots remained untouched. The READY_TO_SUBMIT IAP is separate and not attached. The retained 24 images remain the checksum-bound submitted-build artifact, not proof of the later source, and fresh current-source captures must be generated, reviewed, and bound at the next editable metadata opportunity."
+  "human_visual_review": {
+    "state": "approved",
+    "reviewer": "implementation-review",
+    "reviewed_on": "2026-08-14",
+    "notes": "English and German iPhone and iPad contact sheets plus representative full-resolution comparisons were inspected after the current-source recapture: all slides retain one headline, a tight headline-to-product gap, unclipped legible real app UI, and the purposeful overlapping framed comparison."
   },
   "result_bundles": [
     {
       "device": "iphone-6.9",
-      "name": "final-b6-current-source-720deeed-iphone.xcresult",
-      "xcresult_tree_sha256": "83b7403653c16a8fa43ca700fd5d5f0cedd7b7bc844c07a39d2e072af368878b",
+      "name": "Test-ArriveWithin-2026.08.14_21-21-50-+0800.xcresult",
+      "xcresult_tree_sha256": "a1e63bf0ab78e93b3021d9439162d41dcf315f25ab6303c58ade6cdf16c9747e",
       "passed_tests": 2,
       "failed_tests": 0,
       "skipped_tests": 0
     },
     {
       "device": "ipad-13",
-      "name": "final-b6-current-source-720deeed-ipad.xcresult",
-      "xcresult_tree_sha256": "c02bf3fddf084174f47b1af92865e32442f0c5a31c4cffe20f837af6b06d16c7",
+      "name": "Test-ArriveWithin-2026.08.14_21-36-26-+0800.xcresult",
+      "xcresult_tree_sha256": "1de6ecb7f1379d4e0d357aa0f4047b9313975736627dd2f406087fbefeb20b67",
       "passed_tests": 2,
       "failed_tests": 0,
       "skipped_tests": 0
@@ -87,18 +41,18 @@
       "width": 1206,
       "height": 2622,
       "result_bundle": {
-        "name": "final-b6-current-source-720deeed-iphone.xcresult",
-        "xcresult_tree_sha256": "83b7403653c16a8fa43ca700fd5d5f0cedd7b7bc844c07a39d2e072af368878b",
+        "name": "Test-ArriveWithin-2026.08.14_21-21-50-+0800.xcresult",
+        "xcresult_tree_sha256": "a1e63bf0ab78e93b3021d9439162d41dcf315f25ab6303c58ade6cdf16c9747e",
         "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()"
       },
       "captures": {
         "garden-hero": {
           "path": "public/runtime-ui/en-US/iphone-6.9/garden-hero.png",
-          "sha256": "4423e5eb2e605c00ca9d25056b301d65ee0ecc91421f79f2417da6827d368e81"
+          "sha256": "da9787a7af1f08fff651b6dc28e3b7f1e3b7d78859642a143f2ae2a564008188"
         },
         "garden-seed": {
           "path": "public/runtime-ui/en-US/iphone-6.9/garden-seed.png",
-          "sha256": "6d36e82b1eda663949213b51e142a7f2ea20b6e63c75cc8560b17b6b3f98b08f"
+          "sha256": "cf6b7d425c0a91319afa830faf9736d8da4b78c01781060e7c283a66b88f33b8"
         },
         "guided-library": {
           "path": "public/runtime-ui/en-US/iphone-6.9/guided-library.png",
@@ -110,7 +64,7 @@
         },
         "journal": {
           "path": "public/runtime-ui/en-US/iphone-6.9/journal.png",
-          "sha256": "53b6651825bf57b8c24a9c6618bf8249d5366d50fe2d99ed075155b74d5eb91f"
+          "sha256": "ed4bb2d061f31c849f90ef45e6b345e1b889d51907c29ef828f0383f87b729b7"
         },
         "data-sync": {
           "path": "public/runtime-ui/en-US/iphone-6.9/data-sync.png",
@@ -118,11 +72,11 @@
         },
         "journey-calendar": {
           "path": "public/runtime-ui/en-US/iphone-6.9/journey-calendar.png",
-          "sha256": "7b62e8ebc4448461b4733328a2e483710c789d895a45d30e413a28888ce0841d"
+          "sha256": "67707d2f71a805cd05255dff8224dad2d23051d2d550b5fc4edfce460a195f50"
         },
         "journey-milestones": {
           "path": "public/runtime-ui/en-US/iphone-6.9/journey-milestones.png",
-          "sha256": "1d0e3679d934c252719625d15e69bfaf248ab292f224fe2716003e9c4c43fbbd"
+          "sha256": "c3e88c2f90731ced77f843437b8b258fd6b23262277210ec808af907f69e24db"
         }
       }
     },
@@ -134,18 +88,18 @@
       "width": 1206,
       "height": 2622,
       "result_bundle": {
-        "name": "final-b6-current-source-720deeed-iphone.xcresult",
-        "xcresult_tree_sha256": "83b7403653c16a8fa43ca700fd5d5f0cedd7b7bc844c07a39d2e072af368878b",
+        "name": "Test-ArriveWithin-2026.08.14_21-21-50-+0800.xcresult",
+        "xcresult_tree_sha256": "a1e63bf0ab78e93b3021d9439162d41dcf315f25ab6303c58ade6cdf16c9747e",
         "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
       },
       "captures": {
         "garden-hero": {
           "path": "public/runtime-ui/de-DE/iphone-6.9/garden-hero.png",
-          "sha256": "770c1f44a3f88b7e5a2ae9c8c3f0b1fca75dc932bf16b3d21309e80d72d0642a"
+          "sha256": "110730c1e88617a4f8353aef0c00cdb103c540130664bb2f08e2154e09b791dc"
         },
         "garden-seed": {
           "path": "public/runtime-ui/de-DE/iphone-6.9/garden-seed.png",
-          "sha256": "fb442568c7f7f454450be8f5b323074ecd33f47a30d4beac30fbea8a1d953b5d"
+          "sha256": "d62cc8b0c58d0570155ba90132896f0b69a734bbdc8a353a7882ebf4e6c1d31c"
         },
         "guided-library": {
           "path": "public/runtime-ui/de-DE/iphone-6.9/guided-library.png",
@@ -157,7 +111,7 @@
         },
         "journal": {
           "path": "public/runtime-ui/de-DE/iphone-6.9/journal.png",
-          "sha256": "24cb9dc0e2b221e5bf58f98225f44f0687c0b17781c21817a012f40325eb614d"
+          "sha256": "e5353cc55a79a9976fcfb06be3c702b5023baa8c44c468e70df34369fddfbe3a"
         },
         "data-sync": {
           "path": "public/runtime-ui/de-DE/iphone-6.9/data-sync.png",
@@ -165,11 +119,11 @@
         },
         "journey-calendar": {
           "path": "public/runtime-ui/de-DE/iphone-6.9/journey-calendar.png",
-          "sha256": "65fa9e9cc76ae46d89b53e7443451465a00f247935834bc24d18e5f6dfbdafc1"
+          "sha256": "1944d5856987309ff82983441ed4e8805df3e1c181bacc729f11c684cc9a3a34"
         },
         "journey-milestones": {
           "path": "public/runtime-ui/de-DE/iphone-6.9/journey-milestones.png",
-          "sha256": "c82a7970d70984bde49e7cd55c201a6015f854f1a4457426051b7f1111ba19bb"
+          "sha256": "fe4e0a608625cfea2bebf463e57933f53deab6962401d2549a05ce79a2142d5c"
         }
       }
     },
@@ -181,18 +135,18 @@
       "width": 2064,
       "height": 2752,
       "result_bundle": {
-        "name": "final-b6-current-source-720deeed-ipad.xcresult",
-        "xcresult_tree_sha256": "c02bf3fddf084174f47b1af92865e32442f0c5a31c4cffe20f837af6b06d16c7",
+        "name": "Test-ArriveWithin-2026.08.14_21-36-26-+0800.xcresult",
+        "xcresult_tree_sha256": "1de6ecb7f1379d4e0d357aa0f4047b9313975736627dd2f406087fbefeb20b67",
         "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()"
       },
       "captures": {
         "garden-hero": {
           "path": "public/runtime-ui/en-US/ipad-13/garden-hero.png",
-          "sha256": "c119d6b1380a9437cfc8f883fba4d1d3df02d0170ddf7e000a8b7c54e50eeebc"
+          "sha256": "03778adf4e1ec5feb46b6389ce3c82e9a629f96962ebdf22d4bae1468307da89"
         },
         "garden-seed": {
           "path": "public/runtime-ui/en-US/ipad-13/garden-seed.png",
-          "sha256": "7041d0db34a15865ed30d9f153237d013fe054e36e268b7d545414c8e659f431"
+          "sha256": "d2eafed09183d7a5a3c0fb2922aba857b58a76afb6776fc7a2e1b865576cdc08"
         },
         "guided-library": {
           "path": "public/runtime-ui/en-US/ipad-13/guided-library.png",
@@ -204,7 +158,7 @@
         },
         "journal": {
           "path": "public/runtime-ui/en-US/ipad-13/journal.png",
-          "sha256": "8788778ae2534245c1860035979b12afe15fc3cc8c9679718b6603d85161fbe5"
+          "sha256": "c74865194b1091a69db9a58303a463c6765f46f44bbd6901c58abb5385edfed0"
         },
         "data-sync": {
           "path": "public/runtime-ui/en-US/ipad-13/data-sync.png",
@@ -212,11 +166,11 @@
         },
         "journey-calendar": {
           "path": "public/runtime-ui/en-US/ipad-13/journey-calendar.png",
-          "sha256": "98b3a306f23943b1c12f92ac8382811e6f0e0596a5fd1b918f10c7d123be556b"
+          "sha256": "ad2a7de6c7cb4dd7227c70fc302fe95607793cab5fb77b7143d969c5eee9be5a"
         },
         "journey-milestones": {
           "path": "public/runtime-ui/en-US/ipad-13/journey-milestones.png",
-          "sha256": "a97a998fed1d281ef030bef2dc80c9c0052a4c8a0ce33393a173b72732d2967c"
+          "sha256": "ad2a7de6c7cb4dd7227c70fc302fe95607793cab5fb77b7143d969c5eee9be5a"
         }
       }
     },
@@ -228,18 +182,18 @@
       "width": 2064,
       "height": 2752,
       "result_bundle": {
-        "name": "final-b6-current-source-720deeed-ipad.xcresult",
-        "xcresult_tree_sha256": "c02bf3fddf084174f47b1af92865e32442f0c5a31c4cffe20f837af6b06d16c7",
+        "name": "Test-ArriveWithin-2026.08.14_21-36-26-+0800.xcresult",
+        "xcresult_tree_sha256": "1de6ecb7f1379d4e0d357aa0f4047b9313975736627dd2f406087fbefeb20b67",
         "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
       },
       "captures": {
         "garden-hero": {
           "path": "public/runtime-ui/de-DE/ipad-13/garden-hero.png",
-          "sha256": "7044580688b2ccb34c1999401457d005c9d90b724fd5b0abaf66573508e486f5"
+          "sha256": "f91053eea7db69d1ff8a59b4add97c7e040475e74dff4517f7e1a8ab1eb91f3f"
         },
         "garden-seed": {
           "path": "public/runtime-ui/de-DE/ipad-13/garden-seed.png",
-          "sha256": "72ef40da0c39cf9c93c5a1d9b91ed7bc6d0d0f2eea6cb54f35d209414d381492"
+          "sha256": "9700bdf95a4142eee5f4a4e11a1d21fecab59238e9b079b23f6ed5d4d2d3e7f8"
         },
         "guided-library": {
           "path": "public/runtime-ui/de-DE/ipad-13/guided-library.png",
@@ -251,7 +205,7 @@
         },
         "journal": {
           "path": "public/runtime-ui/de-DE/ipad-13/journal.png",
-          "sha256": "e300c8eca8effaf46475645b88a6c66a21210581f2fe4eb5a10370e803d41542"
+          "sha256": "e06962a0abb4adb5d25c5011c07cf043bf88668b66185766f52c81b2e289ed34"
         },
         "data-sync": {
           "path": "public/runtime-ui/de-DE/ipad-13/data-sync.png",
@@ -259,11 +213,11 @@
         },
         "journey-calendar": {
           "path": "public/runtime-ui/de-DE/ipad-13/journey-calendar.png",
-          "sha256": "013456507e18496c2bfe5f0c302566b5732d5978a6226e3ff4c46977e34d32d1"
+          "sha256": "95573cbf4eccefe5e7cc8e44a718e3bcff1f79d94b562aaf11791e2cf5ae0006"
         },
         "journey-milestones": {
           "path": "public/runtime-ui/de-DE/ipad-13/journey-milestones.png",
-          "sha256": "013456507e18496c2bfe5f0c302566b5732d5978a6226e3ff4c46977e34d32d1"
+          "sha256": "95573cbf4eccefe5e7cc8e44a718e3bcff1f79d94b562aaf11791e2cf5ae0006"
         }
       }
     }
