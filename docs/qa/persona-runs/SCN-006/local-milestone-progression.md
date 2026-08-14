@@ -17,7 +17,7 @@ The renderer reveals one deterministic world system per milestone while preservi
 | `swift test --package-path Packages/ArriveWithinCore` | Host Swift package | 27 passed across 5 suites; 0 failed |
 | `pnpm verify` from `Renderer/` | Cross-runtime contracts and production bundle | 14 passed; typecheck and deterministic build passed |
 | Guarded `testAllFifteenMilestonesRenderAsOneMatureLivingWorld` | iPhone 17 Pro simulator, iOS 26.5 | 1 passed, 0 failed/skipped; final result bundle `Test-ArriveWithin-2026.08.09_18-02-52-+0800.xcresult` |
-| Tracked shipping-renderer visual matrix | 15 exact milestone A/B pairs / 30 opaque 1280×720 frames | 256/256 validation checks passed; zero external requests; every pair objectively differs; exact current-renderer two-pass artifact-vector SHA-256 `5673a3f1f2d700ae77beb9b1c0082914dc0877ddb9ad9e3a6091959a87aeb7da` |
+| Tracked shipping-renderer visual matrix | 15 exact milestone A/B pairs / 30 opaque 1280×720 frames | 257/257 validation checks passed; zero external requests; every pair objectively differs; exact current-renderer two-pass artifact-vector proof remains bound in the reproducibility report |
 
 ## Rendered visual QA
 
