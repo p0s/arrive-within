@@ -13,46 +13,11 @@ export type SubmittedBuildCaptureFreeze = {
 };
 
 export const POST_SUBMISSION_SOURCE_REVISION =
-  "6223d24a0de27da0d2b8b34e196dffcdc430086431d261d418162abcc38978e6";
+  "b524cea2c85cbee8d1a9933026d94f31cb7c482af1c517b892a52e371f90517c";
 
 export const POST_SUBMISSION_CHANGED_PATHS = [
-  "Apps/ArriveWithin/Resources/Audio/audio-assets.json",
-  "Apps/ArriveWithin/Resources/Audio/closing-bell-v1.wav",
-  "Apps/ArriveWithin/Resources/Audio/opening-bell-v1.wav",
-  "Apps/ArriveWithin/Resources/Audio/still-air-v1.m4a",
-  "Apps/ArriveWithin/Resources/GardenPreviews/garden-preview-claymation.png",
-  "Apps/ArriveWithin/Resources/GardenPreviews/garden-preview-crochet.png",
-  "Apps/ArriveWithin/Resources/GardenPreviews/garden-preview-hand-drawn.png",
-  "Apps/ArriveWithin/Resources/GardenPreviews/garden-preview-stop-motion.png",
-  "Apps/ArriveWithin/Resources/GardenPreviews/garden-preview-twilight.png",
-  "Apps/ArriveWithin/Resources/de.lproj/Localizable.strings",
-  "Apps/ArriveWithin/Resources/en.lproj/Localizable.strings",
-  "Apps/ArriveWithin/Sources/AppDependencies.swift",
-  "Apps/ArriveWithin/Sources/AppModel.swift",
-  "Apps/ArriveWithin/Sources/AppSettings.swift",
-  "Apps/ArriveWithin/Sources/GardenView.swift",
-  "Apps/ArriveWithin/Sources/GardenWebView.swift",
-  "Apps/ArriveWithin/Sources/GuidedLibraryView.swift",
-  "Apps/ArriveWithin/Sources/MeditationAudioController.swift",
-  "Apps/ArriveWithin/Sources/PracticeView.swift",
-  "Apps/ArriveWithin/Sources/PremiumGardenStyles.swift",
-  "Apps/ArriveWithin/Sources/PremiumGardenStylesView.swift",
-  "Apps/ArriveWithin/Sources/RendererDiagnostics.swift",
-  "Apps/ArriveWithin/Sources/SettingsView.swift",
-  "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinUITests.swift",
   "ArriveWithin.xcodeproj/project.pbxproj",
-  "ArriveWithin.xcodeproj/xcshareddata/xcschemes/ArriveWithin.xcscheme",
-  "Config/ArriveWithin.entitlements.local",
   "Config/Base.xcconfig",
-  "Config/Local.xcconfig",
-  "Packages/ArriveWithinCore/Package.swift",
-  "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/GardenState.swift",
-  "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/ProgressionReducer.swift",
-  "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/WeeklyReminderSchedule.swift",
-  "Packages/ArriveWithinCore/Sources/ArriveWithinGardenBridge/GardenDescription.swift",
-  "Packages/ArriveWithinCore/Sources/ArriveWithinMeditation/AudioLifecyclePolicy.swift",
-  "Renderer/dist/renderer-manifest.json",
-  "Renderer/dist/renderer.js",
   "project.yml",
 ] as const;
 
