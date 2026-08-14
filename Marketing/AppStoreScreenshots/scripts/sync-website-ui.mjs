@@ -27,8 +27,11 @@ function sha256(data) {
 async function main() {
   const captures = JSON.parse(await readFile(path.join(STUDIO_ROOT, "source-captures.json"), "utf8"));
   const provenance = JSON.parse(await readFile(PROVENANCE_PATH, "utf8"));
-  if (captures.schema_version !== 2 || captures.state !== "candidate-ready") {
-    throw new Error("website UI sync requires candidate-ready schema-2 source captures");
+  if (captures.schema_version !== 2 || !["candidate-ready", "human-reviewed"].includes(captures.state)) {
+    throw new Error("website UI sync requires candidate-ready or human-reviewed schema-2 source captures");
+  }
+  if (captures.state === "human-reviewed" && captures.human_visual_review?.state !== "approved") {
+    throw new Error("website UI sync requires an approved human visual review for human-reviewed captures");
   }
   if (provenance.schema_version !== 1 || provenance.assets.length !== 11) {
     throw new Error("website provenance must contain eight UI assets and three public-media assets");
