@@ -13,6 +13,23 @@
     "reviewed_on": "2026-08-14",
     "notes": "English and German iPhone and iPad contact sheets plus representative full-resolution comparisons were inspected after the current-source recapture: all slides retain one headline, a tight headline-to-product gap, unclipped legible real app UI, and the purposeful overlapping framed comparison."
   },
+  "post_capture_change": {
+    "classification": "submitted-build-7-post-submission-source-changes",
+    "current_source_revision": "b524cea2c85cbee8d1a9933026d94f31cb7c482af1c517b892a52e371f90517c",
+    "changed_paths": [
+      "ArriveWithin.xcodeproj/project.pbxproj",
+      "Config/Base.xcconfig",
+      "project.yml"
+    ],
+    "submitted_version": "1.0",
+    "submitted_build": 7,
+    "submitted_state_at_freeze": "WAITING_FOR_REVIEW",
+    "valid_until": "next-editable-app-store-metadata-opportunity",
+    "submitted_listing_mutation": "none",
+    "separate_iap_state": "READY_TO_SUBMIT_NOT_ATTACHED",
+    "next_action": "recapture-and-review-at-next-editable-metadata-opportunity",
+    "rationale": "Exact build 7 was already WAITING_FOR_REVIEW and must not be replaced, cancelled, edited, or resubmitted. The post-submission Garden and timer audio correction are deliberately not represented by the submitted App Store screenshots; this later source-only build-13 version freeze does not alter those visuals. The submitted App Store listing and screenshots remained untouched. The READY_TO_SUBMIT IAP is separate and not attached, and fresh captures are required at the next editable metadata opportunity."
+  },
   "result_bundles": [
     {
       "device": "iphone-6.9",
