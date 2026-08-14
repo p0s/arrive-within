@@ -41,8 +41,14 @@ SENTENCE_BOUNDARY = re.compile(r"(?<=[.!?])\s+(?=[A-ZÄÖÜ0-9„“\"])")
 AAC_DELIVERY_SAFETY_GAIN_DB = -0.5
 MEMORY_GUARD_ENVIRONMENT_KEY = "ARRIVE_WITHIN_NARRATION_MEMORY_GUARD"
 INTEGRITY_ATTESTATION_ENVIRONMENT_KEY = "ARRIVE_WITHIN_NARRATION_INTEGRITY_ATTESTATION"
-GENERATION_SEMANTICS_REVISION = "chatterbox-production-v2-phrase-bounded"
-COMPATIBLE_SEMANTICS_PREDECESSORS = {"chatterbox-production-v1"}
+GENERATION_SEMANTICS_REVISION = (
+    "chatterbox-production-v4-list-pressure-semicolon-bounded"
+)
+COMPATIBLE_SEMANTICS_PREDECESSORS = {
+    "chatterbox-production-v1",
+    "chatterbox-production-v2-phrase-bounded",
+    "chatterbox-production-v3-list-pressure-bounded",
+}
 LEGACY_COMPLETE_TRACK_SEMANTICS_REVISION = "chatterbox-production-v1"
 CHECKPOINT_CONTINUATION_EXIT_CODE = 75
 LEGACY_COMPATIBLE_GENERATOR_SHA256 = {
@@ -50,6 +56,18 @@ LEGACY_COMPATIBLE_GENERATOR_SHA256 = {
 }
 S3_SPEECH_TOKEN_RATE = 25
 PINNED_T3_BACKEND_SHA256 = "2d8407cf500ec1e6b707b060861145bb7802741328d76ec341280c06c7f3f2b5"
+MLX_AUDIO_PREDECESSOR_SEMANTICS = {
+    "chatterbox-production-v4-mlx-audio-0.4.8",
+}
+MLX_AUDIO_SEMANTICS_REVISION = (
+    "chatterbox-production-v5-mlx-audio-0.4.8-semicolon-bounded"
+)
+MLX_AUDIO_TAG_COMMIT = "49596ac8b69b9ed377db311a73df838795f38a3d"
+MLX_MODEL_INITIALIZATION_SEED = 20260812
+MLX_CONDITIONALS = (
+    PROJECT_ROOT / "ContentProduction" / "model-cache" / "mlx-audio" / "conds-v3.npz"
+)
+MLX_CONDITIONALS_SHA256 = "ff2e0cf023d9300faf782fd1205cbc5c0121d454c5c388a43a5f066f4de9734c"
 
 
 @dataclass(frozen=True)
@@ -72,6 +90,28 @@ class GenerationUnit:
     gap_after: dict[str, Any] | None
 
 
+@dataclass(frozen=True)
+class GenerationRNGState:
+    python: object
+    numpy: tuple[Any, ...]
+    torch_cpu: Any
+    torch_mps: Any
+
+
+@dataclass(frozen=True)
+class CapturedSpeechUnit:
+    speech_tokens: Any
+    rng_state: GenerationRNGState
+
+
+class SpeechTokenCaptureComplete(RuntimeError):
+    """Internal control flow after T3 has produced one validated token stream."""
+
+    def __init__(self, captured: CapturedSpeechUnit) -> None:
+        self.captured = captured
+        super().__init__("captured one narration speech-token stream")
+
+
 def unit_checkpoint_root(output_root: Path, identifier: str, language: str) -> Path:
     if identifier not in EXPECTED_IDS or language not in {"en", "de"}:
         raise ValueError("Invalid narration unit-checkpoint scope")
@@ -86,6 +126,7 @@ def unit_checkpoint_identity(
     script_hash: str,
     model_hashes: dict[str, str],
     seed_offset: int,
+    generation_semantics_revision: str = GENERATION_SEMANTICS_REVISION,
 ) -> dict[str, Any]:
     return {
         "schemaVersion": 2,
@@ -95,7 +136,7 @@ def unit_checkpoint_identity(
         "catalogSHA256": catalog_hash,
         "scriptSHA256": script_hash,
         "modelFileSHA256": model_hashes,
-        "generationSemanticsRevision": GENERATION_SEMANTICS_REVISION,
+        "generationSemanticsRevision": generation_semantics_revision,
         "seedOffset": seed_offset,
     }
 
@@ -120,10 +161,18 @@ def compatible_semantic_checkpoint_identity(
 ) -> bool:
     if existing.get("schemaVersion") != 2:
         return False
-    if existing.get("generationSemanticsRevision") not in COMPATIBLE_SEMANTICS_PREDECESSORS:
+    expected_revision = expected.get("generationSemanticsRevision")
+    predecessors = (
+        COMPATIBLE_SEMANTICS_PREDECESSORS
+        if expected_revision == GENERATION_SEMANTICS_REVISION
+        else MLX_AUDIO_PREDECESSOR_SEMANTICS
+        if expected_revision == MLX_AUDIO_SEMANTICS_REVISION
+        else set()
+    )
+    if existing.get("generationSemanticsRevision") not in predecessors:
         return False
     comparable = dict(existing)
-    comparable["generationSemanticsRevision"] = GENERATION_SEMANTICS_REVISION
+    comparable["generationSemanticsRevision"] = expected_revision
     return comparable == expected
 
 
@@ -568,23 +617,78 @@ def _generation_text_with_boundaries(
 
 
 def phrase_bounded_units(
-    unit: GenerationUnit, maximum_words: int, language: str
+    unit: GenerationUnit,
+    maximum_words: int,
+    language: str,
+    *,
+    apply_pressure_splits: bool = True,
+    normalize_terminal_delimiters: bool = True,
 ) -> list[GenerationUnit]:
     """Recursively bound a semantic unit for synchronous S3 waveform decode."""
 
     if maximum_words < 8:
         raise ValueError("Phrase-bounded generation requires a viable word ceiling")
-    if len(words(unit.source_text)) <= maximum_words:
-        return [unit]
+    word_count = len(words(unit.source_text))
+    # Dense authored lists can make one synchronous waveform decode much more
+    # memory-intensive even below the ordinary word ceiling. Split only the
+    # initial high-boundary unit; each resulting phrase remains semantically
+    # intact and keeps its authored list gap.
+    dense_list_split = (
+        apply_pressure_splits
+        and word_count >= 11
+        and len(unit.internal_boundaries) >= 4
+    )
+    # A semicolon joins two independently speakable clauses. On multilingual
+    # MLX, an otherwise short 4+4 German clause exhausted even a 300-token cap
+    # without EOS. Preserve both clauses and the authored boundary instead of
+    # accepting truncation or an abnormally slow/hallucinated continuation.
+    source_matches = list(
+        re.finditer(
+            r"[^\W_]+(?:[-’'][^\W_]+)*", unit.source_text, flags=re.UNICODE
+        )
+    )
+    semicolon_split = apply_pressure_splits and language == "de" and any(
+        delimiter.group(0) == ";"
+        and 4
+        <= sum(
+            match.end() <= delimiter.start()
+            for match in source_matches
+        )
+        <= word_count - 4
+        for delimiter in re.finditer(r";", unit.source_text)
+    )
+    force_initial_split = dense_list_split or semicolon_split
+    if word_count <= maximum_words and not force_initial_split:
+        generation_text = (
+            re.sub(r"[,;:]\.$", ".", unit.generation_text)
+            if normalize_terminal_delimiters
+            else unit.generation_text
+        )
+        if generation_text == unit.generation_text:
+            return [unit]
+        return [
+            GenerationUnit(
+                source_text=unit.source_text,
+                generation_text=generation_text,
+                internal_boundaries=unit.internal_boundaries,
+                gap_after=unit.gap_after,
+            )
+        ]
 
     def split(
         source_text: str,
         boundaries: tuple[dict[str, Any], ...],
         final_gap: dict[str, Any] | None,
         capitalize: bool,
+        force_split: bool = False,
     ) -> list[GenerationUnit]:
         word_count = len(words(source_text))
-        if word_count <= maximum_words:
+        if word_count <= maximum_words and not force_split:
+            generation_source = (
+                re.sub(r"[,;:]\s*$", "", source_text)
+                if normalize_terminal_delimiters
+                else source_text
+            )
             normalized = tuple(
                 {**boundary, "unitWordCount": word_count} for boundary in boundaries
             )
@@ -592,7 +696,7 @@ def phrase_bounded_units(
                 GenerationUnit(
                     source_text=source_text,
                     generation_text=_generation_text_with_boundaries(
-                        source_text, normalized, capitalize=capitalize
+                        generation_source, normalized, capitalize=capitalize
                     ),
                     internal_boundaries=normalized,
                     gap_after=final_gap,
@@ -631,7 +735,12 @@ def phrase_bounded_units(
         )
         split_gap = {"after": words(first)[-1], "kind": boundary["kind"]}
         return [
-            *split(first, left_boundaries, split_gap, capitalize),
+            *split(
+                first,
+                left_boundaries,
+                split_gap,
+                capitalize,
+            ),
             *split(second, right_boundaries, final_gap, True),
         ]
 
@@ -640,6 +749,7 @@ def phrase_bounded_units(
         unit.internal_boundaries,
         unit.gap_after,
         False,
+        force_initial_split,
     )
     if [word for item in units for word in words(item.source_text)] != words(unit.source_text):
         raise ValueError("Phrase-bounded generation changed the lexical sequence")
@@ -868,6 +978,39 @@ def generation_units(sentence: str, language: str) -> list[GenerationUnit]:
     raise ValueError("Unsupported narration language")
 
 
+def legacy_pre_v4_generation_units(
+    sentence: str, language: str
+) -> list[GenerationUnit]:
+    """Reconstruct the v2/v3 bounded plan for immutable retained candidates.
+
+    This is validator-only compatibility for manifests created before the
+    list-pressure and semicolon safeguards. New production always uses
+    ``generation_units`` above; this path is deliberately not exposed as a
+    generation option.
+    """
+    if language == "en":
+        return [
+            item
+            for unit in _english_context_units(sentence)
+            for item in phrase_bounded_units(
+                unit,
+                12,
+                "en",
+                apply_pressure_splits=False,
+                normalize_terminal_delimiters=False,
+            )
+        ]
+    if language == "de":
+        return phrase_bounded_units(
+            GenerationUnit(sentence, sentence, tuple(), None),
+            10,
+            "de",
+            apply_pressure_splits=False,
+            normalize_terminal_delimiters=False,
+        )
+    raise ValueError("Unsupported narration language")
+
+
 def legacy_complete_track_generation_units(
     sentence: str, language: str
 ) -> list[GenerationUnit]:
@@ -907,6 +1050,11 @@ def legacy_complete_track_generation_units(
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--backend",
+        choices=("pytorch-mps", "mlx-audio"),
+        default="pytorch-mps",
+    )
     parser.add_argument("--plan", type=Path, default=DEFAULT_PLAN)
     parser.add_argument("--catalog", type=Path, default=DEFAULT_CATALOG)
     parser.add_argument("--language", choices=("en", "de"), required=True)
@@ -927,11 +1075,20 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--new-units-per-child",
         type=int,
-        choices=(1, 2),
+        choices=(1, 2, 4, 8, 16),
         default=1,
         help=(
-            "Bound checkpoint-only continuation to one or two new units per "
-            "owned child; two requires separate guard-probe evidence."
+            "Bound checkpoint-only continuation to a proved number of new "
+            "atomic units per owned child."
+        ),
+    )
+    parser.add_argument(
+        "--mps-residency-strategy",
+        choices=("phase-per-unit", "phase-batched"),
+        default="phase-per-unit",
+        help=(
+            "Select the guarded MPS model-residency strategy. Alternatives are "
+            "eligible for production only after exact-PCM and memory benchmarks."
         ),
     )
     parser.add_argument(
@@ -942,7 +1099,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--probe-unit-count",
         type=int,
-        choices=(1, 2, 4),
+        choices=(1, 2, 4, 8, 16),
         default=1,
         help="For a nonpersisting guard probe, reuse one loaded model for this many seeded units.",
     )
@@ -966,9 +1123,9 @@ def select_device(requested: str, torch: Any) -> str:
 
 def require_memory_guard(device: str, environment: dict[str, str] | None = None) -> None:
     values = os.environ if environment is None else environment
-    if device == "mps" and values.get(MEMORY_GUARD_ENVIRONMENT_KEY) != "1":
+    if device in {"mps", "mlx"} and values.get(MEMORY_GUARD_ENVIRONMENT_KEY) != "1":
         raise RuntimeError(
-            "MPS narration must run through scripts/run_narration_guarded.py"
+            "Accelerated narration must run through scripts/run_narration_guarded.py"
         )
 
 
@@ -1056,6 +1213,7 @@ def process_boundary_evidence(
     model_reload_count: int,
     one_new_unit_per_child: bool,
     new_units_per_child: int = 1,
+    mps_residency_strategy: str = "phase-per-unit",
 ) -> dict[str, Any]:
     """Describe logical coverage separately from the final assembly process."""
     return {
@@ -1065,7 +1223,11 @@ def process_boundary_evidence(
         "generationCallCount": logical_generation_calls,
         "logicalGenerationCallCount": logical_generation_calls,
         "activeInvocationLifecycle": (
-            "one-new-unit-per-owned-process"
+            (
+                "one-new-unit-per-owned-process"
+                if new_units_per_child == 1
+                else "bounded-checkpoint-batch-per-owned-process"
+            )
             if one_new_unit_per_child
             else "bounded-model-reuse-in-owned-process"
         ),
@@ -1077,6 +1239,7 @@ def process_boundary_evidence(
         "maximumGenerationCallsPerMPSModel": (
             new_units_per_child if one_new_unit_per_child else 2
         ),
+        "mpsResidencyStrategy": mps_residency_strategy,
         "referenceVoiceUsed": False,
         "runtimeNetworkUsed": False,
     }
@@ -1104,6 +1267,25 @@ def run_preserving_generation_rng(
         numpy.random.set_state(numpy_state)
         torch.random.set_rng_state(cpu_state)
         torch.mps.set_rng_state(mps_state)
+
+
+def capture_generation_rng(torch: Any, numpy: Any) -> GenerationRNGState:
+    """Capture the exact post-T3 stream consumed by the S3 decoder."""
+    return GenerationRNGState(
+        python=random.getstate(),
+        numpy=numpy.random.get_state(),
+        torch_cpu=torch.random.get_rng_state(),
+        torch_mps=torch.mps.get_rng_state(),
+    )
+
+
+def restore_generation_rng(
+    state: GenerationRNGState, torch: Any, numpy: Any
+) -> None:
+    random.setstate(state.python)
+    numpy.random.set_state(state.numpy)
+    torch.random.set_rng_state(state.torch_cpu)
+    torch.mps.set_rng_state(state.torch_mps)
 
 
 def load_safetensor_phase_direct(
@@ -1203,6 +1385,18 @@ def materialize_s3_nonpersistent_state(
         positional.pe = reference.pe.to(device)
 
 
+class _SpeechTokenCaptureS3:
+    def __init__(self, torch: Any, numpy: Any) -> None:
+        self.torch = torch
+        self.numpy = numpy
+
+    def inference(self, *, speech_tokens: Any, ref_dict: dict[str, Any]) -> Any:
+        del ref_dict
+        state = capture_generation_rng(self.torch, self.numpy)
+        tokens = speech_tokens.detach().cpu()
+        raise SpeechTokenCaptureComplete(CapturedSpeechUnit(tokens, state))
+
+
 class MPSPhaseManagedChatterbox:
     """Keep only the active T3 or S3Gen phase resident in unified memory."""
 
@@ -1213,12 +1407,17 @@ class MPSPhaseManagedChatterbox:
         s3_factory: Callable[[], Any],
         torch: Any,
         numpy: Any,
+        language: str = "de",
+        phase_batched: bool = False,
     ) -> None:
         self.shell = shell
         self.t3_factory = t3_factory
         self.s3_factory = s3_factory
         self.torch = torch
         self.numpy = numpy
+        self.language = language
+        self.phase_batched = phase_batched
+        self.residency_strategy = "phase-batched" if phase_batched else "phase-per-unit"
         self.phase = "empty"
 
     @property
@@ -1279,6 +1478,88 @@ class MPSPhaseManagedChatterbox:
         try:
             return self.shell.generate(**kwargs)
         finally:
+            self.release_all_phases()
+
+    def _capture_one_speech_unit(
+        self, kwargs: dict[str, Any], token_limit: int
+    ) -> CapturedSpeechUnit:
+        if self.phase != "t3" or self.shell.t3 is None or self.shell.s3gen is not None:
+            raise RuntimeError("Speech-token capture requires only the T3 phase")
+        active_t3 = self.shell.t3
+        original_inference = active_t3.inference
+        stop_speech_token = int(active_t3.hp.stop_speech_token)
+
+        def bounded_inference(*args: Any, **inference_kwargs: Any) -> Any:
+            requested = int(inference_kwargs.get("max_new_tokens") or token_limit)
+            inference_kwargs["max_new_tokens"] = min(requested, token_limit)
+            tokens = original_inference(*args, **inference_kwargs)
+            token_count = int(tokens.shape[-1])
+            last_token = int(tokens.reshape(-1)[-1].item())
+            if token_count >= token_limit and last_token != stop_speech_token:
+                raise RuntimeError(
+                    f"Chatterbox decode reached {token_limit} speech tokens without EOS"
+                )
+            return tokens
+
+        active_t3.inference = bounded_inference
+        self.shell.s3gen = _SpeechTokenCaptureS3(self.torch, self.numpy)
+        try:
+            self.shell.generate(**kwargs)
+        except SpeechTokenCaptureComplete as completed:
+            return completed.captured
+        else:
+            raise RuntimeError("T3 phase completed without capturing speech tokens")
+        finally:
+            self.shell.s3gen = None
+            active_t3.inference = original_inference
+            if hasattr(active_t3, "patched_model"):
+                active_t3.patched_model = None
+                active_t3.compiled = False
+            gc.collect()
+            self.torch.mps.synchronize()
+            self.torch.mps.empty_cache()
+
+    def generate_phase_batch(
+        self, items: list[dict[str, Any]]
+    ) -> list[Any]:
+        """Run several exact seeds with one T3 load followed by one S3 load."""
+        if not self.phase_batched:
+            raise RuntimeError("Phase batching was not selected for this model")
+        if not items:
+            return []
+        captured: list[CapturedSpeechUnit] = []
+        waveforms: list[Any] = []
+        self.prepare_t3_phase()
+        try:
+            for item in items:
+                seed_everything(int(item["seed"]), self.torch, self.numpy)
+                captured.append(
+                    self._capture_one_speech_unit(item["kwargs"], int(item["tokenLimit"]))
+                )
+            self.transition_to_s3_phase()
+            for unit in captured:
+                restore_generation_rng(unit.rng_state, self.torch, self.numpy)
+                speech_tokens = unit.speech_tokens.to(device="mps")
+                wav, _ = self.shell.s3gen.inference(
+                    speech_tokens=speech_tokens,
+                    ref_dict=self.shell.conds.gen,
+                )
+                raw = wav.squeeze(0).detach().cpu().numpy()
+                if self.language == "de":
+                    token_count = int(speech_tokens.shape[-1])
+                    speech_length = max(1, token_count - 1)
+                    raw = raw[: speech_length * (int(self.shell.sr) // S3_SPEECH_TOKEN_RATE)]
+                watermarked = self.shell.watermarker.apply_watermark(
+                    raw, sample_rate=self.shell.sr
+                )
+                waveforms.append(self.torch.from_numpy(watermarked).unsqueeze(0))
+                del speech_tokens, wav, raw, watermarked
+                gc.collect()
+                self.torch.mps.synchronize()
+                self.torch.mps.empty_cache()
+            return waveforms
+        finally:
+            captured.clear()
             self.release_all_phases()
 
 
@@ -1794,42 +2075,52 @@ def master_and_encode(
             str(master_path),
         ]
     )
-    run_checked(
-        [
-            ffmpeg,
-            "-hide_banner",
-            "-nostdin",
-            "-y",
-            "-i",
-            str(master_path),
-            "-map_metadata",
-            "-1",
-            "-af",
-            f"volume={AAC_DELIVERY_SAFETY_GAIN_DB}dB",
-            "-ar",
-            str(mastering["deliverySampleRate"]),
-            "-ac",
-            "1",
-            "-c:a",
-            mastering["deliveryEncoder"],
-            "-aac_at_mode",
-            mastering["deliveryRateControl"],
-            "-b:a",
-            str(mastering["deliveryBitrateBPS"]),
-            "-movflags",
-            "+faststart",
-            str(delivery_path),
-        ]
-    )
-    for path in (master_path, delivery_path):
-        path.chmod(0o600)
+    def encode_delivery(gain_db: float) -> None:
+        gain_text = f"{gain_db:.3f}".rstrip("0").rstrip(".")
+        run_checked(
+            [
+                ffmpeg,
+                "-hide_banner",
+                "-nostdin",
+                "-y",
+                "-i",
+                str(master_path),
+                "-map_metadata",
+                "-1",
+                "-af",
+                f"volume={gain_text}dB",
+                "-ar",
+                str(mastering["deliverySampleRate"]),
+                "-ac",
+                "1",
+                "-c:a",
+                mastering["deliveryEncoder"],
+                "-aac_at_mode",
+                mastering["deliveryRateControl"],
+                "-b:a",
+                str(mastering["deliveryBitrateBPS"]),
+                "-movflags",
+                "+faststart",
+                str(delivery_path),
+            ]
+        )
+        delivery_path.chmod(0o600)
+
+    master_path.chmod(0o600)
+    delivery_gain_db = AAC_DELIVERY_SAFETY_GAIN_DB
+    encode_delivery(delivery_gain_db)
     master_probe = probe_audio(master_path, ffprobe)
-    delivery_probe = probe_audio(delivery_path, ffprobe)
     master_loudness = loudness_measurements(master_path, ffmpeg)
     delivery_loudness = loudness_measurements(delivery_path, ffmpeg)
     minimum = float(mastering["integratedLUFSMinimum"])
     maximum = float(mastering["integratedLUFSMaximum"])
     peak_maximum = float(mastering["deliveryTruePeakMaximumDBTP"])
+    if delivery_loudness["truePeakDBTP"] > peak_maximum:
+        overshoot_db = delivery_loudness["truePeakDBTP"] - peak_maximum
+        delivery_gain_db -= overshoot_db + 0.1
+        encode_delivery(delivery_gain_db)
+        delivery_loudness = loudness_measurements(delivery_path, ffmpeg)
+    delivery_probe = probe_audio(delivery_path, ffprobe)
     if not minimum <= master_loudness["integratedLUFS"] <= maximum:
         raise ValueError("Master integrated loudness is outside the accepted band")
     if not minimum <= delivery_loudness["integratedLUFS"] <= maximum:
@@ -1849,7 +2140,7 @@ def master_and_encode(
         "firstPass": first,
         "master": {**master_probe, **master_loudness},
         "delivery": {**delivery_probe, **delivery_loudness},
-        "deliveryCodecSafetyGainDB": AAC_DELIVERY_SAFETY_GAIN_DB,
+        "deliveryCodecSafetyGainDB": round(delivery_gain_db, 3),
     }
 
 
@@ -2056,7 +2347,34 @@ def generate_next_checkpoint_only(
     generated_count = min(new_units_per_child, len(planned_units) - prefix_length)
     last_ordinal = prefix_length
     try:
-        for ordinal in range(prefix_length, prefix_length + generated_count):
+        ordinals = list(range(prefix_length, prefix_length + generated_count))
+        if isinstance(model, MPSPhaseManagedChatterbox) and model.phase_batched:
+            batch: list[dict[str, Any]] = []
+            for ordinal in ordinals:
+                _, _, unit = generation_plan[ordinal]
+                checkpoint_metadata = planned_units[ordinal]
+                kwargs: dict[str, Any] = {
+                    "text": unit.generation_text,
+                    "repetition_penalty": plan["generation"]["repetitionPenalty"],
+                    "min_p": plan["generation"]["minP"],
+                    "top_p": plan["generation"]["topP"],
+                    "exaggeration": direction["exaggeration"],
+                    "cfg_weight": direction["cfgWeight"],
+                    "temperature": direction["temperature"],
+                }
+                if language == "de":
+                    kwargs["language_id"] = "de"
+                batch.append(
+                    {
+                        "seed": checkpoint_metadata["seed"],
+                        "kwargs": kwargs,
+                        "tokenLimit": checkpoint_metadata["speechTokenLimit"],
+                    }
+                )
+            waveforms = model.generate_phase_batch(batch)
+        else:
+            waveforms = []
+        for batch_index, ordinal in enumerate(ordinals):
             _, _, unit = generation_plan[ordinal]
             checkpoint_metadata = planned_units[ordinal]
             kwargs: dict[str, Any] = {
@@ -2072,16 +2390,19 @@ def generate_next_checkpoint_only(
                 kwargs["language_id"] = "de"
             waveform: Any | None = None
             try:
-                seed_everything(checkpoint_metadata["seed"], torch, numpy)
-                prepare_generation_phase(model)
-                waveform = generate_with_token_limit(
-                    model,
-                    kwargs,
-                    checkpoint_metadata["speechTokenLimit"],
-                    lambda: transition_after_token_generation(
-                        model, environment["device"], torch
-                    ),
-                )
+                if waveforms:
+                    waveform = waveforms[batch_index]
+                else:
+                    seed_everything(checkpoint_metadata["seed"], torch, numpy)
+                    prepare_generation_phase(model)
+                    waveform = generate_with_token_limit(
+                        model,
+                        kwargs,
+                        checkpoint_metadata["speechTokenLimit"],
+                        lambda: transition_after_token_generation(
+                            model, environment["device"], torch
+                        ),
+                    )
                 raw = waveform.detach().cpu().float().reshape(-1).numpy()
                 write_unit_checkpoint(
                     checkpoint_root,
@@ -2100,9 +2421,14 @@ def generate_next_checkpoint_only(
             finally:
                 if waveform is not None:
                     del waveform
-                release_accelerator_cache(model, environment["device"], torch)
+                if not waveforms:
+                    release_accelerator_cache(model, environment["device"], torch)
+        waveforms.clear()
     finally:
+        if hasattr(model, "release_all_phases"):
+            model.release_all_phases()
         del model
+        gc.collect()
     raise CheckpointContinuation(identifier, language, last_ordinal)
 
 
@@ -2180,6 +2506,11 @@ def generate_track(
             script_hash,
             model_hashes,
             seed_offset,
+            str(
+                environment.get(
+                    "generationSemanticsRevision", GENERATION_SEMANTICS_REVISION
+                )
+            ),
         ),
         planned_units,
     )
@@ -2607,6 +2938,7 @@ def generate_track(
             model_reload_count,
             one_new_unit_per_child,
             new_units_per_child,
+            str(environment.get("mpsResidencyStrategy", "phase-per-unit")),
         ),
         "assembly": {
             "wholeTrackBeforeMastering": True,
@@ -2665,9 +2997,12 @@ def memory_probe_inputs(
     language: str,
     plan: dict[str, Any],
     unit_count: int,
+    start_ordinal: int = 0,
 ) -> list[dict[str, Any]]:
-    if unit_count not in (1, 2, 4):
-        raise ValueError("Memory probe must request 1, 2, or 4 generation units")
+    if unit_count not in (1, 2, 4, 8, 16):
+        raise ValueError("Memory probe must request 1, 2, 4, 8, or 16 generation units")
+    if start_ordinal < 0:
+        raise ValueError("Memory probe start ordinal must be non-negative")
     script_path = PROJECT_ROOT / practice["localized"][language]["scriptPath"]
     _, events = parse_script(script_path)
     direction = plan["directions"][language]
@@ -2693,21 +3028,26 @@ def memory_probe_inputs(
             }
             if language == "de":
                 kwargs["language_id"] = "de"
-            inputs.append(
-                {
-                    "unit": unit,
-                    "seed": seed,
-                    "kwargs": kwargs,
-                    "tokenLimit": speech_token_limit(
-                        len(words(unit.source_text)),
-                        float(direction["speechOnlyWPMRange"][0]),
-                    ),
-                }
-            )
+            if generation_ordinal >= start_ordinal:
+                inputs.append(
+                    {
+                        "generationOrdinal": generation_ordinal,
+                        "unit": unit,
+                        "seed": seed,
+                        "kwargs": kwargs,
+                        "tokenLimit": speech_token_limit(
+                            len(words(unit.source_text)),
+                            float(direction["speechOnlyWPMRange"][0]),
+                        ),
+                    }
+                )
             generation_ordinal += 1
             if len(inputs) == unit_count:
                 return inputs
-    raise ValueError(f"{practice['id']}/{language}: fewer than {unit_count} probe units")
+    raise ValueError(
+        f"{practice['id']}/{language}: fewer than {unit_count} probe units "
+        f"from ordinal {start_ordinal}"
+    )
 
 
 def generate_memory_probe(
@@ -2721,18 +3061,26 @@ def generate_memory_probe(
     device: str,
 ) -> dict[str, Any]:
     units: list[dict[str, Any]] = []
-    for item in memory_probe_inputs(practice, language, plan, unit_count):
+    inputs = memory_probe_inputs(practice, language, plan, unit_count)
+    if isinstance(model, MPSPhaseManagedChatterbox) and model.phase_batched:
+        generated = model.generate_phase_batch(inputs)
+    else:
+        generated = []
+    for index, item in enumerate(inputs):
         unit = item["unit"]
-        seed_everything(item["seed"], torch, numpy)
-        prepare_generation_phase(model)
         waveform: Any | None = None
         try:
-            waveform = generate_with_token_limit(
-                model,
-                item["kwargs"],
-                item["tokenLimit"],
-                lambda: transition_after_token_generation(model, device, torch),
-            )
+            if generated:
+                waveform = generated[index]
+            else:
+                seed_everything(item["seed"], torch, numpy)
+                prepare_generation_phase(model)
+                waveform = generate_with_token_limit(
+                    model,
+                    item["kwargs"],
+                    item["tokenLimit"],
+                    lambda: transition_after_token_generation(model, device, torch),
+                )
             samples = waveform.detach().cpu().float().reshape(-1).numpy()
             measurements = signal_measurements(
                 samples,
@@ -2754,7 +3102,9 @@ def generate_memory_probe(
         finally:
             if waveform is not None:
                 del waveform
-            release_accelerator_cache(model, device, torch)
+            if not generated:
+                release_accelerator_cache(model, device, torch)
+    generated.clear()
     result = {
         "contentID": practice["id"],
         "language": language,
@@ -2764,8 +3114,364 @@ def generate_memory_probe(
         "units": units,
         "languageIDExplicit": language == "de",
         "outputPersisted": False,
+        "mpsResidencyStrategy": getattr(model, "residency_strategy", "not-applicable"),
     }
     return result
+
+
+class MLXWaveform:
+    """Present immutable MLX-produced PCM through the pipeline's tensor subset."""
+
+    def __init__(self, samples: Any) -> None:
+        self.samples = samples
+
+    def detach(self) -> "MLXWaveform":
+        return self
+
+    def cpu(self) -> "MLXWaveform":
+        return self
+
+    def float(self) -> "MLXWaveform":
+        return self
+
+    def reshape(self, *shape: int) -> "MLXWaveform":
+        return MLXWaveform(self.samples.reshape(*shape))
+
+    def numpy(self) -> Any:
+        return self.samples
+
+
+class MLXSeedShim:
+    """Route the generic per-unit seeding contract to MLX without PyTorch."""
+
+    class _MPS:
+        @staticmethod
+        def is_available() -> bool:
+            return False
+
+    class _Backends:
+        mps = None
+
+    def __init__(self, mx: Any) -> None:
+        self.mx = mx
+        self.backends = self._Backends()
+        self.backends.mps = self._MPS()
+
+    def manual_seed(self, seed: int) -> None:
+        self.mx.random.seed(seed)
+
+
+class MLXProductionAdapter:
+    """Adapt mlx-audio's generator result to the established production pipeline."""
+
+    def __init__(self, model: Any, mx: Any, numpy: Any) -> None:
+        self.model = model
+        self.mx = mx
+        self.numpy = numpy
+        self.t3 = model.t3
+
+    def generate(self, **kwargs: Any) -> MLXWaveform:
+        if "language_id" in kwargs:
+            kwargs["lang_code"] = kwargs.pop("language_id")
+        results = list(self.model.generate(**kwargs, verbose=False))
+        if len(results) != 1:
+            raise RuntimeError("MLX Chatterbox returned an unexpected segment count")
+        result = results[0]
+        self.mx.eval(result.audio)
+        samples = self.numpy.asarray(result.audio, dtype=self.numpy.float32).reshape(-1)
+        if samples.size == 0 or not self.numpy.isfinite(samples).all():
+            raise RuntimeError("MLX Chatterbox produced invalid PCM")
+        del result, results
+        self.mx.clear_cache()
+        return MLXWaveform(samples)
+
+    def release_all_phases(self) -> None:
+        self.mx.clear_cache()
+
+
+def load_mlx_conditionals(mx: Any, numpy: Any, plan: dict[str, Any]) -> Any:
+    from mlx_audio.tts.models.chatterbox.chatterbox import Conditionals
+    from mlx_audio.tts.models.chatterbox.t3.cond_enc import T3Cond
+
+    if sha256(MLX_CONDITIONALS) != MLX_CONDITIONALS_SHA256:
+        raise RuntimeError("Pinned derived MLX conditionals hash mismatch")
+    with numpy.load(MLX_CONDITIONALS, allow_pickle=False) as archive:
+        metadata = json.loads(bytes(archive["metadata.json"].tolist()).decode("utf-8"))
+        if metadata != {
+            "schemaVersion": 1,
+            "sourceRepository": plan["model"]["repository"],
+            "sourceRevision": plan["model"]["revision"],
+            "sourceFile": "conds.pt",
+            "sourceSHA256": plan["modelFileSHA256"]["conds.pt"],
+        }:
+            raise RuntimeError("MLX conditionals provenance mismatch")
+        t3 = T3Cond(
+            speaker_emb=mx.array(archive["t3.speaker_emb"]),
+            cond_prompt_speech_tokens=mx.array(
+                archive["t3.cond_prompt_speech_tokens"]
+            ),
+            emotion_adv=mx.array(archive["t3.emotion_adv"]),
+        )
+        gen = {
+            name.removeprefix("gen."): mx.array(archive[name])
+            for name in archive.files
+            if name.startswith("gen.")
+        }
+    mx.eval(t3.speaker_emb, t3.cond_prompt_speech_tokens, t3.emotion_adv, *gen.values())
+    return Conditionals(t3=t3, gen=gen)
+
+
+def load_mlx_production_model(
+    language: str,
+    plan: dict[str, Any],
+    snapshot: Path,
+    mx: Any,
+    numpy: Any,
+) -> MLXProductionAdapter:
+    from mlx_audio.tts.models.chatterbox.chatterbox import Model
+    from mlx_audio.tts.models.chatterbox.config import ModelConfig, T3Config
+    from mlx_audio.tts.models.chatterbox.s3gen import S3Token2Wav
+    from mlx_audio.tts.models.chatterbox.scripts.convert import load_s3gen_strict
+    from mlx_audio.tts.models.chatterbox.t3 import T3
+    from mlx_audio.tts.models.chatterbox.tokenizer import EnTokenizer, MTLTokenizer
+
+    if language == "en":
+        config = ModelConfig(
+            t3_config=T3Config.english_only(),
+            multilingual=False,
+            t3_model="english",
+            text_preprocessing="legacy",
+        )
+        t3_name = "t3_cfg.safetensors"
+        tokenizer_name = "tokenizer.json"
+    else:
+        config = ModelConfig(
+            t3_config=T3Config.multilingual(),
+            multilingual=True,
+            t3_model="v3",
+            text_preprocessing="NFKD,fullcase",
+        )
+        t3_name = plan["model"]["germanT3Model"]
+        tokenizer_name = "grapheme_mtl_merged_expanded_v1.json"
+
+    t3 = T3(config.t3_config)
+    s3gen = S3Token2Wav()
+    model = Model(
+        t3,
+        s3gen=s3gen,
+        ve=None,
+        conds=load_mlx_conditionals(mx, numpy, plan),
+    )
+    model._s3_tokenizer = None
+    model.config = config
+    if language == "en":
+        model.tokenizer = EnTokenizer(snapshot / tokenizer_name)
+        model.mtl_tokenizer = None
+    else:
+        model.tokenizer = None
+        model.mtl_tokenizer = MTLTokenizer(
+            snapshot / tokenizer_name,
+            text_preprocessing=config.text_preprocessing,
+        )
+
+    t3_weights = mx.load(str(snapshot / t3_name))
+    t3_weights = model.t3.sanitize(t3_weights)
+    model.t3.load_weights(list(t3_weights.items()), strict=False)
+    mx.eval(model.t3.parameters())
+    del t3_weights
+    mx.clear_cache()
+
+    s3_weights = mx.load(str(snapshot / "s3gen.safetensors"))
+    s3_weights = {
+        key: value
+        for key, value in s3_weights.items()
+        if not key.startswith("tokenizer.")
+    }
+    s3_weights = model.s3gen.sanitize(s3_weights)
+    load_s3gen_strict(model.s3gen, s3_weights)
+    mx.eval(model.s3gen.parameters())
+    del s3_weights
+    mx.clear_cache()
+    model.eval()
+    return MLXProductionAdapter(model, mx, numpy)
+
+
+def run_mlx_generation(
+    args: argparse.Namespace,
+    plan: dict[str, Any],
+    practices: list[dict[str, Any]],
+    plan_path: Path,
+    catalog_path: Path,
+    output_root: Path,
+    ffmpeg: str,
+    ffprobe: str,
+    integrity_attestation: dict[str, Any] | None,
+) -> int:
+    import mlx.core as mx
+    import numpy
+    import soundfile
+
+    require_memory_guard("mlx")
+    if args.mps_residency_strategy != "phase-per-unit":
+        raise ValueError("MLX uses one fully native resident model")
+    revision = plan["model"]["revision"]
+    snapshot = (
+        PROJECT_ROOT
+        / "ContentProduction"
+        / "model-cache"
+        / "huggingface"
+        / "models--ResembleAI--chatterbox"
+        / "snapshots"
+        / revision
+    )
+    t3_name = "t3_cfg.safetensors" if args.language == "en" else plan["model"]["germanT3Model"]
+    tokenizer_name = (
+        "tokenizer.json"
+        if args.language == "en"
+        else "grapheme_mtl_merged_expanded_v1.json"
+    )
+    names = (t3_name, "s3gen.safetensors", tokenizer_name, "conds.pt")
+    attested_models = (
+        integrity_attestation.get("modelFiles", {})
+        if integrity_attestation is not None
+        else {}
+    )
+    model_hashes: dict[str, str] = {}
+    for name in names:
+        path = snapshot / name
+        expected = plan["modelFileSHA256"][name]
+        actual = (
+            require_attested_model_file(attested_models.get(name, {}), path, expected)
+            if integrity_attestation is not None
+            else sha256(path)
+        )
+        if actual != expected:
+            raise RuntimeError(f"Pinned model hash mismatch: {name}")
+        model_hashes[name] = actual
+    model_hashes["derived:conds-v3.npz"] = MLX_CONDITIONALS_SHA256
+
+    def model_factory() -> Any:
+        mx.random.seed(MLX_MODEL_INITIALIZATION_SEED)
+        return load_mlx_production_model(args.language, plan, snapshot, mx, numpy)
+
+    torch = MLXSeedShim(mx)
+    environment = {
+        "python": platform.python_version(),
+        "platform": platform.platform(),
+        "mlx": importlib.metadata.version("mlx"),
+        "mlxAudio": importlib.metadata.version("mlx-audio"),
+        "mlxAudioTagCommit": MLX_AUDIO_TAG_COMMIT,
+        "modelInitializationSeed": MLX_MODEL_INITIALIZATION_SEED,
+        "device": "mlx",
+        "backend": "mlx-audio-full-native",
+        "mpsResidencyStrategy": "not-applicable",
+        "generationSemanticsRevision": MLX_AUDIO_SEMANTICS_REVISION,
+        "ffmpeg": run_checked([ffmpeg, "-version"]).stdout.splitlines()[0],
+    }
+    plan_hash = sha256(plan_path)
+    catalog_hash = sha256(catalog_path)
+    results: list[dict[str, Any]] = []
+    for practice in practices:
+        identifier = practice["id"]
+        localized = practice["localized"][args.language]
+        script_hash = sha256(PROJECT_ROOT / localized["scriptPath"])
+        track_root = output_root / identifier / args.language
+        if track_root.exists():
+            attested_track = (
+                integrity_attestation.get("candidateTracks", {}).get(
+                    f"{identifier}/{args.language}"
+                )
+                if integrity_attestation is not None
+                else None
+            )
+            if integrity_attestation is not None and attested_track is None:
+                raise RuntimeError("Completed narration candidate lacks guard attestation")
+            valid = existing_track_is_valid(
+                track_root,
+                plan_hash,
+                catalog_hash,
+                script_hash,
+                attested_track,
+            )
+            if args.resume and valid:
+                manifest = load_json(track_root / "manifest.json")
+                results.append(
+                    {
+                        "contentID": identifier,
+                        "language": args.language,
+                        "manifestSHA256": sha256(track_root / "manifest.json"),
+                        "durationSeconds": manifest["assembly"]["durationSeconds"],
+                        "speechOnlyWordsPerMinute": manifest["assembly"][
+                            "speechOnlyWordsPerMinute"
+                        ],
+                        "overallWordsPerMinute": manifest["assembly"]["overallWordsPerMinute"],
+                        "deliveryBytes": manifest["files"]["delivery"]["bytes"],
+                        "rawClippingAttention": manifest["assembly"]["rawClippingAttention"],
+                        "resumed": True,
+                    }
+                )
+                print(f"validated existing candidate: {identifier}/{args.language}", flush=True)
+                continue
+            state = "invalid" if not valid else "already exists"
+            raise FileExistsError(
+                f"Refusing to replace {state} candidate {identifier}/{args.language}; "
+                "inspect it before choosing a new production version"
+            )
+        result = generate_track(
+            practice,
+            args.language,
+            model_factory,
+            plan,
+            plan_hash,
+            catalog_hash,
+            model_hashes,
+            environment,
+            output_root,
+            ffmpeg,
+            ffprobe,
+            torch,
+            numpy,
+            soundfile,
+            args.seed_offset,
+            args.one_new_unit_per_child,
+            args.new_units_per_child,
+        )
+        results.append(result)
+        print(
+            f"generated {identifier}/{args.language}: "
+            f"{result['durationSeconds']:.1f}s, "
+            f"speech {result['speechOnlyWordsPerMinute']:.1f} WPM, "
+            f"overall {result['overallWordsPerMinute']:.1f} WPM",
+            flush=True,
+        )
+        gc.collect()
+        mx.clear_cache()
+
+    run_manifest = {
+        "schemaVersion": 1,
+        "productionVersion": plan["productionVersion"],
+        "generatedAt": datetime.now(timezone.utc).isoformat(),
+        "languageOnly": args.language,
+        "otherLanguageGenerationCalls": 0,
+        "ownerSelectedDirection": plan["directions"][args.language]["id"],
+        "generationSeedOffset": args.seed_offset,
+        "planSHA256": plan_hash,
+        "catalogSHA256": catalog_hash,
+        "environment": environment,
+        "modelFileSHA256": model_hashes,
+        "tracks": results,
+        "humanGates": plan["humanGates"],
+        "finishedLibraryApproval": False,
+    }
+    output_root.mkdir(parents=True, exist_ok=True, mode=0o700)
+    run_path = output_root / f"run.{args.language}.json"
+    run_path.write_text(
+        json.dumps(run_manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    run_path.chmod(0o600)
+    print(f"Wrote private {args.language}-only run manifest for {len(results)} tracks")
+    return 0
 
 
 def main() -> int:
@@ -2825,6 +3531,22 @@ def main() -> int:
     os.environ["TRANSFORMERS_OFFLINE"] = "1"
     os.environ["HF_HUB_DISABLE_PROGRESS_BARS"] = "1"
     os.environ["TQDM_DISABLE"] = "1"
+    if args.backend == "mlx-audio":
+        if args.device == "cpu":
+            raise ValueError("MLX narration requires the guarded Metal device")
+        if args.probe_first_unit:
+            raise ValueError("MLX probes use benchmark_production_backend.py")
+        return run_mlx_generation(
+            args,
+            plan,
+            practices,
+            plan_path,
+            catalog_path,
+            output_root,
+            ffmpeg,
+            ffprobe,
+            integrity_attestation,
+        )
     import numpy
     import soundfile
     import torch
@@ -2846,6 +3568,8 @@ def main() -> int:
     torch.use_deterministic_algorithms(True, warn_only=True)
     device = select_device(args.device, torch)
     require_memory_guard(device)
+    if device != "mps" and args.mps_residency_strategy != "phase-per-unit":
+        raise ValueError("MPS residency alternatives require the MPS device")
     t3_backend_patch_hash = None
     if device == "mps":
         t3_backend_patch_hash = install_memory_efficient_t3_backend(
@@ -2970,7 +3694,13 @@ def main() -> int:
                     return s3gen.to(device).eval()
 
             return MPSPhaseManagedChatterbox(
-                shell, t3_factory, s3_factory, torch, numpy
+                shell,
+                t3_factory,
+                s3_factory,
+                torch,
+                numpy,
+                language=args.language,
+                phase_batched=args.mps_residency_strategy == "phase-batched",
             )
         if args.language == "en":
             return ChatterboxTTS.from_local(snapshot, device)
@@ -2985,6 +3715,9 @@ def main() -> int:
         "torch": torch.__version__,
         "chatterboxTTS": importlib.metadata.version("chatterbox-tts"),
         "device": device,
+        "mpsResidencyStrategy": (
+            args.mps_residency_strategy if device == "mps" else "not-applicable"
+        ),
         "t3BackendFinalStateOnlySHA256": t3_backend_patch_hash,
         "ffmpeg": run_checked([ffmpeg, "-version"]).stdout.splitlines()[0],
     }
@@ -3011,6 +3744,8 @@ def main() -> int:
                 report.chmod(0o600)
             print(json.dumps({"memoryProbe": probe}, sort_keys=True), flush=True)
         finally:
+            if hasattr(model, "release_all_phases"):
+                model.release_all_phases()
             del model
             gc.collect()
             if device == "mps":

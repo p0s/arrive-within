@@ -13,12 +13,18 @@ export type SubmittedBuildCaptureFreeze = {
 };
 
 export const POST_SUBMISSION_SOURCE_REVISION =
-  "b5d049396d36e9e5458395dde9e9da077dc56ebad97782442d12de510db9c97c";
+  "6223d24a0de27da0d2b8b34e196dffcdc430086431d261d418162abcc38978e6";
 
 export const POST_SUBMISSION_CHANGED_PATHS = [
   "Apps/ArriveWithin/Resources/Audio/audio-assets.json",
   "Apps/ArriveWithin/Resources/Audio/closing-bell-v1.wav",
   "Apps/ArriveWithin/Resources/Audio/opening-bell-v1.wav",
+  "Apps/ArriveWithin/Resources/Audio/still-air-v1.m4a",
+  "Apps/ArriveWithin/Resources/GardenPreviews/garden-preview-claymation.png",
+  "Apps/ArriveWithin/Resources/GardenPreviews/garden-preview-crochet.png",
+  "Apps/ArriveWithin/Resources/GardenPreviews/garden-preview-hand-drawn.png",
+  "Apps/ArriveWithin/Resources/GardenPreviews/garden-preview-stop-motion.png",
+  "Apps/ArriveWithin/Resources/GardenPreviews/garden-preview-twilight.png",
   "Apps/ArriveWithin/Resources/de.lproj/Localizable.strings",
   "Apps/ArriveWithin/Resources/en.lproj/Localizable.strings",
   "Apps/ArriveWithin/Sources/AppDependencies.swift",

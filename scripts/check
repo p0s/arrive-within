@@ -51,6 +51,7 @@ if [[ "$guided_gate" == "source" ]]; then
   print "BOUNDARY guided source complete; 84-track device-candidate media requires ARRIVE_WITHIN_GUIDED_GATE=device-candidate after human approvals; final release requires the private exact-TestFlight seal"
 fi
 python3 scripts/test_narration_memory_guard.py
+python3 scripts/test_narration_candidate_validation.py
 python3 scripts/test_narration_review_packet.py
 python3 scripts/test_narration_review_approval.py
 python3 scripts/test_narration_release_approval.py

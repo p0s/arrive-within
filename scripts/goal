@@ -1,13 +1,117 @@
 #!/bin/zsh
 set -euo pipefail
 
-if [[ $# -ne 0 ]]; then
-  print -u2 "Usage: ./scripts/goal"
-  exit 64
-fi
-
 script_directory="${0:A:h}"
 project_root="${script_directory:h}"
+cd "$project_root"
+
+usage() {
+  print "Usage: ./scripts/goal [--plan]"
+  print ""
+  print "  ./scripts/goal         run the credential-free local Goal gate"
+  print "  ./scripts/goal --plan  print the complete implementation/release plan"
+}
+
+print_goal_plan() {
+  cat <<'EOF'
+Arrive Within /goal — complete bilingual V1.0 and promote one truthful release
+
+Purpose
+  Keep one ordered, fail-closed path from the accepted product contract to a
+  public source commit and an App Store candidate. This command is deliberately
+  offline, deterministic, credential-free, and non-mutating outside ignored
+  evidence output. It proves local source readiness; it never invents human
+  approvals, signs in to Apple, pushes Git, submits a review, or publishes an
+  app.
+
+Critical invariants
+  • Swift remains authoritative for state, persistence, progression, audio
+    policy, privacy, and recovery; the bundled renderer is a validated view.
+  • English F2, German C2, icon B, and the selected C — Twilight Refuge garden
+    remain the shipping directions. A/B garden sources are references only.
+  • Guided narration is offline, bilingual, original/rights-cleared, fully
+    mastered, transcript-aligned, and human/device approved before promotion.
+  • Runtime narration generation, analytics, tracking, advertising, CloudKit
+    activation, and renderer network access remain fail-closed by contract.
+  • Private candidates, voice/reference material, model caches, signing data,
+    device data, evidence, and local authority files never enter public Git.
+
+Ordered product plan (the persistent /goal owner closes each phase)
+  1. Reconcile authority and live state
+     Read the private contract/checkpoint, compare public main, inventory the
+     current binary/store state, and resolve any scope or release conflict.
+     Preserve an already submitted review; do not replace it implicitly.
+  2. Prove and package narration
+     Validate all 42×2 candidates, hashes, duration/loudness/clipping/dropout,
+     VTT alignment, provenance, rights, and selected voice/backend identity.
+     Keep the MLX production path and its memory benchmark reproducible.
+  3. Close human, rights, and device gates
+     Obtain fluent English/German listening, editorial/safety, pronunciation /
+     artifact, transcript, redistribution-rights, physical iPhone/iPad route,
+     interruption, lock/background, Bluetooth, mix, and language approvals.
+     Pending evidence stays pending; it is never converted by automation.
+  4. Finish product integration
+     Promote only the approved 84-track library into the unignored shipping
+     content boundary. Verify playback, interruption/recovery, language choice,
+     native fallback, Garden/UI/accessibility/localization, privacy/support
+     links, IAP scope, website copy, and collaborator documentation.
+  5. Freeze and verify the public source
+     Reconcile source/main, third-party notices, README/ADR/CHANGELOG/ledgers,
+     ignore rules, privacy/history scans, deterministic tests, renderer/media/
+     screenshot/website checks, and the unsigned Release build. Produce one
+     exact source/archive/IPA provenance chain; keep formal security workbench
+     status honest when it is waived.
+  6. Publish code through the authorized GitHub path
+     Re-run GitHub preflight, inspect the staged public diff, sign the commit
+     with the repository owner's configured SSH key, push the intended branch, open/read back the PR,
+     merge only the reviewed result, and verify public main/history. Do not
+     enable or dispatch GitHub Actions.
+  7. Ship the narrated candidate
+     Select the next unused build, archive/inspect/upload/link/read back the
+     exact TestFlight candidate, run the authorized physical iPhone/iPad checks, refresh
+     only editable App Store metadata/screenshots/review details, and submit /
+     reconcile App Store state. Keep the existing submitted build/review intact
+     unless a separate owner decision authorizes replacement.
+
+Local execution performed by this command
+  A. Project-shape and toolchain preflight.
+  B. Full repository-native deterministic gate (scripts/check).
+  C. Prospective-public manifest test and generation, bound to the current tree.
+  D. Read-only summary of objective narration and release-boundary state.
+
+External handoff gates (reported, never faked by this command)
+  Human bilingual/audio/rights approval • physical-device evidence • signing /
+  archive / TestFlight / App Review / App Store readback • GitHub mutation.
+  Formal Codex Security workbench is owner-waived/skipped, not a pass.
+
+Done means every accepted local criterion is green, every external criterion
+has resolvable evidence, the final candidate is hash-bound end to end, and the
+public repository plus storefront states are read back. A local PASS below is
+not an App Store or human-review claim.
+EOF
+}
+
+if [[ $# -gt 1 ]]; then
+  usage >&2
+  exit 64
+fi
+if [[ $# -eq 1 ]]; then
+  case "$1" in
+    --plan)
+      print_goal_plan
+      exit 0
+      ;;
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    *)
+      usage >&2
+      exit 64
+      ;;
+  esac
+fi
+
 if [[ ! -f "${project_root}/project.yml" || ! -f "${project_root}/scripts/check" ]]; then
   print -u2 "Arrive Within product authority is incomplete."
   exit 66
@@ -15,11 +119,89 @@ fi
 
 cd "$project_root"
 
-# `scripts/check` is the implementation gate. This wrapper adds deterministic
-# public-source identity without conflating local Git proof with an unauthorized
-# remote publication or storefront claim.
-./scripts/check
-node scripts/test_prospective_public_manifest.mjs
-node scripts/create_prospective_public_manifest.mjs
+run_phase() {
+  local phase="$1"
+  local purpose="$2"
+  shift 2
+  print ""
+  print "== ${phase} =="
+  print "${purpose}"
+  if "$@"; then
+    print "PASS ${phase}"
+  else
+    local phase_status=$?
+    print -u2 "FAIL ${phase} (exit ${phase_status}); stop here and resolve the first failing boundary before retrying."
+    exit "$phase_status"
+  fi
+}
 
-print "PASS Arrive Within offline Goal gate (deterministic public-source provenance)"
+project_shape_preflight() {
+  local required
+  for required in project.yml scripts/check scripts/test_prospective_public_manifest.mjs scripts/create_prospective_public_manifest.mjs; do
+    [[ -f "$required" ]] || {
+      print -u2 "missing required local gate input: ${required}"
+      return 66
+    }
+  done
+  [[ -x scripts/check ]] || {
+    print -u2 "scripts/check must remain executable"
+    return 66
+  }
+  print "Repository shape is complete; private authority remains outside this public gate."
+}
+
+local_release_status() {
+  local objective_report="docs/audio/production-candidate-results.json"
+  local workflow_state="docs/product/workflow-state.json"
+  [[ -f "$objective_report" ]] || {
+    print -u2 "missing objective narration ledger: ${objective_report}"
+    return 66
+  }
+  [[ -f "$workflow_state" ]] || {
+    print -u2 "missing product workflow ledger: ${workflow_state}"
+    return 66
+  }
+
+  local objective_state objective_tracks human_gates source_ready candidate_bound
+  objective_state="$(jq -r '.objectiveValidation // "unknown"' "$objective_report")"
+  objective_tracks="$(jq -r '.totals.tracks // "unknown"' "$objective_report")"
+  human_gates="$(jq -r '(.humanGates // {}) | to_entries | map("\(.key)=\(.value)") | join(",")' "$objective_report")"
+  source_ready="$(jq -r 'if .release_source_contract.release_ready == null then "unknown" else (.release_source_contract.release_ready | tostring) end' "$workflow_state")"
+  candidate_bound="$(jq -r 'if .release_source_contract.candidate_bound == null then "unknown" else (.release_source_contract.candidate_bound | tostring) end' "$workflow_state")"
+  print "Objective narration: ${objective_state}, ${objective_tracks} tracks."
+  print "Human/external narration gates: ${human_gates:-not recorded}."
+  print "Release source contract: release_ready=${source_ready}, candidate_bound=${candidate_bound}."
+  print "These values classify readiness only; no external approval is inferred."
+}
+
+print_goal_plan
+print ""
+print "Executing local phases for Goal revision 2026-08-14-audio-complete-release."
+print "The command will not mutate Git, GitHub, Apple, TestFlight, App Review, or App Store state."
+
+run_phase \
+  "A/4 Project shape and toolchain preflight" \
+  "Check required repository-native gate inputs before invoking heavyweight validation." \
+  project_shape_preflight
+run_phase \
+  "B/4 Repository-native implementation gate" \
+  "Run the complete deterministic source, privacy, content, renderer, media, website, and Release checks." \
+  ./scripts/check
+run_phase \
+  "C/4 Prospective-public source provenance" \
+  "Validate and regenerate the ignored manifest for the exact public tree without publishing it." \
+  node scripts/test_prospective_public_manifest.mjs
+run_phase \
+  "C/4b Prospective-public manifest generation" \
+  "Bind the current tree to a deterministic file vector and source hash." \
+  node scripts/create_prospective_public_manifest.mjs
+run_phase \
+  "D/4 Release-boundary readback" \
+  "Summarize objective narration and local release-contract state while preserving external blockers." \
+  local_release_status
+
+print ""
+print "VERIFIED local: deterministic implementation gate, privacy/public boundary, and prospective-source provenance."
+print "DEFERRED external: human/rights/device audio approval, signed publication readback, TestFlight, App Review, and App Store release."
+print "SKIPPED by owner: formal Codex Security workbench (not converted into a pass)."
+print "PASS Arrive Within offline Goal gate (deterministic public-source provenance; local phases complete; external gates classified)"

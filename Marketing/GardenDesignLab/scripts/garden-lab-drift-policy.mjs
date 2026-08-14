@@ -10,19 +10,20 @@ export const FROZEN_GARDEN_LAB_SOURCE_SHA256 = {
 };
 
 export const CURRENT_GARDEN_LAB_SOURCE_SHA256 = {
-  "Renderer/src/scene.ts": "1522b787d236baae5cbf0411f9acd8fbc58b8d6eb0fc39f43edcdb14a3091bcc",
-  "Renderer/src/visual-design.ts": "1aa490412c47eebfbaabfb1bf9fa104682de1d998ea773f54a33dba6ceb987e8",
+  "Renderer/src/scene.ts": "1a17401ad6192e5f2f239694c62478b948bcc5e84022716c7c3efeb617ddd9fe",
+  "Renderer/src/visual-design.ts": "d515f7623a1b822830143bfb392efe1cab22da98591449a54914c5dd1d982fa6",
   "Renderer/src/visual-directions/verdant-atelier.ts": "77bfd7f71f19e6742d8e281b0cf895c174fd17018362e60630a17f636b3ee088",
   "Renderer/src/visual-directions/paper-sanctuary.ts": "6b732a1bc22e0f100a710c1bb0592ad497f9a513552cbcdcc5b3fdc598b4c271",
-  "Renderer/src/visual-directions/twilight-refuge.ts": "8055683e5858fa85bf347bad9ef3114163645f042a21defe192a596b2595f39a",
+  "Renderer/src/visual-directions/twilight-refuge.ts": "b4ad72ef267e52402f9c86b7bcfcacd07592fb0b86052852e684a97a2dc6baca",
   "Renderer/design-lab/index.html": "1686fac462ce25e1d51d85c45233f62c1122e39e211be7a14ec9ada36bb48743",
   "Renderer/design-lab/lab.css": "4e26c45c4bed70b41b41db91eb9345d9d68b9b90c491731f03e3acbf59f7fc9c",
-  "Renderer/design-lab/lab.ts": "98f59953c34ba2fee295809b71e503e9f8956c891bffca6ef2a88cecbb864943",
+  "Renderer/design-lab/lab.ts": "a80d8fca2cde3ce9c0a6cd58c474deae640a07a990ba4ddd73df311d01122c60",
 };
 
 export const GARDEN_LAB_CHANGED_PATHS = [
   "Renderer/src/scene.ts",
   "Renderer/src/visual-design.ts",
+  "Renderer/src/visual-directions/twilight-refuge.ts",
   "Renderer/design-lab/lab.ts",
 ];
 
