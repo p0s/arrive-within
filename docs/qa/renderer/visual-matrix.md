@@ -8,7 +8,7 @@ Product tree: current uncommitted local source; Git lineage does not exist and i
 
 The tracked matrix sends 30 safe synthetic `GardenState` snapshots through the shipping typed bridge and bundled Three.js renderer: one A/B pair for each of the 15 authored milestones on its exact practice day 2, 4, …, 30. Each pair holds all earlier milestones at variant A and changes only the newly unlocked milestone, so it isolates all 30 authored selections without inventing a second rendering path.
 
-Every frame is an opaque 1280×720 PNG. Playwright blocked external network access and observed zero external requests. The manifest binds the generator, explicit milestone plan, shared schema, complete embedded states, renderer source, frame hashes, and two contact sheets. Validation passes 256/256 checks; `release_ready` remains false and `human_review` remains pending.
+Every frame is an opaque 1280×720 PNG. Playwright blocked external network access and observed zero external requests. The manifest binds the generator, explicit milestone plan, shared schema, complete embedded states, renderer source, frame hashes, and two contact sheets. Validation passes 257/257 checks; `release_ready` remains false and `human_review` remains pending.
 
 ## Reproducible checks
 
