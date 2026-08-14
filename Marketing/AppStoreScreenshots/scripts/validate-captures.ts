@@ -33,6 +33,19 @@ export async function validateCaptures(
   if (captures.schema_version !== 2 || !["candidate-ready", "human-reviewed"].includes(captures.state)) {
     throw new Error("source-captures.json is not candidate-ready; actual deterministic rendered captures remain required");
   }
+  if (captures.state === "human-reviewed") {
+    const review = captures.human_visual_review;
+    if (
+      review?.state !== "approved" ||
+      !review.reviewer.trim() ||
+      !/^\d{4}-\d{2}-\d{2}$/.test(review.reviewed_on) ||
+      !review.notes.trim()
+    ) {
+      throw new Error("human-reviewed source captures require a complete approved visual-review record");
+    }
+  } else if (captures.human_visual_review) {
+    throw new Error("candidate-ready source captures must not retain a prior visual-review record");
+  }
   if (!captures.safe_synthetic_data) throw new Error("source captures must attest safe synthetic data");
   if (!captures.capture_method.includes("Guarded XCUITest") || !captures.capture_test.trim()) {
     throw new Error("source capture method/test provenance is incomplete");

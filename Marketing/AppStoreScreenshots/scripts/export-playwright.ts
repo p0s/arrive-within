@@ -341,11 +341,18 @@ async function main() {
           reviewedAt: null,
           notes: "Non-shipping narrative candidate; inspect every locale/device contact sheet before any selection.",
         }
-      : {
+      : captures.state === "human-reviewed" && captures.human_visual_review
+      ? {
           state: "approved",
-          reviewer: "implementation-review",
-          reviewedAt: "2026-08-12",
-          notes: "All revised final pixels were inspected in English and German on iPhone and iPad: each slide has exactly one headline, no eyebrow or subtitle, a tight headline-to-product gap, no clipping, and legible real app UI.",
+          reviewer: captures.human_visual_review.reviewer,
+          reviewedAt: captures.human_visual_review.reviewed_on,
+          notes: captures.human_visual_review.notes,
+        }
+      : {
+          state: "pending",
+          reviewer: null,
+          reviewedAt: null,
+          notes: "Fresh source captures require inspection of every locale/device contact sheet before approval.",
         },
     network: { policy: plan.network_policy, externalRequests: 0 },
     sourceCaptures: {

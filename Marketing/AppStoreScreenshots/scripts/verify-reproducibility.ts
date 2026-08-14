@@ -146,9 +146,14 @@ async function main(): Promise<void> {
     narrative: narrative ?? "selected",
     human_visual_review: narrative
       ? { state: "pending", basis: "Non-shipping narrative candidate; inspect all four contact sheets before selection." }
-      : {
+      : captures.state === "human-reviewed" && captures.human_visual_review
+      ? {
           state: "approved",
-          basis: "English and German iPhone/iPad contact sheets inspected after enforcing one headline, no subtitle layers, and a tight headline-to-product gap.",
+          basis: captures.human_visual_review.notes,
+        }
+      : {
+          state: "pending",
+          basis: "Fresh source captures require inspection of all four English/German iPhone/iPad contact sheets.",
         },
     upload_authorization: narrative ? "candidate-only-not-selected" : "authorized-for-app-store-version-1.0-after-current-source-validation",
     pass_1: first,
