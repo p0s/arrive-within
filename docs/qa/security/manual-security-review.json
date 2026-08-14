@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "passed-manual-source-review",
   "review_date": "2026-08-12",
-  "source_sha256": "b8b47bb8111b3b36df5ec65fd0d09f4282bbd2f46e267875b271dd835f22fcb9",
+  "source_sha256": "c253aa8b85fca27a114e1e9ff412ded3c2540d7aff6843a1539143b5aeea4986",
   "checks_total": 16,
   "checks_passed": 16,
   "checks_failed": 0,
