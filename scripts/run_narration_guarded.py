@@ -26,6 +26,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT = ROOT / "ContentProduction" / "chatterbox-audition"
 GENERATOR = PROJECT / "generate_production_candidates.py"
+MLX_PROJECT = ROOT / "ContentProduction" / "mlx-audio-audition"
+MLX_BENCHMARK = MLX_PROJECT / "benchmark_production_backend.py"
 UV_CACHE = ROOT / ".build" / "uv-cache"
 GIB = 1024**3
 MINIMUM_HEADROOM_BYTES = 10 * GIB
@@ -51,6 +53,24 @@ MODEL_PATTERNS = {
         "t3_mtl23ls_v3.safetensors",
         "s3gen.pt",
         "conds.pt",
+        "tokenizer.json",
+        "Cangjie5_TC.json",
+        "grapheme_mtl_merged_expanded_v1.json",
+    ),
+}
+MLX_MODEL_PATTERNS = {
+    "en": (
+        "t3_cfg.safetensors",
+        "s3gen.safetensors",
+        "tokenizer.json",
+        "conds.pt",
+    ),
+    "de": (
+        "t3_mtl23ls_v3.safetensors",
+        "s3gen.safetensors",
+        "conds.pt",
+        "Cangjie5_TC.json",
+        "grapheme_mtl_merged_expanded_v1.json",
     ),
 }
 
@@ -87,6 +107,7 @@ class ChildMeasurement:
     checkpoint_removed_count: int
     checkpoint_finalized_tracks: list[str]
     checkpoint_transition_valid: bool
+    elapsed_seconds: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -191,12 +212,13 @@ def model_snapshot_root(plan: dict[str, Any]) -> Path:
 
 
 def attest_model_files(
-    plan: dict[str, Any], languages: Sequence[str]
+    plan: dict[str, Any], languages: Sequence[str], backend: str = "pytorch-mps"
 ) -> dict[str, dict[str, Any]]:
     snapshot_root = model_snapshot_root(plan)
     model_root = snapshot_root.parents[1].resolve(strict=True)
     expected_hashes = plan.get("modelFileSHA256", {})
-    names = sorted({name for language in languages for name in MODEL_PATTERNS[language]})
+    patterns = MLX_MODEL_PATTERNS if backend == "mlx-audio" else MODEL_PATTERNS
+    names = sorted({name for language in languages for name in patterns[language]})
     records: dict[str, dict[str, Any]] = {}
     for name in names:
         snapshot_path = snapshot_root / name
@@ -294,15 +316,18 @@ def refresh_candidate_attestations(state: dict[str, Any]) -> None:
                 tracks[key] = attest_candidate_track(language_root)
 
 
-def create_integrity_attestation(languages: Sequence[str]) -> dict[str, Any]:
+def create_integrity_attestation(
+    languages: Sequence[str], backend: str = "pytorch-mps"
+) -> dict[str, Any]:
     plan_entry = attest_regular_file(NARRATION_PLAN)
     plan = json.loads(NARRATION_PLAN.read_text(encoding="utf-8"))
     state: dict[str, Any] = {
         "schemaVersion": 1,
         "guardPID": os.getpid(),
+        "backend": backend,
         "plan": plan_entry,
         "generator": attest_regular_file(GENERATOR),
-        "modelFiles": attest_model_files(plan, languages),
+        "modelFiles": attest_model_files(plan, languages, backend),
         "candidateTracks": {},
     }
     refresh_candidate_attestations(state)
@@ -523,6 +548,56 @@ def generation_command(
     language: str,
     probe_report: Path | None = None,
 ) -> list[str]:
+    if arguments.backend == "mlx-audio":
+        command = [
+            str(MLX_PROJECT / ".venv" / "bin" / "python"),
+            str(MLX_BENCHMARK if probe_report is not None else GENERATOR),
+        ]
+        if probe_report is not None:
+            command.extend([
+                "--language",
+                language,
+                "--practice",
+                arguments.practice[0],
+                "--unit-count",
+                str(arguments.probe_unit_count),
+                "--report",
+                str(probe_report),
+            ])
+            if arguments.probe_unit_start:
+                command.extend(["--unit-start", str(arguments.probe_unit_start)])
+            if arguments.probe_token_limit is not None:
+                command.extend(
+                    ["--token-limit-override", str(arguments.probe_token_limit)]
+                )
+            return command
+        command.extend(
+            [
+                "--backend",
+                "mlx-audio",
+                "--language",
+                language,
+                "--device",
+                "mps",
+                "--mps-residency-strategy",
+                "phase-per-unit",
+            ]
+        )
+        if arguments.all:
+            command.append("--all")
+        else:
+            for practice in arguments.practice:
+                command.extend(["--practice", practice])
+        if arguments.resume:
+            command.append("--resume")
+        if arguments.one_new_unit_per_child:
+            command.append("--one-new-unit-per-child")
+            command.extend(
+                ["--new-units-per-child", str(arguments.new_units_per_child)]
+            )
+        if arguments.seed_offset:
+            command.extend(["--seed-offset", str(arguments.seed_offset)])
+        return command
     python = PROJECT / ".venv" / "bin" / "python"
     command = [
         str(python),
@@ -531,6 +606,8 @@ def generation_command(
         language,
         "--device",
         arguments.device,
+        "--mps-residency-strategy",
+        arguments.mps_residency_strategy,
     ]
     if arguments.all:
         command.append("--all")
@@ -599,7 +676,8 @@ def terminate_owned_group(child: subprocess.Popen[bytes], grace_seconds: float) 
 
 
 def run_child(arguments: argparse.Namespace, language: str) -> ChildMeasurement:
-    if not (PROJECT / ".venv" / "bin" / "python").is_file():
+    project = MLX_PROJECT if arguments.backend == "mlx-audio" else PROJECT
+    if not (project / ".venv" / "bin" / "python").is_file():
         raise RuntimeError("Pinned narration environment is missing its Python executable")
     initial = sample_host_memory()
     floor = minimum_headroom(initial.total_bytes)
@@ -629,6 +707,7 @@ def run_child(arguments: argparse.Namespace, language: str) -> ChildMeasurement:
         probe_report.unlink(missing_ok=True)
     checkpoints_before = checkpoint_inventory(arguments, language)
     completed_before = completed_candidate_inventory(arguments, language)
+    child_started = time.monotonic()
     child = subprocess.Popen(
         generation_command(arguments, language, probe_report),
         cwd=ROOT,
@@ -652,6 +731,7 @@ def run_child(arguments: argparse.Namespace, language: str) -> ChildMeasurement:
         terminate_owned_group(child, arguments.grace_seconds)
         raise
     exit_code = child.wait()
+    elapsed_seconds = time.monotonic() - child_started
     after = wait_for_headroom(
         floor,
         arguments.wait_seconds,
@@ -700,11 +780,17 @@ def run_child(arguments: argparse.Namespace, language: str) -> ChildMeasurement:
         checkpoint_removed_count=removed_count,
         checkpoint_finalized_tracks=finalized_tracks,
         checkpoint_transition_valid=transition_valid,
+        elapsed_seconds=elapsed_seconds,
     )
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--backend",
+        choices=("pytorch-mps", "mlx-audio"),
+        default="pytorch-mps",
+    )
     parser.add_argument("--language", action="append", choices=("en", "de"), required=True)
     scope = parser.add_mutually_exclusive_group(required=True)
     scope.add_argument("--practice", action="append", choices=tuple(f"G{i:02d}" for i in range(1, 43)))
@@ -715,34 +801,47 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         "--one-new-unit-per-child",
         action="store_true",
         help=(
-            "Require the owned worker to exit after one new atomic checkpoint, "
-            "then relaunch only after verified progress and headroom recovery."
+            "Require the owned worker to exit after a bounded atomic checkpoint "
+            "batch, then relaunch only after verified progress and headroom recovery."
         ),
     )
     parser.add_argument(
         "--checkpoint-retries",
         type=int,
         default=0,
-        help="Relaunch only when a guarded stop created new validated unit checkpoints.",
+        help=(
+            "Maximum guarded memory-stop relaunches per language. Every relaunch "
+            "must reacquire the configured start headroom; checkpoint progress is "
+            "validated independently."
+        ),
     )
     parser.add_argument(
         "--checkpoint-continuations",
         type=int,
         default=0,
         help=(
-            "Maximum successful one-unit child continuations per language; "
+            "Maximum successful bounded child continuations per language; "
             "separate from memory-stop retries."
         ),
     )
     parser.add_argument(
         "--new-units-per-child",
         type=int,
-        choices=(1, 2),
+        choices=(1, 2, 4, 8, 16),
         default=1,
-        help="Bound each checkpoint continuation child to one or two new units.",
+        help="Bound each checkpoint continuation child to a proved atomic batch.",
+    )
+    parser.add_argument(
+        "--mps-residency-strategy",
+        choices=("phase-per-unit", "phase-batched"),
+        default="phase-per-unit",
     )
     parser.add_argument("--probe-first-unit", action="store_true")
-    parser.add_argument("--probe-unit-count", type=int, choices=(1, 2, 4), default=1)
+    parser.add_argument(
+        "--probe-unit-count", type=int, choices=(1, 2, 4, 8, 16), default=1
+    )
+    parser.add_argument("--probe-unit-start", type=int, default=0)
+    parser.add_argument("--probe-token-limit", type=int)
     parser.add_argument("--poll-seconds", type=float, default=0.5)
     parser.add_argument("--wait-seconds", type=float, default=300.0)
     parser.add_argument("--grace-seconds", type=float, default=20.0)
@@ -760,8 +859,26 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         parser.error("--probe-first-unit requires exactly one --practice")
     if arguments.probe_first_unit and arguments.one_new_unit_per_child:
         parser.error("--one-new-unit-per-child cannot be combined with a probe")
+    if arguments.backend == "mlx-audio" and arguments.device != "mps":
+        parser.error("--backend mlx-audio requires the guarded Metal device")
     if not arguments.probe_first_unit and arguments.probe_unit_count != 1:
         parser.error("--probe-unit-count requires --probe-first-unit")
+    if not arguments.probe_first_unit and arguments.probe_unit_start:
+        parser.error("--probe-unit-start requires --probe-first-unit")
+    if not arguments.probe_first_unit and arguments.probe_token_limit is not None:
+        parser.error("--probe-token-limit requires --probe-first-unit")
+    if arguments.probe_unit_start < 0:
+        parser.error("--probe-unit-start must be non-negative")
+    if (
+        arguments.probe_token_limit is not None
+        and not 192 <= arguments.probe_token_limit <= 600
+    ):
+        parser.error("--probe-token-limit must be between 192 and 600")
+    if (
+        arguments.backend != "mlx-audio"
+        and (arguments.probe_unit_start or arguments.probe_token_limit is not None)
+    ):
+        parser.error("arbitrary-unit/token-limit probes require --backend mlx-audio")
     if arguments.poll_seconds < 0.25 or arguments.kill_buffer_gib < 0.5:
         parser.error("guard polling must be >= 0.25s and kill buffer >= 0.5 GiB")
     if arguments.start_headroom_gib < 0:
@@ -827,7 +944,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                 )
                 attestation_path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
                 attestation_path.unlink(missing_ok=True)
-                integrity_state = create_integrity_attestation(arguments.language)
+                integrity_state = create_integrity_attestation(
+                    arguments.language, arguments.backend
+                )
                 write_integrity_attestation(attestation_path, integrity_state)
                 arguments.integrity_attestation_path = attestation_path
             for language in arguments.language:
@@ -875,14 +994,21 @@ def main(argv: Sequence[str] | None = None) -> int:
                     if measurement.guard_terminated:
                         if arguments.report:
                             write_report(arguments.report, measurements)
-                        if progressed and retries_remaining > 0:
+                        if retries_remaining > 0:
                             retries_remaining -= 1
-                            print(
-                                f"guarded {language}: retained "
-                                f"{measurement.checkpoint_new_count} "
-                                "new unit checkpoints; waiting to resume",
-                                flush=True,
-                            )
+                            if progressed:
+                                print(
+                                    f"guarded {language}: retained "
+                                    f"{measurement.checkpoint_new_count} "
+                                    "new unit checkpoints; waiting to resume",
+                                    flush=True,
+                                )
+                            else:
+                                print(
+                                    f"guarded {language}: memory stop before a new "
+                                    "checkpoint; waiting for recovered launch headroom",
+                                    flush=True,
+                                )
                             continue
                         reason = (
                             "without new checkpoint progress"

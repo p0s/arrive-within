@@ -151,5 +151,18 @@
       "README/website/social crop"
     ]
   },
+  "post_generation_change": {
+    "classification": "post-publication-garden-media-regeneration-deferred",
+    "current_renderer_source_sha256": "d6b5378ad941495d902439e374ba1404f628b3598f5194e2090666fe5e4bc1df",
+    "current_garden_state_schema_sha256": "a73eb83fd1326b3c113663db54005a93024862fa630d8f92a4f3cf1fecc08fee",
+    "changed_paths": [
+      "Renderer/src/scene.ts",
+      "Renderer/src/visual-design.ts"
+    ],
+    "fresh_browser_matrix": "skipped-host-denial-not-passed",
+    "current_garden_proof": "separate-provenance-bound-rendered-artifacts-and-deterministic-orbit-diagnostics",
+    "valid_until": "next-successful-current-source-public-media-regeneration",
+    "rationale": "The retained pre-enhancement renderer media is not current Garden proof. The fresh browser matrix was skipped after host denial and was not relabeled as passed. Regenerate, visually review, and hash-bind the media at the next successful current-source public-media regeneration."
+  },
   "claim_boundary": "This media proves local deterministic renderer output only. It is not physical-device performance, official CloudKit, signed-candidate, App Store, deployment, or public readback evidence."
 }

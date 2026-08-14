@@ -21,8 +21,30 @@ guard = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = guard
 SPEC.loader.exec_module(guard)
 
+GENERATOR_PATH = (
+    Path(__file__).resolve().parents[1]
+    / "ContentProduction"
+    / "chatterbox-audition"
+    / "generate_production_candidates.py"
+)
+GENERATOR_SPEC = importlib.util.spec_from_file_location(
+    "narration_production_for_guard_test", GENERATOR_PATH
+)
+if GENERATOR_SPEC is None or GENERATOR_SPEC.loader is None:
+    raise RuntimeError("Unable to load narration production module")
+production = importlib.util.module_from_spec(GENERATOR_SPEC)
+sys.modules[GENERATOR_SPEC.name] = production
+GENERATOR_SPEC.loader.exec_module(production)
+
 
 class NarrationMemoryGuardTests(unittest.TestCase):
+    def test_guard_attests_every_model_file_the_generator_opens(self) -> None:
+        for language in ("en", "de"):
+            self.assertEqual(
+                set(guard.MODEL_PATTERNS[language]),
+                set(production.model_allow_patterns(language)),
+            )
+
     @staticmethod
     def measurement(
         *, guard_terminated: bool, before: int, after: int, exit_code: int | None = None
@@ -178,10 +200,57 @@ class NarrationMemoryGuardTests(unittest.TestCase):
         self.assertEqual(command[command.index("--probe-unit-count") + 1], "4")
         self.assertEqual(command[command.index("--probe-report") + 1], str(report))
 
+        larger = guard.parse_args(
+            [
+                "--language", "de", "--practice", "G16", "--probe-first-unit",
+                "--probe-unit-count", "16", "--mps-residency-strategy", "phase-batched",
+            ]
+        )
+        larger_command = guard.generation_command(larger, "de")
+        self.assertEqual(larger.probe_unit_count, 16)
+        self.assertEqual(
+            larger_command[larger_command.index("--mps-residency-strategy") + 1],
+            "phase-batched",
+        )
+
         with self.assertRaises(SystemExit):
             guard.parse_args(
                 ["--language", "en", "--practice", "G16", "--probe-unit-count", "4"]
             )
+
+    def test_mlx_backend_uses_isolated_environment_for_production_and_probes(self) -> None:
+        production_arguments = guard.parse_args(
+            [
+                "--backend", "mlx-audio", "--device", "mps",
+                "--language", "de", "--practice", "G09", "--resume",
+            ]
+        )
+        production_command = guard.generation_command(production_arguments, "de")
+        self.assertEqual(
+            production_command[0],
+            str(guard.MLX_PROJECT / ".venv" / "bin" / "python"),
+        )
+        self.assertEqual(production_command[1], str(guard.GENERATOR))
+        self.assertEqual(
+            production_command[production_command.index("--backend") + 1],
+            "mlx-audio",
+        )
+        arguments = guard.parse_args(
+            [
+                "--backend", "mlx-audio", "--device", "mps",
+                "--language", "de", "--practice", "G01",
+                "--probe-first-unit", "--probe-unit-count", "2",
+                "--probe-unit-start", "62", "--probe-token-limit", "300",
+            ]
+        )
+        report = Path("relative-private-probe.json")
+        command = guard.generation_command(arguments, "de", report)
+        self.assertEqual(command[0], str(guard.MLX_PROJECT / ".venv" / "bin" / "python"))
+        self.assertEqual(command[1], str(guard.MLX_BENCHMARK))
+        self.assertEqual(command[command.index("--unit-count") + 1], "2")
+        self.assertEqual(command[command.index("--unit-start") + 1], "62")
+        self.assertEqual(command[command.index("--token-limit-override") + 1], "300")
+        self.assertEqual(command[command.index("--report") + 1], str(report))
 
     def test_one_unit_continuation_is_forwarded_and_rejects_probe(self) -> None:
         arguments = guard.parse_args(
@@ -215,6 +284,15 @@ class NarrationMemoryGuardTests(unittest.TestCase):
             ],
             "2",
         )
+        eight_units = guard.parse_args(
+            [
+                "--language", "de", "--practice", "G16",
+                "--one-new-unit-per-child", "--new-units-per-child", "8",
+                "--checkpoint-continuations", "1",
+                "--mps-residency-strategy", "phase-batched",
+            ]
+        )
+        self.assertEqual(eight_units.new_units_per_child, 8)
         with self.assertRaises(SystemExit):
             guard.parse_args(
                 [
@@ -223,7 +301,7 @@ class NarrationMemoryGuardTests(unittest.TestCase):
                 ]
             )
 
-    def test_main_retries_only_after_validated_checkpoint_progress(self) -> None:
+    def test_main_retries_guarded_stops_with_or_without_checkpoint_progress(self) -> None:
         progress = self.measurement(guard_terminated=True, before=6, after=7)
         completed = self.measurement(guard_terminated=False, before=7, after=7)
         sample = guard.MemorySample(total_bytes=36 * guard.GIB, free_percent=75)
@@ -249,18 +327,22 @@ class NarrationMemoryGuardTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             with (
                 mock.patch.object(guard.tempfile, "gettempdir", return_value=directory),
-                mock.patch.object(guard, "run_child", return_value=no_progress) as run,
+                mock.patch.object(
+                    guard, "run_child", side_effect=[no_progress, completed]
+                ) as run,
+                mock.patch.object(guard, "sample_host_memory", return_value=sample),
+                mock.patch.object(guard, "wait_for_headroom", return_value=sample),
             ):
-                with self.assertRaisesRegex(RuntimeError, "without new checkpoint progress"):
-                    guard.main(
-                        [
-                            "--device", "cpu",
-                            "--language", "en", "--practice", "G33",
-                            "--checkpoint-retries", "1",
-                        ]
-                    )
+                result = guard.main(
+                    [
+                        "--device", "cpu",
+                        "--language", "en", "--practice", "G33",
+                        "--checkpoint-retries", "1",
+                    ]
+                )
 
-        run.assert_called_once()
+        self.assertEqual(result, 0)
+        self.assertEqual(run.call_count, 2)
 
     def test_main_relaunches_only_after_dedicated_status_and_exact_progress(self) -> None:
         continued = self.measurement(

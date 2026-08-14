@@ -6,3 +6,5 @@ renderer_source_sha256: ceb4332aecd2c734563b94486e8a877ee10fd5cdb22692bc93c21345
 external_requests_observed: 0
 human_review: pending
 release_ready: false
+current_source_state: regeneration-deferred-host-denial
+current_garden_proof: separate-provenance-bound-rendered-artifacts-and-deterministic-orbit-diagnostics

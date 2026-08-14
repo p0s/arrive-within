@@ -223,6 +223,33 @@ class ProductionPipelineTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "identity mismatch"):
                 production.prepare_unit_checkpoint_cache(root, expected)
 
+    def test_mlx_checkpoint_identity_migrates_only_named_semantics_revision(self) -> None:
+        expected = {
+            "schemaVersion": 2,
+            "contentID": "G12",
+            "language": "de",
+            "generationSemanticsRevision": production.MLX_AUDIO_SEMANTICS_REVISION,
+        }
+        predecessor = {
+            **expected,
+            "generationSemanticsRevision": next(
+                iter(production.MLX_AUDIO_PREDECESSOR_SEMANTICS)
+            ),
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "units"
+            root.mkdir()
+            (root / "identity.json").write_text(
+                json.dumps(predecessor) + "\n", encoding="utf-8"
+            )
+
+            production.prepare_unit_checkpoint_cache(root, expected, [])
+
+            self.assertEqual(
+                json.loads((root / "identity.json").read_text(encoding="utf-8")),
+                expected,
+            )
+
     def test_semantic_migration_reuses_only_exact_planned_units(self) -> None:
         import numpy
 
@@ -630,6 +657,16 @@ class ProductionPipelineTests(unittest.TestCase):
         )
         self.assertEqual(two_units.new_units_per_child, 2)
 
+        eight_units = production.parse_args(
+            [
+                "--language", "de", "--practice", "G16",
+                "--one-new-unit-per-child", "--new-units-per-child", "8",
+                "--mps-residency-strategy", "phase-batched",
+            ]
+        )
+        self.assertEqual(eight_units.new_units_per_child, 8)
+        self.assertEqual(eight_units.mps_residency_strategy, "phase-batched")
+
     def test_checkpoint_only_prefix_validation_does_not_read_pcm(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -693,6 +730,10 @@ class ProductionPipelineTests(unittest.TestCase):
             two_unit_boundary["configuredMaximumNewGenerationCallsPerOwnedProcess"], 2
         )
         self.assertEqual(two_unit_boundary["maximumGenerationCallsPerMPSModel"], 2)
+        self.assertEqual(
+            two_unit_boundary["activeInvocationLifecycle"],
+            "bounded-checkpoint-batch-per-owned-process",
+        )
 
     def test_legacy_complete_track_units_remain_validation_only(self) -> None:
         text = "One two three four five six seven eight nine ten eleven twelve thirteen."
@@ -715,8 +756,16 @@ class ProductionPipelineTests(unittest.TestCase):
             [production.production_seed(plan["directions"]["en"], 16, index) for index in range(4)],
         )
         self.assertTrue(all(192 <= item["tokenLimit"] <= 600 for item in inputs))
-        with self.assertRaisesRegex(ValueError, "1, 2, or 4"):
+        later = production.memory_probe_inputs(practice, "en", plan, 1, 7)
+        self.assertEqual(later[0]["generationOrdinal"], 7)
+        self.assertEqual(
+            later[0]["seed"],
+            production.production_seed(plan["directions"]["en"], 16, 7),
+        )
+        with self.assertRaisesRegex(ValueError, "1, 2, 4, 8, or 16"):
             production.memory_probe_inputs(practice, "en", plan, 3)
+        with self.assertRaisesRegex(ValueError, "non-negative"):
+            production.memory_probe_inputs(practice, "en", plan, 1, -1)
 
     def test_speech_token_limit_is_cadence_bounded(self) -> None:
         self.assertEqual(production.speech_token_limit(7, 105), 192)
@@ -908,6 +957,26 @@ class ProductionPipelineTests(unittest.TestCase):
         self.assertTrue(all(boundary["kind"] == "list" for boundary in boundaries))
         self.assertTrue(all(len(production.words(unit.source_text)) >= 4 for unit in units))
 
+    def test_dense_list_is_split_below_the_memory_pressure_token_ceiling(self) -> None:
+        sentence = (
+            "Perhaps steadily, kindly, directly, patiently, or with enough space to notice."
+        )
+
+        units = production.english_generation_units(sentence)
+
+        self.assertEqual([len(production.words(unit.source_text)) for unit in units], [5, 6])
+        self.assertEqual(
+            [word for unit in units for word in production.words(unit.source_text)],
+            production.words(sentence),
+        )
+        self.assertEqual(units[0].gap_after, {"after": "patiently", "kind": "list"})
+        self.assertIsNone(units[1].gap_after)
+        self.assertNotIn(",.", units[0].generation_text)
+        self.assertTrue(units[0].generation_text.endswith("."))
+        self.assertTrue(
+            all(production.speech_token_limit(len(production.words(unit.source_text)), 105) == 192 for unit in units)
+        )
+
     def test_german_generation_is_phrase_bounded_without_lexical_change(self) -> None:
         sentence = "Nimm wahr, was gerade da ist, ohne es verändern zu müssen."
         units = production.generation_units(sentence, "de")
@@ -920,6 +989,26 @@ class ProductionPipelineTests(unittest.TestCase):
         self.assertTrue(all(len(production.words(unit.source_text)) <= 10 for unit in units))
         self.assertEqual(units[0].gap_after, {"after": "ist", "kind": "clause"})
         self.assertIsNone(units[-1].gap_after)
+        self.assertTrue(
+            all(
+                not unit.generation_text.endswith((",.", ";.", ":."))
+                for unit in units
+            )
+        )
+
+    def test_german_balanced_semicolon_clauses_are_generated_separately(self) -> None:
+        sentence = "Ein- oder zweimal genügt; es ist keine Regel."
+
+        units = production.generation_units(sentence, "de")
+
+        self.assertEqual([len(production.words(unit.source_text)) for unit in units], [4, 4])
+        self.assertEqual(
+            [word for unit in units for word in production.words(unit.source_text)],
+            production.words(sentence),
+        )
+        self.assertEqual(units[0].gap_after, {"after": "genügt", "kind": "clause"})
+        self.assertEqual(units[0].generation_text, "Ein- oder zweimal genügt.")
+        self.assertEqual(units[1].generation_text, "Es ist keine Regel.")
 
     def test_unpunctuated_english_sentence_gets_one_semantic_f2_phrase_pause(self) -> None:
         sentence = "Notice that the ground is already meeting you."
@@ -996,6 +1085,9 @@ class ProductionPipelineTests(unittest.TestCase):
                     for unit in units:
                         word_count = len(production.words(unit.source_text))
                         self.assertLessEqual(word_count, maximum_words)
+                        self.assertFalse(
+                            unit.generation_text.endswith((",.", ";.", ":."))
+                        )
                         self.assertLessEqual(
                             production.speech_token_limit(word_count, minimum_wpm),
                             300,
@@ -1108,6 +1200,88 @@ class ProductionPipelineTests(unittest.TestCase):
 
     def test_aac_delivery_keeps_a_half_decibel_codec_safety_margin(self) -> None:
         self.assertEqual(production.AAC_DELIVERY_SAFETY_GAIN_DB, -0.5)
+
+    def test_aac_delivery_reencodes_once_for_measured_codec_peak_overshoot(self) -> None:
+        plan = production.load_and_validate_plan(production.DEFAULT_PLAN)
+        first_pass = {
+            "integratedLUFS": -18.5,
+            "truePeakDBTP": 0.1,
+            "loudnessRangeLU": 5.0,
+            "thresholdLUFS": -29.0,
+            "targetOffsetLU": 0.0,
+        }
+        master = {
+            "integratedLUFS": -19.0,
+            "truePeakDBTP": -2.0,
+            "loudnessRangeLU": 5.0,
+            "thresholdLUFS": -30.0,
+            "targetOffsetLU": 0.0,
+        }
+        delivery_overshoot = {
+            "integratedLUFS": -19.5,
+            "truePeakDBTP": -1.31,
+            "loudnessRangeLU": 5.0,
+            "thresholdLUFS": -30.0,
+            "targetOffsetLU": 0.0,
+        }
+        delivery_safe = {
+            **delivery_overshoot,
+            "integratedLUFS": -19.79,
+            "truePeakDBTP": -1.6,
+        }
+        encoded_filters: list[str] = []
+
+        def fake_run(command: list[str]) -> SimpleNamespace:
+            output = Path(command[-1])
+            output.write_bytes(b"audio")
+            if "-aac_at_mode" in command:
+                encoded_filters.append(command[command.index("-af") + 1])
+            return SimpleNamespace(stdout="")
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            raw = root / "raw.wav"
+            raw.write_bytes(b"raw")
+            with (
+                mock.patch.object(production, "run_checked", side_effect=fake_run),
+                mock.patch.object(
+                    production,
+                    "loudness_measurements",
+                    side_effect=[first_pass, master, delivery_overshoot, delivery_safe],
+                ),
+                mock.patch.object(
+                    production,
+                    "probe_audio",
+                    side_effect=[
+                        {
+                            "codec": "pcm_s24le",
+                            "sampleRate": 24000,
+                            "channels": 1,
+                            "durationSeconds": 1.0,
+                            "bitrateBPS": 576000,
+                        },
+                        {
+                            "codec": "aac",
+                            "sampleRate": 24000,
+                            "channels": 1,
+                            "durationSeconds": 1.0,
+                            "bitrateBPS": 64000,
+                        },
+                    ],
+                ),
+            ):
+                result = production.master_and_encode(
+                    raw,
+                    root / "master.wav",
+                    root / "delivery.m4a",
+                    plan,
+                    "ffmpeg",
+                    "ffprobe",
+                )
+
+        self.assertEqual(encoded_filters, ["volume=-0.5dB", "volume=-0.79dB"])
+        self.assertEqual(result["deliveryCodecSafetyGainDB"], -0.79)
+        self.assertEqual(result["delivery"]["truePeakDBTP"], -1.6)
 
 
 if __name__ == "__main__":

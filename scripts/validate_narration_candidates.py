@@ -182,6 +182,64 @@ def require_close(actual: float, expected: float, tolerance: float, label: str) 
         raise ValidationFailure(f"{label}: {actual} differs from recorded {expected}")
 
 
+def validate_process_boundary(boundary: dict[str, Any], identifier: str, language: str) -> None:
+    """Validate lifecycle evidence, including the one known pre-v5 label typo.
+
+    A small set of already-complete candidates was produced while the guarded
+    runner had the two-unit limit enabled but still emitted the older
+    ``one-new-unit-per-owned-process`` label.  Their private guard reports prove
+    two calls, one model load, and no assembly calls.  Accept that exact legacy
+    shape so immutable audio is not regenerated solely to repair metadata;
+    reject every other mismatch.
+    """
+    lifecycle = boundary.get("activeInvocationLifecycle")
+    if lifecycle is None:
+        return
+    if lifecycle not in {
+        "one-new-unit-per-owned-process",
+        "bounded-checkpoint-batch-per-owned-process",
+        "bounded-model-reuse-in-owned-process",
+    }:
+        raise ValidationFailure(f"{identifier}/{language}: invalid generation-lifecycle evidence")
+    if (
+        boundary.get("logicalGenerationCallCount")
+        != boundary.get("generationCallCount")
+        or not isinstance(boundary.get("assemblyProcessGenerationCallCount"), int)
+        or not isinstance(boundary.get("assemblyProcessMPSModelReloadCount"), int)
+    ):
+        raise ValidationFailure(f"{identifier}/{language}: invalid generation-lifecycle evidence")
+
+    configured = boundary.get("configuredMaximumNewGenerationCallsPerOwnedProcess")
+    maximum = boundary.get("maximumGenerationCallsPerMPSModel")
+    if lifecycle == "one-new-unit-per-owned-process":
+        if (configured, maximum) == (1, 1):
+            return
+        # Legacy manifests used this label for the proved two-call,
+        # phase-per-unit continuation.  Keep the compatibility narrow.
+        if (
+            (configured, maximum) == (2, 2)
+            and boundary.get("mpsResidencyStrategy", "phase-per-unit") == "phase-per-unit"
+            and boundary.get("assemblyProcessGenerationCallCount") == 0
+            and boundary.get("assemblyProcessMPSModelReloadCount") == 0
+        ):
+            return
+        raise ValidationFailure(f"{identifier}/{language}: invalid one-unit process-boundary evidence")
+
+    if lifecycle == "bounded-checkpoint-batch-per-owned-process":
+        if (
+            not isinstance(configured, int)
+            or configured not in {2, 4, 8, 16}
+            or maximum != configured
+            or boundary.get("assemblyProcessGenerationCallCount") != 0
+            or boundary.get("assemblyProcessMPSModelReloadCount") != 0
+        ):
+            raise ValidationFailure(f"{identifier}/{language}: invalid bounded-batch process-boundary evidence")
+        return
+
+    if configured is not None or maximum != 2:
+        raise ValidationFailure(f"{identifier}/{language}: invalid model-reuse process-boundary evidence")
+
+
 def expected_segments(
     events: list[Any],
     language: str,
@@ -190,18 +248,34 @@ def expected_segments(
     seed_offset: int = 0,
     *,
     legacy_complete_track: bool = False,
+    legacy_pre_v4: bool = False,
+    legacy_terminal_delimiters: bool = False,
 ) -> list[dict[str, Any]]:
     expected: list[dict[str, Any]] = []
     generation_ordinal = 0
     for event in events:
         if not isinstance(event, production.SentenceEvent):
             continue
-        units = (
-            production.legacy_complete_track_generation_units(event.text, language)
-            if legacy_complete_track
-            else production.generation_units(event.text, language)
-        )
+        if legacy_complete_track:
+            units = production.legacy_complete_track_generation_units(
+                event.text, language
+            )
+        elif legacy_pre_v4:
+            units = production.legacy_pre_v4_generation_units(event.text, language)
+        else:
+            units = production.generation_units(event.text, language)
         for unit_index, unit in enumerate(units):
+            generation_text = unit.generation_text
+            terminal = re.search(r"([,;:])\s*$", unit.source_text)
+            legacy_terminal_hashes: list[str] = []
+            if terminal is not None and generation_text.endswith("."):
+                legacy_terminal_hashes.append(
+                    production.text_sha256(
+                        f"{generation_text[:-1]}{terminal.group(1)}."
+                    )
+                )
+            if legacy_terminal_delimiters and legacy_terminal_hashes:
+                generation_text = f"{generation_text[:-1]}{terminal.group(1)}."
             expected.append(
                 {
                     "sentenceIndex": event.sentence_index,
@@ -214,7 +288,8 @@ def expected_segments(
                     ),
                     "languageID": "de" if language == "de" else None,
                     "sourceTextSHA256": production.text_sha256(unit.source_text),
-                    "generationTextSHA256": production.text_sha256(unit.generation_text),
+                    "generationTextSHA256": production.text_sha256(generation_text),
+                    "generationTextSHA256Alternatives": legacy_terminal_hashes,
                     "wordCount": len(production.words(unit.source_text)),
                 }
             )
@@ -268,29 +343,7 @@ def validate_track(
         or boundary.get("languageIDExplicitOnEveryGermanCall") != (language == "de")
     ):
         raise ValidationFailure(f"{identifier}/{language}: invalid process-boundary evidence")
-    lifecycle = boundary.get("activeInvocationLifecycle")
-    if lifecycle is not None and (
-        lifecycle not in {
-            "one-new-unit-per-owned-process",
-            "bounded-model-reuse-in-owned-process",
-        }
-        or boundary.get("logicalGenerationCallCount")
-        != boundary.get("generationCallCount")
-        or not isinstance(boundary.get("assemblyProcessGenerationCallCount"), int)
-        or not isinstance(boundary.get("assemblyProcessMPSModelReloadCount"), int)
-    ):
-        raise ValidationFailure(
-            f"{identifier}/{language}: invalid generation-lifecycle evidence"
-        )
-    if lifecycle == "one-new-unit-per-owned-process" and (
-        boundary.get("assemblyProcessGenerationCallCount") != 0
-        or boundary.get("assemblyProcessMPSModelReloadCount") != 0
-        or boundary.get("configuredMaximumNewGenerationCallsPerOwnedProcess") != 1
-        or boundary.get("maximumGenerationCallsPerMPSModel") != 1
-    ):
-        raise ValidationFailure(
-            f"{identifier}/{language}: invalid one-unit process-boundary evidence"
-        )
+    validate_process_boundary(boundary, identifier, language)
 
     assembly = manifest.get("assembly", {})
     if (
@@ -377,13 +430,31 @@ def validate_track(
     seed_offset = int(manifest.get("generationSeedOffset", 0))
     if not 0 <= seed_offset < 1000:
         raise ValidationFailure(f"{identifier}/{language}: invalid generation seed offset")
-    expected_options = [expected_segments(
-        events,
-        language,
-        direction,
-        int(identifier[1:]),
-        seed_offset,
-    )]
+    expected_options = [
+        expected_segments(
+            events,
+            language,
+            direction,
+            int(identifier[1:]),
+            seed_offset,
+        )
+    ]
+    environment_revision = manifest.get("environment", {}).get(
+        "generationSemanticsRevision"
+    )
+    if environment_revision is None or environment_revision in {
+        "chatterbox-production-v4-mlx-audio-0.4.8",
+    }:
+        expected_options.append(
+            expected_segments(
+                events,
+                language,
+                direction,
+                int(identifier[1:]),
+                seed_offset,
+                legacy_terminal_delimiters=True,
+            )
+        )
     if boundary.get("activeInvocationLifecycle") is None:
         expected_options.append(
             expected_segments(
@@ -395,6 +466,25 @@ def validate_track(
                 legacy_complete_track=True,
             )
         )
+    environment = manifest.get("environment", {})
+    if (
+        environment_revision is None
+        and environment.get("chatterboxTTS") == "0.1.7"
+        and environment.get("device") == "mps"
+        and boundary.get("activeInvocationLifecycle")
+        == "one-new-unit-per-owned-process"
+        and boundary.get("configuredMaximumNewGenerationCallsPerOwnedProcess") == 1
+    ):
+        expected_options.append(
+            expected_segments(
+                events,
+                language,
+                direction,
+                int(identifier[1:]),
+                seed_offset,
+                legacy_pre_v4=True,
+            )
+        )
     segments = manifest.get("segments", [])
     expected = next(
         (
@@ -403,7 +493,20 @@ def validate_track(
             if len(segments) == len(option)
             and boundary.get("generationCallCount") == len(option)
             and all(
-                all(segment.get(key) == value for key, value in locked.items())
+                all(
+                    (
+                        segment.get("generationTextSHA256")
+                        in {
+                            locked["generationTextSHA256"],
+                            *locked.get("generationTextSHA256Alternatives", []),
+                        }
+                        if key == "generationTextSHA256"
+                        else True
+                        if key == "generationTextSHA256Alternatives"
+                        else segment.get(key) == value
+                    )
+                    for key, value in locked.items()
+                )
                 for segment, locked in zip(segments, option, strict=True)
             )
         ),
@@ -413,6 +516,13 @@ def validate_track(
         raise ValidationFailure(f"{identifier}/{language}: generation-call coverage mismatch")
     for segment, locked in zip(segments, expected, strict=True):
         for key, value in locked.items():
+            if key == "generationTextSHA256Alternatives":
+                continue
+            if key == "generationTextSHA256":
+                allowed = {value, *locked.get("generationTextSHA256Alternatives", [])}
+                if segment.get(key) not in allowed:
+                    raise ValidationFailure(f"{identifier}/{language}: segment mismatch for {key}")
+                continue
             if segment.get(key) != value:
                 raise ValidationFailure(f"{identifier}/{language}: segment mismatch for {key}")
         if segment.get("dropoutAttention") is not False:

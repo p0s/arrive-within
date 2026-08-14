@@ -8,3 +8,5 @@ contact_sheet_sha256: 000f806077ca062c784308fe2d12e413602c3d8f8c618b85ab00af6d5b
 external_requests_observed: 0
 human_review: pending
 release_ready: false
+current_source_state: regeneration-deferred-host-denial
+current_garden_proof: separate-provenance-bound-rendered-artifacts-and-deterministic-orbit-diagnostics
