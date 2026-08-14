@@ -2,7 +2,7 @@
 id: G04
 language: de
 revision: 1
-status: draft
+status: production-candidate
 target_minutes: 10
 ---
 # Den Atem zählen

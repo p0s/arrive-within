@@ -2,7 +2,7 @@
 id: G24
 language: de
 revision: 1
-status: draft
+status: production-candidate
 target_minutes: 7
 ---
 # Vor konzentrierter Arbeit

@@ -2,7 +2,7 @@
 id: G03
 language: de
 revision: 1
-status: draft
+status: production-candidate
 target_minutes: 7
 ---
 # Körper und Boden

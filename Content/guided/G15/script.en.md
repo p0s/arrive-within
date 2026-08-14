@@ -2,7 +2,7 @@
 id: G15
 language: en
 revision: 1
-status: draft
+status: production-candidate
 target_minutes: 15
 ---
 # Deep Rest Without Sleep

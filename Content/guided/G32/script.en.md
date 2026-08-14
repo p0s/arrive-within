@@ -2,7 +2,7 @@
 id: G32
 language: en
 revision: 1
-status: draft
+status: production-candidate
 target_minutes: 7
 ---
 # Gratitude Without Force

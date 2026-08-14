@@ -3,339 +3,1434 @@
   "catalogVersion": 1,
   "practices": [
     {
-      "id": "G01", "version": 1, "category": "foundations", "targetMinutes": 3,
-      "safetyContext": "seatedOrStill", "purposeTags": ["grounding", "beginner", "short"],
+      "id": "G01",
+      "version": 1,
+      "category": "foundations",
+      "targetMinutes": 3,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "grounding",
+        "beginner",
+        "short"
+      ],
       "localized": {
-        "en": {"title": "Arrive Here", "purpose": "A gentle first practice for noticing breath, body, and ground.", "accessibilitySummary": "A three-minute grounding practice with choices for open or softened eyes.", "scriptPath": "Content/guided/G01/script.en.md", "transcriptPath": "Content/guided/G01/transcript.en.vtt", "audioPath": "Content/guided/G01/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Hier ankommen", "purpose": "Eine behutsame erste Übung, um Atem, Körper und Boden wahrzunehmen.", "accessibilitySummary": "Eine dreiminütige Erdungsübung mit der Wahl zwischen offenen und sanft gesenkten Augen.", "scriptPath": "Content/guided/G01/script.de.md", "transcriptPath": "Content/guided/G01/transcript.de.vtt", "audioPath": "Content/guided/G01/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Arrive Here",
+          "purpose": "A gentle first practice for noticing breath, body, and ground.",
+          "accessibilitySummary": "A three-minute grounding practice with choices for open or softened eyes.",
+          "scriptPath": "Content/guided/G01/script.en.md",
+          "transcriptPath": "Content/guided/G01/transcript.en.vtt",
+          "audioPath": "Content/guided/G01/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Hier ankommen",
+          "purpose": "Eine behutsame erste Übung, um Atem, Körper und Boden wahrzunehmen.",
+          "accessibilitySummary": "Eine dreiminütige Erdungsübung mit der Wahl zwischen offenen und sanft gesenkten Augen.",
+          "scriptPath": "Content/guided/G01/script.de.md",
+          "transcriptPath": "Content/guided/G01/transcript.de.vtt",
+          "audioPath": "Content/guided/G01/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G02", "version": 1, "category": "foundations", "targetMinutes": 5,
-      "safetyContext": "seatedOrStill", "purposeTags": ["breath", "beginner", "steadying"],
+      "id": "G02",
+      "version": 1,
+      "category": "foundations",
+      "targetMinutes": 5,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "breath",
+        "beginner",
+        "steadying"
+      ],
       "localized": {
-        "en": {"title": "One Breath at a Time", "purpose": "Settle attention by meeting one ordinary breath at a time.", "accessibilitySummary": "A five-minute breath practice with no need to change how you breathe.", "scriptPath": "Content/guided/G02/script.en.md", "transcriptPath": "Content/guided/G02/transcript.en.vtt", "audioPath": "Content/guided/G02/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Atemzug für Atemzug", "purpose": "Die Aufmerksamkeit sammeln, indem du einem natürlichen Atemzug nach dem anderen begegnest.", "accessibilitySummary": "Eine fünfminütige Atemübung, ohne den Atem verändern zu müssen.", "scriptPath": "Content/guided/G02/script.de.md", "transcriptPath": "Content/guided/G02/transcript.de.vtt", "audioPath": "Content/guided/G02/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "One Breath at a Time",
+          "purpose": "Settle attention by meeting one ordinary breath at a time.",
+          "accessibilitySummary": "A five-minute breath practice with no need to change how you breathe.",
+          "scriptPath": "Content/guided/G02/script.en.md",
+          "transcriptPath": "Content/guided/G02/transcript.en.vtt",
+          "audioPath": "Content/guided/G02/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Atemzug für Atemzug",
+          "purpose": "Die Aufmerksamkeit sammeln, indem du einem natürlichen Atemzug nach dem anderen begegnest.",
+          "accessibilitySummary": "Eine fünfminütige Atemübung, ohne den Atem verändern zu müssen.",
+          "scriptPath": "Content/guided/G02/script.de.md",
+          "transcriptPath": "Content/guided/G02/transcript.de.vtt",
+          "audioPath": "Content/guided/G02/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G03", "version": 1, "category": "foundations", "targetMinutes": 7,
-      "safetyContext": "seatedOrStill", "purposeTags": ["body", "grounding", "stability"],
+      "id": "G03",
+      "version": 1,
+      "category": "foundations",
+      "targetMinutes": 7,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "body",
+        "grounding",
+        "stability"
+      ],
       "localized": {
-        "en": {"title": "Body and Ground", "purpose": "Find steadiness through the places where the body is supported.", "accessibilitySummary": "A seven-minute practice centered on contact, pressure, and support.", "scriptPath": "Content/guided/G03/script.en.md", "transcriptPath": "Content/guided/G03/transcript.en.vtt", "audioPath": "Content/guided/G03/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Körper und Boden", "purpose": "Über die getragenen Stellen des Körpers mehr Halt finden.", "accessibilitySummary": "Eine siebenminütige Übung mit Kontakt, Druck und Unterstützung als Mittelpunkt.", "scriptPath": "Content/guided/G03/script.de.md", "transcriptPath": "Content/guided/G03/transcript.de.vtt", "audioPath": "Content/guided/G03/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Body and Ground",
+          "purpose": "Find steadiness through the places where the body is supported.",
+          "accessibilitySummary": "A seven-minute practice centered on contact, pressure, and support.",
+          "scriptPath": "Content/guided/G03/script.en.md",
+          "transcriptPath": "Content/guided/G03/transcript.en.vtt",
+          "audioPath": "Content/guided/G03/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Körper und Boden",
+          "purpose": "Über die getragenen Stellen des Körpers mehr Halt finden.",
+          "accessibilitySummary": "Eine siebenminütige Übung mit Kontakt, Druck und Unterstützung als Mittelpunkt.",
+          "scriptPath": "Content/guided/G03/script.de.md",
+          "transcriptPath": "Content/guided/G03/transcript.de.vtt",
+          "audioPath": "Content/guided/G03/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G04", "version": 1, "category": "foundations", "targetMinutes": 10,
-      "safetyContext": "seatedOrStill", "purposeTags": ["breath", "counting", "focus"],
+      "id": "G04",
+      "version": 1,
+      "category": "foundations",
+      "targetMinutes": 10,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "breath",
+        "counting",
+        "focus"
+      ],
       "localized": {
-        "en": {"title": "Counting the Breath", "purpose": "Use a light count to notice wandering and begin again without judgment.", "accessibilitySummary": "A ten-minute breath-counting practice, counting from one to five.", "scriptPath": "Content/guided/G04/script.en.md", "transcriptPath": "Content/guided/G04/transcript.en.vtt", "audioPath": "Content/guided/G04/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Den Atem zählen", "purpose": "Mit leichtem Zählen Abschweifen bemerken und ohne Urteil neu beginnen.", "accessibilitySummary": "Eine zehnminütige Atemzählübung von eins bis fünf.", "scriptPath": "Content/guided/G04/script.de.md", "transcriptPath": "Content/guided/G04/transcript.de.vtt", "audioPath": "Content/guided/G04/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Counting the Breath",
+          "purpose": "Use a light count to notice wandering and begin again without judgment.",
+          "accessibilitySummary": "A ten-minute breath-counting practice, counting from one to five.",
+          "scriptPath": "Content/guided/G04/script.en.md",
+          "transcriptPath": "Content/guided/G04/transcript.en.vtt",
+          "audioPath": "Content/guided/G04/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Den Atem zählen",
+          "purpose": "Mit leichtem Zählen Abschweifen bemerken und ohne Urteil neu beginnen.",
+          "accessibilitySummary": "Eine zehnminütige Atemzählübung von eins bis fünf.",
+          "scriptPath": "Content/guided/G04/script.de.md",
+          "transcriptPath": "Content/guided/G04/transcript.de.vtt",
+          "audioPath": "Content/guided/G04/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G05", "version": 1, "category": "foundations", "targetMinutes": 12,
-      "safetyContext": "seatedOrStill", "purposeTags": ["awareness", "spaciousness", "sounds"],
+      "id": "G05",
+      "version": 1,
+      "category": "foundations",
+      "targetMinutes": 12,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "awareness",
+        "spaciousness",
+        "sounds"
+      ],
       "localized": {
-        "en": {"title": "Open Awareness", "purpose": "Let sounds, sensations, and thoughts come and go in a wider field.", "accessibilitySummary": "A twelve-minute open-awareness practice with no single fixed object.", "scriptPath": "Content/guided/G05/script.en.md", "transcriptPath": "Content/guided/G05/transcript.en.vtt", "audioPath": "Content/guided/G05/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Offenes Gewahrsein", "purpose": "Klänge, Empfindungen und Gedanken in einem weiten Feld kommen und gehen lassen.", "accessibilitySummary": "Eine zwölfminütige Übung in offenem Gewahrsein ohne festes einzelnes Objekt.", "scriptPath": "Content/guided/G05/script.de.md", "transcriptPath": "Content/guided/G05/transcript.de.vtt", "audioPath": "Content/guided/G05/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Open Awareness",
+          "purpose": "Let sounds, sensations, and thoughts come and go in a wider field.",
+          "accessibilitySummary": "A twelve-minute open-awareness practice with no single fixed object.",
+          "scriptPath": "Content/guided/G05/script.en.md",
+          "transcriptPath": "Content/guided/G05/transcript.en.vtt",
+          "audioPath": "Content/guided/G05/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Offenes Gewahrsein",
+          "purpose": "Klänge, Empfindungen und Gedanken in einem weiten Feld kommen und gehen lassen.",
+          "accessibilitySummary": "Eine zwölfminütige Übung in offenem Gewahrsein ohne festes einzelnes Objekt.",
+          "scriptPath": "Content/guided/G05/script.de.md",
+          "transcriptPath": "Content/guided/G05/transcript.de.vtt",
+          "audioPath": "Content/guided/G05/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G06", "version": 1, "category": "foundations", "targetMinutes": 10,
-      "safetyContext": "seatedOrStill", "purposeTags": ["wandering", "self-kindness", "breath"],
+      "id": "G06",
+      "version": 1,
+      "category": "foundations",
+      "targetMinutes": 10,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "wandering",
+        "self-kindness",
+        "breath"
+      ],
       "localized": {
-        "en": {"title": "Returning Gently", "purpose": "Practice recognizing distraction as the moment a new return becomes possible.", "accessibilitySummary": "A ten-minute practice in noticing distraction and returning kindly.", "scriptPath": "Content/guided/G06/script.en.md", "transcriptPath": "Content/guided/G06/transcript.en.vtt", "audioPath": "Content/guided/G06/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Sanft zurückkehren", "purpose": "Ablenkung als den Moment erkennen, in dem eine neue Rückkehr möglich wird.", "accessibilitySummary": "Eine zehnminütige Übung im freundlichen Bemerken und Zurückkehren.", "scriptPath": "Content/guided/G06/script.de.md", "transcriptPath": "Content/guided/G06/transcript.de.vtt", "audioPath": "Content/guided/G06/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Returning Gently",
+          "purpose": "Practice recognizing distraction as the moment a new return becomes possible.",
+          "accessibilitySummary": "A ten-minute practice in noticing distraction and returning kindly.",
+          "scriptPath": "Content/guided/G06/script.en.md",
+          "transcriptPath": "Content/guided/G06/transcript.en.vtt",
+          "audioPath": "Content/guided/G06/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Sanft zurückkehren",
+          "purpose": "Ablenkung als den Moment erkennen, in dem eine neue Rückkehr möglich wird.",
+          "accessibilitySummary": "Eine zehnminütige Übung im freundlichen Bemerken und Zurückkehren.",
+          "scriptPath": "Content/guided/G06/script.de.md",
+          "transcriptPath": "Content/guided/G06/transcript.de.vtt",
+          "audioPath": "Content/guided/G06/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G07", "version": 1, "category": "foundations", "targetMinutes": 8,
-      "safetyContext": "seatedOrStill", "purposeTags": ["sound", "listening", "awareness"],
+      "id": "G07",
+      "version": 1,
+      "category": "foundations",
+      "targetMinutes": 8,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "sound",
+        "listening",
+        "awareness"
+      ],
       "localized": {
-        "en": {"title": "Sitting with Sound", "purpose": "Listen without needing to name, follow, or control what is heard.", "accessibilitySummary": "An eight-minute listening practice using nearby and distant sounds.", "scriptPath": "Content/guided/G07/script.en.md", "transcriptPath": "Content/guided/G07/transcript.en.vtt", "audioPath": "Content/guided/G07/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Mit Klängen sitzen", "purpose": "Hören, ohne das Gehörte benennen, verfolgen oder kontrollieren zu müssen.", "accessibilitySummary": "Eine achtminütige Hörübung mit nahen und entfernten Klängen.", "scriptPath": "Content/guided/G07/script.de.md", "transcriptPath": "Content/guided/G07/transcript.de.vtt", "audioPath": "Content/guided/G07/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Sitting with Sound",
+          "purpose": "Listen without needing to name, follow, or control what is heard.",
+          "accessibilitySummary": "An eight-minute listening practice using nearby and distant sounds.",
+          "scriptPath": "Content/guided/G07/script.en.md",
+          "transcriptPath": "Content/guided/G07/transcript.en.vtt",
+          "audioPath": "Content/guided/G07/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Mit Klängen sitzen",
+          "purpose": "Hören, ohne das Gehörte benennen, verfolgen oder kontrollieren zu müssen.",
+          "accessibilitySummary": "Eine achtminütige Hörübung mit nahen und entfernten Klängen.",
+          "scriptPath": "Content/guided/G07/script.de.md",
+          "transcriptPath": "Content/guided/G07/transcript.de.vtt",
+          "audioPath": "Content/guided/G07/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G08", "version": 1, "category": "foundations", "targetMinutes": 15,
-      "safetyContext": "seatedOrStill", "purposeTags": ["beginner", "body", "breath", "awareness"],
+      "id": "G08",
+      "version": 1,
+      "category": "foundations",
+      "targetMinutes": 15,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "beginner",
+        "body",
+        "breath",
+        "awareness"
+      ],
       "localized": {
-        "en": {"title": "A Complete First Practice", "purpose": "Move through posture, body, breath, sound, and open awareness in one session.", "accessibilitySummary": "A fifteen-minute introductory sequence combining the core practice skills.", "scriptPath": "Content/guided/G08/script.en.md", "transcriptPath": "Content/guided/G08/transcript.en.vtt", "audioPath": "Content/guided/G08/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Eine vollständige erste Meditation", "purpose": "In einer Übung Haltung, Körper, Atem, Klänge und offenes Gewahrsein kennenlernen.", "accessibilitySummary": "Eine fünfzehnminütige Einführung, die grundlegende Übungsweisen verbindet.", "scriptPath": "Content/guided/G08/script.de.md", "transcriptPath": "Content/guided/G08/transcript.de.vtt", "audioPath": "Content/guided/G08/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "A Complete First Practice",
+          "purpose": "Move through posture, body, breath, sound, and open awareness in one session.",
+          "accessibilitySummary": "A fifteen-minute introductory sequence combining the core practice skills.",
+          "scriptPath": "Content/guided/G08/script.en.md",
+          "transcriptPath": "Content/guided/G08/transcript.en.vtt",
+          "audioPath": "Content/guided/G08/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Eine vollständige erste Meditation",
+          "purpose": "In einer Übung Haltung, Körper, Atem, Klänge und offenes Gewahrsein kennenlernen.",
+          "accessibilitySummary": "Eine fünfzehnminütige Einführung, die grundlegende Übungsweisen verbindet.",
+          "scriptPath": "Content/guided/G08/script.de.md",
+          "transcriptPath": "Content/guided/G08/transcript.de.vtt",
+          "audioPath": "Content/guided/G08/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G09", "version": 1, "category": "calm", "targetMinutes": 5,
-      "safetyContext": "seatedOrStill", "purposeTags": ["tension", "softening", "short"],
+      "id": "G09",
+      "version": 1,
+      "category": "calm",
+      "targetMinutes": 5,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "tension",
+        "softening",
+        "short"
+      ],
       "localized": {
-        "en": {"title": "Soften the Edges", "purpose": "Reduce unnecessary effort while letting the present moment remain as it is.", "accessibilitySummary": "A five-minute practice of softening the face, shoulders, hands, and breath.", "scriptPath": "Content/guided/G09/script.en.md", "transcriptPath": "Content/guided/G09/transcript.en.vtt", "audioPath": "Content/guided/G09/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Anspannung lösen", "purpose": "Unnötige Anstrengung verringern, ohne den Moment anders machen zu müssen.", "accessibilitySummary": "Eine fünfminütige Übung zum Lockern von Gesicht, Schultern, Händen und Atem.", "scriptPath": "Content/guided/G09/script.de.md", "transcriptPath": "Content/guided/G09/transcript.de.vtt", "audioPath": "Content/guided/G09/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Soften the Edges",
+          "purpose": "Reduce unnecessary effort while letting the present moment remain as it is.",
+          "accessibilitySummary": "A five-minute practice of softening the face, shoulders, hands, and breath.",
+          "scriptPath": "Content/guided/G09/script.en.md",
+          "transcriptPath": "Content/guided/G09/transcript.en.vtt",
+          "audioPath": "Content/guided/G09/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Anspannung lösen",
+          "purpose": "Unnötige Anstrengung verringern, ohne den Moment anders machen zu müssen.",
+          "accessibilitySummary": "Eine fünfminütige Übung zum Lockern von Gesicht, Schultern, Händen und Atem.",
+          "scriptPath": "Content/guided/G09/script.de.md",
+          "transcriptPath": "Content/guided/G09/transcript.de.vtt",
+          "audioPath": "Content/guided/G09/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G10", "version": 1, "category": "calm", "targetMinutes": 7,
-      "safetyContext": "seatedOrStill", "purposeTags": ["pressure", "grounding", "stress"],
+      "id": "G10",
+      "version": 1,
+      "category": "calm",
+      "targetMinutes": 7,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "pressure",
+        "grounding",
+        "stress"
+      ],
       "localized": {
-        "en": {"title": "A Pause Under Pressure", "purpose": "Create one clear pause when demands feel close and urgent.", "accessibilitySummary": "A seven-minute grounding practice for moments of pressure, without promising stress relief.", "scriptPath": "Content/guided/G10/script.en.md", "transcriptPath": "Content/guided/G10/transcript.en.vtt", "audioPath": "Content/guided/G10/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Pause unter Druck", "purpose": "Eine klare Pause schaffen, wenn Anforderungen nah und dringend wirken.", "accessibilitySummary": "Eine siebenminütige Erdungsübung für Druckmomente, ohne Entlastung zu versprechen.", "scriptPath": "Content/guided/G10/script.de.md", "transcriptPath": "Content/guided/G10/transcript.de.vtt", "audioPath": "Content/guided/G10/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "A Pause Under Pressure",
+          "purpose": "Create one clear pause when demands feel close and urgent.",
+          "accessibilitySummary": "A seven-minute grounding practice for moments of pressure, without promising stress relief.",
+          "scriptPath": "Content/guided/G10/script.en.md",
+          "transcriptPath": "Content/guided/G10/transcript.en.vtt",
+          "audioPath": "Content/guided/G10/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Pause unter Druck",
+          "purpose": "Eine klare Pause schaffen, wenn Anforderungen nah und dringend wirken.",
+          "accessibilitySummary": "Eine siebenminütige Erdungsübung für Druckmomente, ohne Entlastung zu versprechen.",
+          "scriptPath": "Content/guided/G10/script.de.md",
+          "transcriptPath": "Content/guided/G10/transcript.de.vtt",
+          "audioPath": "Content/guided/G10/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G11", "version": 1, "category": "calm", "targetMinutes": 3,
-      "safetyContext": "seatedOrStill", "purposeTags": ["tension", "jaw", "hands", "short"],
+      "id": "G11",
+      "version": 1,
+      "category": "calm",
+      "targetMinutes": 3,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "tension",
+        "jaw",
+        "hands",
+        "short"
+      ],
       "localized": {
-        "en": {"title": "Unclench", "purpose": "Notice gripping and offer the body a little more room.", "accessibilitySummary": "A three-minute release practice for the jaw, hands, belly, and shoulders.", "scriptPath": "Content/guided/G11/script.en.md", "transcriptPath": "Content/guided/G11/transcript.en.vtt", "audioPath": "Content/guided/G11/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Locker lassen", "purpose": "Festhalten bemerken und dem Körper etwas mehr Raum geben.", "accessibilitySummary": "Eine dreiminütige Lockerungsübung für Kiefer, Hände, Bauch und Schultern.", "scriptPath": "Content/guided/G11/script.de.md", "transcriptPath": "Content/guided/G11/transcript.de.vtt", "audioPath": "Content/guided/G11/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Unclench",
+          "purpose": "Notice gripping and offer the body a little more room.",
+          "accessibilitySummary": "A three-minute release practice for the jaw, hands, belly, and shoulders.",
+          "scriptPath": "Content/guided/G11/script.en.md",
+          "transcriptPath": "Content/guided/G11/transcript.en.vtt",
+          "audioPath": "Content/guided/G11/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Locker lassen",
+          "purpose": "Festhalten bemerken und dem Körper etwas mehr Raum geben.",
+          "accessibilitySummary": "Eine dreiminütige Lockerungsübung für Kiefer, Hände, Bauch und Schultern.",
+          "scriptPath": "Content/guided/G11/script.de.md",
+          "transcriptPath": "Content/guided/G11/transcript.de.vtt",
+          "audioPath": "Content/guided/G11/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G12", "version": 1, "category": "calm", "targetMinutes": 10,
-      "safetyContext": "seatedOrStill", "purposeTags": ["stress", "breath", "steadiness"],
+      "id": "G12",
+      "version": 1,
+      "category": "calm",
+      "targetMinutes": 10,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "stress",
+        "breath",
+        "steadiness"
+      ],
       "localized": {
-        "en": {"title": "Breathing Through Stress", "purpose": "Stay alongside a natural breath while stress sensations change at their own pace.", "accessibilitySummary": "A ten-minute breath and body practice that does not require deep breathing.", "scriptPath": "Content/guided/G12/script.en.md", "transcriptPath": "Content/guided/G12/transcript.en.vtt", "audioPath": "Content/guided/G12/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Durch Stress atmen", "purpose": "Beim natürlichen Atem bleiben, während sich Stressempfindungen in ihrem eigenen Tempo verändern.", "accessibilitySummary": "Eine zehnminütige Atem- und Körperübung, die kein tiefes Atmen verlangt.", "scriptPath": "Content/guided/G12/script.de.md", "transcriptPath": "Content/guided/G12/transcript.de.vtt", "audioPath": "Content/guided/G12/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Breathing Through Stress",
+          "purpose": "Stay alongside a natural breath while stress sensations change at their own pace.",
+          "accessibilitySummary": "A ten-minute breath and body practice that does not require deep breathing.",
+          "scriptPath": "Content/guided/G12/script.en.md",
+          "transcriptPath": "Content/guided/G12/transcript.en.vtt",
+          "audioPath": "Content/guided/G12/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Durch Stress atmen",
+          "purpose": "Beim natürlichen Atem bleiben, während sich Stressempfindungen in ihrem eigenen Tempo verändern.",
+          "accessibilitySummary": "Eine zehnminütige Atem- und Körperübung, die kein tiefes Atmen verlangt.",
+          "scriptPath": "Content/guided/G12/script.de.md",
+          "transcriptPath": "Content/guided/G12/transcript.de.vtt",
+          "audioPath": "Content/guided/G12/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G13", "version": 1, "category": "calm", "targetMinutes": 12,
-      "safetyContext": "seatedOrStill", "purposeTags": ["uncertainty", "grounding", "patience"],
+      "id": "G13",
+      "version": 1,
+      "category": "calm",
+      "targetMinutes": 12,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "uncertainty",
+        "grounding",
+        "patience"
+      ],
       "localized": {
-        "en": {"title": "Steady in Uncertainty", "purpose": "Rest with what is known now without forcing an answer about what comes next.", "accessibilitySummary": "A twelve-minute grounding practice for uncertainty and unfinished questions.", "scriptPath": "Content/guided/G13/script.en.md", "transcriptPath": "Content/guided/G13/transcript.en.vtt", "audioPath": "Content/guided/G13/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Halt in der Ungewissheit", "purpose": "Bei dem verweilen, was jetzt bekannt ist, ohne eine Antwort auf das Kommende zu erzwingen.", "accessibilitySummary": "Eine zwölfminütige Erdungsübung für Ungewissheit und offene Fragen.", "scriptPath": "Content/guided/G13/script.de.md", "transcriptPath": "Content/guided/G13/transcript.de.vtt", "audioPath": "Content/guided/G13/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Steady in Uncertainty",
+          "purpose": "Rest with what is known now without forcing an answer about what comes next.",
+          "accessibilitySummary": "A twelve-minute grounding practice for uncertainty and unfinished questions.",
+          "scriptPath": "Content/guided/G13/script.en.md",
+          "transcriptPath": "Content/guided/G13/transcript.en.vtt",
+          "audioPath": "Content/guided/G13/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Halt in der Ungewissheit",
+          "purpose": "Bei dem verweilen, was jetzt bekannt ist, ohne eine Antwort auf das Kommende zu erzwingen.",
+          "accessibilitySummary": "Eine zwölfminütige Erdungsübung für Ungewissheit und offene Fragen.",
+          "scriptPath": "Content/guided/G13/script.de.md",
+          "transcriptPath": "Content/guided/G13/transcript.de.vtt",
+          "audioPath": "Content/guided/G13/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G14", "version": 1, "category": "calm", "targetMinutes": 8,
-      "safetyContext": "seatedOrStill", "purposeTags": ["difficult-moment", "settling", "orientation"],
+      "id": "G14",
+      "version": 1,
+      "category": "calm",
+      "targetMinutes": 8,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "difficult-moment",
+        "settling",
+        "orientation"
+      ],
       "localized": {
-        "en": {"title": "After a Difficult Moment", "purpose": "Orient to the present after something difficult without needing to revisit it.", "accessibilitySummary": "An eight-minute orienting practice using sight, sound, support, and choice.", "scriptPath": "Content/guided/G14/script.en.md", "transcriptPath": "Content/guided/G14/transcript.en.vtt", "audioPath": "Content/guided/G14/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Nach einem schwierigen Moment", "purpose": "Sich nach etwas Schwierigem in der Gegenwart orientieren, ohne es erneut durchgehen zu müssen.", "accessibilitySummary": "Eine achtminütige Orientierungsübung mit Blick, Klang, Halt und Wahlmöglichkeiten.", "scriptPath": "Content/guided/G14/script.de.md", "transcriptPath": "Content/guided/G14/transcript.de.vtt", "audioPath": "Content/guided/G14/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "After a Difficult Moment",
+          "purpose": "Orient to the present after something difficult without needing to revisit it.",
+          "accessibilitySummary": "An eight-minute orienting practice using sight, sound, support, and choice.",
+          "scriptPath": "Content/guided/G14/script.en.md",
+          "transcriptPath": "Content/guided/G14/transcript.en.vtt",
+          "audioPath": "Content/guided/G14/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Nach einem schwierigen Moment",
+          "purpose": "Sich nach etwas Schwierigem in der Gegenwart orientieren, ohne es erneut durchgehen zu müssen.",
+          "accessibilitySummary": "Eine achtminütige Orientierungsübung mit Blick, Klang, Halt und Wahlmöglichkeiten.",
+          "scriptPath": "Content/guided/G14/script.de.md",
+          "transcriptPath": "Content/guided/G14/transcript.de.vtt",
+          "audioPath": "Content/guided/G14/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G15", "version": 1, "category": "calm", "targetMinutes": 15,
-      "safetyContext": "bedOrResting", "purposeTags": ["rest", "lying-down", "non-sleep"],
+      "id": "G15",
+      "version": 1,
+      "category": "calm",
+      "targetMinutes": 15,
+      "safetyContext": "bedOrResting",
+      "purposeTags": [
+        "rest",
+        "lying-down",
+        "non-sleep"
+      ],
       "localized": {
-        "en": {"title": "Deep Rest Without Sleep", "purpose": "Let the body rest fully without making sleep the goal.", "accessibilitySummary": "A fifteen-minute lying or supported rest practice; falling asleep is neither required nor prevented.", "scriptPath": "Content/guided/G15/script.en.md", "transcriptPath": "Content/guided/G15/transcript.en.vtt", "audioPath": "Content/guided/G15/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Tiefe Ruhe ohne Schlaf", "purpose": "Den Körper vollständig ruhen lassen, ohne Schlaf zum Ziel zu machen.", "accessibilitySummary": "Eine fünfzehnminütige Übung im Liegen oder gut gestützt; Einschlafen ist weder nötig noch zu vermeiden.", "scriptPath": "Content/guided/G15/script.de.md", "transcriptPath": "Content/guided/G15/transcript.de.vtt", "audioPath": "Content/guided/G15/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Deep Rest Without Sleep",
+          "purpose": "Let the body rest fully without making sleep the goal.",
+          "accessibilitySummary": "A fifteen-minute lying or supported rest practice; falling asleep is neither required nor prevented.",
+          "scriptPath": "Content/guided/G15/script.en.md",
+          "transcriptPath": "Content/guided/G15/transcript.en.vtt",
+          "audioPath": "Content/guided/G15/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Tiefe Ruhe ohne Schlaf",
+          "purpose": "Den Körper vollständig ruhen lassen, ohne Schlaf zum Ziel zu machen.",
+          "accessibilitySummary": "Eine fünfzehnminütige Übung im Liegen oder gut gestützt; Einschlafen ist weder nötig noch zu vermeiden.",
+          "scriptPath": "Content/guided/G15/script.de.md",
+          "transcriptPath": "Content/guided/G15/transcript.de.vtt",
+          "audioPath": "Content/guided/G15/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G16", "version": 1, "category": "body", "targetMinutes": 5,
-      "safetyContext": "seatedOrStill", "purposeTags": ["body-scan", "short", "sensation"],
+      "id": "G16",
+      "version": 1,
+      "category": "body",
+      "targetMinutes": 5,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "body-scan",
+        "short",
+        "sensation"
+      ],
       "localized": {
-        "en": {"title": "Short Body Scan", "purpose": "Move attention through the body without needing to relax or feel anything special.", "accessibilitySummary": "A five-minute scan through feet, legs, torso, hands, shoulders, and face.", "scriptPath": "Content/guided/G16/script.en.md", "transcriptPath": "Content/guided/G16/transcript.en.vtt", "audioPath": "Content/guided/G16/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Kurzer Körperscan", "purpose": "Mit der Aufmerksamkeit durch den Körper wandern, ohne Entspannung oder besondere Empfindungen zu erwarten.", "accessibilitySummary": "Ein fünfminütiger Scan durch Füße, Beine, Rumpf, Hände, Schultern und Gesicht.", "scriptPath": "Content/guided/G16/script.de.md", "transcriptPath": "Content/guided/G16/transcript.de.vtt", "audioPath": "Content/guided/G16/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Short Body Scan",
+          "purpose": "Move attention through the body without needing to relax or feel anything special.",
+          "accessibilitySummary": "A five-minute scan through feet, legs, torso, hands, shoulders, and face.",
+          "scriptPath": "Content/guided/G16/script.en.md",
+          "transcriptPath": "Content/guided/G16/transcript.en.vtt",
+          "audioPath": "Content/guided/G16/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Kurzer Körperscan",
+          "purpose": "Mit der Aufmerksamkeit durch den Körper wandern, ohne Entspannung oder besondere Empfindungen zu erwarten.",
+          "accessibilitySummary": "Ein fünfminütiger Scan durch Füße, Beine, Rumpf, Hände, Schultern und Gesicht.",
+          "scriptPath": "Content/guided/G16/script.de.md",
+          "transcriptPath": "Content/guided/G16/transcript.de.vtt",
+          "audioPath": "Content/guided/G16/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G17", "version": 1, "category": "body", "targetMinutes": 20,
-      "safetyContext": "bedOrResting", "purposeTags": ["body-scan", "long", "rest"],
+      "id": "G17",
+      "version": 1,
+      "category": "body",
+      "targetMinutes": 20,
+      "safetyContext": "bedOrResting",
+      "purposeTags": [
+        "body-scan",
+        "long",
+        "rest"
+      ],
       "localized": {
-        "en": {"title": "Full Body Scan", "purpose": "Give unhurried attention to the whole body, including neutral or unclear areas.", "accessibilitySummary": "A twenty-minute detailed scan from the feet through the whole body.", "scriptPath": "Content/guided/G17/script.en.md", "transcriptPath": "Content/guided/G17/transcript.en.vtt", "audioPath": "Content/guided/G17/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Ausführlicher Körperscan", "purpose": "Dem ganzen Körper in Ruhe Aufmerksamkeit schenken, auch neutralen oder unklaren Bereichen.", "accessibilitySummary": "Ein zwanzigminütiger ausführlicher Scan von den Füßen durch den ganzen Körper.", "scriptPath": "Content/guided/G17/script.de.md", "transcriptPath": "Content/guided/G17/transcript.de.vtt", "audioPath": "Content/guided/G17/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Full Body Scan",
+          "purpose": "Give unhurried attention to the whole body, including neutral or unclear areas.",
+          "accessibilitySummary": "A twenty-minute detailed scan from the feet through the whole body.",
+          "scriptPath": "Content/guided/G17/script.en.md",
+          "transcriptPath": "Content/guided/G17/transcript.en.vtt",
+          "audioPath": "Content/guided/G17/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Ausführlicher Körperscan",
+          "purpose": "Dem ganzen Körper in Ruhe Aufmerksamkeit schenken, auch neutralen oder unklaren Bereichen.",
+          "accessibilitySummary": "Ein zwanzigminütiger ausführlicher Scan von den Füßen durch den ganzen Körper.",
+          "scriptPath": "Content/guided/G17/script.de.md",
+          "transcriptPath": "Content/guided/G17/transcript.de.vtt",
+          "audioPath": "Content/guided/G17/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G18", "version": 1, "category": "body", "targetMinutes": 7,
-      "safetyContext": "seatedOrStill", "purposeTags": ["shoulders", "jaw", "hands", "tension"],
+      "id": "G18",
+      "version": 1,
+      "category": "body",
+      "targetMinutes": 7,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "shoulders",
+        "jaw",
+        "hands",
+        "tension"
+      ],
       "localized": {
-        "en": {"title": "Shoulders, Jaw, Hands", "purpose": "Meet three common places of effort with movement, sensation, and release.", "accessibilitySummary": "A seven-minute focused body practice with optional small movements.", "scriptPath": "Content/guided/G18/script.en.md", "transcriptPath": "Content/guided/G18/transcript.en.vtt", "audioPath": "Content/guided/G18/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Schultern, Kiefer, Hände", "purpose": "Drei häufig angespannte Bereiche mit Bewegung, Empfindung und Lockerung erkunden.", "accessibilitySummary": "Eine siebenminütige Körperübung mit optionalen kleinen Bewegungen.", "scriptPath": "Content/guided/G18/script.de.md", "transcriptPath": "Content/guided/G18/transcript.de.vtt", "audioPath": "Content/guided/G18/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Shoulders, Jaw, Hands",
+          "purpose": "Meet three common places of effort with movement, sensation, and release.",
+          "accessibilitySummary": "A seven-minute focused body practice with optional small movements.",
+          "scriptPath": "Content/guided/G18/script.en.md",
+          "transcriptPath": "Content/guided/G18/transcript.en.vtt",
+          "audioPath": "Content/guided/G18/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Schultern, Kiefer, Hände",
+          "purpose": "Drei häufig angespannte Bereiche mit Bewegung, Empfindung und Lockerung erkunden.",
+          "accessibilitySummary": "Eine siebenminütige Körperübung mit optionalen kleinen Bewegungen.",
+          "scriptPath": "Content/guided/G18/script.de.md",
+          "transcriptPath": "Content/guided/G18/transcript.de.vtt",
+          "audioPath": "Content/guided/G18/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G19", "version": 1, "category": "body", "targetMinutes": 10,
-      "safetyContext": "bedOrResting", "purposeTags": ["warmth", "weight", "rest"],
+      "id": "G19",
+      "version": 1,
+      "category": "body",
+      "targetMinutes": 10,
+      "safetyContext": "bedOrResting",
+      "purposeTags": [
+        "warmth",
+        "weight",
+        "rest"
+      ],
       "localized": {
-        "en": {"title": "Warmth and Weight", "purpose": "Notice warmth, coolness, heaviness, and lightness without trying to produce them.", "accessibilitySummary": "A ten-minute body practice exploring temperature, weight, and support.", "scriptPath": "Content/guided/G19/script.en.md", "transcriptPath": "Content/guided/G19/transcript.en.vtt", "audioPath": "Content/guided/G19/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Wärme und Gewicht", "purpose": "Wärme, Kühle, Schwere und Leichtigkeit wahrnehmen, ohne sie herstellen zu müssen.", "accessibilitySummary": "Eine zehnminütige Körperübung zu Temperatur, Gewicht und Getragensein.", "scriptPath": "Content/guided/G19/script.de.md", "transcriptPath": "Content/guided/G19/transcript.de.vtt", "audioPath": "Content/guided/G19/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Warmth and Weight",
+          "purpose": "Notice warmth, coolness, heaviness, and lightness without trying to produce them.",
+          "accessibilitySummary": "A ten-minute body practice exploring temperature, weight, and support.",
+          "scriptPath": "Content/guided/G19/script.en.md",
+          "transcriptPath": "Content/guided/G19/transcript.en.vtt",
+          "audioPath": "Content/guided/G19/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Wärme und Gewicht",
+          "purpose": "Wärme, Kühle, Schwere und Leichtigkeit wahrnehmen, ohne sie herstellen zu müssen.",
+          "accessibilitySummary": "Eine zehnminütige Körperübung zu Temperatur, Gewicht und Getragensein.",
+          "scriptPath": "Content/guided/G19/script.de.md",
+          "transcriptPath": "Content/guided/G19/transcript.de.vtt",
+          "audioPath": "Content/guided/G19/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G20", "version": 1, "category": "body", "targetMinutes": 10,
-      "safetyContext": "safeWalkingOnly", "purposeTags": ["walking", "movement", "grounding"],
+      "id": "G20",
+      "version": 1,
+      "category": "body",
+      "targetMinutes": 10,
+      "safetyContext": "safeWalkingOnly",
+      "purposeTags": [
+        "walking",
+        "movement",
+        "grounding"
+      ],
       "localized": {
-        "en": {"title": "Walking Meditation", "purpose": "Bring attention to ordinary walking in a clear, obstacle-free place.", "accessibilitySummary": "A ten-minute slow walking practice; use only where walking with divided attention is safe.", "scriptPath": "Content/guided/G20/script.en.md", "transcriptPath": "Content/guided/G20/transcript.en.vtt", "audioPath": "Content/guided/G20/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Gehmeditation", "purpose": "Gewöhnliches Gehen an einem sicheren, hindernisfreien Ort aufmerksam erleben.", "accessibilitySummary": "Eine zehnminütige langsame Gehübung; nur dort nutzen, wo geteilte Aufmerksamkeit sicher ist.", "scriptPath": "Content/guided/G20/script.de.md", "transcriptPath": "Content/guided/G20/transcript.de.vtt", "audioPath": "Content/guided/G20/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Walking Meditation",
+          "purpose": "Bring attention to ordinary walking in a clear, obstacle-free place.",
+          "accessibilitySummary": "A ten-minute slow walking practice; use only where walking with divided attention is safe.",
+          "scriptPath": "Content/guided/G20/script.en.md",
+          "transcriptPath": "Content/guided/G20/transcript.en.vtt",
+          "audioPath": "Content/guided/G20/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Gehmeditation",
+          "purpose": "Gewöhnliches Gehen an einem sicheren, hindernisfreien Ort aufmerksam erleben.",
+          "accessibilitySummary": "Eine zehnminütige langsame Gehübung; nur dort nutzen, wo geteilte Aufmerksamkeit sicher ist.",
+          "scriptPath": "Content/guided/G20/script.de.md",
+          "transcriptPath": "Content/guided/G20/transcript.de.vtt",
+          "audioPath": "Content/guided/G20/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G21", "version": 1, "category": "body", "targetMinutes": 8,
-      "safetyContext": "seatedOrStill", "purposeTags": ["belly", "breath", "body"],
+      "id": "G21",
+      "version": 1,
+      "category": "body",
+      "targetMinutes": 8,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "belly",
+        "breath",
+        "body"
+      ],
       "localized": {
-        "en": {"title": "Breath in the Belly", "purpose": "Feel breathing movement around the belly without forcing depth or rhythm.", "accessibilitySummary": "An eight-minute practice sensing breath movement in the abdomen or another comfortable place.", "scriptPath": "Content/guided/G21/script.en.md", "transcriptPath": "Content/guided/G21/transcript.en.vtt", "audioPath": "Content/guided/G21/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Atem im Bauch", "purpose": "Atembewegung im Bauch spüren, ohne Tiefe oder Rhythmus zu erzwingen.", "accessibilitySummary": "Eine achtminütige Übung mit Atembewegung im Bauch oder an einer anderen angenehmen Stelle.", "scriptPath": "Content/guided/G21/script.de.md", "transcriptPath": "Content/guided/G21/transcript.de.vtt", "audioPath": "Content/guided/G21/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Breath in the Belly",
+          "purpose": "Feel breathing movement around the belly without forcing depth or rhythm.",
+          "accessibilitySummary": "An eight-minute practice sensing breath movement in the abdomen or another comfortable place.",
+          "scriptPath": "Content/guided/G21/script.en.md",
+          "transcriptPath": "Content/guided/G21/transcript.en.vtt",
+          "audioPath": "Content/guided/G21/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Atem im Bauch",
+          "purpose": "Atembewegung im Bauch spüren, ohne Tiefe oder Rhythmus zu erzwingen.",
+          "accessibilitySummary": "Eine achtminütige Übung mit Atembewegung im Bauch oder an einer anderen angenehmen Stelle.",
+          "scriptPath": "Content/guided/G21/script.de.md",
+          "transcriptPath": "Content/guided/G21/transcript.de.vtt",
+          "audioPath": "Content/guided/G21/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G22", "version": 1, "category": "focus", "targetMinutes": 5,
-      "safetyContext": "seatedOrStill", "purposeTags": ["start", "clarity", "focus"],
+      "id": "G22",
+      "version": 1,
+      "category": "focus",
+      "targetMinutes": 5,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "start",
+        "clarity",
+        "focus"
+      ],
       "localized": {
-        "en": {"title": "A Clear Start", "purpose": "Set down the previous moment and choose one next point of attention.", "accessibilitySummary": "A five-minute transition practice before beginning a task.", "scriptPath": "Content/guided/G22/script.en.md", "transcriptPath": "Content/guided/G22/transcript.en.vtt", "audioPath": "Content/guided/G22/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Klar beginnen", "purpose": "Den vorherigen Moment ablegen und einen nächsten Aufmerksamkeitsfokus wählen.", "accessibilitySummary": "Eine fünfminütige Übergangsübung vor dem Beginn einer Aufgabe.", "scriptPath": "Content/guided/G22/script.de.md", "transcriptPath": "Content/guided/G22/transcript.de.vtt", "audioPath": "Content/guided/G22/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "A Clear Start",
+          "purpose": "Set down the previous moment and choose one next point of attention.",
+          "accessibilitySummary": "A five-minute transition practice before beginning a task.",
+          "scriptPath": "Content/guided/G22/script.en.md",
+          "transcriptPath": "Content/guided/G22/transcript.en.vtt",
+          "audioPath": "Content/guided/G22/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Klar beginnen",
+          "purpose": "Den vorherigen Moment ablegen und einen nächsten Aufmerksamkeitsfokus wählen.",
+          "accessibilitySummary": "Eine fünfminütige Übergangsübung vor dem Beginn einer Aufgabe.",
+          "scriptPath": "Content/guided/G22/script.de.md",
+          "transcriptPath": "Content/guided/G22/transcript.de.vtt",
+          "audioPath": "Content/guided/G22/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G23", "version": 1, "category": "focus", "targetMinutes": 10,
-      "safetyContext": "seatedOrStill", "purposeTags": ["single-point", "focus", "returning"],
+      "id": "G23",
+      "version": 1,
+      "category": "focus",
+      "targetMinutes": 10,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "single-point",
+        "focus",
+        "returning"
+      ],
       "localized": {
-        "en": {"title": "Single-Point Focus", "purpose": "Strengthen steady attention by returning to one simple sensory point.", "accessibilitySummary": "A ten-minute concentration practice using one chosen sensation or sound.", "scriptPath": "Content/guided/G23/script.en.md", "transcriptPath": "Content/guided/G23/transcript.en.vtt", "audioPath": "Content/guided/G23/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Ein-Punkt-Fokus", "purpose": "Stetige Aufmerksamkeit üben, indem du zu einem einfachen Sinneseindruck zurückkehrst.", "accessibilitySummary": "Eine zehnminütige Konzentrationsübung mit einer gewählten Empfindung oder einem Klang.", "scriptPath": "Content/guided/G23/script.de.md", "transcriptPath": "Content/guided/G23/transcript.de.vtt", "audioPath": "Content/guided/G23/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Single-Point Focus",
+          "purpose": "Strengthen steady attention by returning to one simple sensory point.",
+          "accessibilitySummary": "A ten-minute concentration practice using one chosen sensation or sound.",
+          "scriptPath": "Content/guided/G23/script.en.md",
+          "transcriptPath": "Content/guided/G23/transcript.en.vtt",
+          "audioPath": "Content/guided/G23/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Ein-Punkt-Fokus",
+          "purpose": "Stetige Aufmerksamkeit üben, indem du zu einem einfachen Sinneseindruck zurückkehrst.",
+          "accessibilitySummary": "Eine zehnminütige Konzentrationsübung mit einer gewählten Empfindung oder einem Klang.",
+          "scriptPath": "Content/guided/G23/script.de.md",
+          "transcriptPath": "Content/guided/G23/transcript.de.vtt",
+          "audioPath": "Content/guided/G23/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G24", "version": 1, "category": "focus", "targetMinutes": 7,
-      "safetyContext": "seatedOrStill", "purposeTags": ["deep-work", "transition", "focus"],
+      "id": "G24",
+      "version": 1,
+      "category": "focus",
+      "targetMinutes": 7,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "deep-work",
+        "transition",
+        "focus"
+      ],
       "localized": {
-        "en": {"title": "Before Deep Work", "purpose": "Move from scattered inputs toward one deliberate period of work.", "accessibilitySummary": "A seven-minute settling and intention practice before focused work.", "scriptPath": "Content/guided/G24/script.en.md", "transcriptPath": "Content/guided/G24/transcript.en.vtt", "audioPath": "Content/guided/G24/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Vor konzentrierter Arbeit", "purpose": "Von verstreuten Eindrücken in eine bewusst gewählte Arbeitsphase wechseln.", "accessibilitySummary": "Eine siebenminütige Sammlung und Ausrichtung vor konzentrierter Arbeit.", "scriptPath": "Content/guided/G24/script.de.md", "transcriptPath": "Content/guided/G24/transcript.de.vtt", "audioPath": "Content/guided/G24/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Before Deep Work",
+          "purpose": "Move from scattered inputs toward one deliberate period of work.",
+          "accessibilitySummary": "A seven-minute settling and intention practice before focused work.",
+          "scriptPath": "Content/guided/G24/script.en.md",
+          "transcriptPath": "Content/guided/G24/transcript.en.vtt",
+          "audioPath": "Content/guided/G24/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Vor konzentrierter Arbeit",
+          "purpose": "Von verstreuten Eindrücken in eine bewusst gewählte Arbeitsphase wechseln.",
+          "accessibilitySummary": "Eine siebenminütige Sammlung und Ausrichtung vor konzentrierter Arbeit.",
+          "scriptPath": "Content/guided/G24/script.de.md",
+          "transcriptPath": "Content/guided/G24/transcript.de.vtt",
+          "audioPath": "Content/guided/G24/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G25", "version": 1, "category": "focus", "targetMinutes": 3,
-      "safetyContext": "seatedOrStill", "purposeTags": ["reset", "tasks", "short"],
+      "id": "G25",
+      "version": 1,
+      "category": "focus",
+      "targetMinutes": 3,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "reset",
+        "tasks",
+        "short"
+      ],
       "localized": {
-        "en": {"title": "Reset Between Tasks", "purpose": "Close one task before carrying attention into the next.", "accessibilitySummary": "A three-minute transition using exhalation, posture, and one next intention.", "scriptPath": "Content/guided/G25/script.en.md", "transcriptPath": "Content/guided/G25/transcript.en.vtt", "audioPath": "Content/guided/G25/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Zwischen Aufgaben neu beginnen", "purpose": "Eine Aufgabe abschließen, bevor die Aufmerksamkeit in die nächste geht.", "accessibilitySummary": "Ein dreiminütiger Übergang mit Ausatmen, Haltung und einer nächsten Ausrichtung.", "scriptPath": "Content/guided/G25/script.de.md", "transcriptPath": "Content/guided/G25/transcript.de.vtt", "audioPath": "Content/guided/G25/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Reset Between Tasks",
+          "purpose": "Close one task before carrying attention into the next.",
+          "accessibilitySummary": "A three-minute transition using exhalation, posture, and one next intention.",
+          "scriptPath": "Content/guided/G25/script.en.md",
+          "transcriptPath": "Content/guided/G25/transcript.en.vtt",
+          "audioPath": "Content/guided/G25/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Zwischen Aufgaben neu beginnen",
+          "purpose": "Eine Aufgabe abschließen, bevor die Aufmerksamkeit in die nächste geht.",
+          "accessibilitySummary": "Ein dreiminütiger Übergang mit Ausatmen, Haltung und einer nächsten Ausrichtung.",
+          "scriptPath": "Content/guided/G25/script.de.md",
+          "transcriptPath": "Content/guided/G25/transcript.de.vtt",
+          "audioPath": "Content/guided/G25/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G26", "version": 1, "category": "focus", "targetMinutes": 12,
-      "safetyContext": "seatedOrStill", "purposeTags": ["spaciousness", "focus", "awareness"],
+      "id": "G26",
+      "version": 1,
+      "category": "focus",
+      "targetMinutes": 12,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "spaciousness",
+        "focus",
+        "awareness"
+      ],
       "localized": {
-        "en": {"title": "Spacious Attention", "purpose": "Hold one task in focus while retaining awareness of the wider field.", "accessibilitySummary": "A twelve-minute practice alternating narrow and broad attention.", "scriptPath": "Content/guided/G26/script.en.md", "transcriptPath": "Content/guided/G26/transcript.en.vtt", "audioPath": "Content/guided/G26/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Weite Aufmerksamkeit", "purpose": "Eine Sache im Fokus halten und zugleich das weitere Wahrnehmungsfeld bemerken.", "accessibilitySummary": "Eine zwölfminütige Übung im Wechsel zwischen enger und weiter Aufmerksamkeit.", "scriptPath": "Content/guided/G26/script.de.md", "transcriptPath": "Content/guided/G26/transcript.de.vtt", "audioPath": "Content/guided/G26/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Spacious Attention",
+          "purpose": "Hold one task in focus while retaining awareness of the wider field.",
+          "accessibilitySummary": "A twelve-minute practice alternating narrow and broad attention.",
+          "scriptPath": "Content/guided/G26/script.en.md",
+          "transcriptPath": "Content/guided/G26/transcript.en.vtt",
+          "audioPath": "Content/guided/G26/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Weite Aufmerksamkeit",
+          "purpose": "Eine Sache im Fokus halten und zugleich das weitere Wahrnehmungsfeld bemerken.",
+          "accessibilitySummary": "Eine zwölfminütige Übung im Wechsel zwischen enger und weiter Aufmerksamkeit.",
+          "scriptPath": "Content/guided/G26/script.de.md",
+          "transcriptPath": "Content/guided/G26/transcript.de.vtt",
+          "audioPath": "Content/guided/G26/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G27", "version": 1, "category": "self-kindness", "targetMinutes": 10,
-      "safetyContext": "seatedOrStill", "purposeTags": ["self-kindness", "warmth", "difficulty"],
+      "id": "G27",
+      "version": 1,
+      "category": "self-kindness",
+      "targetMinutes": 10,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "self-kindness",
+        "warmth",
+        "difficulty"
+      ],
       "localized": {
-        "en": {"title": "Kindness Toward Yourself", "purpose": "Offer steady, believable goodwill without forcing a particular feeling.", "accessibilitySummary": "A ten-minute self-kindness practice with optional neutral phrases.", "scriptPath": "Content/guided/G27/script.en.md", "transcriptPath": "Content/guided/G27/transcript.en.vtt", "audioPath": "Content/guided/G27/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Freundlichkeit mit dir selbst", "purpose": "Dir glaubwürdiges Wohlwollen anbieten, ohne ein bestimmtes Gefühl erzwingen zu müssen.", "accessibilitySummary": "Eine zehnminütige Übung in Selbstfreundlichkeit mit optionalen neutralen Sätzen.", "scriptPath": "Content/guided/G27/script.de.md", "transcriptPath": "Content/guided/G27/transcript.de.vtt", "audioPath": "Content/guided/G27/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Kindness Toward Yourself",
+          "purpose": "Offer steady, believable goodwill without forcing a particular feeling.",
+          "accessibilitySummary": "A ten-minute self-kindness practice with optional neutral phrases.",
+          "scriptPath": "Content/guided/G27/script.en.md",
+          "transcriptPath": "Content/guided/G27/transcript.en.vtt",
+          "audioPath": "Content/guided/G27/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Freundlichkeit mit dir selbst",
+          "purpose": "Dir glaubwürdiges Wohlwollen anbieten, ohne ein bestimmtes Gefühl erzwingen zu müssen.",
+          "accessibilitySummary": "Eine zehnminütige Übung in Selbstfreundlichkeit mit optionalen neutralen Sätzen.",
+          "scriptPath": "Content/guided/G27/script.de.md",
+          "transcriptPath": "Content/guided/G27/transcript.de.vtt",
+          "audioPath": "Content/guided/G27/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G28", "version": 1, "category": "emotions", "targetMinutes": 12,
-      "safetyContext": "seatedOrStill", "purposeTags": ["emotions", "space", "choice"],
+      "id": "G28",
+      "version": 1,
+      "category": "emotions",
+      "targetMinutes": 12,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "emotions",
+        "space",
+        "choice"
+      ],
       "localized": {
-        "en": {"title": "Making Room for Feelings", "purpose": "Notice emotion in manageable pieces while keeping contact with support and choice.", "accessibilitySummary": "A twelve-minute emotion-awareness practice that allows returning to neutral anchors at any time.", "scriptPath": "Content/guided/G28/script.en.md", "transcriptPath": "Content/guided/G28/transcript.en.vtt", "audioPath": "Content/guided/G28/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Gefühlen Raum geben", "purpose": "Gefühle in gut tragbaren Anteilen wahrnehmen und dabei mit Halt und Wahl verbunden bleiben.", "accessibilitySummary": "Eine zwölfminütige Gefühlsübung, bei der du jederzeit zu neutralen Ankern zurückkehren kannst.", "scriptPath": "Content/guided/G28/script.de.md", "transcriptPath": "Content/guided/G28/transcript.de.vtt", "audioPath": "Content/guided/G28/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Making Room for Feelings",
+          "purpose": "Notice emotion in manageable pieces while keeping contact with support and choice.",
+          "accessibilitySummary": "A twelve-minute emotion-awareness practice that allows returning to neutral anchors at any time.",
+          "scriptPath": "Content/guided/G28/script.en.md",
+          "transcriptPath": "Content/guided/G28/transcript.en.vtt",
+          "audioPath": "Content/guided/G28/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Gefühlen Raum geben",
+          "purpose": "Gefühle in gut tragbaren Anteilen wahrnehmen und dabei mit Halt und Wahl verbunden bleiben.",
+          "accessibilitySummary": "Eine zwölfminütige Gefühlsübung, bei der du jederzeit zu neutralen Ankern zurückkehren kannst.",
+          "scriptPath": "Content/guided/G28/script.de.md",
+          "transcriptPath": "Content/guided/G28/transcript.de.vtt",
+          "audioPath": "Content/guided/G28/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G29", "version": 1, "category": "self-kindness", "targetMinutes": 10,
-      "safetyContext": "seatedOrStill", "purposeTags": ["inner-critic", "self-kindness", "thoughts"],
+      "id": "G29",
+      "version": 1,
+      "category": "self-kindness",
+      "targetMinutes": 10,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "inner-critic",
+        "self-kindness",
+        "thoughts"
+      ],
       "localized": {
-        "en": {"title": "When the Inner Critic Speaks", "purpose": "Hear critical thoughts as thoughts and respond with steadier language.", "accessibilitySummary": "A ten-minute practice for relating differently to self-critical thinking.", "scriptPath": "Content/guided/G29/script.en.md", "transcriptPath": "Content/guided/G29/transcript.en.vtt", "audioPath": "Content/guided/G29/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Wenn der innere Kritiker spricht", "purpose": "Kritische Gedanken als Gedanken hören und mit einer ruhigeren Sprache antworten.", "accessibilitySummary": "Eine zehnminütige Übung für einen anderen Umgang mit selbstkritischem Denken.", "scriptPath": "Content/guided/G29/script.de.md", "transcriptPath": "Content/guided/G29/transcript.de.vtt", "audioPath": "Content/guided/G29/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "When the Inner Critic Speaks",
+          "purpose": "Hear critical thoughts as thoughts and respond with steadier language.",
+          "accessibilitySummary": "A ten-minute practice for relating differently to self-critical thinking.",
+          "scriptPath": "Content/guided/G29/script.en.md",
+          "transcriptPath": "Content/guided/G29/transcript.en.vtt",
+          "audioPath": "Content/guided/G29/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Wenn der innere Kritiker spricht",
+          "purpose": "Kritische Gedanken als Gedanken hören und mit einer ruhigeren Sprache antworten.",
+          "accessibilitySummary": "Eine zehnminütige Übung für einen anderen Umgang mit selbstkritischem Denken.",
+          "scriptPath": "Content/guided/G29/script.de.md",
+          "transcriptPath": "Content/guided/G29/transcript.de.vtt",
+          "audioPath": "Content/guided/G29/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G30", "version": 1, "category": "emotions", "targetMinutes": 15,
-      "safetyContext": "seatedOrStill", "purposeTags": ["grief", "tenderness", "support"],
+      "id": "G30",
+      "version": 1,
+      "category": "emotions",
+      "targetMinutes": 15,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "grief",
+        "tenderness",
+        "support"
+      ],
       "localized": {
-        "en": {"title": "Grief and Tenderness", "purpose": "Make careful room for grief while staying close to support, boundaries, and the present.", "accessibilitySummary": "A fifteen-minute gentle practice for grief; it invites pausing or stopping whenever needed.", "scriptPath": "Content/guided/G30/script.en.md", "transcriptPath": "Content/guided/G30/transcript.en.vtt", "audioPath": "Content/guided/G30/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Trauer und Zartheit", "purpose": "Behutsam Raum für Trauer lassen und zugleich bei Halt, Grenzen und Gegenwart bleiben.", "accessibilitySummary": "Eine fünfzehnminütige sanfte Übung bei Trauer; Pausieren oder Beenden ist jederzeit eingeladen.", "scriptPath": "Content/guided/G30/script.de.md", "transcriptPath": "Content/guided/G30/transcript.de.vtt", "audioPath": "Content/guided/G30/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Grief and Tenderness",
+          "purpose": "Make careful room for grief while staying close to support, boundaries, and the present.",
+          "accessibilitySummary": "A fifteen-minute gentle practice for grief; it invites pausing or stopping whenever needed.",
+          "scriptPath": "Content/guided/G30/script.en.md",
+          "transcriptPath": "Content/guided/G30/transcript.en.vtt",
+          "audioPath": "Content/guided/G30/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Trauer und Zartheit",
+          "purpose": "Behutsam Raum für Trauer lassen und zugleich bei Halt, Grenzen und Gegenwart bleiben.",
+          "accessibilitySummary": "Eine fünfzehnminütige sanfte Übung bei Trauer; Pausieren oder Beenden ist jederzeit eingeladen.",
+          "scriptPath": "Content/guided/G30/script.de.md",
+          "transcriptPath": "Content/guided/G30/transcript.de.vtt",
+          "audioPath": "Content/guided/G30/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G31", "version": 1, "category": "self-kindness", "targetMinutes": 8,
-      "safetyContext": "seatedOrStill", "purposeTags": ["patience", "waiting", "self-kindness"],
+      "id": "G31",
+      "version": 1,
+      "category": "self-kindness",
+      "targetMinutes": 8,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "patience",
+        "waiting",
+        "self-kindness"
+      ],
       "localized": {
-        "en": {"title": "Patience", "purpose": "Practice staying for one more ordinary moment without demanding speed.", "accessibilitySummary": "An eight-minute practice with sensations of waiting and small, repeatable returns.", "scriptPath": "Content/guided/G31/script.en.md", "transcriptPath": "Content/guided/G31/transcript.en.vtt", "audioPath": "Content/guided/G31/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Geduld", "purpose": "Einen weiteren gewöhnlichen Moment bleiben, ohne Schnelligkeit zu verlangen.", "accessibilitySummary": "Eine achtminütige Übung mit dem Erleben des Wartens und kleinen, wiederholbaren Rückkehren.", "scriptPath": "Content/guided/G31/script.de.md", "transcriptPath": "Content/guided/G31/transcript.de.vtt", "audioPath": "Content/guided/G31/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Patience",
+          "purpose": "Practice staying for one more ordinary moment without demanding speed.",
+          "accessibilitySummary": "An eight-minute practice with sensations of waiting and small, repeatable returns.",
+          "scriptPath": "Content/guided/G31/script.en.md",
+          "transcriptPath": "Content/guided/G31/transcript.en.vtt",
+          "audioPath": "Content/guided/G31/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Geduld",
+          "purpose": "Einen weiteren gewöhnlichen Moment bleiben, ohne Schnelligkeit zu verlangen.",
+          "accessibilitySummary": "Eine achtminütige Übung mit dem Erleben des Wartens und kleinen, wiederholbaren Rückkehren.",
+          "scriptPath": "Content/guided/G31/script.de.md",
+          "transcriptPath": "Content/guided/G31/transcript.de.vtt",
+          "audioPath": "Content/guided/G31/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G32", "version": 1, "category": "self-kindness", "targetMinutes": 7,
-      "safetyContext": "seatedOrStill", "purposeTags": ["gratitude", "neutrality", "noticing"],
+      "id": "G32",
+      "version": 1,
+      "category": "self-kindness",
+      "targetMinutes": 7,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "gratitude",
+        "neutrality",
+        "noticing"
+      ],
       "localized": {
-        "en": {"title": "Gratitude Without Force", "purpose": "Notice what is quietly supportive without insisting on positivity.", "accessibilitySummary": "A seven-minute practice that includes neutral, ordinary supports as valid objects of appreciation.", "scriptPath": "Content/guided/G32/script.en.md", "transcriptPath": "Content/guided/G32/transcript.en.vtt", "audioPath": "Content/guided/G32/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Dankbarkeit ohne Zwang", "purpose": "Leise Unterstützendes wahrnehmen, ohne Positivität zu verlangen.", "accessibilitySummary": "Eine siebenminütige Übung, in der auch neutrale, alltägliche Hilfen als wertvoll gelten.", "scriptPath": "Content/guided/G32/script.de.md", "transcriptPath": "Content/guided/G32/transcript.de.vtt", "audioPath": "Content/guided/G32/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Gratitude Without Force",
+          "purpose": "Notice what is quietly supportive without insisting on positivity.",
+          "accessibilitySummary": "A seven-minute practice that includes neutral, ordinary supports as valid objects of appreciation.",
+          "scriptPath": "Content/guided/G32/script.en.md",
+          "transcriptPath": "Content/guided/G32/transcript.en.vtt",
+          "audioPath": "Content/guided/G32/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Dankbarkeit ohne Zwang",
+          "purpose": "Leise Unterstützendes wahrnehmen, ohne Positivität zu verlangen.",
+          "accessibilitySummary": "Eine siebenminütige Übung, in der auch neutrale, alltägliche Hilfen als wertvoll gelten.",
+          "scriptPath": "Content/guided/G32/script.de.md",
+          "transcriptPath": "Content/guided/G32/transcript.de.vtt",
+          "audioPath": "Content/guided/G32/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G33", "version": 1, "category": "morning", "targetMinutes": 5,
-      "safetyContext": "seatedOrStill", "purposeTags": ["morning", "arrival", "short"],
+      "id": "G33",
+      "version": 1,
+      "category": "morning",
+      "targetMinutes": 5,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "morning",
+        "arrival",
+        "short"
+      ],
       "localized": {
-        "en": {"title": "Morning Arrival", "purpose": "Meet the first part of the day before momentum takes over.", "accessibilitySummary": "A five-minute morning practice using light, posture, breath, and one next step.", "scriptPath": "Content/guided/G33/script.en.md", "transcriptPath": "Content/guided/G33/transcript.en.vtt", "audioPath": "Content/guided/G33/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Morgens ankommen", "purpose": "Dem ersten Teil des Tages begegnen, bevor der Schwung übernimmt.", "accessibilitySummary": "Eine fünfminütige Morgenübung mit Licht, Haltung, Atem und einem nächsten Schritt.", "scriptPath": "Content/guided/G33/script.de.md", "transcriptPath": "Content/guided/G33/transcript.de.vtt", "audioPath": "Content/guided/G33/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Morning Arrival",
+          "purpose": "Meet the first part of the day before momentum takes over.",
+          "accessibilitySummary": "A five-minute morning practice using light, posture, breath, and one next step.",
+          "scriptPath": "Content/guided/G33/script.en.md",
+          "transcriptPath": "Content/guided/G33/transcript.en.vtt",
+          "audioPath": "Content/guided/G33/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Morgens ankommen",
+          "purpose": "Dem ersten Teil des Tages begegnen, bevor der Schwung übernimmt.",
+          "accessibilitySummary": "Eine fünfminütige Morgenübung mit Licht, Haltung, Atem und einem nächsten Schritt.",
+          "scriptPath": "Content/guided/G33/script.de.md",
+          "transcriptPath": "Content/guided/G33/transcript.de.vtt",
+          "audioPath": "Content/guided/G33/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G34", "version": 1, "category": "morning", "targetMinutes": 8,
-      "safetyContext": "seatedOrStill", "purposeTags": ["morning", "alertness", "grounding"],
+      "id": "G34",
+      "version": 1,
+      "category": "morning",
+      "targetMinutes": 8,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "morning",
+        "alertness",
+        "grounding"
+      ],
       "localized": {
-        "en": {"title": "Awake and Grounded", "purpose": "Invite alertness through posture and the senses while staying settled.", "accessibilitySummary": "An eight-minute morning practice with optional movement and open eyes.", "scriptPath": "Content/guided/G34/script.en.md", "transcriptPath": "Content/guided/G34/transcript.en.vtt", "audioPath": "Content/guided/G34/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Wach und geerdet", "purpose": "Über Haltung und Sinne Wachheit einladen und dabei gesammelt bleiben.", "accessibilitySummary": "Eine achtminütige Morgenübung mit optionaler Bewegung und offenen Augen.", "scriptPath": "Content/guided/G34/script.de.md", "transcriptPath": "Content/guided/G34/transcript.de.vtt", "audioPath": "Content/guided/G34/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Awake and Grounded",
+          "purpose": "Invite alertness through posture and the senses while staying settled.",
+          "accessibilitySummary": "An eight-minute morning practice with optional movement and open eyes.",
+          "scriptPath": "Content/guided/G34/script.en.md",
+          "transcriptPath": "Content/guided/G34/transcript.en.vtt",
+          "audioPath": "Content/guided/G34/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Wach und geerdet",
+          "purpose": "Über Haltung und Sinne Wachheit einladen und dabei gesammelt bleiben.",
+          "accessibilitySummary": "Eine achtminütige Morgenübung mit optionaler Bewegung und offenen Augen.",
+          "scriptPath": "Content/guided/G34/script.de.md",
+          "transcriptPath": "Content/guided/G34/transcript.de.vtt",
+          "audioPath": "Content/guided/G34/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G35", "version": 1, "category": "morning", "targetMinutes": 10,
-      "safetyContext": "seatedOrStill", "purposeTags": ["morning", "intention", "values"],
+      "id": "G35",
+      "version": 1,
+      "category": "morning",
+      "targetMinutes": 10,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "morning",
+        "intention",
+        "values"
+      ],
       "localized": {
-        "en": {"title": "Intention for the Day", "purpose": "Choose a modest way of meeting the day rather than predicting its outcome.", "accessibilitySummary": "A ten-minute morning reflection leading to one practical intention.", "scriptPath": "Content/guided/G35/script.en.md", "transcriptPath": "Content/guided/G35/transcript.en.vtt", "audioPath": "Content/guided/G35/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Ausrichtung für den Tag", "purpose": "Eine bescheidene Art wählen, dem Tag zu begegnen, statt seinen Ausgang vorherzusagen.", "accessibilitySummary": "Eine zehnminütige Morgenreflexion, die zu einer praktischen Ausrichtung führt.", "scriptPath": "Content/guided/G35/script.de.md", "transcriptPath": "Content/guided/G35/transcript.de.vtt", "audioPath": "Content/guided/G35/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Intention for the Day",
+          "purpose": "Choose a modest way of meeting the day rather than predicting its outcome.",
+          "accessibilitySummary": "A ten-minute morning reflection leading to one practical intention.",
+          "scriptPath": "Content/guided/G35/script.en.md",
+          "transcriptPath": "Content/guided/G35/transcript.en.vtt",
+          "audioPath": "Content/guided/G35/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Ausrichtung für den Tag",
+          "purpose": "Eine bescheidene Art wählen, dem Tag zu begegnen, statt seinen Ausgang vorherzusagen.",
+          "accessibilitySummary": "Eine zehnminütige Morgenreflexion, die zu einer praktischen Ausrichtung führt.",
+          "scriptPath": "Content/guided/G35/script.de.md",
+          "transcriptPath": "Content/guided/G35/transcript.de.vtt",
+          "audioPath": "Content/guided/G35/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G36", "version": 1, "category": "morning", "targetMinutes": 3,
-      "safetyContext": "seatedOrStill", "purposeTags": ["begin-again", "morning", "short"],
+      "id": "G36",
+      "version": 1,
+      "category": "morning",
+      "targetMinutes": 3,
+      "safetyContext": "seatedOrStill",
+      "purposeTags": [
+        "begin-again",
+        "morning",
+        "short"
+      ],
       "localized": {
-        "en": {"title": "Begin Again", "purpose": "Treat this breath and this moment as a workable new beginning.", "accessibilitySummary": "A three-minute reset for any point in the day, especially an imperfect morning.", "scriptPath": "Content/guided/G36/script.en.md", "transcriptPath": "Content/guided/G36/transcript.en.vtt", "audioPath": "Content/guided/G36/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Neu beginnen", "purpose": "Diesen Atemzug und diesen Moment als möglichen Neubeginn nehmen.", "accessibilitySummary": "Ein dreiminütiger Neustart für jeden Tageszeitpunkt, besonders nach einem unruhigen Morgen.", "scriptPath": "Content/guided/G36/script.de.md", "transcriptPath": "Content/guided/G36/transcript.de.vtt", "audioPath": "Content/guided/G36/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Begin Again",
+          "purpose": "Treat this breath and this moment as a workable new beginning.",
+          "accessibilitySummary": "A three-minute reset for any point in the day, especially an imperfect morning.",
+          "scriptPath": "Content/guided/G36/script.en.md",
+          "transcriptPath": "Content/guided/G36/transcript.en.vtt",
+          "audioPath": "Content/guided/G36/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Neu beginnen",
+          "purpose": "Diesen Atemzug und diesen Moment als möglichen Neubeginn nehmen.",
+          "accessibilitySummary": "Ein dreiminütiger Neustart für jeden Tageszeitpunkt, besonders nach einem unruhigen Morgen.",
+          "scriptPath": "Content/guided/G36/script.de.md",
+          "transcriptPath": "Content/guided/G36/transcript.de.vtt",
+          "audioPath": "Content/guided/G36/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G37", "version": 1, "category": "evening", "targetMinutes": 10,
-      "safetyContext": "bedOrResting", "purposeTags": ["evening", "release", "transition"],
+      "id": "G37",
+      "version": 1,
+      "category": "evening",
+      "targetMinutes": 10,
+      "safetyContext": "bedOrResting",
+      "purposeTags": [
+        "evening",
+        "release",
+        "transition"
+      ],
       "localized": {
-        "en": {"title": "Evening Release", "purpose": "Mark the day's transition without requiring every thought or task to be resolved.", "accessibilitySummary": "A ten-minute evening practice of support, review, and setting down what can wait.", "scriptPath": "Content/guided/G37/script.en.md", "transcriptPath": "Content/guided/G37/transcript.en.vtt", "audioPath": "Content/guided/G37/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Den Tag loslassen", "purpose": "Den Übergang aus dem Tag markieren, ohne jeden Gedanken oder jede Aufgabe lösen zu müssen.", "accessibilitySummary": "Eine zehnminütige Abendübung mit Halt, Rückblick und dem Ablegen dessen, was warten kann.", "scriptPath": "Content/guided/G37/script.de.md", "transcriptPath": "Content/guided/G37/transcript.de.vtt", "audioPath": "Content/guided/G37/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Evening Release",
+          "purpose": "Mark the day's transition without requiring every thought or task to be resolved.",
+          "accessibilitySummary": "A ten-minute evening practice of support, review, and setting down what can wait.",
+          "scriptPath": "Content/guided/G37/script.en.md",
+          "transcriptPath": "Content/guided/G37/transcript.en.vtt",
+          "audioPath": "Content/guided/G37/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Den Tag loslassen",
+          "purpose": "Den Übergang aus dem Tag markieren, ohne jeden Gedanken oder jede Aufgabe lösen zu müssen.",
+          "accessibilitySummary": "Eine zehnminütige Abendübung mit Halt, Rückblick und dem Ablegen dessen, was warten kann.",
+          "scriptPath": "Content/guided/G37/script.de.md",
+          "transcriptPath": "Content/guided/G37/transcript.de.vtt",
+          "audioPath": "Content/guided/G37/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G38", "version": 1, "category": "sleep", "targetMinutes": 15,
-      "safetyContext": "bedOrResting", "purposeTags": ["sleep", "bedtime", "settling"],
+      "id": "G38",
+      "version": 1,
+      "category": "sleep",
+      "targetMinutes": 15,
+      "safetyContext": "bedOrResting",
+      "purposeTags": [
+        "sleep",
+        "bedtime",
+        "settling"
+      ],
       "localized": {
-        "en": {"title": "Preparing for Sleep", "purpose": "Support the transition toward sleep without promising or forcing it.", "accessibilitySummary": "A fifteen-minute bedtime practice with body support, longer pauses, and no required ending response.", "scriptPath": "Content/guided/G38/script.en.md", "transcriptPath": "Content/guided/G38/transcript.en.vtt", "audioPath": "Content/guided/G38/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Auf den Schlaf vorbereiten", "purpose": "Den Übergang zum Schlaf unterstützen, ohne ihn zu versprechen oder zu erzwingen.", "accessibilitySummary": "Eine fünfzehnminütige Übung im Bett mit Körperhalt, längeren Pausen und ohne nötige Abschlussreaktion.", "scriptPath": "Content/guided/G38/script.de.md", "transcriptPath": "Content/guided/G38/transcript.de.vtt", "audioPath": "Content/guided/G38/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Preparing for Sleep",
+          "purpose": "Support the transition toward sleep without promising or forcing it.",
+          "accessibilitySummary": "A fifteen-minute bedtime practice with body support, longer pauses, and no required ending response.",
+          "scriptPath": "Content/guided/G38/script.en.md",
+          "transcriptPath": "Content/guided/G38/transcript.en.vtt",
+          "audioPath": "Content/guided/G38/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Auf den Schlaf vorbereiten",
+          "purpose": "Den Übergang zum Schlaf unterstützen, ohne ihn zu versprechen oder zu erzwingen.",
+          "accessibilitySummary": "Eine fünfzehnminütige Übung im Bett mit Körperhalt, längeren Pausen und ohne nötige Abschlussreaktion.",
+          "scriptPath": "Content/guided/G38/script.de.md",
+          "transcriptPath": "Content/guided/G38/transcript.de.vtt",
+          "audioPath": "Content/guided/G38/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G39", "version": 1, "category": "sleep", "targetMinutes": 8,
-      "safetyContext": "bedOrResting", "purposeTags": ["sleep", "bed", "body"],
+      "id": "G39",
+      "version": 1,
+      "category": "sleep",
+      "targetMinutes": 8,
+      "safetyContext": "bedOrResting",
+      "purposeTags": [
+        "sleep",
+        "bed",
+        "body"
+      ],
       "localized": {
-        "en": {"title": "Body into Bed", "purpose": "Let the bed carry more of the body's weight, one region at a time.", "accessibilitySummary": "An eight-minute lying-down practice focused on contact with the bed.", "scriptPath": "Content/guided/G39/script.en.md", "transcriptPath": "Content/guided/G39/transcript.en.vtt", "audioPath": "Content/guided/G39/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Im Bett ankommen", "purpose": "Das Bett nach und nach mehr vom Gewicht des Körpers tragen lassen.", "accessibilitySummary": "Eine achtminütige Übung im Liegen mit dem Kontakt zum Bett im Mittelpunkt.", "scriptPath": "Content/guided/G39/script.de.md", "transcriptPath": "Content/guided/G39/transcript.de.vtt", "audioPath": "Content/guided/G39/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Body into Bed",
+          "purpose": "Let the bed carry more of the body's weight, one region at a time.",
+          "accessibilitySummary": "An eight-minute lying-down practice focused on contact with the bed.",
+          "scriptPath": "Content/guided/G39/script.en.md",
+          "transcriptPath": "Content/guided/G39/transcript.en.vtt",
+          "audioPath": "Content/guided/G39/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Im Bett ankommen",
+          "purpose": "Das Bett nach und nach mehr vom Gewicht des Körpers tragen lassen.",
+          "accessibilitySummary": "Eine achtminütige Übung im Liegen mit dem Kontakt zum Bett im Mittelpunkt.",
+          "scriptPath": "Content/guided/G39/script.de.md",
+          "transcriptPath": "Content/guided/G39/transcript.de.vtt",
+          "audioPath": "Content/guided/G39/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G40", "version": 1, "category": "sleep", "targetMinutes": 12,
-      "safetyContext": "bedOrResting", "purposeTags": ["sleep", "thoughts", "quiet"],
+      "id": "G40",
+      "version": 1,
+      "category": "sleep",
+      "targetMinutes": 12,
+      "safetyContext": "bedOrResting",
+      "purposeTags": [
+        "sleep",
+        "thoughts",
+        "quiet"
+      ],
       "localized": {
-        "en": {"title": "Quieting the Mind", "purpose": "Relate more lightly to bedtime thinking rather than trying to empty the mind.", "accessibilitySummary": "A twelve-minute practice using sound, breath, and repeated permission to let thoughts pass.", "scriptPath": "Content/guided/G40/script.en.md", "transcriptPath": "Content/guided/G40/transcript.en.vtt", "audioPath": "Content/guided/G40/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Den Geist beruhigen", "purpose": "Leichter mit Gedanken vor dem Schlaf umgehen, statt den Geist leeren zu wollen.", "accessibilitySummary": "Eine zwölfminütige Übung mit Klang, Atem und wiederholter Erlaubnis, Gedanken ziehen zu lassen.", "scriptPath": "Content/guided/G40/script.de.md", "transcriptPath": "Content/guided/G40/transcript.de.vtt", "audioPath": "Content/guided/G40/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Quieting the Mind",
+          "purpose": "Relate more lightly to bedtime thinking rather than trying to empty the mind.",
+          "accessibilitySummary": "A twelve-minute practice using sound, breath, and repeated permission to let thoughts pass.",
+          "scriptPath": "Content/guided/G40/script.en.md",
+          "transcriptPath": "Content/guided/G40/transcript.en.vtt",
+          "audioPath": "Content/guided/G40/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Den Geist beruhigen",
+          "purpose": "Leichter mit Gedanken vor dem Schlaf umgehen, statt den Geist leeren zu wollen.",
+          "accessibilitySummary": "Eine zwölfminütige Übung mit Klang, Atem und wiederholter Erlaubnis, Gedanken ziehen zu lassen.",
+          "scriptPath": "Content/guided/G40/script.de.md",
+          "transcriptPath": "Content/guided/G40/transcript.de.vtt",
+          "audioPath": "Content/guided/G40/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G41", "version": 1, "category": "sleep", "targetMinutes": 10,
-      "safetyContext": "bedOrResting", "purposeTags": ["sleep", "night-waking", "acceptance"],
+      "id": "G41",
+      "version": 1,
+      "category": "sleep",
+      "targetMinutes": 10,
+      "safetyContext": "bedOrResting",
+      "purposeTags": [
+        "sleep",
+        "night-waking",
+        "acceptance"
+      ],
       "localized": {
-        "en": {"title": "Awake at Night", "purpose": "Meet nighttime wakefulness without turning it into a problem that must be solved now.", "accessibilitySummary": "A ten-minute low-stimulation practice for being awake in bed, without a promise of sleep.", "scriptPath": "Content/guided/G41/script.en.md", "transcriptPath": "Content/guided/G41/transcript.en.vtt", "audioPath": "Content/guided/G41/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Nachts wach", "purpose": "Nächtlichem Wachsein begegnen, ohne daraus ein Problem zu machen, das jetzt gelöst werden muss.", "accessibilitySummary": "Eine zehnminütige reizreduzierte Übung für das Wachliegen, ohne Schlafversprechen.", "scriptPath": "Content/guided/G41/script.de.md", "transcriptPath": "Content/guided/G41/transcript.de.vtt", "audioPath": "Content/guided/G41/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Awake at Night",
+          "purpose": "Meet nighttime wakefulness without turning it into a problem that must be solved now.",
+          "accessibilitySummary": "A ten-minute low-stimulation practice for being awake in bed, without a promise of sleep.",
+          "scriptPath": "Content/guided/G41/script.en.md",
+          "transcriptPath": "Content/guided/G41/transcript.en.vtt",
+          "audioPath": "Content/guided/G41/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Nachts wach",
+          "purpose": "Nächtlichem Wachsein begegnen, ohne daraus ein Problem zu machen, das jetzt gelöst werden muss.",
+          "accessibilitySummary": "Eine zehnminütige reizreduzierte Übung für das Wachliegen, ohne Schlafversprechen.",
+          "scriptPath": "Content/guided/G41/script.de.md",
+          "transcriptPath": "Content/guided/G41/transcript.de.vtt",
+          "audioPath": "Content/guided/G41/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     },
     {
-      "id": "G42", "version": 1, "category": "sleep", "targetMinutes": 20,
-      "safetyContext": "bedOrResting", "purposeTags": ["sleep", "return-to-sleep", "long"],
+      "id": "G42",
+      "version": 1,
+      "category": "sleep",
+      "targetMinutes": 20,
+      "safetyContext": "bedOrResting",
+      "purposeTags": [
+        "sleep",
+        "return-to-sleep",
+        "long"
+      ],
       "localized": {
-        "en": {"title": "Back to Sleep", "purpose": "Create a quiet, unhurried path through wakefulness while letting sleep come only if it comes.", "accessibilitySummary": "A twenty-minute low-stimulation body and breath practice designed to end without requiring interaction.", "scriptPath": "Content/guided/G42/script.en.md", "transcriptPath": "Content/guided/G42/transcript.en.vtt", "audioPath": "Content/guided/G42/audio.en.m4a", "scriptRevision": 1, "editorialState": "draft"},
-        "de": {"title": "Zurück in den Schlaf", "purpose": "Einen stillen, unaufgeregten Weg durch das Wachsein gehen und Schlaf nur kommen lassen, wenn er kommt.", "accessibilitySummary": "Eine zwanzigminütige reizreduzierte Körper- und Atemübung, die ohne nötige Interaktion endet.", "scriptPath": "Content/guided/G42/script.de.md", "transcriptPath": "Content/guided/G42/transcript.de.vtt", "audioPath": "Content/guided/G42/audio.de.m4a", "scriptRevision": 1, "editorialState": "draft"}
+        "en": {
+          "title": "Back to Sleep",
+          "purpose": "Create a quiet, unhurried path through wakefulness while letting sleep come only if it comes.",
+          "accessibilitySummary": "A twenty-minute low-stimulation body and breath practice designed to end without requiring interaction.",
+          "scriptPath": "Content/guided/G42/script.en.md",
+          "transcriptPath": "Content/guided/G42/transcript.en.vtt",
+          "audioPath": "Content/guided/G42/audio.en.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        },
+        "de": {
+          "title": "Zurück in den Schlaf",
+          "purpose": "Einen stillen, unaufgeregten Weg durch das Wachsein gehen und Schlaf nur kommen lassen, wenn er kommt.",
+          "accessibilitySummary": "Eine zwanzigminütige reizreduzierte Körper- und Atemübung, die ohne nötige Interaktion endet.",
+          "scriptPath": "Content/guided/G42/script.de.md",
+          "transcriptPath": "Content/guided/G42/transcript.de.vtt",
+          "audioPath": "Content/guided/G42/audio.de.m4a",
+          "scriptRevision": 1,
+          "editorialState": "production-candidate"
+        }
       }
     }
   ]

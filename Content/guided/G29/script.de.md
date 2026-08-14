@@ -2,7 +2,7 @@
 id: G29
 language: de
 revision: 1
-status: draft
+status: production-candidate
 target_minutes: 10
 ---
 # Wenn der innere Kritiker spricht

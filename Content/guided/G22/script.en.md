@@ -2,7 +2,7 @@
 id: G22
 language: en
 revision: 1
-status: draft
+status: production-candidate
 target_minutes: 5
 ---
 # A Clear Start

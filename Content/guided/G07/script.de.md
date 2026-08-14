@@ -2,7 +2,7 @@
 id: G07
 language: de
 revision: 1
-status: draft
+status: production-candidate
 target_minutes: 8
 ---
 # Mit Klängen sitzen
