@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "status": "build-7-submitted-waiting-for-review-audio-later-update-in-progress",
-  "narrated_update_status": "approved-84-track-source-promoted-build-13-preparation",
-  "narration_status": "84-promoted-review-approved-physical-testflight-and-candidate-bind-pending",
+  "narrated_update_status": "approved-84-track-source-promoted-build-13-internal-testing-owner-audio-pending",
+  "narration_status": "84-promoted-build-13-valid-in-beta-testing-physical-launch-proven-owner-audio-and-candidate-bind-pending",
   "current_release_snapshot": "docs/release/current-release.example.json",
   "candidate_manifest": null,
   "narrated_update_preparation": {
@@ -11,9 +11,24 @@
     "public_promotion": "Content/guided-84-m4a-84-vtt-84-provenance-records-merged-through-PR18",
     "current_screenshot_source": "24-approved-current-source-phone-ipad-images-tree-sha256-c1a6c543a699fc011b55aa7c58581c52fd53178c003287eb07331e95448b7f3b",
     "candidate_manifest": null,
-    "physical_audio_readback": "pending-build-13-testflight-install-and-owner-listening",
+    "build13_testflight_readback": {
+      "source_commit": "a191b113729e46ac71733ca3080c770008daf6d8",
+      "source_tree": "e3cf6025fe3eefd59f55c2d81825b020e2004c2c",
+      "archive_sha256": "6a6096c01ad5a2c54385c1b6c4a8903e67103f0a805a7862c4d9541b7de07f93",
+      "ipa_sha256": "39503b78b3927b1dbaa13ae4974b1bdf0633bfeea7e85fdf786b9b9b92a8f35a",
+      "marketing_version": "1.0",
+      "build_number": 13,
+      "apple_processing": "VALID",
+      "app_store_eligible": true,
+      "internal_distribution": "IN_BETA_TESTING",
+      "physical_runtime_readback": "Authorized physical iPad reads exact version 1.0 build 13 installed; launch succeeded and the app process was closed cleanly. CoreDevice cannot distinguish TestFlight origin from an installed app listing.",
+      "owner_audio_listening": "pending",
+      "finished_library_readback": "pending",
+      "claim_boundary": "This is the narrated Internal Testing candidate, not an App Review submission or App Store availability claim."
+    },
+    "physical_audio_readback": "build-13-physical-launch-proven-owner-listening-pending",
     "finished_library_readback": "pending",
-    "next_action": "archive-inspect-upload-link-and-read-back-build-13"
+    "next_action": "owner-listen-to-build-13-guided-audio-on-ppad-then-complete-finished-library-and-next-editable-metadata-readback"
   },
   "baseline_internal_testflight": {
     "marketing_version": "1.0",
