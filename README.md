@@ -8,17 +8,17 @@ Arrive Within is a free, bilingual meditation app for iPhone and iPad. A configu
   <img src="Marketing/AppStoreScreenshots/exports/en-US/iphone-6.9/02-growth-take-root-en-us-iphone-6.9-1320x2868.png" width="31%" alt="Two tilted Arrive Within practice screens showing growth">
 </p>
 
-[Watch the silent garden-growth film](Marketing/PublicMedia/output/garden-growth-v1.mp4) · [Source](https://github.com/p0s/arrive-within) · [Architecture](docs/architecture/OVERVIEW.md) · [Contributing](CONTRIBUTING.md) · [Privacy](https://arrivewithin.com/privacy)
+[Watch the silent garden-growth film](Marketing/PublicMedia/output/garden-growth-v1.mp4) · [Source](https://github.com/p0s/arrive-within) · [Architecture](docs/architecture/OVERVIEW.md) · [Contributing](CONTRIBUTING.md) · [Privacy](https://psapps.xyz/arrive-within/#privacy)
 
 ## Project status
 
-Arrive Within 1.0 is in active pre-release verification of the narrated update. The submitted build 7 remains the exact zero-narration App Review candidate, and this repository does **not** claim App Store availability yet. The public repository now also contains the approved 84-track English/German narrated update (42 concepts × 2 languages), bound transcripts, provenance, and the refreshed bilingual screenshot source. Build 13 is uploaded and reads `VALID`, App Store eligible, and `IN_BETA_TESTING`; its exact physical iPad launch is verified, while owner audio listening and the next editable App Store metadata update remain separate gates. English F2 and German C2 are the selected narration directions, Quiet Threshold B is the packaged icon, and C — Twilight Refuge is the only shipping garden; A/B remain non-shipping source references.
+Arrive Within 1.0 is in active pre-release verification of the narrated update. The submitted build 7 remains the exact zero-narration App Review candidate, and this repository does **not** claim App Store availability yet. The public repository now also contains the approved 84-track English/German narrated update (42 concepts × 2 languages), bound transcripts, provenance, and the refreshed bilingual screenshot source. The owner installed TestFlight build 13 and rejected it as an incomplete whole-product Guided experience; build 14 is the required replacement candidate and has not been uploaded. English F2 and German C2 are the selected narration directions, Quiet Threshold B is the packaged icon, and C — Twilight Refuge is the only shipping garden; A/B remain non-shipping source references.
 
 There is no App Store download link until an exact reviewed candidate is actually available. The country-neutral URL is reserved as `https://apps.apple.com/app/id6800192697`; add it to this README and the website only after Apple approval and a successful storefront readback.
 
 ## What is here
 
-- Two complete offline practice modes in version 1.0: timer and stopwatch; the submitted build 7 remains fail-closed for narration while the narrated update is prepared.
+- Timer and stopwatch remain complete offline practice modes; build 14 is the replacement candidate for the discoverable offline bilingual Guided library.
 - Exactly 42 original guided concepts with approved English and German narration, transcripts, and provenance in `Content/guided`.
 - A monotonic, persisted session state machine with exact-once completion.
 - Permanent deterministic garden progression, a typed Swift/TypeScript bridge, bounded Three.js rendering, recovery, and a native fallback.
@@ -29,7 +29,7 @@ There is no App Store download link until an exact reviewed candidate is actuall
 
 ## Privacy in one paragraph
 
-The app has no account, ads, analytics, attribution, tracking, custom backend, cloud sync, or runtime AI. Product data remains on the device unless the user deliberately exports it through Apple's system share sheet. Journal transcription is on device. Read the [published privacy policy](https://arrivewithin.com/privacy).
+The app has no account, ads, analytics, attribution, tracking, custom backend, cloud sync, or runtime AI. Product data remains on the device unless the user deliberately exports it through Apple's system share sheet. Journal transcription is on device. Read the [published privacy policy](https://psapps.xyz/arrive-within/#privacy).
 
 ## Build locally
 

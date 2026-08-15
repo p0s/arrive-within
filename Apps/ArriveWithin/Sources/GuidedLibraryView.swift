@@ -7,6 +7,7 @@ struct GuidedLibraryView: View {
   @State private var selectedCategory: GuidedCategory?
   @State private var durationFilter: DurationFilter = .all
   @State private var favoritesOnly = false
+  @Environment(\.dismiss) private var dismiss
   @Environment(\.locale) private var locale
 
   private var language: GuidedLanguage {
@@ -107,6 +108,13 @@ struct GuidedLibraryView: View {
     }
     .navigationTitle("guided.library.title")
     .accessibilityIdentifier("guided.library")
+    .onChange(of: model.activeSession?.id) { _, sessionID in
+      guard sessionID != nil else { return }
+      // Begin is initiated from a detail destination nested inside this
+      // library. Return to the Practice root so the active player is visible
+      // instead of leaving it behind the browsing stack.
+      dismiss()
+    }
   }
 
   private func categoryTitle(_ category: GuidedCategory) -> LocalizedStringKey {
@@ -193,6 +201,7 @@ private struct GuidedPracticeDetailView: View {
   @State private var language: GuidedLanguage
   @State private var ambienceEnabled = false
   @State private var ambienceVolume = 0.18
+  @Environment(\.dismiss) private var dismiss
   @Environment(\.locale) private var locale
   @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -206,7 +215,7 @@ private struct GuidedPracticeDetailView: View {
 
   private var approvedAudioURL: URL? {
     guard text.editorialState.isPackagedForPlayback else { return nil }
-    return BundledAudioAssetResolver.packagedNarrationURL(
+    return BundledAudioAssetResolver.approvedNarrationURL(
       bundle: .main,
       contentID: practice.id,
       languageCode: language.rawValue
@@ -286,12 +295,16 @@ private struct GuidedPracticeDetailView: View {
 
         Button {
           Task {
-            await model.startGuidedPractice(
+            let started = await model.startGuidedPractice(
               practiceID: practice.id,
               language: language,
               ambienceEnabled: ambienceEnabled,
               ambienceVolume: ambienceVolume
             )
+            guard started else { return }
+            dismiss()
+            await Task.yield()
+            dismiss()
           }
         } label: {
           Label("guided.begin", systemImage: "play.fill")

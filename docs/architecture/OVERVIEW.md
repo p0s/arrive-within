@@ -58,7 +58,7 @@ Physical lock, interruption, Bluetooth/route, phone-call, notification, and exac
 - destructive actions are explicit and cannot run during an active session;
 - local-only behavior remains complete when microphone, speech recognition, notifications, or the renderer are unavailable.
 
-`Apps/ArriveWithin/Resources/PrivacyInfo.xcprivacy` and `docs/release/app-privacy-worksheet.json` are the source-level privacy contract. The published bilingual policy is at `https://arrivewithin.com/privacy`; exact archive and live App Store answers remain separately evidenced.
+`Apps/ArriveWithin/Resources/PrivacyInfo.xcprivacy` and `docs/release/app-privacy-worksheet.json` are the source-level privacy contract. The published bilingual policy is at `https://psapps.xyz/arrive-within/#privacy`; exact archive and live App Store answers remain separately evidenced.
 
 ## Testing ladder
 

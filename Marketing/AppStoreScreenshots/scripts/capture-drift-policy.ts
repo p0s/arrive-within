@@ -13,9 +13,16 @@ export type SubmittedBuildCaptureFreeze = {
 };
 
 export const POST_SUBMISSION_SOURCE_REVISION =
-  "b524cea2c85cbee8d1a9933026d94f31cb7c482af1c517b892a52e371f90517c";
+  "674f0947819b0dcef5070dfaf591bf987f0c302c60cd79c512d4eb81e5400c5d";
 
 export const POST_SUBMISSION_CHANGED_PATHS = [
+  "Apps/ArriveWithin/Resources/de.lproj/Localizable.strings",
+  "Apps/ArriveWithin/Resources/en.lproj/Localizable.strings",
+  "Apps/ArriveWithin/Sources/AppModel.swift",
+  "Apps/ArriveWithin/Sources/GuidedLibraryView.swift",
+  "Apps/ArriveWithin/Sources/MeditationAudioController.swift",
+  "Apps/ArriveWithin/Sources/PracticeView.swift",
+  "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinUITests.swift",
   "ArriveWithin.xcodeproj/project.pbxproj",
   "Config/Base.xcconfig",
   "project.yml",
@@ -28,6 +35,8 @@ const REQUIRED_RATIONALE_FRAGMENTS = [
   "post-submission Garden",
   "not represented by the submitted App Store screenshots",
   "timer audio correction",
+  "Guided availability, browse navigation, and hash-bound playback fix",
+  "required Garden, Journey, and Journal capture IDs remain unchanged",
   "submitted App Store listing and screenshots remained untouched",
   "IAP is separate and not attached",
   "next editable metadata opportunity",

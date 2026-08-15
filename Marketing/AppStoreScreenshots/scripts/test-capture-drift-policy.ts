@@ -19,7 +19,7 @@ const exact: SubmittedBuildCaptureFreeze = {
   separate_iap_state: "READY_TO_SUBMIT_NOT_ATTACHED",
   next_action: "recapture-and-review-at-next-editable-metadata-opportunity",
   rationale:
-    "Exact build 7 was already WAITING_FOR_REVIEW and must not be replaced, cancelled, edited, or resubmitted. The post-submission Garden and timer audio correction are deliberately not represented by the submitted App Store screenshots; the submitted App Store listing and screenshots remained untouched. The READY_TO_SUBMIT IAP is separate and not attached, and fresh captures are required at the next editable metadata opportunity.",
+    "Exact build 7 was already WAITING_FOR_REVIEW and must not be replaced, cancelled, edited, or resubmitted. The post-submission Garden and timer audio correction are deliberately not represented by the submitted App Store screenshots. The Guided availability, browse navigation, and hash-bound playback fix changes only supplemental non-marketing Guided captures; the required Garden, Journey, and Journal capture IDs remain unchanged. The submitted App Store listing and screenshots remained untouched. The READY_TO_SUBMIT IAP is separate and not attached, and fresh captures are required at the next editable metadata opportunity.",
 };
 
 function accepts(

@@ -71,19 +71,22 @@ private struct PracticeChooserView: View {
   @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
   private var availableModes: [PracticeMode] {
-    guidedNarrationIsAvailable ? [.guided, .timer, .stopwatch] : [.timer, .stopwatch]
+    guidedNarrationIsAvailable
+      ? [.guided, .timer, .stopwatch]
+      : [.timer, .stopwatch]
   }
 
   private var guidedNarrationIsAvailable: Bool {
-    let language: GuidedLanguage = locale.language.languageCode?.identifier == "de" ? .german : .english
-    return model.guidedPractices.contains { practice in
-      let text = practice.localized[language]
-      guard text.editorialState.isPackagedForPlayback else { return false }
-      return BundledAudioAssetResolver.packagedNarrationURL(
-        bundle: .main,
-        contentID: practice.id,
-        languageCode: language.rawValue
-      ) != nil
+    model.guidedPractices.contains { practice in
+      GuidedLanguage.allCases.contains { language in
+        let text = practice.localized[language]
+        guard text.editorialState.isPackagedForPlayback else { return false }
+        return BundledAudioAssetResolver.approvedNarrationURL(
+          bundle: .main,
+          contentID: practice.id,
+          languageCode: language.rawValue
+        ) != nil
+      }
     }
   }
 
@@ -98,6 +101,38 @@ private struct PracticeChooserView: View {
             .font(.title3)
             .accessibleSecondaryText()
             .fixedSize(horizontal: false, vertical: true)
+        }
+
+        if !model.guidedPractices.isEmpty {
+          NavigationLink {
+            GuidedLibraryView(model: model)
+          } label: {
+            VStack(alignment: .leading, spacing: AppTheme.Spacing.standard) {
+              HStack {
+                Label("guided.library.browse", systemImage: "waveform")
+                  .font(.headline)
+                  .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: AppTheme.Spacing.compact)
+                Text(
+                  String(
+                    format: AppLocalization.string("guided.catalog.count.format", locale: locale),
+                    locale: locale,
+                    model.guidedPractices.count
+                  )
+                )
+                .font(.body.weight(.semibold))
+                .fixedSize(horizontal: false, vertical: true)
+              }
+              Text("guided.library.detail")
+                .font(.body)
+                .accessibleSecondaryText()
+                .fixedSize(horizontal: false, vertical: true)
+            }
+          }
+          .buttonStyle(.plain)
+          .quietCard()
+          .accessibilityIdentifier("guided.library.open")
+          .accessibilityHint(Text("guided.library.detail"))
         }
 
         if dynamicTypeSize.isAccessibilitySize {
@@ -204,48 +239,6 @@ private struct PracticeChooserView: View {
               Text("practice.background.end.note")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
-            }
-          }
-          .quietCard()
-        } else if selectedMode == .guided {
-          VStack(alignment: .leading, spacing: AppTheme.Spacing.standard) {
-            if model.guidedPractices.isEmpty {
-              Label("guided.catalog.unavailable", systemImage: "exclamationmark.triangle")
-                .foregroundStyle(.secondary)
-            } else {
-              NavigationLink {
-                GuidedLibraryView(model: model)
-              } label: {
-                HStack {
-                  HStack(spacing: 8) {
-                    Image(systemName: "waveform")
-                      .accessibilityHidden(true)
-                    Text("guided.library.browse")
-                      .lineLimit(nil)
-                      .fixedSize(horizontal: false, vertical: true)
-                  }
-                  .padding(.vertical, 2)
-                  Spacer()
-                  Text(
-                    String(
-                      format: AppLocalization.string("guided.catalog.count.format", locale: locale),
-                      locale: locale,
-                      model.guidedPractices.count
-                    )
-                  )
-                  .font(.body.weight(.semibold))
-                  .foregroundStyle(.primary)
-                  .fixedSize(horizontal: false, vertical: true)
-                }
-              }
-              .accessibilityIdentifier("guided.library.open")
-              .accessibilityHint(Text("guided.library.detail"))
-              Text("guided.library.detail")
-                .font(.body.weight(.semibold))
-                .foregroundStyle(Color(uiColor: .label))
-                .fixedSize(horizontal: false, vertical: true)
-                .accessibilityIdentifier("guided.library.detail")
-                .accessibilityHidden(true)
             }
           }
           .quietCard()

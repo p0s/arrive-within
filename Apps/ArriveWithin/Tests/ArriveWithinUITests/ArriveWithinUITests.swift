@@ -614,9 +614,11 @@ final class ArriveWithinUITests: XCTestCase {
     add(gardenScreenshot)
   }
 
-  func testZeroAudioReleasePresentsOnlyCompletePracticeModes() throws {
+  func testGuidedLibraryIsDiscoverableAndStartsEnglishPractice() throws {
     let app = XCUIApplication()
-    app.launchArguments = ["-ui-test-reset", "-ui-test-seed", "424242"]
+    app.launchArguments = [
+      "-ui-test-reset", "-ui-test-seed", "424242", "-ui-test-language", "en",
+    ]
     app.launch()
 
     let explore = app.buttons["onboarding.explore"]
@@ -631,9 +633,68 @@ final class ArriveWithinUITests: XCTestCase {
     XCTAssertTrue(modePicker.waitForExistence(timeout: 5))
     XCTAssertTrue(modePicker.buttons["Timer"].exists)
     XCTAssertTrue(modePicker.buttons["Stopwatch"].exists)
-    XCTAssertFalse(modePicker.buttons["Guided"].exists)
-    XCTAssertFalse(app.buttons["guided.library.open"].exists)
-    XCTAssertTrue(app.buttons["practice.start"].exists)
+    XCTAssertTrue(modePicker.buttons["Guided"].exists)
+
+    let browse = app.buttons["guided.library.open"]
+    XCTAssertTrue(browse.waitForExistence(timeout: 5))
+    browse.tap()
+    XCTAssertTrue(app.navigationBars["Guided practices"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.staticTexts["42 practices"].waitForExistence(timeout: 5))
+
+    let firstPractice = app.buttons["guided.row.G01"]
+    XCTAssertTrue(firstPractice.waitForExistence(timeout: 5))
+    firstPractice.tap()
+    XCTAssertTrue(app.buttons["guided.begin.G01"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.staticTexts["Available offline"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.buttons["guided.begin.G01"].isEnabled)
+    app.buttons["guided.begin.G01"].tap()
+
+    XCTAssertTrue(app.staticTexts["session.mode"].waitForExistence(timeout: 8))
+    XCTAssertEqual(app.staticTexts["session.mode"].label, "Guided")
+    XCTAssertTrue(app.staticTexts["session.timer"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.staticTexts["session.caption"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.buttons["session.pause"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.buttons["session.transcript"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.sliders["session.voice.volume"].waitForExistence(timeout: 5))
+    app.buttons["session.pause"].tap()
+    XCTAssertTrue(app.buttons["session.resume"].waitForExistence(timeout: 5))
+  }
+
+  func testGermanGuidedPracticeUsesTheGermanTrackAndTranscript() throws {
+    let app = XCUIApplication()
+    app.launchArguments = [
+      "-ui-test-reset", "-ui-test-seed", "424242", "-ui-test-language", "de",
+      "-AppleLanguages", "(de)", "-AppleLocale", "de_DE",
+    ]
+    app.launch()
+
+    let explore = app.buttons["onboarding.explore"]
+    XCTAssertTrue(explore.waitForExistence(timeout: 8))
+    explore.tap()
+    let meditateTab = app.tabBars.buttons["navigation.tab.practice"]
+    XCTAssertTrue(meditateTab.waitForExistence(timeout: 5))
+    meditateTab.tap()
+
+    let browse = app.buttons["guided.library.open"]
+    XCTAssertTrue(browse.waitForExistence(timeout: 5))
+    browse.tap()
+    XCTAssertTrue(app.navigationBars["Geführte Meditationen"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.staticTexts["42 Meditationen"].waitForExistence(timeout: 5))
+    let firstPractice = app.buttons["guided.row.G01"]
+    XCTAssertTrue(firstPractice.waitForExistence(timeout: 5))
+    firstPractice.tap()
+    XCTAssertTrue(app.buttons["guided.begin.G01"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.staticTexts["Offline verfügbar"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.buttons["guided.begin.G01"].isEnabled)
+    app.buttons["guided.begin.G01"].tap()
+
+    XCTAssertTrue(app.staticTexts["session.mode"].waitForExistence(timeout: 8))
+    XCTAssertEqual(app.staticTexts["session.mode"].label, "Geführt")
+    XCTAssertTrue(app.staticTexts["session.timer"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.staticTexts["session.caption"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.buttons["session.transcript"].waitForExistence(timeout: 5))
+    app.buttons["session.pause"].tap()
+    XCTAssertTrue(app.buttons["session.resume"].waitForExistence(timeout: 5))
   }
 
   func testStopwatchQualifiesPersistsPausedStateAndFinishesAfterRelaunch() throws {
