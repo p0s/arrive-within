@@ -62,38 +62,27 @@ struct BundledAudioContractTests {
     }
   #endif
 
-  @Test("Guided narration availability matches its explicit catalogue state")
-  func guidedNarrationMatchesCatalogState() throws {
-    let audio = try MeditationAudioConfiguration(narrationLanguageCode: "en")
-    let session = try MeditationSession(
-      id: UUID(),
-      profileGenerationID: UUID(),
-      mode: .guided,
-      guidedContentID: "G01",
-      guidedContentVersion: 1,
-      targetDurationMilliseconds: 180_000,
-      preparedAt: Date(),
-      configuration: MeditationSessionConfiguration(audio: audio)
-    )
-    let controller = try NativeMeditationAudioController(bundle: .main)
-
+  @Test("Release resource layout exposes all 84 hash-bound guided tracks")
+  func releaseBundleExposesCompleteGuidedNarration() throws {
     let catalogURL = try #require(
       Bundle.main.url(forResource: "catalog", withExtension: "json", subdirectory: "guided")
     )
     let document = try GuidedCatalogLoader.decode(Data(contentsOf: catalogURL))
-    let practice = try #require(document.practices.first(where: { $0.id == "G01" }))
-    let state = practice.localized.en.editorialState
 
-    if state.isPackagedForPlayback {
-      try controller.validate(session: session)
-    } else {
-      #expect(
-        throws: MeditationAudioControllerError.narrationNotApproved("G01", "en")
-      ) {
-        try controller.validate(session: session)
+    #expect(document.practices.count == 42)
+    for practice in document.practices {
+      for language in GuidedLanguage.allCases {
+        #expect(practice.localized[language].editorialState.isPackagedForPlayback)
+        #expect(
+          BundledAudioAssetResolver.approvedNarrationURL(
+            bundle: .main,
+            contentID: practice.id,
+            languageCode: language.rawValue
+          ) != nil,
+          "Release resources must authorize \(practice.id)-\(language.rawValue)"
+        )
       }
     }
-    controller.stop()
   }
 
   @Test("The app bundle contains the exact complete bilingual catalogue")
@@ -187,8 +176,8 @@ struct BundledAudioContractTests {
     #expect(resolver.approvedNarrationURL(contentID: "G01", languageCode: "en") == nil)
     #expect(
       BundledAudioAssetResolver.packagedNarrationURL(
-        bundle: bundle, contentID: "G01", languageCode: "en") != nil,
-      "The lightweight UI check reads approval metadata; playback rehashes bytes and fails closed."
+        bundle: bundle, contentID: "G01", languageCode: "en") == nil,
+      "The UI availability check must fail closed with the playback validator."
     )
 
     try JSONSerialization.data(withJSONObject: provenance).write(

@@ -143,8 +143,8 @@ equal("metadata.urls-bound", {
   privacy_url: shared.privacy_url,
 }, {
   marketing_url: "https://arrivewithin.com/",
-  support_url: "https://arrivewithin.com/support",
-  privacy_url: "https://arrivewithin.com/privacy",
+  support_url: "https://psapps.xyz/arrive-within/#support",
+  privacy_url: "https://psapps.xyz/arrive-within/#privacy",
 });
 record(
   "metadata.url-binding",
@@ -378,7 +378,7 @@ record("release-train.repository-authority", releaseTrain.stages.slice(0, 12).ev
 record(
   "release-train.candidate-unbound",
   releaseTrain.candidate_manifest === null
-    && releaseTrain.status === "build-7-submitted-waiting-for-review-audio-later-update-in-progress"
+    && releaseTrain.status === "build-7-submitted-waiting-for-review-build-13-rejected-new-build-14-required"
     && releaseTrain.baseline_internal_testflight?.build_number === 1
     && releaseTrain.baseline_internal_testflight?.apple_processing === "VALID"
     && releaseTrain.baseline_internal_testflight?.internal_distribution === "IN_BETA_TESTING"

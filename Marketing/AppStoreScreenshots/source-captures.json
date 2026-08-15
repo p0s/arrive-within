@@ -15,8 +15,15 @@
   },
   "post_capture_change": {
     "classification": "submitted-build-7-post-submission-source-changes",
-    "current_source_revision": "b524cea2c85cbee8d1a9933026d94f31cb7c482af1c517b892a52e371f90517c",
+    "current_source_revision": "674f0947819b0dcef5070dfaf591bf987f0c302c60cd79c512d4eb81e5400c5d",
     "changed_paths": [
+      "Apps/ArriveWithin/Resources/de.lproj/Localizable.strings",
+      "Apps/ArriveWithin/Resources/en.lproj/Localizable.strings",
+      "Apps/ArriveWithin/Sources/AppModel.swift",
+      "Apps/ArriveWithin/Sources/GuidedLibraryView.swift",
+      "Apps/ArriveWithin/Sources/MeditationAudioController.swift",
+      "Apps/ArriveWithin/Sources/PracticeView.swift",
+      "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinUITests.swift",
       "ArriveWithin.xcodeproj/project.pbxproj",
       "Config/Base.xcconfig",
       "project.yml"
@@ -28,7 +35,7 @@
     "submitted_listing_mutation": "none",
     "separate_iap_state": "READY_TO_SUBMIT_NOT_ATTACHED",
     "next_action": "recapture-and-review-at-next-editable-metadata-opportunity",
-    "rationale": "Exact build 7 was already WAITING_FOR_REVIEW and must not be replaced, cancelled, edited, or resubmitted. The post-submission Garden and timer audio correction are deliberately not represented by the submitted App Store screenshots; this later source-only build-13 version freeze does not alter those visuals. The submitted App Store listing and screenshots remained untouched. The READY_TO_SUBMIT IAP is separate and not attached, and fresh captures are required at the next editable metadata opportunity."
+    "rationale": "Exact build 7 was already WAITING_FOR_REVIEW and must not be replaced, cancelled, edited, or resubmitted. The post-submission Garden and timer audio correction are deliberately not represented by the submitted App Store screenshots. The Guided availability, browse navigation, and hash-bound playback fix changes only supplemental non-marketing Guided captures; the required Garden, Journey, and Journal capture IDs remain unchanged. The submitted App Store listing and screenshots remained untouched. The READY_TO_SUBMIT IAP is separate and not attached, and fresh captures are required at the next editable metadata opportunity."
   },
   "result_bundles": [
     {

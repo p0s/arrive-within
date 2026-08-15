@@ -18,8 +18,8 @@
   "export_compliance_position": "Expected exempt use of Apple platform encryption only; re-evaluate against the exact archive and current App Store questions.",
   "copyright": "2026 Arrive Within contributors",
   "marketing_url": "https://arrivewithin.com/",
-  "support_url": "https://arrivewithin.com/support",
-  "privacy_url": "https://arrivewithin.com/privacy",
+  "support_url": "https://psapps.xyz/arrive-within/#support",
+  "privacy_url": "https://psapps.xyz/arrive-within/#privacy",
   "url_binding": {
     "state": "verified-custom-domain-production-readback",
     "verified_at": "2026-08-12",

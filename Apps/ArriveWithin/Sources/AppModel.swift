@@ -338,15 +338,16 @@ final class AppModel {
     }
   }
 
+  @discardableResult
   func startGuidedPractice(
     practiceID: String,
     language: GuidedLanguage,
     ambienceEnabled: Bool = false,
     ambienceVolume: Double = 0.18
-  ) async {
+  ) async -> Bool {
     guard let practice = guidedPractices.first(where: { $0.id == practiceID }) else {
       audioNotice = .guidedCatalogUnavailable
-      return
+      return false
     }
     do {
       let audio = try MeditationAudioConfiguration(
@@ -361,8 +362,10 @@ final class AppModel {
         guidedContentID: practice.id,
         guidedContentVersion: practice.version
       )
+      return activeSession?.guidedContentID == practice.id
     } catch {
       launchPhase = .failed
+      return false
     }
   }
 

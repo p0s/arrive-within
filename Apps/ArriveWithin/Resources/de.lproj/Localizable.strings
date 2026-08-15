@@ -268,7 +268,7 @@
 "recovery.confirm.maximum" = "Zeit bis zum Schließen mitzählen";
 "recovery.discard" = "Ohne Speichern beenden";
 
-"audio.notice.guided.pending" = "Geführte Meditationen sind verfügbar, sobald eine rechtlich geeignete Stimme gewählt und die Aufnahme zweisprachig geprüft wurde.";
+"audio.notice.guided.pending" = "Diese geführte Meditation ist in diesem Build nicht verfügbar. Wähle eine andere Meditation oder nutze Timer oder Stoppuhr.";
 "audio.notice.unavailable" = "Der Ton konnte für diese Praxis nicht starten. Timer und Fortschritt laufen weiter.";
 "audio.notice.interrupted" = "Die Audioausgabe wurde unterbrochen. Die Zeitmessung läuft weiter; der Ton kehrt zurück, sobald iOS ihn wieder freigibt.";
 "audio.notice.route.lost" = "Der Audioausgang hat sich geändert. Die Zeitmessung läuft weiter; der Ton wird erst über einen sicheren Ausgang fortgesetzt.";
@@ -309,8 +309,8 @@
 "guided.language.en" = "English";
 "guided.language.de" = "Deutsch";
 "guided.offline.ready" = "Offline verfügbar";
-"guided.offline.pending" = "Anleitungen folgen bald";
-"guided.pending.explanation" = "Geführte Meditationen folgen mit einem späteren Update. Timer und Stoppuhr sind jetzt verfügbar.";
+"guided.offline.pending" = "Offline nicht verfügbar";
+"guided.pending.explanation" = "Diese Aufnahme ist in diesem Build nicht offline verfügbar. Wähle eine andere Meditation oder nutze Timer oder Stoppuhr.";
 "guided.safety.nonclinical" = "Ein Meditationswerkzeug, keine medizinische Behandlung. Halte die Augen offen oder beende die Übung, wenn das sicherer ist.";
 "guided.favorite.on" = "Favorit";
 "guided.recent" = "Kürzlich praktiziert";

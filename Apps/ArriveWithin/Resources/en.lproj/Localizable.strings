@@ -268,7 +268,7 @@
 "recovery.confirm.maximum" = "Count time until the app closed";
 "recovery.discard" = "End without saving";
 
-"audio.notice.guided.pending" = "Guided narration is not available until the owner selects a lawful voice and the track passes bilingual review.";
+"audio.notice.guided.pending" = "Guided narration is unavailable for this practice in this build. Choose another practice or use Timer or Stopwatch.";
 "audio.notice.unavailable" = "Sound could not start for this practice. The timer and your progress are still running.";
 "audio.notice.interrupted" = "Audio was interrupted. Timing continues; sound will return when iOS makes it available.";
 "audio.notice.route.lost" = "The audio output changed. Timing continues; sound will return on a safe output.";
@@ -309,8 +309,8 @@
 "guided.language.en" = "English";
 "guided.language.de" = "Deutsch";
 "guided.offline.ready" = "Available offline";
-"guided.offline.pending" = "Narration coming soon";
-"guided.pending.explanation" = "Guided practices are coming in a future update. Timer and Stopwatch are available now.";
+"guided.offline.pending" = "Unavailable offline";
+"guided.pending.explanation" = "This track is not available offline in this build. Choose another practice or use Timer or Stopwatch.";
 "guided.safety.nonclinical" = "A meditation tool, not medical treatment. Keep your eyes open or stop whenever that is safer.";
 "guided.favorite.on" = "Favorite";
 "guided.recent" = "Recently practiced";

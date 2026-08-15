@@ -729,11 +729,14 @@ struct BundledAudioAssetResolver {
     contentID: String,
     languageCode: String
   ) -> URL? {
-    approvedNarrationAsset(
+    // UI availability and playback must share one hash-bound predicate. A
+    // file's presence and approval metadata alone are not enough to enable
+    // Begin when the shipped bytes or transcript have been altered.
+    approvedNarrationURL(
       bundle: bundle,
       contentID: contentID,
       languageCode: languageCode
-    )?.audioURL
+    )
   }
 
   static func approvedNarrationURL(
