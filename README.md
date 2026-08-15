@@ -12,7 +12,7 @@ Arrive Within is a free, bilingual meditation app for iPhone and iPad. A configu
 
 ## Project status
 
-Arrive Within 1.0 is in active pre-release verification of the narrated update. The submitted build 7 remains the exact zero-narration App Review candidate, and this repository does **not** claim App Store availability yet. The public repository now also contains the approved 84-track English/German narrated update (42 concepts × 2 languages), bound transcripts, provenance, and the refreshed bilingual screenshot source. Build 13 is the next narrated TestFlight candidate; its archive, physical audio readback, and later editable App Store metadata remain separate gates. English F2 and German C2 are the selected narration directions, Quiet Threshold B is the packaged icon, and C — Twilight Refuge is the only shipping garden; A/B remain non-shipping source references.
+Arrive Within 1.0 is in active pre-release verification of the narrated update. The submitted build 7 remains the exact zero-narration App Review candidate, and this repository does **not** claim App Store availability yet. The public repository now also contains the approved 84-track English/German narrated update (42 concepts × 2 languages), bound transcripts, provenance, and the refreshed bilingual screenshot source. Build 13 is uploaded and reads `VALID`, App Store eligible, and `IN_BETA_TESTING`; its exact physical iPad launch is verified, while owner audio listening and the next editable App Store metadata update remain separate gates. English F2 and German C2 are the selected narration directions, Quiet Threshold B is the packaged icon, and C — Twilight Refuge is the only shipping garden; A/B remain non-shipping source references.
 
 There is no App Store download link until an exact reviewed candidate is actually available. The country-neutral URL is reserved as `https://apps.apple.com/app/id6800192697`; add it to this README and the website only after Apple approval and a successful storefront readback.
 
@@ -67,7 +67,7 @@ The complete local gate is:
 ./scripts/check
 ```
 
-It includes full 84-track source validation and an unsigned iOS build, and therefore requires Xcode. The strict pre-TestFlight package gate is `ARRIVE_WITHIN_GUIDED_GATE=device-candidate ./scripts/check`; the current public source gate passes, while final narrated-release approval still requires a private seal bound to the exact archive/TestFlight build, physical-device audio evidence, and the later App Store metadata opportunity. Simulator UI tests use the repository’s serialized guarded runner; do not start overlapping XCTest or simulator-control processes.
+It includes full 84-track source validation and an unsigned iOS build, and therefore requires Xcode. The strict pre-TestFlight package gate is `ARRIVE_WITHIN_GUIDED_GATE=device-candidate ./scripts/check`; the current public source gate passes, and build 13 is in Internal Testing. Final narrated-release approval still requires owner confirmation of physical audio playback and the later App Store metadata opportunity. Simulator UI tests use the repository’s serialized guarded runner; do not start overlapping XCTest or simulator-control processes.
 
 ## Safe local configuration
 
