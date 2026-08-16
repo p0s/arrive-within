@@ -634,15 +634,15 @@ final class ArriveWithinUITests: XCTestCase {
     XCTAssertTrue(modePicker.buttons["Timer"].exists)
     XCTAssertTrue(modePicker.buttons["Stopwatch"].exists)
     XCTAssertTrue(modePicker.buttons["Guided"].exists)
+    modePicker.buttons["Guided"].tap()
 
-    let browse = app.buttons["guided.library.open"]
-    XCTAssertTrue(browse.waitForExistence(timeout: 5))
-    browse.tap()
-    XCTAssertTrue(app.navigationBars["Guided practices"].waitForExistence(timeout: 5))
+    XCTAssertFalse(app.buttons["guided.library.open"].exists)
+    XCTAssertTrue(
+      app.descendants(matching: .any)["guided.library"].waitForExistence(timeout: 5)
+    )
     XCTAssertTrue(app.staticTexts["42 practices"].waitForExistence(timeout: 5))
 
-    let firstPractice = app.buttons["guided.row.G01"]
-    XCTAssertTrue(firstPractice.waitForExistence(timeout: 5))
+    let firstPractice = reveal({ app.buttons["guided.row.G01"] }, in: app)
     firstPractice.tap()
     XCTAssertTrue(app.buttons["guided.begin.G01"].waitForExistence(timeout: 5))
     XCTAssertTrue(app.staticTexts["Available offline"].waitForExistence(timeout: 5))
@@ -675,13 +675,17 @@ final class ArriveWithinUITests: XCTestCase {
     XCTAssertTrue(meditateTab.waitForExistence(timeout: 5))
     meditateTab.tap()
 
-    let browse = app.buttons["guided.library.open"]
-    XCTAssertTrue(browse.waitForExistence(timeout: 5))
-    browse.tap()
-    XCTAssertTrue(app.navigationBars["Geführte Meditationen"].waitForExistence(timeout: 5))
+    let modePicker = app.segmentedControls["practice.mode"]
+    XCTAssertTrue(modePicker.waitForExistence(timeout: 5))
+    XCTAssertTrue(modePicker.buttons["Geführt"].exists)
+    modePicker.buttons["Geführt"].tap()
+
+    XCTAssertFalse(app.buttons["guided.library.open"].exists)
+    XCTAssertTrue(
+      app.descendants(matching: .any)["guided.library"].waitForExistence(timeout: 5)
+    )
     XCTAssertTrue(app.staticTexts["42 Meditationen"].waitForExistence(timeout: 5))
-    let firstPractice = app.buttons["guided.row.G01"]
-    XCTAssertTrue(firstPractice.waitForExistence(timeout: 5))
+    let firstPractice = reveal({ app.buttons["guided.row.G01"] }, in: app)
     firstPractice.tap()
     XCTAssertTrue(app.buttons["guided.begin.G01"].waitForExistence(timeout: 5))
     XCTAssertTrue(app.staticTexts["Offline verfügbar"].waitForExistence(timeout: 5))

@@ -1,13 +1,21 @@
 import ArriveWithinContent
 import SwiftUI
 
-struct GuidedLibraryView: View {
+struct GuidedLibraryInlineView: View {
+  @Bindable var model: AppModel
+
+  var body: some View {
+    GuidedLibraryContent(model: model)
+      .accessibilityIdentifier("guided.library")
+  }
+}
+
+private struct GuidedLibraryContent: View {
   @Bindable var model: AppModel
   @State private var searchText = ""
   @State private var selectedCategory: GuidedCategory?
   @State private var durationFilter: DurationFilter = .all
   @State private var favoritesOnly = false
-  @Environment(\.dismiss) private var dismiss
   @Environment(\.locale) private var locale
 
   private var language: GuidedLanguage {
@@ -51,33 +59,48 @@ struct GuidedLibraryView: View {
   var body: some View {
     let visiblePractices = filteredPractices
     let recentPracticeIDs = Set(recentPracticeRanks.keys)
-    List {
-      Section {
+    VStack(alignment: .leading, spacing: AppTheme.Spacing.standard) {
+      VStack(alignment: .leading, spacing: AppTheme.Spacing.standard) {
         TextField("guided.search.prompt", text: $searchText)
           .textFieldStyle(.roundedBorder)
           .accessibilityIdentifier("guided.search")
-        Picker("guided.filter.category", selection: $selectedCategory) {
-          Text("guided.filter.all.categories").tag(GuidedCategory?.none)
-          ForEach(GuidedCategory.allCases, id: \.rawValue) { category in
-            Text(categoryTitle(category)).tag(GuidedCategory?.some(category))
+
+        ViewThatFits(in: .horizontal) {
+          HStack(spacing: AppTheme.Spacing.standard) {
+            categoryPicker
+            durationPicker
+          }
+          VStack(alignment: .leading, spacing: AppTheme.Spacing.compact) {
+            categoryPicker
+            durationPicker
           }
         }
-        Picker("guided.filter.duration", selection: $durationFilter) {
-          ForEach(DurationFilter.allCases) { filter in
-            Text(filter.title).tag(filter)
-          }
-        }
+
         Toggle("guided.filter.favorites", isOn: $favoritesOnly)
       }
+      .quietCard()
 
-      Section {
-        if visiblePractices.isEmpty {
-          ContentUnavailableView(
-            "guided.empty.title",
-            systemImage: "leaf",
-            description: Text("guided.empty.body")
-          )
-        } else {
+      Text(
+        String(
+          format: AppLocalization.string("guided.results.count.format", locale: locale),
+          locale: locale,
+          visiblePractices.count
+        )
+      )
+      .font(.subheadline.weight(.semibold))
+      .accessibleSecondaryText()
+      .accessibilityIdentifier("guided.results.count")
+
+      if visiblePractices.isEmpty {
+        ContentUnavailableView(
+          "guided.empty.title",
+          systemImage: "leaf",
+          description: Text("guided.empty.body")
+        )
+        .frame(maxWidth: .infinity)
+        .quietCard()
+      } else {
+        LazyVStack(spacing: 0) {
           ForEach(visiblePractices) { practice in
             NavigationLink {
               GuidedPracticeDetailView(
@@ -86,35 +109,53 @@ struct GuidedLibraryView: View {
                 initialLanguage: language
               )
             } label: {
-              GuidedPracticeRow(
-                practice: practice,
-                language: language,
-                favorite: model.favoriteGuidedPracticeIDs.contains(practice.id),
-                recent: recentPracticeIDs.contains(practice.id)
-              )
+              HStack(spacing: AppTheme.Spacing.standard) {
+                GuidedPracticeRow(
+                  practice: practice,
+                  language: language,
+                  favorite: model.favoriteGuidedPracticeIDs.contains(practice.id),
+                  recent: recentPracticeIDs.contains(practice.id)
+                )
+                Image(systemName: "chevron.forward")
+                  .font(.caption.weight(.semibold))
+                  .foregroundStyle(.tertiary)
+                  .accessibilityHidden(true)
+              }
             }
+            .buttonStyle(.plain)
+            .contentShape(Rectangle())
+            .padding(.vertical, AppTheme.Spacing.compact)
             .accessibilityIdentifier("guided.row.\(practice.id)")
+
+            if practice.id != visiblePractices.last?.id {
+              Divider()
+            }
           }
         }
-      } header: {
-        Text(
-          String(
-            format: AppLocalization.string("guided.results.count.format", locale: locale),
-            locale: locale,
-            visiblePractices.count
-          )
-        )
+        .quietCard()
       }
     }
-    .navigationTitle("guided.library.title")
-    .accessibilityIdentifier("guided.library")
-    .onChange(of: model.activeSession?.id) { _, sessionID in
-      guard sessionID != nil else { return }
-      // Begin is initiated from a detail destination nested inside this
-      // library. Return to the Practice root so the active player is visible
-      // instead of leaving it behind the browsing stack.
-      dismiss()
+  }
+
+  private var categoryPicker: some View {
+    Picker("guided.filter.category", selection: $selectedCategory) {
+      Text("guided.filter.all.categories").tag(GuidedCategory?.none)
+      ForEach(GuidedCategory.allCases, id: \.rawValue) { category in
+        Text(categoryTitle(category)).tag(GuidedCategory?.some(category))
+      }
     }
+    .pickerStyle(.menu)
+    .frame(maxWidth: .infinity, alignment: .leading)
+  }
+
+  private var durationPicker: some View {
+    Picker("guided.filter.duration", selection: $durationFilter) {
+      ForEach(DurationFilter.allCases) { filter in
+        Text(filter.title).tag(filter)
+      }
+    }
+    .pickerStyle(.menu)
+    .frame(maxWidth: .infinity, alignment: .leading)
   }
 
   private func categoryTitle(_ category: GuidedCategory) -> LocalizedStringKey {
@@ -302,8 +343,6 @@ private struct GuidedPracticeDetailView: View {
               ambienceVolume: ambienceVolume
             )
             guard started else { return }
-            dismiss()
-            await Task.yield()
             dismiss()
           }
         } label: {

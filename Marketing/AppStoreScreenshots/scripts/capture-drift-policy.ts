@@ -1,21 +1,22 @@
-export type SubmittedBuildCaptureFreeze = {
-  classification: "submitted-build-7-post-submission-source-changes";
+export type HistoricalCaptureRetention = {
+  classification: "build-7-withdrawn-build-15-capture-retention";
   current_source_revision: string;
   changed_paths: string[];
-  submitted_version: "1.0";
-  submitted_build: 7;
-  submitted_state_at_freeze: "WAITING_FOR_REVIEW";
-  valid_until: "next-editable-app-store-metadata-opportunity";
-  submitted_listing_mutation: "none";
+  historical_submitted_version: "1.0";
+  historical_submitted_build: 7;
+  historical_review_state: "DEVELOPER_REJECTED_AFTER_WITHDRAWAL";
+  replacement_candidate_build: 15;
+  valid_until: "build-15-candidate-bound-capture";
+  listing_mutation: "review-withdrawn-existing-live-images-retained";
   separate_iap_state: "READY_TO_SUBMIT_NOT_ATTACHED";
-  next_action: "recapture-and-review-at-next-editable-metadata-opportunity";
+  next_action: "candidate-bind-and-read-back-before-build-15-submission";
   rationale: string;
 };
 
-export const POST_SUBMISSION_SOURCE_REVISION =
-  "674f0947819b0dcef5070dfaf591bf987f0c302c60cd79c512d4eb81e5400c5d";
+export const RETAINED_CAPTURE_SOURCE_REVISION =
+  "75031c7ee16fdf7f7463cfe943b573b0ba785af1051027296e32dd2c345d8bdf";
 
-export const POST_SUBMISSION_CHANGED_PATHS = [
+export const RETAINED_CAPTURE_CHANGED_PATHS = [
   "Apps/ArriveWithin/Resources/de.lproj/Localizable.strings",
   "Apps/ArriveWithin/Resources/en.lproj/Localizable.strings",
   "Apps/ArriveWithin/Sources/AppModel.swift",
@@ -29,37 +30,36 @@ export const POST_SUBMISSION_CHANGED_PATHS = [
 ] as const;
 
 const REQUIRED_RATIONALE_FRAGMENTS = [
-  "build 7",
-  "WAITING_FOR_REVIEW",
-  "must not be replaced, cancelled, edited, or resubmitted",
-  "post-submission Garden",
-  "not represented by the submitted App Store screenshots",
-  "timer audio correction",
-  "Guided availability, browse navigation, and hash-bound playback fix",
+  "build 7 review was withdrawn",
+  "DEVELOPER_REJECTED",
+  "historical live screenshots are not build-15 evidence",
+  "Guided catalogue now renders inline",
   "required Garden, Journey, and Journal capture IDs remain unchanged",
-  "submitted App Store listing and screenshots remained untouched",
+  "approved current-source captures must be candidate-bound",
+  "build 15",
   "IAP is separate and not attached",
-  "next editable metadata opportunity",
+  "No build-15 archive, upload, physical, review, or storefront claim exists",
 ] as const;
 
-export function isExactSubmittedBuildCaptureFreeze(
-  attestation: SubmittedBuildCaptureFreeze | undefined,
+export function isExactHistoricalCaptureRetention(
+  attestation: HistoricalCaptureRetention | undefined,
   currentSourceRevision: string,
   changedPaths: string[],
 ): boolean {
   return Boolean(
-    attestation?.classification === "submitted-build-7-post-submission-source-changes" &&
-      attestation.current_source_revision === POST_SUBMISSION_SOURCE_REVISION &&
-      currentSourceRevision === POST_SUBMISSION_SOURCE_REVISION &&
-      JSON.stringify(attestation.changed_paths) === JSON.stringify(POST_SUBMISSION_CHANGED_PATHS) &&
-      JSON.stringify(changedPaths) === JSON.stringify(POST_SUBMISSION_CHANGED_PATHS) &&
-      attestation.submitted_version === "1.0" &&
-      attestation.submitted_build === 7 &&
-      attestation.submitted_state_at_freeze === "WAITING_FOR_REVIEW" &&
-      attestation.valid_until === "next-editable-app-store-metadata-opportunity" &&
-      attestation.submitted_listing_mutation === "none" &&
+    attestation?.classification === "build-7-withdrawn-build-15-capture-retention" &&
+      attestation.current_source_revision === RETAINED_CAPTURE_SOURCE_REVISION &&
+      currentSourceRevision === RETAINED_CAPTURE_SOURCE_REVISION &&
+      JSON.stringify(attestation.changed_paths) === JSON.stringify(RETAINED_CAPTURE_CHANGED_PATHS) &&
+      JSON.stringify(changedPaths) === JSON.stringify(RETAINED_CAPTURE_CHANGED_PATHS) &&
+      attestation.historical_submitted_version === "1.0" &&
+      attestation.historical_submitted_build === 7 &&
+      attestation.historical_review_state === "DEVELOPER_REJECTED_AFTER_WITHDRAWAL" &&
+      attestation.replacement_candidate_build === 15 &&
+      attestation.valid_until === "build-15-candidate-bound-capture" &&
+      attestation.listing_mutation === "review-withdrawn-existing-live-images-retained" &&
       attestation.separate_iap_state === "READY_TO_SUBMIT_NOT_ATTACHED" &&
-      attestation.next_action === "recapture-and-review-at-next-editable-metadata-opportunity" &&
+      attestation.next_action === "candidate-bind-and-read-back-before-build-15-submission" &&
       REQUIRED_RATIONALE_FRAGMENTS.every((fragment) => attestation.rationale.includes(fragment)),
   );
 }

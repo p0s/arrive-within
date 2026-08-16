@@ -1,41 +1,42 @@
 import assert from "node:assert/strict";
 
 import {
-  isExactSubmittedBuildCaptureFreeze,
-  POST_SUBMISSION_CHANGED_PATHS,
-  POST_SUBMISSION_SOURCE_REVISION,
-  type SubmittedBuildCaptureFreeze,
+  isExactHistoricalCaptureRetention,
+  RETAINED_CAPTURE_CHANGED_PATHS,
+  RETAINED_CAPTURE_SOURCE_REVISION,
+  type HistoricalCaptureRetention,
 } from "./capture-drift-policy";
 
-const exact: SubmittedBuildCaptureFreeze = {
-  classification: "submitted-build-7-post-submission-source-changes",
-  current_source_revision: POST_SUBMISSION_SOURCE_REVISION,
-  changed_paths: [...POST_SUBMISSION_CHANGED_PATHS],
-  submitted_version: "1.0",
-  submitted_build: 7,
-  submitted_state_at_freeze: "WAITING_FOR_REVIEW",
-  valid_until: "next-editable-app-store-metadata-opportunity",
-  submitted_listing_mutation: "none",
+const exact: HistoricalCaptureRetention = {
+  classification: "build-7-withdrawn-build-15-capture-retention",
+  current_source_revision: RETAINED_CAPTURE_SOURCE_REVISION,
+  changed_paths: [...RETAINED_CAPTURE_CHANGED_PATHS],
+  historical_submitted_version: "1.0",
+  historical_submitted_build: 7,
+  historical_review_state: "DEVELOPER_REJECTED_AFTER_WITHDRAWAL",
+  replacement_candidate_build: 15,
+  valid_until: "build-15-candidate-bound-capture",
+  listing_mutation: "review-withdrawn-existing-live-images-retained",
   separate_iap_state: "READY_TO_SUBMIT_NOT_ATTACHED",
-  next_action: "recapture-and-review-at-next-editable-metadata-opportunity",
+  next_action: "candidate-bind-and-read-back-before-build-15-submission",
   rationale:
-    "Exact build 7 was already WAITING_FOR_REVIEW and must not be replaced, cancelled, edited, or resubmitted. The post-submission Garden and timer audio correction are deliberately not represented by the submitted App Store screenshots. The Guided availability, browse navigation, and hash-bound playback fix changes only supplemental non-marketing Guided captures; the required Garden, Journey, and Journal capture IDs remain unchanged. The submitted App Store listing and screenshots remained untouched. The READY_TO_SUBMIT IAP is separate and not attached, and fresh captures are required at the next editable metadata opportunity.",
+    "The build 7 review was withdrawn and version 1.0 now reads DEVELOPER_REJECTED. Its historical live screenshots are not build-15 evidence. The Guided catalogue now renders inline, while the required Garden, Journey, and Journal capture IDs remain unchanged. The approved current-source captures must be candidate-bound and read back before build 15 is submitted. The READY_TO_SUBMIT IAP is separate and not attached. No build-15 archive, upload, physical, review, or storefront claim exists.",
 };
 
 function accepts(
-  attestation: SubmittedBuildCaptureFreeze = exact,
-  revision: string = POST_SUBMISSION_SOURCE_REVISION,
-  paths: string[] = [...POST_SUBMISSION_CHANGED_PATHS],
+  attestation: HistoricalCaptureRetention = exact,
+  revision: string = RETAINED_CAPTURE_SOURCE_REVISION,
+  paths: string[] = [...RETAINED_CAPTURE_CHANGED_PATHS],
 ): boolean {
-  return isExactSubmittedBuildCaptureFreeze(attestation, revision, paths);
+  return isExactHistoricalCaptureRetention(attestation, revision, paths);
 }
 
-assert.equal(accepts(), true, "the exact frozen-build attestation must pass");
-assert.equal(accepts(exact, `${POST_SUBMISSION_SOURCE_REVISION.slice(0, -1)}0`), false, "a near-match revision must fail");
-assert.equal(accepts(exact, POST_SUBMISSION_SOURCE_REVISION, [...POST_SUBMISSION_CHANGED_PATHS, "Renderer/src/scene.ts"]), false, "an extra changed file must fail");
-assert.equal(accepts({ ...exact, submitted_build: 8 as 7 }), false, "another build must fail");
-assert.equal(accepts({ ...exact, valid_until: "expired" as "next-editable-app-store-metadata-opportunity" }), false, "an expired freeze must fail");
-assert.equal(accepts({ ...exact, submitted_listing_mutation: "none " as "none" }), false, "a near-match mutation boundary must fail");
-assert.equal(accepts({ ...exact, rationale: exact.rationale.replace("next editable metadata opportunity", "later") }), false, "a missing deferred action must fail");
+assert.equal(accepts(), true, "the exact historical-capture retention must pass");
+assert.equal(accepts(exact, `${RETAINED_CAPTURE_SOURCE_REVISION.slice(0, -1)}0`), false, "a near-match revision must fail");
+assert.equal(accepts(exact, RETAINED_CAPTURE_SOURCE_REVISION, [...RETAINED_CAPTURE_CHANGED_PATHS, "Renderer/src/scene.ts"]), false, "an extra changed file must fail");
+assert.equal(accepts({ ...exact, replacement_candidate_build: 16 as 15 }), false, "another replacement build must fail");
+assert.equal(accepts({ ...exact, valid_until: "expired" as "build-15-candidate-bound-capture" }), false, "an expired retention must fail");
+assert.equal(accepts({ ...exact, listing_mutation: "review-withdrawn-existing-live-images-retained " as "review-withdrawn-existing-live-images-retained" }), false, "a near-match mutation boundary must fail");
+assert.equal(accepts({ ...exact, rationale: exact.rationale.replace("candidate-bound", "available") }), false, "a missing candidate-binding action must fail");
 
-process.stdout.write("Capture drift policy passed: exact submitted-build freeze plus 6 negative controls.\n");
+process.stdout.write("Capture drift policy passed: exact historical-capture retention plus 6 negative controls.\n");
