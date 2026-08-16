@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "state": "draft-url-bound",
-  "release_attachable": false,
+  "state": "build-15-submitted",
+  "release_attachable": true,
   "primary_category": "HEALTH_AND_FITNESS",
   "secondary_category": "LIFESTYLE",
   "age_rating": {
@@ -51,8 +51,8 @@
     "available_territories": 175,
     "available_in_new_territories": true,
     "locales": ["de-DE", "en-US"],
-    "app_store_connect_state": "READY_TO_SUBMIT",
-    "current_app_review_attachment": false
+    "app_store_connect_state": "WAITING_FOR_REVIEW",
+    "current_app_review_attachment": true
   },
   "current_rules": {
     "verified_at": "2026-08-10",
@@ -80,5 +80,18 @@
     "age_rating_rule": "Calculated from the current App Store Connect questionnaire and may vary by region and OS version; no public rating is claimed before live reconciliation.",
     "whats_new_rule": "Not available for the first version; localized source is retained for the first update only."
   },
-  "candidate_binding": null
+  "candidate_binding": {
+    "marketing_version": "1.0",
+    "build_number": 15,
+    "build_id": "a77535f4-dc54-458c-a3ac-0dbf3a655bde",
+    "source_commit": "ebe073c26c58fdc32912d96ad30cd7833659f027",
+    "source_tree": "467708c15f766ade65788c251236dfcabba33014",
+    "archive_zip_sha256": "30f16f26969604b8be64a903db320585479b0c058dfe421357f7005819c6282c",
+    "ipa_sha256": "cf2f81858656d339462183719b4a2738d36f54b370613b7b761eae8d891b39c6",
+    "app_store_version_id": "e3b3b152-a874-437d-9b59-17d23ce46739",
+    "review_submission_id": "9cb4ed98-7a4e-41da-8cf4-41b1bec16a11",
+    "review_item_count": 2,
+    "review_state": "WAITING_FOR_REVIEW",
+    "submitted_at": "2026-08-16T02:25:48.664Z"
+  }
 }

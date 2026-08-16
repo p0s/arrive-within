@@ -3,14 +3,14 @@
   "proving_probe": {
     "acceptance_criterion": "AC-001",
     "scenario": "SCN-001",
-    "status": "build-7-review-withdrawn-build-13-and-14-rejected-build-15-required",
-    "claim_boundary": "Build 7 remains exact zero-narration historical evidence with inspected archive/IPA and owner-confirmed Three.js Garden, but its review was withdrawn and version 1.0 now reads DEVELOPER_REJECTED. The current public source contains the approved 84-track narrated update. Owner-installed TestFlight builds 13 and 14 were rejected as incomplete final products; build 14 still hid the meditation list behind a redundant selector. Current build-15 source renders the searchable/filterable 42-practice list directly in the Guided tab, while archive, TestFlight, physical, App Review, and storefront proof remain open.",
+    "status": "build-15-submitted-waiting-for-review",
+    "claim_boundary": "Exact narrated build 15 is bound to signed source commit ebe073c26c58fdc32912d96ad30cd7833659f027, inspected archive/IPA evidence, Apple-valid build a77535f4-dc54-458c-a3ac-0dbf3a655bde, exact version 1.0 build 15 installed on the authorized iPad, corrected bilingual metadata, and 24 checksum-matched screenshots. Version 1.0 and Premium Garden Material Styles are together in submission 9cb4ed98-7a4e-41da-8cf4-41b1bec16a11, which reads WAITING_FOR_REVIEW with automatic release after approval. Visible inline-library/audio listening, approval, and storefront proof remain open.",
     "evidence": "docs/qa/persona-runs/SCN-001/local-simulator-probe.md",
-    "next_action": "Freeze, archive, upload, and prove exact build 15 on the authorized physical iPad, obtain human audio confirmation, then attach and submit only that candidate."
+    "next_action": "Wait for Apple's review outcome; independently confirm the visible inline library and G01 narration in the exact build 15 already installed on the authorized iPad, then verify the public storefront after approval."
   },
   "current_batch": {
     "id": "selected-twilight-build-7-notice-complete-replacement-and-guarded-audio",
-    "status": "build-7-review-withdrawn-build-13-and-14-rejected-current-source-build-15-inline-library",
+    "status": "build-15-submitted-waiting-for-review",
     "evidence": [
       "Marketing/AppStoreScreenshots/screenshot-plan.json",
       "Marketing/AppStoreScreenshots/source-captures.json",
@@ -63,13 +63,13 @@
     ]
   },
   "release_source_contract": {
-    "status": "passed-source-contract-selected-candidate-unbound",
+    "status": "passed-source-contract-selected-candidate-submitted",
     "checks_passed": 121,
     "checks_failed": 0,
-    "shipping_source_file_count": 69,
-    "shipping_source_sha256": "03eb55935889b025d074d77ef9551e007ee0c7edca7f4c38c9e89f884cf6b87f",
+    "shipping_source_file_count": 71,
+    "shipping_source_sha256": "cbc2e2a636a816a2168da66b655342f7b6f0de871b0648a73a4a6f3ec8d68ec5",
     "release_ready": false,
-    "candidate_bound": false
+    "candidate_bound": true
   },
   "icon_direction": {
     "concepts": "A-Living-Rings; B-Quiet-Threshold; C-Rooted-Light",
@@ -83,12 +83,12 @@
     "german_previous_delivery": "default-de-v3-and-accent-drifting-C-rejected",
     "german_alternatives": "owner-selected-C2-direction; fluent-German-review-remains-separate",
     "production_candidate_directories": 84,
-    "production_batch": "The private inventory is complete at 84/84: all 42 English and 42 German candidates objectively validate and the owner-approved review packet authorizes public redistribution and promotion. The selected full-native mlx-audio 0.4.8 backend loads the exact pinned official V3 weights and hash-bound voice conditionals in an isolated frozen environment. A matched eight-unit German probe completed in 43.13 seconds at 2.62 GiB peak process RSS versus 75.44 seconds and 5.40 GiB for the optimized PyTorch/MPS baseline; fresh-process T3 tokens are byte-identical and S3 output differs only at measured one-LSB PCM24 reduction noise. The G12 no-EOS case rejects cap inflation and truncation: its authored 4+4 split completed at 50 and 35 tokens, and clean guarded regeneration produced the objective-valid 600.0-second candidate. Terminal split delimiters are removed from model prompts without changing source text or pause metadata. The sole lifecycle owner uses one host lock, one worker, bounded checkpoint batches, a measured 14 GiB launch preflight, the unchanged 10 GiB floor plus 1 GiB early-stop buffer, and no detached supervisor. PyTorch/MPS remains the explicit fallback, and complete candidates are never mixed or replaced. Objective validation covers all 84 candidates; public Content/guided promotion and screenshot-source review are complete. Owner-installed TestFlight builds 13 and 14 were rejected as incomplete product candidates; build 15 must prove the inline bilingual Guided library and physical audio before App Review submission.",
+    "production_batch": "The private inventory is complete at 84/84: all 42 English and 42 German candidates objectively validate and the owner-approved review packet authorizes public redistribution and promotion. The selected full-native mlx-audio 0.4.8 backend loads the exact pinned official V3 weights and hash-bound voice conditionals in an isolated frozen environment. A matched eight-unit German probe completed in 43.13 seconds at 2.62 GiB peak process RSS versus 75.44 seconds and 5.40 GiB for the optimized PyTorch/MPS baseline; fresh-process T3 tokens are byte-identical and S3 output differs only at measured one-LSB PCM24 reduction noise. The G12 no-EOS case rejects cap inflation and truncation: its authored 4+4 split completed at 50 and 35 tokens, and clean guarded regeneration produced the objective-valid 600.0-second candidate. Terminal split delimiters are removed from model prompts without changing source text or pause metadata. The sole lifecycle owner uses one host lock, one worker, bounded checkpoint batches, a measured 14 GiB launch preflight, the unchanged 10 GiB floor plus 1 GiB early-stop buffer, and no detached supervisor. PyTorch/MPS remains the explicit fallback, and complete candidates are never mixed or replaced. Objective validation covers all 84 candidates; public Content/guided promotion and screenshot-source review are complete. Owner-installed TestFlight builds 13 and 14 were rejected as incomplete product candidates; exact build 15 packages the inline bilingual Guided library and all 84 narrations and is now WAITING_FOR_REVIEW. Physical build-15 library/audio listening remains pending independent evidence.",
     "shipping_asset_boundary": "raw-candidates-ignored-validated-promoted-content-guided-assets-not-ignored",
-    "baseline_testflight_dependency": "build-7-review-withdrawn-build-13-and-14-rejected-build-15-required"
+    "baseline_testflight_dependency": "build-15-installed-and-submitted-visible-library-and-audio-readback-pending"
   },
   "terminal_local_state": {
-    "status": "selected-twilight-build-7-review-withdrawn-build-13-and-14-rejected-build-15-inline-library",
+    "status": "selected-twilight-build-15-submitted-waiting-for-review",
     "root_gate": "passed-single-coherent-public-narrated-source-gate",
     "acceptance_verified": 11,
     "acceptance_blocked_external": 10,
@@ -100,6 +100,6 @@
     "scenarios_in_progress": 2,
     "scenarios_open": 0,
     "release_ready": false,
-    "claim_boundary": "Build 7 is exact historical zero-narration evidence; its review was withdrawn and version 1.0 reads DEVELOPER_REJECTED. CoreDevice reads exact build 7 on the authorized iPad and the owner confirmed its real Three.js Twilight Garden. The current public source separately contains the owner-approved 84-track bilingual narration and approved English/German iPhone/iPad capture source. Owner-installed builds 13 and 14 are valid historical TestFlight binaries rejected as final products; build 14 still required a redundant selector before the meditation list. Current build-15 source places the searchable/filterable 42-practice library directly in the Guided tab and passes focused bilingual simulator flows. Build-15 archive/upload/physical/human audio, App Review, and storefront proof remain open. The refreshed Twilight website is locally rebuilt and validated against the current source; deployment readback remains separate. The byte-verified build-1 persistence fixture and selected-renderer soak remain separate evidence. No GitHub Actions workflow or run exists. The formal security workbench is owner-waived/skipped rather than passed."
+    "claim_boundary": "Exact narrated build 15 is archived, inspected, Apple VALID and APP_STORE_ELIGIBLE, installed as exact version 1.0 build 15 on the authorized iPad, attached to version 1.0 with corrected bilingual metadata and 24 checksum-matched screenshots, and submitted together with the one non-consumable Garden entitlement. Apple reads WAITING_FOR_REVIEW and AFTER_APPROVAL. Visible inline-library/audio listening, approval, and storefront proof remain open. Builds 7, 13, and 14 remain historical or rejected evidence. The refreshed Twilight website is locally rebuilt and validated against the current source; deployment readback remains separate. The byte-verified build-1 persistence fixture and selected-renderer soak remain separate evidence. No GitHub Actions workflow or run exists. The formal security workbench is owner-waived/skipped rather than passed."
   }
 }

@@ -1,6 +1,6 @@
 # Local App Store screenshot matrix
 
-Status: Submitted-build-7 Garden/growth set mechanically verified, visually approved, attached to version 1.0, and checksum-read back from App Store Connect. Post-publication Garden source is proven separately and is not represented as a recapture of these images.
+Status: Build-15 listing set mechanically verified, visually approved, attached to version 1.0, checksum-read back from App Store Connect, and submitted with the narrated candidate.
 
 ## Frozen output
 
@@ -22,7 +22,7 @@ The inputs are attachments from the guarded `ArriveWithinMarketingCaptureUITests
 
 The capture-source revision is `720deeed8719b680ebe4359e1f572565780cc1015ce4ab0d83cb530335bfb405`. The selected test wave ingested exactly five safe actual-UI states per locale/device set (20 attachments total): Garden hero, Garden seed, Journey calendar, Journey milestones, and Journal. It binds version 1.0 (6), the Garden-first full-canvas composition, the reduced Twilight fixed-fill lighting, the hardened local-only Journal/export behavior, and the zero-audio Practice behavior; it contains no guided-narration or CloudKit-convergence marketing state.
 
-The capture validator binds the retained images to their original source manifest and historical build-7 submission. After submission, the Garden and premium-style source intentionally changed visually. Build 7 and its 24 images were not relabeled as later-source evidence; the review was subsequently withdrawn and version 1.0 now reads `DEVELOPER_REJECTED`. A narrow deterministic freeze accepts only the fixed source digest and exact 28-path delta; unit controls reject a near-match digest, any extra path, another build, a softened mutation boundary, or a missing deferred action. The separate `READY_TO_SUBMIT` IAP was not attached to that submission. The current Garden and narrated library require fresh candidate-bound screenshot/readback proof before build 15 is submitted.
+The capture validator binds the current selected images to capture-source revision `c422692239d5f317c6ebb7e18b245826040245268c1bf9781bcb3c682e2588a1` and export tree `c1a6c543a699fc011b55aa7c58581c52fd53178c003287eb07331e95448b7f3b`. Before build-15 submission, the historical build-7 assets were replaced with exactly six numbered PNGs in each of the four locale/device sets. App Store Connect reads every asset `COMPLETE`, and all 24 live checksums match the owner-approved exports. The screenshots are listing media tied to the submitted product state; they are not represented as frames captured from the distribution archive itself.
 
 ## Deterministic export proof
 
@@ -40,4 +40,4 @@ The two non-shipping alternatives reuse only the retained Garden, Journey, and J
 
 The selected matrix uses Garden growth, Journey rhythm/milestones, and private reflection only. It makes no guided-narration or iCloud-convergence claim for the zero-audio candidate.
 
-All four current contact sheets and representative full-resolution images were inspected for clipping, English/German fit, actual-UI provenance, Garden prominence, and legibility. The second slide retains the owner-approved overlapping, tilted-device composition rather than presenting two bare screenshots. Every per-set and matrix human-review field reads `approved`. App Store Connect reads six `COMPLETE` assets in each of the four locale/device sets, and every live `sourceFileChecksum` matches its owner-approved numbered PNG. Exact build 7 is attached to the same submitted version 1.0 listing.
+All four current contact sheets and representative full-resolution images were inspected for clipping, English/German fit, actual-UI provenance, Garden prominence, and legibility. The second slide retains the owner-approved overlapping, tilted-device composition rather than presenting two bare screenshots. Every per-set and matrix human-review field reads `approved`. App Store Connect reads six `COMPLETE` assets in each of the four locale/device sets, every live `sourceFileChecksum` matches its owner-approved numbered PNG, and exact build 15 is attached to the same submitted version 1.0 listing.

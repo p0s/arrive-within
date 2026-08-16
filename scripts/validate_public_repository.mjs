@@ -402,7 +402,7 @@ async function main() {
   }
 
   const readme = await requireText("README.md");
-  check("readme-pre-release-truth", readme.includes("active pre-release verification") && readme.includes("does **not** claim App Store"), "README must keep release evidence bounded");
+  check("readme-pre-release-truth", readme.includes("`WAITING_FOR_REVIEW`") && readme.includes("does **not** claim App Store"), "README must keep submitted-but-not-live release evidence bounded");
   check("readme-public-repository", readme.includes(publicRepositoryURL), "README must document the exact canonical public repository");
   check("readme-root-check", readme.includes("./scripts/check"), "README must document the root gate");
   check("readme-media", readme.includes("01-growth-arrive-en-us-iphone-6.9-1320x2868.png") && readme.includes("02-growth-take-root-en-us-iphone-6.9-1320x2868.png") && readme.includes("garden-growth-v1.mp4"), "README must lead with two selected actual-app screenshots and retain the canonical garden film");

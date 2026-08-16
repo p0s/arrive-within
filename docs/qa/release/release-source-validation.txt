@@ -1,18 +1,15 @@
-status: passed-source-contract-selected-candidate-unbound
+status: passed-source-contract-selected-candidate-submitted
 release_ready: false
 source_contract_passed: true
-candidate_bound: false
-checks_passed: 120
+candidate_bound: true
+checks_passed: 121
 checks_failed: 0
-shipping_source_file_count: 69
-shipping_source_sha256: 03eb55935889b025d074d77ef9551e007ee0c7edca7f4c38c9e89f884cf6b87f
+shipping_source_file_count: 71
+shipping_source_sha256: cbc2e2a636a816a2168da66b655342f7b6f0de871b0648a73a4a6f3ec8d68ec5
 
 Remaining gates:
-- automated 84-track narration candidate library and exact package inspection
-- owner-deferred fluent bilingual, editorial, pronunciation, and rights review remains not passed
-- future CloudKit deletion protocol and exact-candidate two-device proof before reactivation
-- App Review approval, storefront availability, and storefront installation readback
-- remaining exact physical audio, performance, and assistive-technology matrices
-- future product pushes require a fresh tracked-tree and reachable-history privacy audit
+- Apple App Review approval and automatic release
+- public storefront availability and storefront installation readback after approval
+- independent exact build-15 physical iPad library and audio confirmation
 
-This deterministic source check validates the repository's exact build-7 release-train and completed public-repository readbacks but does not itself reproduce the frozen build-7 archive/IPA, live ASC or TestFlight state, physical-device observation, website deployment, App Review outcome, storefront, human audio/rights review, or the external GitHub readback.
+This deterministic source check validates the repository's exact submitted build-15 release binding and completed public-repository readbacks but does not itself reproduce the frozen archive/IPA, live ASC or TestFlight state, physical-device audio observation, Apple approval, storefront, or external GitHub readback.
