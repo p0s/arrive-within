@@ -378,7 +378,21 @@ record("release-train.repository-authority", releaseTrain.stages.slice(0, 12).ev
 record(
   "release-train.candidate-unbound",
   releaseTrain.candidate_manifest === null
-    && releaseTrain.status === "build-7-submitted-waiting-for-review-build-13-rejected-new-build-14-required"
+    && releaseTrain.status === "build-7-review-withdrawn-build-13-and-14-rejected-new-build-15-required"
+    && releaseTrain.replacement_candidate?.marketing_version === "1.0"
+    && releaseTrain.replacement_candidate?.build_number === 15
+    && releaseTrain.replacement_candidate?.apple_state === "not-uploaded"
+    && releaseTrain.replacement_candidate?.required_scope?.includes("inline-searchable-bilingual-guided-library")
+    && releaseTrain.replacement_candidate?.claim_boundary?.includes("no build-15 archive, upload, TestFlight, physical, review, or storefront claim")
+    && releaseTrain.narrated_update_preparation?.build13_testflight_readback?.build_number === 13
+    && releaseTrain.narrated_update_preparation?.build13_testflight_readback?.apple_processing === "VALID"
+    && releaseTrain.narrated_update_preparation?.build13_testflight_readback?.disposition === "rejected-owner-observed-incomplete-product"
+    && releaseTrain.narrated_update_preparation?.build14_testflight_readback?.build_number === 14
+    && releaseTrain.narrated_update_preparation?.build14_testflight_readback?.apple_processing === "VALID"
+    && releaseTrain.narrated_update_preparation?.build14_testflight_readback?.disposition === "rejected-owner-observed-selector-first-ui"
+    && releaseTrain.stages[8].status === "historical-build-7-review-withdrawn-build-15-not-submitted"
+    && releaseTrain.stages[8].readback?.includes("DEVELOPER_REJECTED")
+    && releaseTrain.stages[8].readback?.includes("No narrated build is submitted to App Review")
     && releaseTrain.baseline_internal_testflight?.build_number === 1
     && releaseTrain.baseline_internal_testflight?.apple_processing === "VALID"
     && releaseTrain.baseline_internal_testflight?.internal_distribution === "IN_BETA_TESTING"
@@ -429,7 +443,7 @@ record(
     && releaseTrain.renderer_replacement_lane?.notice_complete_replacement_candidate?.physical_runtime_readback?.includes("owner directly confirmed its real Three.js Twilight Garden is good")
     && releaseTrain.renderer_replacement_lane?.notice_complete_replacement_candidate?.distribution_state === "apple-valid-app-store-eligible-in-beta-testing-physical-ipad-owner-verified"
     && releaseTrain.renderer_replacement_lane?.notice_complete_replacement_candidate?.media_boundary?.includes("zero packaged guided narration tracks"),
-  "verified builds 1 through 7 and the submitted build-7 review state must remain exact while the narration-complete update is unbound",
+  "verified builds 1 through 7, the withdrawn build-7 review, rejected narrated builds 13/14, and the unbound build-15 replacement must remain exact",
 );
 
 record(

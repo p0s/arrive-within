@@ -103,38 +103,6 @@ private struct PracticeChooserView: View {
             .fixedSize(horizontal: false, vertical: true)
         }
 
-        if !model.guidedPractices.isEmpty {
-          NavigationLink {
-            GuidedLibraryView(model: model)
-          } label: {
-            VStack(alignment: .leading, spacing: AppTheme.Spacing.standard) {
-              HStack {
-                Label("guided.library.browse", systemImage: "waveform")
-                  .font(.headline)
-                  .fixedSize(horizontal: false, vertical: true)
-                Spacer(minLength: AppTheme.Spacing.compact)
-                Text(
-                  String(
-                    format: AppLocalization.string("guided.catalog.count.format", locale: locale),
-                    locale: locale,
-                    model.guidedPractices.count
-                  )
-                )
-                .font(.body.weight(.semibold))
-                .fixedSize(horizontal: false, vertical: true)
-              }
-              Text("guided.library.detail")
-                .font(.body)
-                .accessibleSecondaryText()
-                .fixedSize(horizontal: false, vertical: true)
-            }
-          }
-          .buttonStyle(.plain)
-          .quietCard()
-          .accessibilityIdentifier("guided.library.open")
-          .accessibilityHint(Text("guided.library.detail"))
-        }
-
         if dynamicTypeSize.isAccessibilitySize {
           modePicker
             .pickerStyle(.menu)
@@ -144,13 +112,23 @@ private struct PracticeChooserView: View {
             .pickerStyle(.segmented)
         }
 
-        ModePortrait(mode: selectedMode)
+        if selectedMode != .guided {
+          ModePortrait(mode: selectedMode)
+        }
 
         if let audioNotice = model.audioNotice {
           AudioNoticeView(notice: audioNotice)
         }
 
-        if selectedMode == .timer {
+        if selectedMode == .guided {
+          if model.guidedPractices.isEmpty {
+            Label("guided.catalog.unavailable", systemImage: "exclamationmark.triangle")
+              .accessibleSecondaryText()
+              .quietCard()
+          } else {
+            GuidedLibraryInlineView(model: model)
+          }
+        } else if selectedMode == .timer {
           VStack(alignment: .leading, spacing: AppTheme.Spacing.generous) {
             Text("practice.duration")
               .font(.headline)

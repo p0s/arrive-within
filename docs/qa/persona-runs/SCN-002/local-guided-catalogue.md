@@ -6,7 +6,7 @@ Product tree: current uncommitted local source; Git lineage does not exist and i
 
 ## Outcome
 
-The app loads one typed, versioned catalogue containing exactly G01–G42 with English/German parity. The rendered guided library exposes visible search, category, duration, and favorites filters; opens a localized detail view; persists favorites; and refuses to start guided playback while approved local narration is absent. No missing media is represented as available.
+The app loads one typed, versioned catalogue containing exactly G01–G42 with English/German parity. Selecting Guided renders the searchable, filterable 42-practice list directly in the lower Meditate surface without a separate library selector. Each row opens the localized detail view, favorites persist, and guided playback still refuses to start while approved local narration is absent. No missing media is represented as available.
 
 All 42 concepts now have complete English and German draft scripts. The 84 source files pass metadata, literal-source, safety, placeholder, and duration-based word-bound validation. Draft status is not fluent editorial, safety-editor, narration, or listening approval.
 

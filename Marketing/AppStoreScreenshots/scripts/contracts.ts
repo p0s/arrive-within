@@ -90,7 +90,7 @@ export type SourceCaptures = {
     reviewed_on: string;
     notes: string;
   };
-  post_capture_change?: import("./capture-drift-policy").SubmittedBuildCaptureFreeze;
+  post_capture_change?: import("./capture-drift-policy").HistoricalCaptureRetention;
   result_bundles: Array<{
     device: DeviceId;
     name: string;

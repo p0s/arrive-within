@@ -14,8 +14,8 @@
     "notes": "English and German iPhone and iPad contact sheets plus representative full-resolution comparisons were inspected after the current-source recapture: all slides retain one headline, a tight headline-to-product gap, unclipped legible real app UI, and the purposeful overlapping framed comparison."
   },
   "post_capture_change": {
-    "classification": "submitted-build-7-post-submission-source-changes",
-    "current_source_revision": "674f0947819b0dcef5070dfaf591bf987f0c302c60cd79c512d4eb81e5400c5d",
+    "classification": "build-7-withdrawn-build-15-capture-retention",
+    "current_source_revision": "75031c7ee16fdf7f7463cfe943b573b0ba785af1051027296e32dd2c345d8bdf",
     "changed_paths": [
       "Apps/ArriveWithin/Resources/de.lproj/Localizable.strings",
       "Apps/ArriveWithin/Resources/en.lproj/Localizable.strings",
@@ -28,14 +28,15 @@
       "Config/Base.xcconfig",
       "project.yml"
     ],
-    "submitted_version": "1.0",
-    "submitted_build": 7,
-    "submitted_state_at_freeze": "WAITING_FOR_REVIEW",
-    "valid_until": "next-editable-app-store-metadata-opportunity",
-    "submitted_listing_mutation": "none",
+    "historical_submitted_version": "1.0",
+    "historical_submitted_build": 7,
+    "historical_review_state": "DEVELOPER_REJECTED_AFTER_WITHDRAWAL",
+    "replacement_candidate_build": 15,
+    "valid_until": "build-15-candidate-bound-capture",
+    "listing_mutation": "review-withdrawn-existing-live-images-retained",
     "separate_iap_state": "READY_TO_SUBMIT_NOT_ATTACHED",
-    "next_action": "recapture-and-review-at-next-editable-metadata-opportunity",
-    "rationale": "Exact build 7 was already WAITING_FOR_REVIEW and must not be replaced, cancelled, edited, or resubmitted. The post-submission Garden and timer audio correction are deliberately not represented by the submitted App Store screenshots. The Guided availability, browse navigation, and hash-bound playback fix changes only supplemental non-marketing Guided captures; the required Garden, Journey, and Journal capture IDs remain unchanged. The submitted App Store listing and screenshots remained untouched. The READY_TO_SUBMIT IAP is separate and not attached, and fresh captures are required at the next editable metadata opportunity."
+    "next_action": "candidate-bind-and-read-back-before-build-15-submission",
+    "rationale": "The build 7 review was withdrawn and version 1.0 now reads DEVELOPER_REJECTED. Its historical live screenshots are not build-15 evidence. The Guided catalogue now renders inline, while the required Garden, Journey, and Journal capture IDs remain unchanged. The approved current-source captures must be candidate-bound and read back before build 15 is submitted. The READY_TO_SUBMIT IAP is separate and not attached. No build-15 archive, upload, physical, review, or storefront claim exists."
   },
   "result_bundles": [
     {
