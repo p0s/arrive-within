@@ -6,9 +6,9 @@ Status: implemented and configured for TestFlight sandbox purchase validation
 
 Twilight remains the complete free Garden. One optional non-consumable purchase unlocks four presentation styles together from a USD 4.99 base price: Hand-drawn, Stop-motion, Crochet (`Gehäkelt` in German), and Claymation. This is not a subscription and never buys progress, milestones, wildlife, time phases, or a stronger Garden.
 
-The App Store Connect product identifier is `com.philipps.arrivewithin.garden.materialstyles` (ASC ID `6801014376`). The non-consumable is `READY_TO_SUBMIT`, has English and German storefront metadata, a completed native review screenshot, a USD 4.99 base price, and availability in all 175 current territories plus future territories. `Config/PremiumGardenStyles.storekit` mirrors the live product for deterministic local testing.
+The App Store Connect product identifier is `com.philipps.arrivewithin.garden.materialstyles` (ASC ID `6801014376`). The non-consumable is `WAITING_FOR_REVIEW` with version 1.0 build 15, has English and German storefront metadata, a completed native review screenshot, a USD 4.99 base price, and availability in all 175 current territories plus future territories. `Config/PremiumGardenStyles.storekit` mirrors the live product for deterministic local testing.
 
-The product is deliberately not attached to the existing App Store version 1.0 submission while that version remains in review. It can be exercised through StoreKit sandbox in the premium Garden TestFlight build; public storefront sale still requires a later app-version submission containing this implementation and the IAP version.
+The product and version 1.0 are the exact two items in App Review submission `9cb4ed98-7a4e-41da-8cf4-41b1bec16a11`. Public storefront sale remains blocked on Apple approval and automatic release of that submission.
 
 ## Visual thesis
 

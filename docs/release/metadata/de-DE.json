@@ -1,16 +1,17 @@
 {
   "schema_version": 1,
   "locale": "de-DE",
-  "state": "draft-unbound",
-  "release_attachable": false,
+  "state": "build-15-live-metadata",
+  "release_attachable": true,
   "name": "Arrive Within: Meditation",
   "subtitle": "Meditation, die wächst",
   "promotional_text": "Meditiere auf deine Art und kehre in einen lebendigen Garten zurück, der jede abgeschlossene Meditation ehrlich sichtbar macht.",
   "description_paragraphs": [
-    "Arrive Within ist ein privater, offline nutzbarer Meditationsgarten. Beginne mit einem verlässlichen Timer oder einer offenen Stoppuhr. Jede qualifizierende Meditation lässt einen lebendigen Baum und seine Umgebung dauerhaft wachsen.",
-    "Wähle einen flexiblen Timer oder eine offene Stoppuhr – mit optionalen Glocken, ruhiger Atmosphäre, Haptik und zuverlässiger Wiederherstellung nach Unterbrechung oder Neustart.",
+    "Arrive Within ist ein privater, offline nutzbarer Meditationsgarten. Wähle aus 42 geführten Meditationen auf Englisch und Deutsch, einem flexiblen Timer oder einer offenen Stoppuhr. Jede qualifizierende Meditation lässt einen lebendigen Baum und seine Umgebung dauerhaft wachsen.",
+    "Geführte Sitzungen und Transkripte sind in der App enthalten, sodass das Kernerlebnis ohne Netzwerkverbindung funktioniert. Optionale Glocken, ruhige Atmosphäre, Haptik und zuverlässige Wiederherstellung helfen dir, nach Unterbrechung oder Neustart zurückzukehren.",
     "Halte optional einen privaten Gedanken als Text oder Sprachaufnahme fest, sieh dir deinen Weg und einfache Statistiken an, erstelle ruhige lokale Erinnerungen und exportiere jederzeit auf Wunsch eine lesbare Kopie deiner Daten.",
-    "Deine Privatsphäre bleibt deine. Arrive Within erfasst keine Nutzerdaten. Es gibt keine Werbung, Analysen, Nachverfolgung, Abos, Käufe, Konten, Cloud-Synchronisierung oder sozialen Vergleiche. Praxis, Einstellungen, Fortschritt und Journal bleiben auf deinem Gerät, sofern du sie nicht ausdrücklich über Apples Teilen-Funktion exportierst. Pausentage nehmen dir nichts. Deine Einträge werden niemals analysiert.",
+    "Deine Privatsphäre bleibt deine. Arrive Within erfasst keine Nutzerdaten. Es gibt keine Werbung, Analysen, Nachverfolgung, Abos, Konten, Cloud-Synchronisierung oder sozialen Vergleiche. Praxis, Einstellungen, Fortschritt und Journal bleiben auf deinem Gerät, sofern du sie nicht ausdrücklich über Apples systemeigene Teilen-Funktion exportierst. Deine Einträge werden niemals analysiert.",
+    "Twilight ist der vollständige kostenlose Garten. Ein optionaler einmaliger Kauf schaltet vier weitere visuelle Materialstile frei; Fortschritt, Meditationen und Inhalte bleiben unverändert.",
     "Arrive Within ist Open Source. Entdecke das Projekt und wirke mit unter https://github.com/p0s/arrive-within."
   ],
   "keywords": "meditation,achtsamkeit,timer,stoppuhr,atem,entspannung,fokus,schlaf,tagebuch,offline",
@@ -25,10 +26,10 @@
     "Ein Ort, der sich erinnert"
   ],
   "tester_instructions": "Beginne mit einer Neuinstallation. Starte auf dem ersten Bildschirm die dreiminütige Timer-Praxis, schließe sie ab, bestätige genau eine dauerhafte Gartenveränderung und starte die App neu. Prüfe danach Timer, Stoppuhr, Renderer-Ersatzansicht, Journal, Weg, Einstellungen, den Sprachwechsel und Offline-Verhalten. Verwende keine persönlichen Journalinhalte.",
-  "review_notes": "Diese kostenlose App funktioniert ohne Konto. Der primäre Prüfpfad beginnt auf dem ersten Bildschirm mit einer dreiminütigen Timer-Praxis. Timer, Stoppuhr, Journal, Weg und Einstellungen sind über native Navigation erreichbar. Geführte Narration gehört nicht zu dieser Version; es sind keine Narrationsdateien enthalten. Aktivitätseinstellungen und Fortschritt werden ausschließlich lokal auf dem Gerät gespeichert. Die App enthält weder Analyse- noch Werbe-SDKs und nutzt keine Drittanbieter-Analyse, Nachverfolgung, Konten, eigenes Backend oder Cloud-Synchronisierung. Es werden keine Daten automatisch an uns oder Dritte weitergegeben. Lokale Daten können ausdrücklich über Apples Teilen-Funktion exportiert werden. Die App erfasst weder Namen, E-Mail-Adressen, Standort, Fotos, Audio, Werbekennungen noch andere Personen- oder Gerätedaten. Es gibt weder Käufe noch Abos. Exakte Kandidaten-IDs und Nachweise werden erst beim Einfrieren des unveränderlichen Release-Manifests gebunden.",
+  "review_notes": "Arrive Within funktioniert ohne Konto. Primärer Prüfpfad: Öffne Meditieren > Geführt; die vollständige durchsuchbare Liste mit 42 Meditationen ist direkt sichtbar. Öffne G01 Ankommender Atem, tippe auf Start und prüfe die enthaltene Offline-Narration und den Player. Timer, Stoppuhr, Journal, Weg und Einstellungen sind über native Navigation erreichbar. Der vollständige Twilight-Garten ist kostenlos. Einstellungen > Gartenstile bietet einen optionalen nicht verbrauchbaren Kauf, Premium-Gartenstile, der vier visuelle Stile gemeinsam freischaltet; Käufe wiederherstellen ist vorhanden. Meditationen und Fortschritt bleiben unverändert, und es gibt kein Abo. Datenschutz: Die App enthält weder Analyse- noch Werbe-SDKs und nutzt keine Drittanbieter-Analyse, Nachverfolgung, Konten, eigenes Backend oder Cloud-Synchronisierung. Es werden keine Daten automatisch an den Entwickler oder Dritte weitergegeben. Praxis, Einstellungen, Fortschritt, Journaltext und optionale Sprachreflexionen bleiben auf dem Gerät, sofern sie nicht ausdrücklich über Apples Teilen-Funktion exportiert werden. Die App erfasst weder Namen, E-Mail-Adressen, Standort, Fotos, Audio, Werbekennungen noch andere Personen- oder Gerätedaten.",
   "claim_dependencies": [
-    "ehrliche Timer-und-Stoppuhr-Version ohne enthaltene Narration",
+    "exaktes Build-15-Paket mit 42 englischen und 42 deutschen Narrationsdateien",
     "exakter lokaler Kandidat ohne CloudKit-Laufzeit oder Signaturberechtigung",
-    "unveränderliches Kandidatenmanifest und exakte Prüfhinweise"
+    "ein optionaler nicht verbrauchbarer Gartenstil-Kauf und kein Abo"
   ]
 }

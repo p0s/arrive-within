@@ -20,11 +20,11 @@ One uninterrupted `./scripts/goal` completed with the pinned Node 26.7.0 and pnp
 - Marketing: exact 24-image 6×2×2 matrix; two byte-identical 47-artifact exports.
 - Public media: 52/52 checks for truthful six-stage growth video/poster/social/contact-sheet output.
 - Website: 8 routes, 24 route/viewport cases, 6/6 video loads/seeks, zero external requests; deterministic build `1d45b3f9…`.
-- Release source: 121/121 source checks across 69 shipping files; the reusable source validator remains deliberately unbound while exact build-7 archive/IPA and external release evidence are recorded separately.
+- Release source: 121/121 source checks across 69 shipping files at the pre-archive freeze; the release contract is now separately bound to submitted build 15.
 - Build: one unsigned universal iOS Simulator Release build passed.
 
 ## Claim boundary
 
-This is the current local source gate. Separately, the inspected build-7 archive/IPA, Apple VALID/eligible/internal-beta state, exact authorized-iPad install and owner Garden confirmation, and 24 matched historical screenshot checksums remain external evidence; its review was later withdrawn and version 1.0 now reads `DEVELOPER_REJECTED`. Narrated builds 13 and 14 are valid historical TestFlight binaries rejected by the owner. Current build-15 source is not yet an archive, upload, physical-audio/library proof, App Review submission, approval, or storefront result. The formal Codex Security workbench remains owner-waived/skipped. English F2 and German C2 remain the selected production directions; F1 remains rejected-but-good provenance.
+This is the final pre-archive local source gate. Separately, exact build 15 is bound to signed source commit `ebe073c26c58fdc32912d96ad30cd7833659f027`, inspected archive/IPA evidence, an Apple `VALID` and `APP_STORE_ELIGIBLE` build, exact version 1.0 build 15 installed on the authorized iPad, corrected bilingual metadata, 24 checksum-matched screenshots, and a two-item submission that reads `WAITING_FOR_REVIEW`. Visible inline-library/audio listening, Apple approval, and storefront availability remain unverified. Builds 7, 13, and 14 remain historical or rejected evidence. The formal Codex Security workbench remains owner-waived/skipped. English F2 and German C2 remain the selected production directions; F1 remains rejected-but-good provenance.
 
 The exact approved capture boundary is separately stronger than the local gate: both English/German methods passed on the pooled iPhone simulator and authorized physical iPad, the physical images show the real Three.js Garden with no native fallback, and all 24 approved image checksums now match App Store Connect. Exact build 7 is installed on the authorized iPad and the owner confirmed its Garden is good.
