@@ -16,6 +16,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from narration_pause_contract import (
+    MINIMUM_SPOKEN_CUE_SECONDS,
+    extract_bounded_natural_prosody_pauses,
+    resolve_bounded_natural_prosody_pauses,
+    scan_internal_cue_silence,
+)
+
 
 ROOT = Path(__file__).resolve().parent.parent
 GENERATOR_PATH = ROOT / "ContentProduction/chatterbox-audition/generate_production_candidates.py"
@@ -297,6 +304,19 @@ def expected_segments(
     return expected
 
 
+def segment_seed_matches(segment: dict[str, Any], base_seed: int) -> bool:
+    """Validate a canonical seed or a provenance-bound bounded EOS retry."""
+    attempt = segment.get("generationAttempt", 0)
+    recorded_base = segment.get("baseSeed", base_seed)
+    if not isinstance(attempt, int) or recorded_base != base_seed:
+        return False
+    try:
+        resolved_seed = production.generation_attempt_seed(base_seed, attempt)
+    except ValueError:
+        return False
+    return segment.get("seed") == resolved_seed
+
+
 def validate_track(
     practice: dict[str, Any],
     language: str,
@@ -353,6 +373,9 @@ def validate_track(
         or assembly.get("sampleRate") != 24000
         or assembly.get("channels") != 1
         or assembly.get("dropoutAttention") is not False
+        or assembly.get("syntheticIntraSentenceSilence") is not False
+        or assembly.get("internalSilenceMaximumSeconds")
+        != INTERNAL_SILENCE_MAXIMUM_SECONDS
     ):
         raise ValidationFailure(f"{identifier}/{language}: invalid assembly evidence")
 
@@ -413,11 +436,38 @@ def validate_track(
         require_close(measured["truePeakDBTP"], float(recorded["truePeakDBTP"]), 0.11, f"{role} peak")
 
     cues = parse_vtt(resolved_files["transcript"])
+    segments_for_pause_scan = manifest.get("segments", [])
+    if len(segments_for_pause_scan) != len(cues):
+        raise ValidationFailure(f"{identifier}/{language}: segment/VTT cue count mismatch")
+    try:
+        allowed_internal_pauses = resolve_bounded_natural_prosody_pauses(
+            cues,
+            extract_bounded_natural_prosody_pauses(segments_for_pause_scan),
+        )
+    except ValueError as error:
+        raise ValidationFailure(f"{identifier}/{language}: {error}") from error
+    silence_findings = scan_internal_cue_silence(
+        resolved_files["delivery"],
+        cues,
+        ffmpeg=ffmpeg,
+        allowed_internal_pauses=allowed_internal_pauses,
+    )
+    if silence_findings:
+        first = silence_findings[0]
+        raise ValidationFailure(
+            f"{identifier}/{language}: unresolved internal blank in cue "
+            f"{first['cueIndex']} ({first['durationSeconds']:.3f}s)"
+        )
     recorded_cues = manifest.get("cues", [])
     if len(cues) != len(recorded_cues):
         raise ValidationFailure(f"{identifier}/{language}: VTT cue count mismatch")
     previous_end = 0.0
-    for cue, recorded in zip(cues, recorded_cues, strict=True):
+    for cue_index, (cue, recorded) in enumerate(zip(cues, recorded_cues, strict=True), start=1):
+        if cue["endSeconds"] - cue["startSeconds"] < MINIMUM_SPOKEN_CUE_SECONDS:
+            raise ValidationFailure(
+                f"{identifier}/{language}: spoken cue {cue_index} "
+                f"is only {cue['endSeconds'] - cue['startSeconds']:.3f}s"
+            )
         require_close(cue["startSeconds"], float(recorded["startSeconds"]), 0.0006, "cue start")
         require_close(cue["endSeconds"], float(recorded["endSeconds"]), 0.0006, "cue end")
         if cue["text"] != recorded["text"] or production.text_sha256(cue["text"]) != recorded["textSHA256"]:
@@ -486,6 +536,25 @@ def validate_track(
             )
         )
     segments = manifest.get("segments", [])
+    if environment_revision in {
+        production.GENERATION_SEMANTICS_REVISION,
+        production.MLX_AUDIO_SEMANTICS_REVISION,
+    }:
+        sentence_indices = [
+            event.sentence_index
+            for event in events
+            if isinstance(event, production.SentenceEvent)
+        ]
+        if (
+            [segment.get("sentenceIndex") for segment in segments]
+            != sentence_indices
+            or any(segment.get("unitIndex") != 0 for segment in segments)
+            or any(segment.get("internalSemanticPauses") not in (None, []) for segment in segments)
+        ):
+            raise ValidationFailure(
+                f"{identifier}/{language}: narration must use exactly one "
+                "unstitched generation call per authored sentence"
+            )
     expected = next(
         (
             option
@@ -503,6 +572,8 @@ def validate_track(
                         if key == "generationTextSHA256"
                         else True
                         if key == "generationTextSHA256Alternatives"
+                        else segment_seed_matches(segment, int(value))
+                        if key == "seed"
                         else segment.get(key) == value
                     )
                     for key, value in locked.items()
@@ -517,6 +588,12 @@ def validate_track(
     for segment, locked in zip(segments, expected, strict=True):
         for key, value in locked.items():
             if key == "generationTextSHA256Alternatives":
+                continue
+            if key == "seed":
+                if not segment_seed_matches(segment, int(value)):
+                    raise ValidationFailure(
+                        f"{identifier}/{language}: segment mismatch for seed"
+                    )
                 continue
             if key == "generationTextSHA256":
                 allowed = {value, *locked.get("generationTextSHA256Alternatives", [])}
@@ -535,7 +612,9 @@ def validate_track(
         raise ValidationFailure(f"{identifier}/{language}: invalid assembly totals")
     require_close(word_count / speech_seconds * 60, float(assembly["speechOnlyWordsPerMinute"]), 0.011, "speech WPM")
     require_close(word_count / duration * 60, float(assembly["overallWordsPerMinute"]), 0.011, "overall WPM")
-    wpm_minimum, wpm_maximum = direction["speechOnlyWPMRange"]
+    wpm_minimum, wpm_maximum = production.no_synthetic_speech_only_wpm_range(
+        plan, language
+    )
     wpm_tolerance = float(plan["generation"]["aggregateSpeechWPMTolerance"])
     if not wpm_minimum - wpm_tolerance <= float(
         assembly["speechOnlyWordsPerMinute"]

@@ -13,6 +13,12 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from narration_pause_contract import (
+    INTERNAL_SILENCE_MAXIMUM_SECONDS,
+    resolve_bounded_natural_prosody_pauses,
+    scan_internal_cue_silence,
+)
+
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 CATALOG_PATH = PROJECT_ROOT / "Content/guided/catalog.json"
@@ -201,7 +207,7 @@ def validate_sources(
     return {"totalWords": total_words, "scriptSHA256": script_hashes}
 
 
-def parse_vtt(path: Path) -> float:
+def parse_vtt_cues(path: Path) -> list[dict[str, Any]]:
     try:
         lines = path.read_text(encoding="utf-8").splitlines()
     except FileNotFoundError as error:
@@ -212,21 +218,107 @@ def parse_vtt(path: Path) -> float:
         r"^(\d{2}):(\d{2}):(\d{2})\.(\d{3}) --> (\d{2}):(\d{2}):(\d{2})\.(\d{3})$"
     )
     previous_end = 0.0
-    cue_count = 0
-    for line in lines:
-        match = cue_pattern.match(line.strip())
-        if not match:
-            continue
+    cues: list[dict[str, Any]] = []
+    blocks: list[list[str]] = []
+    current_block: list[str] = []
+    for line in lines[1:]:
+        if line.strip():
+            current_block.append(line)
+        elif current_block:
+            blocks.append(current_block)
+            current_block = []
+    if current_block:
+        blocks.append(current_block)
+
+    for block in blocks:
+        timestamp_index = 0
+        match = cue_pattern.match(block[timestamp_index].strip())
+        if match is None and len(block) > 1:
+            timestamp_index = 1
+            match = cue_pattern.match(block[timestamp_index].strip())
+        if match is None:
+            raise ValidationFailure(
+                f"{path.relative_to(PROJECT_ROOT)}: invalid cue block"
+            )
+        text_lines = [line.strip() for line in block[timestamp_index + 1 :] if line.strip()]
+        if not text_lines:
+            raise ValidationFailure(f"{path.relative_to(PROJECT_ROOT)}: cue text is required")
         numbers = [int(value) for value in match.groups()]
         start = numbers[0] * 3600 + numbers[1] * 60 + numbers[2] + numbers[3] / 1000
         end = numbers[4] * 3600 + numbers[5] * 60 + numbers[6] + numbers[7] / 1000
         if start < previous_end or end <= start:
             raise ValidationFailure(f"{path.relative_to(PROJECT_ROOT)}: overlapping/invalid cue")
         previous_end = end
-        cue_count += 1
-    if cue_count == 0:
+        cues.append(
+            {
+                "startSeconds": start,
+                "endSeconds": end,
+                "text": " ".join(text_lines),
+            }
+        )
+    if not cues:
         raise ValidationFailure(f"{path.relative_to(PROJECT_ROOT)}: no timestamped cues")
-    return previous_end
+    return cues
+
+
+def parse_vtt(path: Path) -> float:
+    """Return the final cue end for legacy duration checks."""
+
+    cues = parse_vtt_cues(path)
+    return float(cues[-1]["endSeconds"])
+
+
+def validate_audio_pause_contract(
+    document: dict[str, Any], selected_identifiers: set[str] | None = None
+) -> dict[str, Any]:
+    """Fail closed on near-digital silence wholly inside any spoken VTT cue."""
+
+    tracks = 0
+    cues_scanned = 0
+    for practice in document["practices"]:
+        identifier = practice["id"]
+        if selected_identifiers is not None and identifier not in selected_identifiers:
+            continue
+        for language in LANGUAGES:
+            localized = practice["localized"][language]
+            audio_path = PROJECT_ROOT / localized["audioPath"]
+            transcript_path = PROJECT_ROOT / localized["transcriptPath"]
+            cues = parse_vtt_cues(transcript_path)
+            provenance_path = audio_path.with_name(f"provenance.{language}.json")
+            provenance = load_json(provenance_path)
+            if (
+                provenance.get("audioSHA256") != sha256(audio_path)
+                or provenance.get("transcriptSHA256") != sha256(transcript_path)
+            ):
+                raise ValidationFailure(
+                    f"{identifier}/{language}: pause provenance is not bound to shipping media"
+                )
+            try:
+                allowed_internal_pauses = resolve_bounded_natural_prosody_pauses(
+                    cues,
+                    provenance.get("boundedNaturalProsodyPauses", []),
+                )
+                findings = scan_internal_cue_silence(
+                    audio_path,
+                    cues,
+                    allowed_internal_pauses=allowed_internal_pauses,
+                )
+            except (RuntimeError, ValueError) as error:
+                raise ValidationFailure(str(error)) from error
+            if findings:
+                first = findings[0]
+                raise ValidationFailure(
+                    f"{identifier}/{language}: unresolved internal blank in VTT cue "
+                    f"{first['cueIndex']} ({first['durationSeconds']:.3f}s)"
+                )
+            tracks += 1
+            cues_scanned += len(cues)
+    return {
+        "tracks": tracks,
+        "cuesScanned": cues_scanned,
+        "maximumInternalSilenceSeconds": INTERNAL_SILENCE_MAXIMUM_SECONDS,
+        "status": "passed",
+    }
 
 
 def probe_audio(path: Path) -> dict[str, Any]:
@@ -390,6 +482,7 @@ def main() -> int:
             report["validatedPracticeCount"] = (
                 len(selected) if selected is not None else len(document["practices"])
             )
+            report["audioPauseContract"] = validate_audio_pause_contract(document, selected)
         if arguments.mode == "owner-deferred-candidate":
             report.update(validate_owner_deferred_candidate(document, report))
         if arguments.mode == "device-candidate":

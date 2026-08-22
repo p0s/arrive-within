@@ -1,13 +1,14 @@
 {
-  "audioSHA256": "9ca33fd17bfc1909931cc5a97e1779a55b43cff5abaeebd5915998f2d5cad70e",
+  "audioSHA256": "223ba2d57880410d3fa46ef6ac1534a85e12f33793f2e6356c96df87b3392e25",
   "automatedObjectiveState": "passed",
+  "boundedNaturalProsodyPauses": [],
   "claimBoundary": "Human-approved narration device candidate; TestFlight physical-device audio and finished-library approval remain pending.",
   "contentID": "G40",
-  "deliveryBitrateBPS": 64003,
+  "deliveryBitrateBPS": 64004,
   "durationSeconds": 720.0,
   "finishedLibraryApproval": false,
   "finishedTrackApproval": true,
-  "generationScriptSHA256": "fab4f56f20ca3980c0941d487b7fec3ac783535e8ae99914a01ff29948d0d933",
+  "generationScriptSHA256": "6f5a74723c4ffdb061b79e14b1e8c522a287e8c2afb9f762a0b2627cc36ef9ff",
   "humanListeningState": "approved",
   "integratedLUFS": -19.56,
   "language": "de",
@@ -19,12 +20,12 @@
   },
   "physicalDeviceAudioState": "pending-testflight-review",
   "productionDirection": "de-c2-accent-stability",
-  "productionManifestSHA256": "249311e893ba5ca374f7538cb4af6aaf844c40d7f3fac5843e21d28c98f44860",
+  "productionManifestSHA256": "d537beb9963b5c923f3b1a7764ce8ebc0f1c2ca2f71f2d4804132ec74a054325",
   "productionMasterApproval": true,
-  "productionVersion": "chatterbox-production-candidates-v2",
+  "productionVersion": "chatterbox-production-candidates-v4-whole-utterance",
   "referenceVoiceUsed": false,
-  "reviewPacketManifestSHA256": "1374d21aab570163b29f55540b5f45e2b835e5967078796cff63a4d1031376d2",
-  "reviewRecordSHA256": "420b94186aabac381924902a8fba8573bd548235fcc19592f0e1b954acad6fa3",
+  "reviewPacketManifestSHA256": "34929c585a65e73f69a39925a332196be605aa6bd744d34788b9c22b636ffa79",
+  "reviewRecordSHA256": "0a66d033f3da564e9ccd05a9d60a1268a4d6a9378e10713a55da695d9059d725",
   "rightsState": "approved",
   "runtimeNetworkUsed": false,
   "schemaVersion": 1,
@@ -39,6 +40,6 @@
     "repository": "https://github.com/resemble-ai/chatterbox"
   },
   "transcriptAlignmentState": "approved",
-  "transcriptSHA256": "3df533abebbd9360cfd51d0bf76bbd5b55267924685b63b18fadda307993df8b",
-  "truePeakDBTP": -1.79
+  "transcriptSHA256": "f437c1210436ffee7d4609a48ef0ebb5dcaae654264e11dbd848ad5eef398f2f",
+  "truePeakDBTP": -2.08
 }

@@ -1,15 +1,24 @@
 {
-  "audioSHA256": "5731ef4ad1a02968ec5ad1a18e1c53795d0e154cec82771b733eb461107dc1a7",
+  "audioSHA256": "db9be63eac13497eff22c088d99f51c12e203a8c0d62eb4590804916a8fe9dc4",
   "automatedObjectiveState": "passed",
+  "boundedNaturalProsodyPauses": [
+    {
+      "cueIndex": 31,
+      "durationSeconds": 0.48,
+      "endSeconds": 3.91,
+      "method": "bounded-model-prosody-owner-listening-required",
+      "startSeconds": 3.43
+    }
+  ],
   "claimBoundary": "Human-approved narration device candidate; TestFlight physical-device audio and finished-library approval remain pending.",
   "contentID": "G12",
   "deliveryBitrateBPS": 64003,
-  "durationSeconds": 600.022,
+  "durationSeconds": 600.021,
   "finishedLibraryApproval": false,
   "finishedTrackApproval": true,
-  "generationScriptSHA256": "7f1cb21a9e4bf43f6a362f2988d66795cff4e3cb8ae822a731a75f342d083f79",
+  "generationScriptSHA256": "876bc27b7bb0f9c8463cec42f9275432e611607450240aef96ad83cf32bab97f",
   "humanListeningState": "approved",
-  "integratedLUFS": -19.05,
+  "integratedLUFS": -19.55,
   "language": "en",
   "model": {
     "germanT3Model": "t3_mtl23ls_v3.safetensors",
@@ -19,12 +28,12 @@
   },
   "physicalDeviceAudioState": "pending-testflight-review",
   "productionDirection": "en-f2-spacious-slow",
-  "productionManifestSHA256": "102360893b4accfe185ba05de484b57b362b5f9105bf885f22b12221f5fff964",
+  "productionManifestSHA256": "b052dae514b4e40a8a021e1a162fe67a661c62587585a5093ee7554d6222e419",
   "productionMasterApproval": true,
-  "productionVersion": "chatterbox-production-candidates-v2",
+  "productionVersion": "chatterbox-production-candidates-v4-whole-utterance",
   "referenceVoiceUsed": false,
-  "reviewPacketManifestSHA256": "1374d21aab570163b29f55540b5f45e2b835e5967078796cff63a4d1031376d2",
-  "reviewRecordSHA256": "420b94186aabac381924902a8fba8573bd548235fcc19592f0e1b954acad6fa3",
+  "reviewPacketManifestSHA256": "34929c585a65e73f69a39925a332196be605aa6bd744d34788b9c22b636ffa79",
+  "reviewRecordSHA256": "0a66d033f3da564e9ccd05a9d60a1268a4d6a9378e10713a55da695d9059d725",
   "rightsState": "approved",
   "runtimeNetworkUsed": false,
   "schemaVersion": 1,
@@ -39,6 +48,6 @@
     "repository": "https://github.com/resemble-ai/chatterbox"
   },
   "transcriptAlignmentState": "approved",
-  "transcriptSHA256": "dd84182cbbaee17d387910746b00721738f6884be1e42bacbbcb294996b11b4f",
-  "truePeakDBTP": -1.76
+  "transcriptSHA256": "683af8f77e6a16477c35105a8954415dbfdfaf75e1981ceaa2a06768452c4351",
+  "truePeakDBTP": -2.3
 }

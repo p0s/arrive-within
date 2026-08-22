@@ -15,6 +15,35 @@ SPEC.loader.exec_module(validation)
 
 
 class NarrationCandidateBoundaryTests(unittest.TestCase):
+    def test_segment_seed_accepts_only_provenance_bound_eos_retry(self) -> None:
+        stride = validation.production.EOS_RETRY_SEED_STRIDE
+        self.assertTrue(validation.segment_seed_matches({"seed": 42}, 42))
+        self.assertTrue(
+            validation.segment_seed_matches(
+                {
+                    "seed": 42 + stride,
+                    "baseSeed": 42,
+                    "generationAttempt": 1,
+                },
+                42,
+            )
+        )
+        self.assertFalse(
+            validation.segment_seed_matches(
+                {
+                    "seed": 43 + stride,
+                    "baseSeed": 42,
+                    "generationAttempt": 1,
+                },
+                42,
+            )
+        )
+        self.assertFalse(
+            validation.segment_seed_matches(
+                {"seed": 42 + stride, "generationAttempt": 99}, 42
+            )
+        )
+
     def test_current_one_unit_boundary(self) -> None:
         validation.validate_process_boundary(
             {

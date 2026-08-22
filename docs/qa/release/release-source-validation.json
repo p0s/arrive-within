@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "passed-source-contract-selected-candidate-submitted",
+  "status": "passed-source-contract-build-15-rejected-v4-pending",
   "release_ready": false,
   "source_contract_passed": true,
   "candidate_bound": true,
@@ -12,11 +12,11 @@
   "source_hashes": {
     "docs/release/metadata/en-US.json": "de51c5a965a0684f2652af6fd96cfcf754f38697faf2beb63464d6f955a8db4b",
     "docs/release/metadata/de-DE.json": "144b1fa80c4e1c48f7f3343069201c13632254ea2473bc93c221d46fea0443af",
-    "docs/release/metadata/shared.json": "a76c556b0d86d3f3aeb33fd9c299fe49eb5f79604a7ab5f20ec9e1c67ce2c021",
+    "docs/release/metadata/shared.json": "76f861a64c2a3d068c3d964715451688a2f548f9b114d997232837d9ef272b4e",
     "docs/release/app-privacy-worksheet.json": "9ec7e0269c76b93b7030be1988587acc90ef3ae3e4b1e7573c0b258d64b97652",
     "docs/release/current-release.example.json": "ec582d76079c089e4ef2bda1af5a1f37b02aae0163a83a4f8d818412f322db4c",
     "docs/release/candidate.example.json": "a1c209e5786e4bd846efadc40e537f9b4bc0b9d9fdeb898c8f9ac4ce65e1162c",
-    "docs/release/release-train.json": "af77b2b24048f2cf1ff9d9b71caa4dede672cfb0bda2c980c6f6e840ade83add",
+    "docs/release/release-train.json": "2cd871ebdb4fbecd394ceb95c8ee9a97b776c9207945522524a84b4fda55c926",
     "Apps/ArriveWithin/Resources/PrivacyInfo.xcprivacy": "0562b6e4331f1fcffb4d7b7e3e11c240ebbf6dbef84ec1b66318408d9f2d524b",
     "Apps/ArriveWithin/Resources/Info.plist": "aca2757b61bd93c87aa1a1ea5da1a939085cd939c02fe17f70561883336fd145",
     "Marketing/AppStoreScreenshots/screenshot-plan.json": "f53eb84de0d8907c86038409998b8193146a6c761e6489b52300911a8b5302d4"
@@ -624,7 +624,7 @@
       "detail": "repository authority must bind the completed signed root publication while preserving GitHub Actions, tags, releases, and unrelated settings as separate boundaries"
     },
     {
-      "id": "release-train.candidate-submitted",
+      "id": "release-train.candidate-current-state",
       "passed": true,
       "detail": "verified historical builds and the exact submitted build-15 replacement must remain bound without claiming physical audio, approval, or storefront proof"
     },

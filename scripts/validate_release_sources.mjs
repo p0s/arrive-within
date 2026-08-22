@@ -171,7 +171,7 @@ record(
     && shared.storekit_contract?.available_territories === 175
     && shared.storekit_contract?.available_in_new_territories === true
     && JSON.stringify(shared.storekit_contract?.locales) === JSON.stringify(["de-DE", "en-US"])
-    && shared.storekit_contract?.app_store_connect_state === "WAITING_FOR_REVIEW"
+    && shared.storekit_contract?.app_store_connect_state === "IN_REVIEW"
     && shared.storekit_contract?.current_app_review_attachment === true,
   "StoreKit must remain one exact non-consumable Garden entitlement attached to the submitted app version",
 );
@@ -187,7 +187,8 @@ record(
     && shared.candidate_binding?.app_store_version_id === "e3b3b152-a874-437d-9b59-17d23ce46739"
     && shared.candidate_binding?.review_submission_id === "9cb4ed98-7a4e-41da-8cf4-41b1bec16a11"
     && shared.candidate_binding?.review_item_count === 2
-    && shared.candidate_binding?.review_state === "WAITING_FOR_REVIEW",
+    && shared.candidate_binding?.review_state === "UNRESOLVED_ISSUES"
+    && shared.candidate_binding?.app_store_version_state === "REJECTED",
   "metadata must bind the exact submitted build, archive, version, and two-item review submission",
 );
 
@@ -387,28 +388,29 @@ record(
 record("release-train.authority", releaseTrain.stages.every((stage) => typeof stage.authorization === "string" && stage.authorization.length > 0), "every release stage must carry an explicit authorization boundary");
 record("release-train.repository-authority", releaseTrain.stages.slice(0, 12).every((stage) => !stage.status.startsWith("unauthorized") && !stage.status.startsWith("prohibited")) && releaseTrain.stages[12].status === "verified-public-origin-main-signed-root" && releaseTrain.stages[12].authorization.includes("exact-existing-origin-main-push-and-public-visibility") && releaseTrain.stages[12].authorization.includes("github-actions-tags-releases-and-unrelated-repository-settings-remain-separate"), "repository authority must bind the completed signed root publication while preserving GitHub Actions, tags, releases, and unrelated settings as separate boundaries");
 record(
-  "release-train.candidate-submitted",
+  "release-train.candidate-current-state",
   releaseTrain.candidate_manifest === null
-    && releaseTrain.status === "build-15-submitted-waiting-for-review"
+    && releaseTrain.status === "build-15-rejected-unresolved-issues"
     && releaseTrain.replacement_candidate?.marketing_version === "1.0"
     && releaseTrain.replacement_candidate?.build_number === 15
-    && releaseTrain.replacement_candidate?.apple_state === "WAITING_FOR_REVIEW"
+    && releaseTrain.replacement_candidate?.apple_state === "REJECTED"
+    && releaseTrain.replacement_candidate?.review_submission_state === "UNRESOLVED_ISSUES"
     && releaseTrain.replacement_candidate?.apple_build_id === "a77535f4-dc54-458c-a3ac-0dbf3a655bde"
     && releaseTrain.replacement_candidate?.review_submission_id === "9cb4ed98-7a4e-41da-8cf4-41b1bec16a11"
     && releaseTrain.replacement_candidate?.review_item_count === 2
     && releaseTrain.replacement_candidate?.ipa_sha256 === "cf2f81858656d339462183719b4a2738d36f54b370613b7b761eae8d891b39c6"
     && releaseTrain.replacement_candidate?.required_scope?.includes("inline-searchable-bilingual-guided-library")
-    && releaseTrain.replacement_candidate?.claim_boundary?.includes("WAITING_FOR_REVIEW")
-    && releaseTrain.replacement_candidate?.claim_boundary?.includes("Visible inline-library/audio listening")
+    && releaseTrain.replacement_candidate?.claim_boundary?.includes("UNRESOLVED_ISSUES")
+    && releaseTrain.replacement_candidate?.claim_boundary?.includes("v4 narration set remains private")
     && releaseTrain.narrated_update_preparation?.build13_testflight_readback?.build_number === 13
     && releaseTrain.narrated_update_preparation?.build13_testflight_readback?.apple_processing === "VALID"
     && releaseTrain.narrated_update_preparation?.build13_testflight_readback?.disposition === "rejected-owner-observed-incomplete-product"
     && releaseTrain.narrated_update_preparation?.build14_testflight_readback?.build_number === 14
     && releaseTrain.narrated_update_preparation?.build14_testflight_readback?.apple_processing === "VALID"
     && releaseTrain.narrated_update_preparation?.build14_testflight_readback?.disposition === "rejected-owner-observed-selector-first-ui"
-    && releaseTrain.stages[8].status === "waiting-for-review-build-15-and-garden-styles"
-    && releaseTrain.stages[8].readback?.includes("exactly two READY_FOR_REVIEW items")
-    && releaseTrain.stages[8].readback?.includes("WAITING_FOR_REVIEW")
+    && releaseTrain.stages[8].status === "rejected-unresolved-issues-build-15-and-garden-styles"
+    && releaseTrain.stages[8].readback?.includes("one submission item REJECTED")
+    && releaseTrain.stages[8].readback?.includes("UNRESOLVED_ISSUES")
     && releaseTrain.baseline_internal_testflight?.build_number === 1
     && releaseTrain.baseline_internal_testflight?.apple_processing === "VALID"
     && releaseTrain.baseline_internal_testflight?.internal_distribution === "IN_BETA_TESTING"
@@ -486,7 +488,7 @@ const sourceHashes = Object.fromEntries([
 
 const report = {
   schema_version: 1,
-  status: failures.length === 0 ? "passed-source-contract-selected-candidate-submitted" : "failed",
+  status: failures.length === 0 ? "passed-source-contract-build-15-rejected-v4-pending" : "failed",
   release_ready: false,
   source_contract_passed: failures.length === 0,
   candidate_bound: true,
@@ -526,6 +528,6 @@ if (process.argv.includes("--write-report")) {
   writeFileSync(join(outputDirectory, "release-source-validation.txt"), textReport);
 }
 
-console.log(`Release source validation ${report.status}: ${report.checks_passed} passed, ${report.checks_failed} failed; exact build 15 remains bound to its submitted Apple review record.`);
+console.log(`Release source validation ${report.status}: ${report.checks_passed} passed, ${report.checks_failed} failed; exact build 15, its unresolved review state, and the private v4 narration boundary remain bound.`);
 for (const failure of failures) console.error(`error: ${failure}`);
 process.exitCode = failures.length === 0 ? 0 : 1;

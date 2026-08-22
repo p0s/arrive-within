@@ -31,6 +31,8 @@ Critical invariants
     remain the shipping directions. A/B garden sources are references only.
   • Guided narration is offline, bilingual, original/rights-cleared, fully
     mastered, transcript-aligned, and human/device approved before promotion.
+  • Spoken sentences are generated without automatic ellipses or synthetic
+    intra-sentence silence; only authored and sentence/paragraph pauses remain.
   • Runtime narration generation, analytics, tracking, advertising, CloudKit
     activation, and renderer network access remain fail-closed by contract.
   • Private candidates, voice/reference material, model caches, signing data,
@@ -176,7 +178,7 @@ local_release_status() {
 
 print_goal_plan
 print ""
-print "Executing local phases for Goal revision 2026-08-14-audio-complete-release."
+print "Executing local phases for Goal revision 2026-08-19-no-synthetic-pause-regeneration."
 print "The command will not mutate Git, GitHub, Apple, TestFlight, App Review, or App Store state."
 
 run_phase \

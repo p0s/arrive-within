@@ -24,6 +24,24 @@ SPEC.loader.exec_module(production)
 
 
 class ProductionPipelineTests(unittest.TestCase):
+    def test_natural_internal_pause_is_preserved_for_strict_gate(self) -> None:
+        import numpy
+
+        samples = numpy.concatenate(
+            [
+                numpy.full(400, 0.2, dtype=numpy.float32),
+                numpy.zeros(600, dtype=numpy.float32),
+                numpy.full(400, -0.2, dtype=numpy.float32),
+            ]
+        )
+        preserved, repairs = production.preserve_natural_internal_pauses(
+            samples, 1000, numpy
+        )
+
+        numpy.testing.assert_array_equal(preserved, samples)
+        self.assertEqual(repairs, [])
+        self.assertEqual(production.silence_runs(preserved, 1000, numpy), [(400, 1000)])
+
     def test_unit_checkpoint_round_trip_is_atomic_and_hash_bound(self) -> None:
         import numpy
 
@@ -60,6 +78,74 @@ class ProductionPipelineTests(unittest.TestCase):
             with self.assertRaisesRegex(FileExistsError, "replace"):
                 production.write_unit_checkpoint(root, 0, metadata, samples, numpy)
 
+    def test_missing_eos_retries_with_a_deterministic_provenance_seed(self) -> None:
+        model = SimpleNamespace(release_all_phases=mock.Mock())
+        waveform = object()
+        with (
+            mock.patch.object(production, "seed_everything") as seed_everything,
+            mock.patch.object(production, "prepare_generation_phase") as prepare,
+            mock.patch.object(
+                production,
+                "generate_with_token_limit",
+                side_effect=[
+                    RuntimeError(
+                        "Chatterbox decode reached 354 speech tokens without EOS"
+                    ),
+                    waveform,
+                ],
+            ) as generate,
+            mock.patch.object(production, "release_accelerator_cache") as release,
+        ):
+            result = production.generate_unit_with_eos_retry(
+                model, {"text": "Bleib hier."}, 354, 42, "mps", object(), object()
+            )
+
+        self.assertEqual(
+            result,
+            (waveform, 42 + production.EOS_RETRY_SEED_STRIDE, 1),
+        )
+        self.assertEqual(seed_everything.call_count, 2)
+        self.assertEqual(prepare.call_count, 2)
+        self.assertEqual(generate.call_count, 2)
+        model.release_all_phases.assert_called_once_with()
+        release.assert_called_once()
+
+    def test_eos_retry_does_not_mask_an_unrelated_generation_failure(self) -> None:
+        with (
+            mock.patch.object(production, "seed_everything"),
+            mock.patch.object(production, "prepare_generation_phase"),
+            mock.patch.object(
+                production,
+                "generate_with_token_limit",
+                side_effect=RuntimeError("model weights changed"),
+            ) as generate,
+        ):
+            with self.assertRaisesRegex(RuntimeError, "weights changed"):
+                production.generate_unit_with_eos_retry(
+                    object(), {}, 192, 42, "mps", object(), object()
+                )
+        generate.assert_called_once()
+
+    def test_checkpoint_retry_provenance_is_validated(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            unit = Path(directory) / "unit-0000"
+            unit.mkdir()
+            resolved = production.generation_attempt_seed(42, 1)
+            (unit / "metadata.json").write_text(
+                json.dumps({"resolvedSeed": resolved, "generationAttempt": 1}),
+                encoding="utf-8",
+            )
+            self.assertEqual(
+                production.checkpoint_generation_provenance(Path(directory), 0, 42),
+                (resolved, 1),
+            )
+            (unit / "metadata.json").write_text(
+                json.dumps({"resolvedSeed": resolved + 1, "generationAttempt": 1}),
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(RuntimeError, "provenance is invalid"):
+                production.checkpoint_generation_provenance(Path(directory), 0, 42)
+
     def test_child_integrity_attestation_rejects_signature_drift(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "model.bin"
@@ -87,6 +173,10 @@ class ProductionPipelineTests(unittest.TestCase):
                 "planSHA256": "plan",
                 "catalogSHA256": "catalog",
                 "scriptSHA256": "script",
+                "assembly": {
+                    "syntheticIntraSentenceSilence": False,
+                    "internalSilenceMaximumSeconds": 0.45,
+                },
                 "files": {
                     "delivery": {
                         "name": "delivery.m4a",
@@ -141,7 +231,7 @@ class ProductionPipelineTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "identity mismatch"):
                 production.prepare_unit_checkpoint_cache(root, {"schemaVersion": 2})
 
-    def test_unit_checkpoint_identity_migrates_only_known_semantic_predecessor(self) -> None:
+    def test_legacy_checkpoint_identity_is_not_migrated_into_new_pause_contract(self) -> None:
         expected = {
             "schemaVersion": 2,
             "contentID": "G25",
@@ -166,12 +256,8 @@ class ProductionPipelineTests(unittest.TestCase):
                 json.dumps(legacy) + "\n", encoding="utf-8"
             )
 
-            production.prepare_unit_checkpoint_cache(root, expected, [])
-
-            self.assertEqual(
-                json.loads((root / "identity.json").read_text(encoding="utf-8")),
-                expected,
-            )
+            with self.assertRaisesRegex(RuntimeError, "identity mismatch"):
+                production.prepare_unit_checkpoint_cache(root, expected, [])
 
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / "units"
@@ -183,19 +269,14 @@ class ProductionPipelineTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "identity mismatch"):
                 production.prepare_unit_checkpoint_cache(root, expected)
 
-    def test_unit_checkpoint_identity_migrates_only_named_semantics_revision(self) -> None:
+    def test_unit_checkpoint_identity_rejects_superseded_semantics_revision(self) -> None:
         expected = {
             "schemaVersion": 2,
             "contentID": "G25",
             "language": "en",
             "generationSemanticsRevision": production.GENERATION_SEMANTICS_REVISION,
         }
-        predecessor = {
-            **expected,
-            "generationSemanticsRevision": next(
-                iter(production.COMPATIBLE_SEMANTICS_PREDECESSORS)
-            ),
-        }
+        predecessor = {**expected, "generationSemanticsRevision": "chatterbox-production-v4-list-pressure-bounded"}
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / "units"
             root.mkdir()
@@ -203,12 +284,8 @@ class ProductionPipelineTests(unittest.TestCase):
                 json.dumps(predecessor) + "\n", encoding="utf-8"
             )
 
-            production.prepare_unit_checkpoint_cache(root, expected, [])
-
-            self.assertEqual(
-                json.loads((root / "identity.json").read_text(encoding="utf-8")),
-                expected,
-            )
+            with self.assertRaisesRegex(RuntimeError, "identity mismatch"):
+                production.prepare_unit_checkpoint_cache(root, expected, [])
 
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / "units"
@@ -223,19 +300,14 @@ class ProductionPipelineTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "identity mismatch"):
                 production.prepare_unit_checkpoint_cache(root, expected)
 
-    def test_mlx_checkpoint_identity_migrates_only_named_semantics_revision(self) -> None:
+    def test_mlx_checkpoint_identity_rejects_superseded_semantics_revision(self) -> None:
         expected = {
             "schemaVersion": 2,
             "contentID": "G12",
             "language": "de",
             "generationSemanticsRevision": production.MLX_AUDIO_SEMANTICS_REVISION,
         }
-        predecessor = {
-            **expected,
-            "generationSemanticsRevision": next(
-                iter(production.MLX_AUDIO_PREDECESSOR_SEMANTICS)
-            ),
-        }
+        predecessor = {**expected, "generationSemanticsRevision": "chatterbox-production-v5-mlx-audio-0.4.8-semicolon-bounded"}
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / "units"
             root.mkdir()
@@ -243,54 +315,25 @@ class ProductionPipelineTests(unittest.TestCase):
                 json.dumps(predecessor) + "\n", encoding="utf-8"
             )
 
-            production.prepare_unit_checkpoint_cache(root, expected, [])
+            with self.assertRaisesRegex(RuntimeError, "identity mismatch"):
+                production.prepare_unit_checkpoint_cache(root, expected, [])
 
-            self.assertEqual(
-                json.loads((root / "identity.json").read_text(encoding="utf-8")),
-                expected,
-            )
-
-    def test_semantic_migration_reuses_only_exact_planned_units(self) -> None:
-        import numpy
-
+    def test_superseded_checkpoint_waveforms_are_never_reused(self) -> None:
         expected_identity = {
             "schemaVersion": 2,
             "contentID": "G25",
             "language": "en",
             "generationSemanticsRevision": production.GENERATION_SEMANTICS_REVISION,
         }
-        predecessor = {
-            **expected_identity,
-            "generationSemanticsRevision": next(
-                iter(production.COMPATIBLE_SEMANTICS_PREDECESSORS)
-            ),
-        }
-        metadata = {
-            "generationOrdinal": 0,
-            "sentenceIndex": 0,
-            "unitIndex": 0,
-            "seed": 42,
-            "sourceTextSHA256": "source",
-            "generationTextSHA256": "generation",
-            "speechTokenLimit": 192,
-        }
+        predecessor = {**expected_identity, "generationSemanticsRevision": "chatterbox-production-v4-list-pressure-bounded"}
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / "units"
             root.mkdir()
             (root / "identity.json").write_text(
                 json.dumps(predecessor) + "\n", encoding="utf-8"
             )
-            production.write_unit_checkpoint(
-                root, 0, metadata, numpy.array([0.25], dtype=numpy.float32), numpy
-            )
-
-            with self.assertRaisesRegex(RuntimeError, "metadata mismatch"):
-                production.prepare_unit_checkpoint_cache(
-                    root, expected_identity, [{**metadata, "seed": 43}]
-                )
-            production.prepare_unit_checkpoint_cache(
-                root, expected_identity, [metadata]
-            )
+            with self.assertRaisesRegex(RuntimeError, "identity mismatch"):
+                production.prepare_unit_checkpoint_cache(root, expected_identity, [])
 
     def test_phase_loader_never_co_resides_t3_and_s3(self) -> None:
         events: list[str] = []
@@ -735,11 +778,14 @@ class ProductionPipelineTests(unittest.TestCase):
             "bounded-checkpoint-batch-per-owned-process",
         )
 
-    def test_legacy_complete_track_units_remain_validation_only(self) -> None:
+    def test_legacy_complete_track_units_do_not_change_current_planner(self) -> None:
         text = "One two three four five six seven eight nine ten eleven twelve thirteen."
         current = production.generation_units(text, "de")
         legacy = production.legacy_complete_track_generation_units(text, "de")
-        self.assertGreater(len(current), 1)
+        self.assertEqual(len(current), 1)
+        self.assertEqual(current[0].source_text, text)
+        self.assertEqual(current[0].generation_text, text)
+        self.assertEqual(current[0].internal_boundaries, ())
         self.assertEqual(len(legacy), 1)
         self.assertEqual(legacy[0].source_text, text)
 
@@ -921,7 +967,12 @@ class ProductionPipelineTests(unittest.TestCase):
 
         self.assertEqual(plan["directions"]["en"]["id"], "en-f2-spacious-slow")
         self.assertEqual(plan["directions"]["en"]["speechOnlyWPMRange"], [105, 120])
-        self.assertEqual(plan["directions"]["en"]["clausePauseMs"], 1500)
+        self.assertEqual(plan["generation"]["noSyntheticSpeechOnlyWPMRange"], [105, 210])
+        self.assertEqual(
+            plan["generation"]["noSyntheticSpeechOnlyWPMRangeByLanguage"],
+            {"de": [105, 220], "en": [105, 210]},
+        )
+        self.assertEqual(plan["directions"]["en"]["clausePauseMs"], 0)
         self.assertEqual(plan["directions"]["de"]["id"], "de-c2-accent-stability")
         self.assertEqual(len(catalog["practices"]), 42)
 
@@ -934,138 +985,106 @@ class ProductionPipelineTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Owner-selected en direction"):
                 production.load_and_validate_plan(path)
 
-    def test_english_emotional_list_preserves_words_and_semantic_pauses(self) -> None:
+    def test_english_emotional_list_is_one_continuous_utterance(self) -> None:
         sentence = (
             "There may be sadness, numbness, anger, love, tiredness, relief, "
             "confusion, or no clear feeling at all."
         )
         units = production.english_generation_units(sentence)
 
-        self.assertGreater(len(units), 1)
-        self.assertEqual(
-            [word for unit in units for word in production.words(unit.source_text)],
-            production.words(sentence),
-        )
-        boundaries = [
-            boundary
-            for unit in units
-            for boundary in (*unit.internal_boundaries, *([unit.gap_after] if unit.gap_after else []))
-        ]
-        after_words = {boundary["after"] for boundary in boundaries}
-        self.assertIn("sadness", after_words)
-        self.assertIn("numbness", after_words)
-        self.assertTrue(all(boundary["kind"] == "list" for boundary in boundaries))
-        self.assertTrue(all(len(production.words(unit.source_text)) >= 4 for unit in units))
+        self.assertEqual(len(units), 1)
+        self.assertEqual(units[0].source_text, sentence)
+        self.assertEqual(units[0].generation_text, sentence)
+        self.assertEqual(units[0].internal_boundaries, ())
+        self.assertIsNone(units[0].gap_after)
 
-    def test_dense_list_is_split_below_the_memory_pressure_token_ceiling(self) -> None:
+    def test_dense_list_is_one_continuous_utterance(self) -> None:
         sentence = (
             "Perhaps steadily, kindly, directly, patiently, or with enough space to notice."
         )
 
         units = production.english_generation_units(sentence)
 
-        self.assertEqual([len(production.words(unit.source_text)) for unit in units], [5, 6])
-        self.assertEqual(
-            [word for unit in units for word in production.words(unit.source_text)],
-            production.words(sentence),
-        )
-        self.assertEqual(units[0].gap_after, {"after": "patiently", "kind": "list"})
-        self.assertIsNone(units[1].gap_after)
-        self.assertNotIn(",.", units[0].generation_text)
-        self.assertTrue(units[0].generation_text.endswith("."))
-        self.assertTrue(
-            all(production.speech_token_limit(len(production.words(unit.source_text)), 105) == 192 for unit in units)
-        )
+        self.assertEqual(len(units), 1)
+        self.assertEqual(units[0].source_text, sentence)
+        self.assertEqual(units[0].generation_text, sentence)
+        self.assertEqual(units[0].internal_boundaries, ())
+        self.assertIsNone(units[0].gap_after)
 
-    def test_german_generation_is_phrase_bounded_without_lexical_change(self) -> None:
+    def test_long_english_list_preserves_authored_punctuation_in_one_call(self) -> None:
+        sentence = (
+            "Look for direct evidence of it: pressure under the feet, "
+            "the weight of the legs on a seat, the back meeting a chair, "
+            "or the body resting on a bed."
+        )
+        units = production.english_generation_units(sentence)
+
+        self.assertEqual(len(units), 1)
+        self.assertEqual(units[0].source_text, sentence)
+        self.assertEqual(units[0].generation_text, sentence)
+        self.assertEqual(units[0].internal_boundaries, ())
+        self.assertIsNone(units[0].gap_after)
+
+    def test_german_sentence_is_one_continuous_utterance(self) -> None:
         sentence = "Nimm wahr, was gerade da ist, ohne es verändern zu müssen."
         units = production.generation_units(sentence, "de")
 
-        self.assertEqual(len(units), 2)
-        self.assertEqual(
-            [word for unit in units for word in production.words(unit.source_text)],
-            production.words(sentence),
-        )
-        self.assertTrue(all(len(production.words(unit.source_text)) <= 10 for unit in units))
-        self.assertEqual(units[0].gap_after, {"after": "ist", "kind": "clause"})
-        self.assertIsNone(units[-1].gap_after)
-        self.assertTrue(
-            all(
-                not unit.generation_text.endswith((",.", ";.", ":."))
-                for unit in units
-            )
-        )
+        self.assertEqual(len(units), 1)
+        self.assertEqual(units[0].source_text, sentence)
+        self.assertEqual(units[0].generation_text, sentence)
+        self.assertEqual(units[0].internal_boundaries, ())
+        self.assertIsNone(units[0].gap_after)
 
-    def test_german_balanced_semicolon_clauses_are_generated_separately(self) -> None:
+    def test_german_semicolon_stays_inside_one_continuous_utterance(self) -> None:
         sentence = "Ein- oder zweimal genügt; es ist keine Regel."
 
         units = production.generation_units(sentence, "de")
 
-        self.assertEqual([len(production.words(unit.source_text)) for unit in units], [4, 4])
-        self.assertEqual(
-            [word for unit in units for word in production.words(unit.source_text)],
-            production.words(sentence),
-        )
-        self.assertEqual(units[0].gap_after, {"after": "genügt", "kind": "clause"})
-        self.assertEqual(units[0].generation_text, "Ein- oder zweimal genügt.")
-        self.assertEqual(units[1].generation_text, "Es ist keine Regel.")
+        self.assertEqual(len(units), 1)
+        self.assertEqual(units[0].source_text, sentence)
+        self.assertEqual(units[0].generation_text, sentence)
+        self.assertEqual(units[0].internal_boundaries, ())
+        self.assertIsNone(units[0].gap_after)
 
-    def test_unpunctuated_english_sentence_gets_one_semantic_f2_phrase_pause(self) -> None:
+    def test_unpunctuated_english_sentence_stays_continuous(self) -> None:
         sentence = "Notice that the ground is already meeting you."
 
         units = production.english_generation_units(sentence)
 
         self.assertEqual(len(units), 1)
         self.assertEqual(production.words(units[0].generation_text), production.words(sentence))
-        self.assertEqual(len(units[0].internal_boundaries), 1)
-        self.assertEqual(units[0].internal_boundaries[0]["kind"], "clause")
-        self.assertIn("…", units[0].generation_text)
+        self.assertEqual(len(units[0].internal_boundaries), 0)
+        self.assertNotIn("…", units[0].generation_text)
 
-    def test_long_english_sentence_uses_two_bounded_f2_phrase_calls(self) -> None:
+    def test_long_english_sentence_uses_one_whole_utterance_call(self) -> None:
         sentence = (
             "Let the eyes look away from the last task and find one neutral shape or color."
         )
 
         units = production.english_generation_units(sentence)
 
-        self.assertEqual(len(units), 2)
-        self.assertEqual(
-            [word for unit in units for word in production.words(unit.source_text)],
-            production.words(sentence),
-        )
-        self.assertTrue(all(4 <= len(production.words(unit.source_text)) <= 12 for unit in units))
-        self.assertEqual(units[0].gap_after, {"after": "task", "kind": "clause"})
-        self.assertIsNone(units[1].gap_after)
-        self.assertTrue(all(unit.generation_text.endswith(".") for unit in units))
+        self.assertEqual(len(units), 1)
+        self.assertEqual(units[0].source_text, sentence)
+        self.assertEqual(units[0].generation_text, sentence)
+        self.assertEqual(units[0].internal_boundaries, ())
+        self.assertIsNone(units[0].gap_after)
 
-    def test_existing_g25_and_g33_checkpoints_precede_phrase_split(self) -> None:
-        expectations = {
-            "G25": [(0, 0, 4), (1, 0, 9), (1, 1, 7), (2, 0, 6), (3, 0, 6), (4, 0, 11)],
-            "G33": [(0, 0, 11), (1, 0, 10), (2, 0, 8), (3, 0, 3), (4, 0, 6), (4, 1, 7)],
-        }
-        for identifier, expected in expectations.items():
+    def test_g25_and_g33_plan_one_generation_call_per_sentence(self) -> None:
+        for identifier in ("G25", "G33"):
             _, events = production.parse_script(
                 ROOT / f"Content/guided/{identifier}/script.en.md"
             )
-            actual: list[tuple[int, int, int]] = []
             for event in events:
                 if not isinstance(event, production.SentenceEvent):
                     continue
-                for unit_index, unit in enumerate(
-                    production.english_generation_units(event.text)
-                ):
-                    actual.append(
-                        (event.sentence_index, unit_index, len(production.words(unit.source_text)))
-                    )
-                    if len(actual) == 6:
-                        break
-                if len(actual) == 6:
-                    break
-            self.assertEqual(actual, expected)
+                units = production.english_generation_units(event.text)
+                self.assertEqual(len(units), 1)
+                self.assertEqual(units[0].source_text, event.text)
+                self.assertEqual(units[0].generation_text, event.text)
 
-    def test_all_scripts_are_lexically_exact_and_token_bounded(self) -> None:
-        limits = {"en": (105, 12), "de": (95, 10)}
-        for language, (minimum_wpm, maximum_words) in limits.items():
+    def test_all_scripts_use_one_guarded_whole_utterance_per_sentence(self) -> None:
+        minimum_wpm_by_language = {"en": 105, "de": 105}
+        for language, minimum_wpm in minimum_wpm_by_language.items():
             for script_path in sorted(
                 (ROOT / "Content/guided").glob(f"G*/script.{language}.md")
             ):
@@ -1074,24 +1093,18 @@ class ProductionPipelineTests(unittest.TestCase):
                     if not isinstance(event, production.SentenceEvent):
                         continue
                     units = production.generation_units(event.text, language)
-                    self.assertEqual(
-                        [
-                            word
-                            for unit in units
-                            for word in production.words(unit.source_text)
-                        ],
-                        production.words(event.text),
+                    self.assertEqual(len(units), 1, script_path)
+                    unit = units[0]
+                    self.assertEqual(unit.source_text, event.text)
+                    self.assertEqual(unit.generation_text, event.text)
+                    self.assertEqual(unit.internal_boundaries, ())
+                    self.assertIsNone(unit.gap_after)
+                    word_count = len(production.words(unit.source_text))
+                    self.assertLessEqual(word_count, 40, script_path)
+                    self.assertLessEqual(
+                        production.speech_token_limit(word_count, minimum_wpm),
+                        600,
                     )
-                    for unit in units:
-                        word_count = len(production.words(unit.source_text))
-                        self.assertLessEqual(word_count, maximum_words)
-                        self.assertFalse(
-                            unit.generation_text.endswith((",.", ";.", ":."))
-                        )
-                        self.assertLessEqual(
-                            production.speech_token_limit(word_count, minimum_wpm),
-                            300,
-                        )
 
     def test_short_english_phrase_is_not_stitched_or_forced_apart(self) -> None:
         sentence = "Body supported."
@@ -1282,6 +1295,70 @@ class ProductionPipelineTests(unittest.TestCase):
         self.assertEqual(encoded_filters, ["volume=-0.5dB", "volume=-0.79dB"])
         self.assertEqual(result["deliveryCodecSafetyGainDB"], -0.79)
         self.assertEqual(result["delivery"]["truePeakDBTP"], -1.6)
+
+
+class WholeUtteranceProsodyContractTests(unittest.TestCase):
+    def test_g02_flagged_phrases_are_never_split_across_model_calls(self) -> None:
+        cases = {
+            "en": (
+                "Otherwise, keep a soft, steady view of the space in front of you.",
+                ("steady", "view"),
+            ),
+            "de": (
+                "Sonst lass den Blick weich und ruhig in den Raum vor dir fallen.",
+                ("in", "den", "raum"),
+            ),
+        }
+        for language, (sentence, required_phrase) in cases.items():
+            units = production.generation_units(sentence, language)
+            self.assertEqual(len(units), 1)
+            self.assertEqual(units[0].source_text, sentence)
+            self.assertEqual(units[0].generation_text, sentence)
+            self.assertEqual(units[0].internal_boundaries, ())
+            source_words = production.words(units[0].source_text)
+            phrase_words = list(required_phrase)
+            self.assertTrue(
+                any(
+                    source_words[index : index + len(phrase_words)] == phrase_words
+                    for index in range(len(source_words) - len(phrase_words) + 1)
+                )
+            )
+
+        german_following = (
+            "Spüre, wie die Unterlage einen Teil der Arbeit übernimmt und dich trägt."
+        )
+        german_units = production.generation_units(german_following, "de")
+        self.assertEqual(len(german_units), 1)
+        self.assertIn("einen Teil der Arbeit", german_units[0].source_text)
+
+    def test_g02_otherwise_is_an_authored_sentence_pause(self) -> None:
+        _, events = production.parse_script(
+            ROOT / "Content/guided/G02/script.en.md"
+        )
+        sentences = [
+            event for event in events if isinstance(event, production.SentenceEvent)
+        ]
+        otherwise_index = next(
+            index
+            for index, event in enumerate(sentences)
+            if event.text.startswith("Otherwise,")
+        )
+        self.assertEqual(
+            sentences[otherwise_index - 1].text,
+            "Let your eyes close only if that feels comfortable.",
+        )
+        direction = production.load_and_validate_plan(production.DEFAULT_PLAN)[
+            "directions"
+        ]["en"]
+        self.assertGreater(
+            production.gap_after_sentence(sentences, otherwise_index - 1, direction),
+            0,
+        )
+
+    def test_long_prose_fails_instead_of_creating_a_prosody_join(self) -> None:
+        sentence = " ".join(["word"] * 41) + "."
+        with self.assertRaisesRegex(ValueError, "genuine sentence"):
+            production.generation_units(sentence, "en")
 
 
 if __name__ == "__main__":

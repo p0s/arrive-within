@@ -55,7 +55,7 @@
           "scriptPath": "Content/guided/G02/script.en.md",
           "transcriptPath": "Content/guided/G02/transcript.en.vtt",
           "audioPath": "Content/guided/G02/audio.en.m4a",
-          "scriptRevision": 1,
+          "scriptRevision": 2,
           "editorialState": "production-candidate"
         },
         "de": {

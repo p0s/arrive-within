@@ -48,6 +48,8 @@ The target is calm, warm, close, unhurried, and human. Shipping narration may no
 
 Start mastering evaluation around `-19 LUFS-I`, true peak at or below `-1.5 dBTP`, mono AAC at 56–64 kbps. Assemble full tracks before normalization; do not independently normalize chunks. Validate actual size against the approximately 400 MB bilingual narration budget.
 
-Automated checks cover identity, duration, decode, channel/codec/rate, clipping, loudness, DC/dropout/silence, hashes, package size, and VTT timing. They do not prove naturalness, native accent, pronunciation, safety, emotional tone, or script equivalence. Owner voice selection, fluent EN/DE listening, editorial/safety approval, pronunciation/artifact review, and physical audio-route testing remain distinct gates.
+Automated checks cover identity, duration, decode, channel/codec/rate, clipping, loudness, DC/dropout/silence, hashes, package size, VTT timing, and a strict 450 ms near-digital-silence scan wholly inside each spoken cue. Space between cues remains classified as sentence/paragraph or authored meditation pause. They do not prove naturalness, native accent, pronunciation, safety, emotional tone, or script equivalence. Owner voice selection, fluent EN/DE listening, editorial/safety approval, pronunciation/artifact review, and physical audio-route testing remain distinct gates.
+
+The no-synthetic-intra-sentence assembly decision and regeneration boundary are recorded in `docs/architecture/ADR-0006-narration-pause-contract.md`.
 
 The reproducible direction and current non-production evidence are documented in `docs/audio/NARRATION_PRODUCTION.md` and `docs/audio/CHATTERBOX_RIGHTS.md`. Private auditions, voice material, model caches, and reviewer identities must never enter the public repository.

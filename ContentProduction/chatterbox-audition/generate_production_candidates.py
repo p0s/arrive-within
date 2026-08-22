@@ -32,6 +32,12 @@ from typing import Any, Callable
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
+from narration_pause_contract import (
+    is_authored_punctuation_pause,
+    is_bounded_natural_prosody_pause,
+)
+
 DEFAULT_PLAN = PROJECT_ROOT / "ContentProduction" / "narration-production-plan.json"
 DEFAULT_CATALOG = PROJECT_ROOT / "Content" / "guided" / "catalog.json"
 PRIVATE_OUTPUT = PROJECT_ROOT / "ContentProduction" / "production-candidates"
@@ -39,15 +45,17 @@ EXPECTED_IDS = tuple(f"G{index:02d}" for index in range(1, 43))
 PAUSE_PATTERN = re.compile(r"^\[Pause ([0-9]+(?:\.[0-9]+)?) (?:seconds|Sekunden)\]$")
 SENTENCE_BOUNDARY = re.compile(r"(?<=[.!?])\s+(?=[A-ZÄÖÜ0-9„“\"])")
 AAC_DELIVERY_SAFETY_GAIN_DB = -0.5
+MINIMUM_SPOKEN_SEGMENT_SECONDS = 0.05
 MEMORY_GUARD_ENVIRONMENT_KEY = "ARRIVE_WITHIN_NARRATION_MEMORY_GUARD"
 INTEGRITY_ATTESTATION_ENVIRONMENT_KEY = "ARRIVE_WITHIN_NARRATION_INTEGRITY_ATTESTATION"
 GENERATION_SEMANTICS_REVISION = (
-    "chatterbox-production-v4-list-pressure-semicolon-bounded"
+    "chatterbox-production-v9-whole-utterance-natural-pauses"
 )
 COMPATIBLE_SEMANTICS_PREDECESSORS = {
-    "chatterbox-production-v1",
-    "chatterbox-production-v2-phrase-bounded",
-    "chatterbox-production-v3-list-pressure-bounded",
+    # These checkpoints already contain the exact whole-sentence model output.
+    # Only lossless assembly changes: natural punctuation pauses are preserved.
+    "chatterbox-production-v7-whole-utterance",
+    "chatterbox-production-v8-whole-utterance-natural-pauses",
 }
 LEGACY_COMPLETE_TRACK_SEMANTICS_REVISION = "chatterbox-production-v1"
 CHECKPOINT_CONTINUATION_EXIT_CODE = 75
@@ -55,12 +63,16 @@ LEGACY_COMPATIBLE_GENERATOR_SHA256 = {
     "42317288f3615200eb9de905d13a7537cec30f643233bd8be7ac1378eb9e9ec3",
 }
 S3_SPEECH_TOKEN_RATE = 25
+MAX_EOS_GENERATION_ATTEMPTS = 3
+EOS_RETRY_SEED_STRIDE = 1_000_000_000
 PINNED_T3_BACKEND_SHA256 = "2d8407cf500ec1e6b707b060861145bb7802741328d76ec341280c06c7f3f2b5"
 MLX_AUDIO_PREDECESSOR_SEMANTICS = {
-    "chatterbox-production-v4-mlx-audio-0.4.8",
+    "chatterbox-production-v8-mlx-audio-0.4.8-whole-utterance",
+    "chatterbox-production-v9-mlx-audio-0.4.8-whole-utterance-natural-pauses",
+    "chatterbox-production-v10-mlx-audio-0.4.8-whole-utterance-natural-pauses",
 }
 MLX_AUDIO_SEMANTICS_REVISION = (
-    "chatterbox-production-v5-mlx-audio-0.4.8-semicolon-bounded"
+    "chatterbox-production-v11-mlx-audio-0.4.8-whole-utterance-eos-retry"
 )
 MLX_AUDIO_TAG_COMMIT = "49596ac8b69b9ed377db311a73df838795f38a3d"
 MLX_MODEL_INITIALIZATION_SEED = 20260812
@@ -144,6 +156,13 @@ def unit_checkpoint_identity(
 def compatible_legacy_checkpoint_identity(
     existing: dict[str, Any], expected: dict[str, Any]
 ) -> bool:
+    if expected.get("generationSemanticsRevision") in {
+        GENERATION_SEMANTICS_REVISION,
+        MLX_AUDIO_SEMANTICS_REVISION,
+    }:
+        # A v1 identity may point at waveforms created with the superseded
+        # ellipsis/padding contract. Never migrate it into this regeneration.
+        return False
     if existing.get("schemaVersion") != 1:
         return False
     generator_hash = existing.get("generatorSHA256")
@@ -412,7 +431,7 @@ def load_and_validate_plan(path: Path) -> dict[str, Any]:
     plan = load_json(path)
     if plan.get("schemaVersion") != 1:
         raise ValueError("Unsupported narration production plan schema")
-    if plan.get("productionVersion") != "chatterbox-production-candidates-v2":
+    if plan.get("productionVersion") != "chatterbox-production-candidates-v4-whole-utterance":
         raise ValueError("Unexpected narration production version")
     if plan.get("model", {}).get("voiceReference") is not None:
         raise ValueError("Production candidates must not use reference voice material")
@@ -436,8 +455,12 @@ def load_and_validate_plan(path: Path) -> dict[str, Any]:
             raise ValueError(f"Owner-selected {language} direction does not match the locked plan")
     if directions["en"].get("speechOnlyWPMRange") != [105, 120]:
         raise ValueError("English production cadence must match the owner-selected F2 range")
-    if directions["en"].get("clausePauseMs") != 1500:
-        raise ValueError("English production phrase spacing must match the F2 production proof")
+    if any(
+        directions[language].get(key) != 0
+        for language in expected_directions
+        for key in ("listPauseMs", "clausePauseMs")
+    ):
+        raise ValueError("Intra-sentence semantic silence must remain disabled")
     mastering = plan.get("mastering", {})
     if (
         mastering.get("integratedLUFSTarget") != -19.0
@@ -452,6 +475,12 @@ def load_and_validate_plan(path: Path) -> dict[str, Any]:
     if (
         generation.get("scriptPauseAllocation")
         != "preserve-relative-authored-weights-and-hit-catalog-target-duration"
+        or generation.get("semanticPausePolicy")
+        != "natural-punctuation-only-no-synthetic-intra-sentence-silence"
+        or generation.get("internalSilenceMaximumSeconds") != 0.45
+        or generation.get("noSyntheticSpeechOnlyWPMRange") != [105, 210]
+        or generation.get("noSyntheticSpeechOnlyWPMRangeByLanguage")
+        != {"de": [105, 220], "en": [105, 210]}
         or generation.get("durationTargetToleranceSeconds") != 1.0
         or generation.get("aggregateSpeechWPMTolerance") != 0.5
     ):
@@ -459,6 +488,25 @@ def load_and_validate_plan(path: Path) -> dict[str, Any]:
     if plan.get("rights", {}).get("publicRedistribution") != "pending-owner-cc-by-4.0-signoff":
         raise ValueError("Public redistribution must remain an explicit pending human gate")
     return plan
+
+
+def no_synthetic_speech_only_wpm_range(
+    plan: dict[str, Any], language: str
+) -> tuple[float, float]:
+    """Return the language-specific no-synthetic track cadence contract."""
+
+    generation = plan["generation"]
+    ranges = generation.get("noSyntheticSpeechOnlyWPMRangeByLanguage", {})
+    selected = ranges.get(language, generation["noSyntheticSpeechOnlyWPMRange"])
+    if (
+        not isinstance(selected, list)
+        or len(selected) != 2
+        or not all(isinstance(value, (int, float)) for value in selected)
+        or selected[0] <= 0
+        or selected[1] < selected[0]
+    ):
+        raise ValueError(f"Invalid no-synthetic speech-only WPM range for {language}")
+    return float(selected[0]), float(selected[1])
 
 
 def load_and_validate_catalog(path: Path) -> dict[str, Any]:
@@ -549,7 +597,7 @@ def _boundary_kind(delimiter: str, comma_count: int) -> str:
     return "list" if delimiter == "," and comma_count >= 2 else "clause"
 
 
-def _insert_ellipsis_after_word(text: str, after_word_index: int) -> str:
+def _legacy_insert_ellipsis_after_word(text: str, after_word_index: int) -> str:
     matches = list(
         re.finditer(r"[^\W_]+(?:[-’'][^\W_]+)*", text, flags=re.UNICODE)
     )
@@ -608,12 +656,12 @@ def _generation_text_with_boundaries(
     *,
     capitalize: bool,
 ) -> str:
-    result = source_text
-    for boundary in sorted(
-        boundaries, key=lambda item: int(item["afterWordIndex"]), reverse=True
-    ):
-        result = _insert_ellipsis_after_word(result, int(boundary["afterWordIndex"]))
-    return _sentence_generation_text(result, capitalize=capitalize)
+    # Boundaries remain metadata for lexical planning and transcript audit, but
+    # punctuation itself is the only intra-sentence cadence signal. Ellipses
+    # here caused Chatterbox to emit a long blank gap before a continuation such
+    # as “only if”; fixed zero-padding then made the gap even worse.
+    del boundaries
+    return _sentence_generation_text(source_text, capitalize=capitalize)
 
 
 def phrase_bounded_units(
@@ -657,7 +705,17 @@ def phrase_bounded_units(
         <= word_count - 4
         for delimiter in re.finditer(r";", unit.source_text)
     )
-    force_initial_split = dense_list_split or semicolon_split
+    # A bounded English list/clause can still make the model emit a
+    # near-digital dropout at an authored comma. Split that punctuation when
+    # both sides remain speakable; edge trimming then joins them without
+    # inventing a pause. Three-word fragments are allowed only in this case.
+    punctuation_split = (
+        apply_pressure_splits
+        and language == "en"
+        and 8 <= word_count <= maximum_words
+        and len(unit.internal_boundaries) == 1
+    )
+    force_initial_split = dense_list_split or semicolon_split or punctuation_split
     if word_count <= maximum_words and not force_initial_split:
         generation_text = (
             re.sub(r"[,;:]\.$", ".", unit.generation_text)
@@ -706,10 +764,15 @@ def phrase_bounded_units(
             *boundaries,
             *_authored_punctuation_boundaries(source_text, language),
         ]
+        minimum_boundary_words = (
+            3 if language == "en" and punctuation_split else 4
+        )
         candidates = [
             boundary
             for boundary in candidates
-            if 4 <= int(boundary["afterWordIndex"]) <= word_count - 4
+            if minimum_boundary_words
+            <= int(boundary["afterWordIndex"])
+            <= word_count - minimum_boundary_words
         ]
         if candidates:
             boundary = min(
@@ -717,7 +780,9 @@ def phrase_bounded_units(
                 key=lambda item: abs(int(item["afterWordIndex"]) - word_count / 2),
             )
         else:
-            boundary = calm_phrase_boundary(source_text, minimum_phrase_words=4)
+            boundary = calm_phrase_boundary(
+                source_text, minimum_phrase_words=minimum_boundary_words
+            )
         if boundary is None:
             raise ValueError("Long narration phrase has no safe lexical split")
         split_index = int(boundary["afterWordIndex"])
@@ -753,7 +818,11 @@ def phrase_bounded_units(
     )
     if [word for item in units for word in words(item.source_text)] != words(unit.source_text):
         raise ValueError("Phrase-bounded generation changed the lexical sequence")
-    if any(not 4 <= len(words(item.source_text)) <= maximum_words for item in units):
+    minimum_unit_words = 3 if language == "en" and punctuation_split else 4
+    if any(
+        not minimum_unit_words <= len(words(item.source_text)) <= maximum_words
+        for item in units
+    ):
         raise ValueError("Phrase-bounded generation produced an unsafe unit")
     return units
 
@@ -763,12 +832,11 @@ def calm_phrase_boundary(
     minimum_phrase_words: int = 3,
     minimum_total_words: int = 8,
 ) -> dict[str, Any] | None:
-    """Choose one lexical, non-word-level pause for an unpunctuated English phrase.
+    """Choose a safe lexical split for an overlong English generation unit.
 
-    F2's heard cadence came from coherent phrase generation with an ellipsis at a
-    semantic boundary. Production uses the same technique for otherwise-rushed
-    clauses, preferring a clause introducer and falling back to a content-word
-    midpoint only when both phrases remain substantial.
+    This is a memory-boundary planner only. It never changes spoken text or asks
+    the model for an ellipsis; punctuation and authored pauses remain the only
+    cadence signals in the production contract.
     """
 
     source_words = words(source_text)
@@ -868,17 +936,7 @@ def calm_phrase_boundary(
 def _english_context_units(sentence: str) -> list[GenerationUnit]:
     parts = _punctuation_parts(sentence)
     if len(parts) <= 1:
-        boundary = calm_phrase_boundary(sentence)
-        if boundary is None:
-            return [GenerationUnit(sentence, sentence, tuple(), None)]
-        return [
-            GenerationUnit(
-                sentence,
-                _insert_ellipsis_after_word(sentence, int(boundary["afterWordIndex"])),
-                (boundary,),
-                None,
-            )
-        ]
+        return [GenerationUnit(sentence, sentence, tuple(), None)]
 
     comma_count = sentence.count(",")
     groups: list[list[tuple[str, str | None]]] = []
@@ -914,10 +972,9 @@ def _english_context_units(sentence: str) -> list[GenerationUnit]:
                     "after": words(segment)[-1],
                     "kind": _boundary_kind(delimiter, comma_count),
                 }
-                generation_chunks.append(segment)
+                generation_chunks.append(segment + delimiter)
             elif delimiter:
-                generation_chunks.append(segment)
-                generation_chunks.append("…")
+                generation_chunks.append(segment + delimiter)
                 boundaries.append(
                     {
                         "after": words(segment)[-1],
@@ -929,13 +986,6 @@ def _english_context_units(sentence: str) -> list[GenerationUnit]:
                 generation_chunks.append(segment)
         source_text = " ".join(source_chunks)
         generation_text = " ".join(generation_chunks).strip()
-        if not boundaries:
-            calm_boundary = calm_phrase_boundary(source_text)
-            if calm_boundary is not None:
-                generation_text = _insert_ellipsis_after_word(
-                    generation_text, int(calm_boundary["afterWordIndex"])
-                )
-                boundaries.append(calm_boundary)
         if not re.search(r"[.!?]$", generation_text):
             generation_text += "."
         if words(source_text) != words(generation_text):
@@ -952,29 +1002,44 @@ def _english_context_units(sentence: str) -> list[GenerationUnit]:
         )
     if [word for unit in units for word in words(unit.source_text)] != words(sentence):
         raise ValueError("English context-aware units changed the source sentence")
-    if len(words(sentence)) >= 4 and any(len(words(unit.source_text)) < 4 for unit in units):
+    if len(words(sentence)) >= 4 and any(len(words(unit.source_text)) < 3 for unit in units):
         raise ValueError("Context-aware generation produced an isolated short unit")
     return units
 
 
+def whole_utterance_generation_units(
+    sentence: str, language: str
+) -> list[GenerationUnit]:
+    """Plan exactly one synthesis call for one authored spoken sentence.
+
+    Chatterbox chooses pitch, emphasis, breath, and phrase contour per call. A
+    lexical or punctuation split therefore creates a new-utterance prosody reset
+    that cannot be repaired by trimming or concatenating PCM. Long prose must be
+    edited into real sentences instead of being assembled from unrelated takes.
+    """
+    if language not in {"en", "de"}:
+        raise ValueError("Unsupported narration language")
+    source_text = sentence.strip()
+    word_count = len(words(source_text))
+    if not source_text or word_count == 0:
+        raise ValueError("Whole-utterance generation requires spoken text")
+    if word_count > 40:
+        raise ValueError(
+            "Narration sentence exceeds the 40-word whole-utterance ceiling; "
+            "edit it at a genuine sentence or instruction boundary"
+        )
+    return [GenerationUnit(source_text, source_text, tuple(), None)]
+
+
 def english_generation_units(sentence: str) -> list[GenerationUnit]:
-    context_units = _english_context_units(sentence)
-    units = [
-        item
-        for unit in context_units
-        for item in phrase_bounded_units(unit, 12, "en")
-    ]
-    if [word for unit in units for word in words(unit.source_text)] != words(sentence):
-        raise ValueError("English phrase-bounded units changed the source sentence")
-    return units
+    return whole_utterance_generation_units(sentence, "en")
 
 
 def generation_units(sentence: str, language: str) -> list[GenerationUnit]:
     if language == "en":
         return english_generation_units(sentence)
-    german_unit = GenerationUnit(sentence, sentence, tuple(), None)
     if language == "de":
-        return phrase_bounded_units(german_unit, 10, "de")
+        return whole_utterance_generation_units(sentence, "de")
     raise ValueError("Unsupported narration language")
 
 
@@ -1031,7 +1096,7 @@ def legacy_complete_track_generation_units(
                 )
                 if boundary is not None:
                     boundaries = (boundary,)
-                    generation_text = _insert_ellipsis_after_word(
+                    generation_text = _legacy_insert_ellipsis_after_word(
                         generation_text, int(boundary["afterWordIndex"])
                     )
             result.append(
@@ -1653,6 +1718,71 @@ def generate_with_token_limit(
         active_t3.inference = original_inference
 
 
+def generation_attempt_seed(base_seed: int, attempt: int) -> int:
+    """Return a deterministic, non-overlapping seed for a bounded EOS retry."""
+    if base_seed < 0 or not 0 <= attempt < MAX_EOS_GENERATION_ATTEMPTS:
+        raise ValueError("Invalid narration generation-attempt coordinates")
+    return base_seed + attempt * EOS_RETRY_SEED_STRIDE
+
+
+def is_missing_eos_error(error: BaseException) -> bool:
+    return isinstance(error, RuntimeError) and re.fullmatch(
+        r"Chatterbox decode reached \d+ speech tokens without EOS", str(error)
+    ) is not None
+
+
+def generate_unit_with_eos_retry(
+    model: Any,
+    kwargs: dict[str, Any],
+    token_limit: int,
+    base_seed: int,
+    device: str,
+    torch: Any,
+    numpy: Any,
+) -> tuple[Any, int, int]:
+    """Retry only a non-terminating decode, never an arbitrary model failure.
+
+    Chatterbox can rarely sample a token loop that never reaches its end token.
+    The first attempt remains the canonical seed. A failed loop gets at most two
+    deterministic alternative seeds while the authored sentence stays one model
+    call per attempt; successful PCM and its resolved seed are provenance-bound.
+    """
+    for attempt in range(MAX_EOS_GENERATION_ATTEMPTS):
+        resolved_seed = generation_attempt_seed(base_seed, attempt)
+        seed_everything(resolved_seed, torch, numpy)
+        prepare_generation_phase(model)
+        try:
+            waveform = generate_with_token_limit(
+                model,
+                kwargs,
+                token_limit,
+                lambda: transition_after_token_generation(model, device, torch),
+            )
+            return waveform, resolved_seed, attempt
+        except RuntimeError as error:
+            if not is_missing_eos_error(error) or attempt + 1 >= MAX_EOS_GENERATION_ATTEMPTS:
+                raise
+            if hasattr(model, "release_all_phases"):
+                model.release_all_phases()
+            release_accelerator_cache(model, device, torch)
+    raise AssertionError("Narration EOS retry loop exhausted without returning")
+
+
+def checkpoint_generation_provenance(
+    root: Path, ordinal: int, base_seed: int
+) -> tuple[int, int]:
+    metadata = load_json(root / f"unit-{ordinal:04d}" / "metadata.json")
+    attempt = metadata.get("generationAttempt", 0)
+    resolved_seed = metadata.get("resolvedSeed", base_seed)
+    if (
+        not isinstance(attempt, int)
+        or not isinstance(resolved_seed, int)
+        or resolved_seed != generation_attempt_seed(base_seed, attempt)
+    ):
+        raise RuntimeError("Narration unit checkpoint retry provenance is invalid")
+    return resolved_seed, attempt
+
+
 def cleanup_stale_staging(output_root: Path, language: str) -> list[Path]:
     """Remove only interrupted, unpromoted staging directories for one language."""
     if output_root.is_symlink():
@@ -1726,14 +1856,21 @@ def model_allow_patterns(language: str) -> list[str]:
 
 
 def silence_runs(samples: Any, sample_rate: int, numpy: Any) -> list[tuple[int, int]]:
+    """Find near-digital internal blanks using the shared VTT-gate threshold.
+
+    A relative threshold makes quiet but voiced material look like silence. The
+    packaged-cue gate uses FFmpeg ``silencedetect`` at -45 dB, so generation
+    validation must use the same absolute threshold and only reject a genuine
+    near-digital blank.
+    """
+
     frame_size = max(1, round(sample_rate * 0.01))
     frame_count = samples.size // frame_size
     if frame_count < 10:
         return []
     framed = samples[: frame_count * frame_size].reshape(frame_count, frame_size)
     rms = numpy.sqrt(numpy.mean(numpy.square(framed), axis=1))
-    peak_rms = float(numpy.max(rms))
-    threshold = max(10 ** (-45.0 / 20.0), peak_rms * 0.055)
+    threshold = 10 ** (-45.0 / 20.0)
     quiet = rms <= threshold
     runs: list[tuple[int, int]] = []
     start: int | None = None
@@ -1748,6 +1885,59 @@ def silence_runs(samples: Any, sample_rate: int, numpy: Any) -> list[tuple[int, 
         runs.append((start * frame_size, frame_count * frame_size))
     edge = round(sample_rate * 0.16)
     return [(start, end) for start, end in runs if start > edge and end < samples.size - edge]
+
+
+def trim_silence_edges(
+    samples: Any, sample_rate: int, numpy: Any
+) -> tuple[Any, dict[str, float]]:
+    """Trim only generated chunk-edge padding before concatenation.
+
+    Chatterbox may return a short digital-silence frame before or after an
+    otherwise complete sentence. Removing those edges lets required chunk
+    boundaries join naturally; it never inserts or removes an internal pause.
+    """
+
+    if samples.size == 0:
+        return samples, {"leadingSeconds": 0.0, "trailingSeconds": 0.0}
+    frame_size = max(1, round(sample_rate * 0.01))
+    frame_count = samples.size // frame_size
+    if frame_count < 3:
+        return samples, {"leadingSeconds": 0.0, "trailingSeconds": 0.0}
+    framed = samples[: frame_count * frame_size].reshape(frame_count, frame_size)
+    rms = numpy.sqrt(numpy.mean(numpy.square(framed), axis=1))
+    peak_rms = float(numpy.max(rms))
+    threshold = max(10 ** (-48.0 / 20.0), peak_rms * 0.05)
+    quiet = rms <= threshold
+    minimum_quiet_frames = 3  # 30 ms; preserve natural consonant release
+    leading_frames = 0
+    while leading_frames < frame_count and quiet[leading_frames]:
+        leading_frames += 1
+    trailing_frames = 0
+    while trailing_frames < frame_count and quiet[frame_count - trailing_frames - 1]:
+        trailing_frames += 1
+    leading_frames = leading_frames if leading_frames >= minimum_quiet_frames else 0
+    trailing_frames = trailing_frames if trailing_frames >= minimum_quiet_frames else 0
+    start = min(leading_frames * frame_size, max(0, samples.size - 1))
+    end = max(start + 1, samples.size - trailing_frames * frame_size)
+    return samples[start:end], {
+        "leadingSeconds": round(start / sample_rate, 6),
+        "trailingSeconds": round((samples.size - end) / sample_rate, 6),
+    }
+
+
+def preserve_natural_internal_pauses(
+    samples: Any, sample_rate: int, numpy: Any
+) -> tuple[Any, list[dict[str, float]]]:
+    """Preserve model-rendered punctuation timing byte-for-byte.
+
+    A previous assembly pass removed every near-digital run longer than roughly
+    60 ms. That included ordinary comma and breath pauses, compressed the spoken
+    cadence, and made otherwise continuous takes sound rushed. Internal blanks
+    are now measured and failed by the strict gate; assembly never edits them.
+    """
+
+    del sample_rate, numpy
+    return samples, []
 
 
 def semantic_pause_runs(samples: Any, sample_rate: int, numpy: Any) -> list[tuple[int, int]]:
@@ -1842,43 +2032,12 @@ def extend_semantic_pauses(
     sample_rate: int,
     numpy: Any,
 ) -> tuple[Any, list[dict[str, Any]]]:
-    if not boundaries:
-        return samples, []
-    chosen = match_semantic_pauses(samples, boundaries, sample_rate, numpy)
-    records: list[dict[str, Any]] = []
-    adjusted = samples
-    added_before = 0
-    for boundary, (start, end) in zip(boundaries, chosen, strict=True):
-        target_key = "listPauseMs" if boundary["kind"] == "list" else "clausePauseMs"
-        target_ms = int(direction[target_key])
-        original_frames = end - start
-        target_frames = round(sample_rate * target_ms / 1000)
-        added_frames = max(0, target_frames - original_frames)
-        insertion = end + added_before
-        if added_frames:
-            adjusted = numpy.concatenate(
-                [
-                    adjusted[:insertion],
-                    numpy.zeros(added_frames, dtype=numpy.float32),
-                    adjusted[insertion:],
-                ]
-            )
-            added_before += added_frames
-        realized_end_frame = insertion + added_frames
-        records.append(
-            {
-                **boundary,
-                "method": "lexically-expected-low-energy-gap-bounded-extension",
-                "originalPauseMs": round(original_frames / sample_rate * 1000, 2),
-                "addedSilenceMs": round(added_frames / sample_rate * 1000, 2),
-                "realizedPauseMs": round(
-                    (original_frames + added_frames) / sample_rate * 1000, 2
-                ),
-                "targetPauseMs": target_ms,
-                "pauseEndFrame": realized_end_frame,
-            }
-        )
-    return adjusted, records
+    # Keep the legacy function as a fail-closed compatibility seam for retained
+    # validator fixtures. New production never pads a low-energy run with zero
+    # samples; doing so made a short natural comma or clause pause sound like a
+    # complete dropout (for example, “only … if”).
+    del boundaries, direction, sample_rate, numpy
+    return samples, []
 
 
 def aggregate_cadence_padding_frames(
@@ -1889,10 +2048,10 @@ def aggregate_cadence_padding_frames(
     boundary_count: int,
     maximum_per_boundary_ms: int = 250,
 ) -> list[int]:
-    """Return bounded semantic-boundary padding for a slightly rushed full take.
+    """Return legacy bounded padding values for validator compatibility.
 
-    This never stretches speech. It only extends already aligned clause/list
-    pauses, and refuses corrections too large to preserve natural prosody.
+    The current production path does not call this helper: a rushed track fails
+    instead of manufacturing an intra-sentence blank.
     """
 
     if boundary_count <= 0:
@@ -2185,6 +2344,12 @@ def existing_track_is_valid(
             or manifest.get("scriptSHA256") != script_hash
         ):
             return False
+        assembly = manifest.get("assembly", {})
+        if (
+            assembly.get("syntheticIntraSentenceSilence") is not False
+            or assembly.get("internalSilenceMaximumSeconds") != 0.45
+        ):
+            return False
         if attested_track is not None:
             require_attested_regular_file(
                 attested_track.get("manifest", {}), manifest_path
@@ -2389,31 +2554,46 @@ def generate_next_checkpoint_only(
             if language == "de":
                 kwargs["language_id"] = "de"
             waveform: Any | None = None
+            resolved_seed = int(checkpoint_metadata["seed"])
+            generation_attempt = 0
             try:
                 if waveforms:
                     waveform = waveforms[batch_index]
                 else:
-                    seed_everything(checkpoint_metadata["seed"], torch, numpy)
-                    prepare_generation_phase(model)
-                    waveform = generate_with_token_limit(
+                    waveform, resolved_seed, generation_attempt = generate_unit_with_eos_retry(
                         model,
                         kwargs,
                         checkpoint_metadata["speechTokenLimit"],
-                        lambda: transition_after_token_generation(
-                            model, environment["device"], torch
-                        ),
+                        int(checkpoint_metadata["seed"]),
+                        environment["device"],
+                        torch,
+                        numpy,
                     )
                 raw = waveform.detach().cpu().float().reshape(-1).numpy()
+                persisted_metadata = dict(checkpoint_metadata)
+                if generation_attempt:
+                    persisted_metadata.update(
+                        {
+                            "resolvedSeed": resolved_seed,
+                            "generationAttempt": generation_attempt,
+                        }
+                    )
                 write_unit_checkpoint(
                     checkpoint_root,
                     ordinal,
-                    checkpoint_metadata,
+                    persisted_metadata,
                     raw,
                     numpy,
                 )
+                retry_note = (
+                    f" using deterministic EOS retry {generation_attempt}"
+                    if generation_attempt
+                    else ""
+                )
                 print(
                     f"checkpointed {identifier}/{language} unit {ordinal + 1} "
-                    f"after validating {prefix_length} prefix units without PCM replay",
+                    f"after validating {prefix_length} prefix units without PCM replay"
+                    f"{retry_note}",
                     flush=True,
                 )
                 del raw
@@ -2475,7 +2655,7 @@ def generate_track(
     segment_records: list[dict[str, Any]] = []
     pause_records: list[dict[str, Any]] = []
     script_pause_components: list[dict[str, Any]] = []
-    semantic_boundaries: list[dict[str, Any]] = []
+    chunk_boundary_records: list[dict[str, Any]] = []
     current_frames = 0
     speech_frames = 0
     spoken_word_count = 0
@@ -2486,6 +2666,11 @@ def generate_track(
     model: Any | None = None
     raw_clipping_attention = False
     dropout_attention = False
+    edge_trim_attention = False
+    sentence_internal_silence_repairs: list[dict[str, Any]] = []
+    internal_silence_maximum = float(
+        plan["generation"]["internalSilenceMaximumSeconds"]
+    )
     checkpoint_root = unit_checkpoint_root(output_root, identifier, language)
     generation_plan = planned_generation_units(events, language)
     planned_units = planned_checkpoint_units(
@@ -2559,6 +2744,7 @@ def generate_track(
         sentence_words = words(event.text)
         spoken_word_count += len(sentence_words)
         units = generation_units(event.text, language)
+        sentence_audio: list[Any] = []
         for unit_index, unit in enumerate(units):
             seed = production_seed(
                 direction,
@@ -2594,25 +2780,34 @@ def generate_track(
                 checkpoint_metadata,
                 numpy,
             )
+            resolved_seed = seed
+            generation_attempt = 0
             if raw is None:
                 if model is None:
                     model = model_factory()
-                seed_everything(seed, torch, numpy)
-                prepare_generation_phase(model)
-                waveform = generate_with_token_limit(
+                waveform, resolved_seed, generation_attempt = generate_unit_with_eos_retry(
                     model,
                     kwargs,
                     unit_token_limit,
-                    lambda: transition_after_token_generation(
-                        model, environment["device"], torch
-                    ),
+                    seed,
+                    environment["device"],
+                    torch,
+                    numpy,
                 )
                 raw = waveform.detach().cpu().float().reshape(-1).numpy()
                 del waveform
+                persisted_metadata = dict(checkpoint_metadata)
+                if generation_attempt:
+                    persisted_metadata.update(
+                        {
+                            "resolvedSeed": resolved_seed,
+                            "generationAttempt": generation_attempt,
+                        }
+                    )
                 write_unit_checkpoint(
                     checkpoint_root,
                     generation_ordinal,
-                    checkpoint_metadata,
+                    persisted_metadata,
                     raw,
                     numpy,
                 )
@@ -2637,46 +2832,87 @@ def generate_track(
                     generation_calls_since_load = 0
                     model_reload_count += 1
             else:
+                resolved_seed, generation_attempt = checkpoint_generation_provenance(
+                    checkpoint_root, generation_ordinal, seed
+                )
                 print(
                     f"resumed {identifier}/{language} unit {generation_ordinal + 1}",
                     flush=True,
                 )
-            unit_start_frame = current_frames
+            adjusted, edge_trim = trim_silence_edges(raw, sample_rate, numpy)
+            adjusted, internal_silence_repairs = preserve_natural_internal_pauses(
+                adjusted, sample_rate, numpy
+            )
             adjusted, internal_pauses = extend_semantic_pauses(
-                raw,
+                adjusted,
                 unit.internal_boundaries,
                 direction,
                 sample_rate,
                 numpy,
             )
             measurements = signal_measurements(adjusted, sample_rate, numpy)
+            if measurements["durationSeconds"] < MINIMUM_SPOKEN_SEGMENT_SECONDS:
+                raise ValueError(
+                    f"{identifier}/{language}: generated speech unit is only "
+                    f"{measurements['durationSeconds']:.3f}s; refusing a near-empty cue"
+                )
             unit_word_count = len(words(unit.source_text))
             unit_wpm = unit_word_count / measurements["durationSeconds"] * 60.0
             minimum_wpm, maximum_wpm = direction["speechOnlyWPMRange"]
             wpm_attention = not minimum_wpm * 0.65 <= unit_wpm <= maximum_wpm * 1.35
-            permitted_internal_silence = max(
-                [record["targetPauseMs"] / 1000 for record in internal_pauses] or [0.0]
-            )
-            segment_dropout = measurements["longestInternalSilenceSeconds"] > max(
-                3.0, permitted_internal_silence + 1.25
-            )
-            raw_clipping_attention = raw_clipping_attention or measurements["clippedInputSamples"] > 0
-            dropout_attention = dropout_attention or segment_dropout
-            assembled.append(adjusted)
-            for record in internal_pauses:
-                semantic_boundaries.append(
+            long_internal_runs = [
+                (start, end)
+                for start, end in silence_runs(adjusted, sample_rate, numpy)
+                if (end - start) / sample_rate > internal_silence_maximum
+            ]
+            natural_prosody_pauses: list[dict[str, Any]] = []
+            unresolved_internal_runs: list[tuple[int, int]] = []
+            for start, end in long_internal_runs:
+                duration_seconds = (end - start) / sample_rate
+                if is_authored_punctuation_pause(
+                    start / sample_rate,
+                    end / sample_rate,
+                    0.0,
+                    adjusted.size / sample_rate,
+                    unit.source_text,
+                ):
+                    method = "authored-punctuation-aligned-model-pause"
+                elif is_bounded_natural_prosody_pause(duration_seconds):
+                    method = "bounded-model-prosody-owner-listening-required"
+                else:
+                    unresolved_internal_runs.append((start, end))
+                    continue
+                natural_prosody_pauses.append(
                     {
-                        "originalFrame": unit_start_frame + int(record.pop("pauseEndFrame")),
-                        "record": record,
+                        "startSeconds": round(start / sample_rate, 6),
+                        "endSeconds": round(end / sample_rate, 6),
+                        "durationSeconds": round(duration_seconds, 6),
+                        "method": method,
                     }
                 )
-            current_frames += int(adjusted.size)
-            speech_frames += int(adjusted.size)
+            if unresolved_internal_runs:
+                start, end = max(
+                    unresolved_internal_runs, key=lambda item: item[1] - item[0]
+                )
+                raise ValueError(
+                    f"{identifier}/{language}: unresolved internal blank of "
+                    f"{(end - start) / sample_rate:.3f}s "
+                    f"exceeds {internal_silence_maximum:.3f}s in "
+                    f"sentence {event.sentence_index}, unit {unit_index}"
+                )
+            segment_dropout = False
+            raw_clipping_attention = raw_clipping_attention or measurements["clippedInputSamples"] > 0
+            edge_trim_attention = edge_trim_attention or any(
+                value > 0 for value in edge_trim.values()
+            )
+            sentence_audio.append(adjusted)
             segment_records.append(
                 {
                     "sentenceIndex": event.sentence_index,
                     "unitIndex": unit_index,
-                    "seed": seed,
+                    "seed": resolved_seed,
+                    "baseSeed": seed,
+                    "generationAttempt": generation_attempt,
                     "languageID": "de" if language == "de" else None,
                     "sourceTextSHA256": text_sha256(unit.source_text),
                     "generationTextSHA256": text_sha256(unit.generation_text),
@@ -2686,33 +2922,39 @@ def generate_track(
                     "wpmAttention": wpm_attention,
                     "dropoutAttention": segment_dropout,
                     "internalSemanticPauses": internal_pauses,
+                    "naturalProsodyPauses": natural_prosody_pauses,
+                    "internalSilenceRepairs": internal_silence_repairs,
+                    "edgeTrim": edge_trim,
+                    "internalSilenceMaximumSeconds": internal_silence_maximum,
                     **measurements,
                 }
             )
             generation_ordinal += 1
             if unit.gap_after:
-                target_key = (
-                    "listPauseMs" if unit.gap_after["kind"] == "list" else "clausePauseMs"
-                )
-                gap_ms = int(direction[target_key])
-                frames = round(sample_rate * gap_ms / 1000)
-                assembled.append(numpy.zeros(frames, dtype=numpy.float32))
-                current_frames += frames
-                speech_frames += frames
-                record = {
-                        **unit.gap_after,
-                        "kind": f"semantic-{unit.gap_after['kind']}",
-                        "method": "explicit-aligned-unit-boundary",
-                        "durationSeconds": round(gap_ms / 1000, 3),
-                    }
-                pause_records.append(record)
-                semantic_boundaries.append(
+                chunk_boundary_records.append(
                     {
-                        "originalFrame": current_frames,
-                        "record": record,
+                        **unit.gap_after,
+                        "kind": "chunk-boundary",
+                        "method": "trimmed-edge-concatenation-no-synthetic-silence",
+                        "durationSeconds": 0.0,
                     }
                 )
 
+        if not sentence_audio:
+            raise ValueError(
+                f"{identifier}/{language}: sentence {event.sentence_index} produced no audio"
+            )
+        sentence_joined = numpy.concatenate(sentence_audio)
+        sentence_joined, cross_unit_repairs = preserve_natural_internal_pauses(
+            sentence_joined, sample_rate, numpy
+        )
+        for repair in cross_unit_repairs:
+            sentence_internal_silence_repairs.append(
+                {"sentenceIndex": event.sentence_index, **repair}
+            )
+        assembled.append(sentence_joined)
+        current_frames += int(sentence_joined.size)
+        speech_frames += int(sentence_joined.size)
         sentence_end = current_frames
         cues.append(
             {
@@ -2749,44 +2991,13 @@ def generate_track(
         raise ValueError(f"{identifier}/{language}: generated speech contains dropout attention")
     speech_seconds = speech_frames / sample_rate
     speech_wpm = spoken_word_count / speech_seconds * 60.0
-    minimum_wpm, maximum_wpm = direction["speechOnlyWPMRange"]
+    minimum_wpm, maximum_wpm = no_synthetic_speech_only_wpm_range(plan, language)
     cadence_insertions: list[dict[str, Any]] = []
-    if language == "en" and speech_wpm > maximum_wpm:
-        padding = aggregate_cadence_padding_frames(
-            spoken_word_count,
-            speech_frames,
-            sample_rate,
-            float(maximum_wpm),
-            len(semantic_boundaries),
-        )
-        if padding:
-            for boundary, frames in zip(semantic_boundaries, padding, strict=True):
-                if frames <= 0:
-                    continue
-                record = boundary["record"]
-                added_ms = frames / sample_rate * 1000
-                record["cadenceCorrectionAddedMs"] = round(added_ms, 2)
-                record["method"] = f"{record['method']}-plus-bounded-aggregate-cadence-correction"
-                if "realizedPauseMs" in record:
-                    record["realizedPauseMs"] = round(
-                        float(record["realizedPauseMs"]) + added_ms, 2
-                    )
-                else:
-                    record["durationSeconds"] = round(
-                        float(record["durationSeconds"]) + frames / sample_rate, 6
-                    )
-                cadence_insertions.append(
-                    {"originalFrame": int(boundary["originalFrame"]), "frames": frames}
-                )
-            added_frames = sum(int(item["frames"]) for item in cadence_insertions)
-            speech_frames += added_frames
-            current_frames += added_frames
-            speech_seconds = speech_frames / sample_rate
-            speech_wpm = spoken_word_count / speech_seconds * 60.0
     if not minimum_wpm <= speech_wpm <= maximum_wpm:
         raise ValueError(
             f"{identifier}/{language}: speech-only cadence {speech_wpm:.2f} WPM "
-            f"misses selected direction range {minimum_wpm}-{maximum_wpm} WPM"
+            f"misses no-synthetic hard range {minimum_wpm}-{maximum_wpm} WPM; "
+            "synthetic intra-sentence cadence padding is disabled"
         )
     target_frames = int(practice["targetMinutes"]) * 60 * sample_rate
     original_script_frames = sum(
@@ -2829,11 +3040,7 @@ def generate_track(
         return original_frame + delta
 
     def remap_with_cadence(original_frame: int) -> int:
-        return remap_frame(original_frame) + sum(
-            int(item["frames"])
-            for item in cadence_insertions
-            if int(item["originalFrame"]) <= original_frame
-        )
+        return remap_frame(original_frame)
 
     for cue in cues:
         cue["startSeconds"] = round(
@@ -2850,16 +3057,6 @@ def generate_track(
 
     current_frames = target_frames
     joined = numpy.concatenate(assembled)
-    if cadence_insertions:
-        pieces: list[Any] = []
-        previous_frame = 0
-        for insertion in sorted(cadence_insertions, key=lambda item: int(item["originalFrame"])):
-            frame = remap_frame(int(insertion["originalFrame"]))
-            pieces.append(joined[previous_frame:frame])
-            pieces.append(numpy.zeros(int(insertion["frames"]), dtype=numpy.float32))
-            previous_frame = frame
-        pieces.append(joined[previous_frame:])
-        joined = numpy.concatenate(pieces)
     if int(joined.size) != target_frames:
         raise ValueError(f"{identifier}/{language}: deterministic pause allocation drifted")
     track_root = output_root / identifier / language
@@ -2953,6 +3150,14 @@ def generate_track(
             "overallWordsPerMinute": round(overall_wpm, 2),
             "rawClippingAttention": raw_clipping_attention,
             "dropoutAttention": dropout_attention,
+            "edgeTrimAttention": edge_trim_attention,
+            "internalSilenceRepairCount": sum(
+                len(segment.get("internalSilenceRepairs", []))
+                for segment in segment_records
+            ) + len(sentence_internal_silence_repairs),
+            "internalSilenceMaximumSeconds": internal_silence_maximum,
+            "crossUnitInternalSilenceRepairs": sentence_internal_silence_repairs,
+            "syntheticIntraSentenceSilence": False,
             "scriptPauseAllocation": plan["generation"]["scriptPauseAllocation"],
             "scriptPauseOriginalSeconds": round(original_script_frames / sample_rate, 6),
             "scriptPauseAllocatedSeconds": round(required_script_frames / sample_rate, 6),
@@ -2964,6 +3169,7 @@ def generate_track(
         "mastering": mastered,
         "segments": segment_records,
         "pauses": pause_records,
+        "chunkBoundaries": chunk_boundary_records,
         "cues": cues,
         "alignmentState": "deterministic-generation-boundaries-human-review-pending",
         "files": file_records,
