@@ -8,19 +8,20 @@ import {
 } from "./capture-drift-policy";
 
 const exact: HistoricalCaptureRetention = {
-  classification: "build-7-withdrawn-build-15-capture-retention",
+  classification: "build-7-captures-retained-for-build-16-audio-replacement",
   current_source_revision: RETAINED_CAPTURE_SOURCE_REVISION,
-  changed_paths: [...RETAINED_CAPTURE_CHANGED_PATHS],
+  changed_path_count: RETAINED_CAPTURE_CHANGED_PATHS.length,
+  change_scope: "prior-reviewed-ui-delta-plus-approved-v4-narration-only",
   historical_submitted_version: "1.0",
   historical_submitted_build: 7,
-  historical_review_state: "DEVELOPER_REJECTED_AFTER_WITHDRAWAL",
-  replacement_candidate_build: 15,
-  valid_until: "build-15-candidate-bound-capture",
-  listing_mutation: "review-withdrawn-existing-live-images-retained",
-  separate_iap_state: "READY_TO_SUBMIT_NOT_ATTACHED",
-  next_action: "candidate-bind-and-read-back-before-build-15-submission",
+  current_review_state: "REJECTED_UNRESOLVED_ISSUES",
+  replacement_candidate_build: 16,
+  valid_until: "build-16-candidate-bound-capture",
+  listing_mutation: "rejected-version-existing-live-images-retained",
+  separate_iap_state: "IN_REVIEW",
+  next_action: "candidate-bind-and-read-back-before-build-16-resubmission",
   rationale:
-    "The build 7 review was withdrawn and version 1.0 now reads DEVELOPER_REJECTED. Its historical live screenshots are not build-15 evidence. The Guided catalogue now renders inline, while the required Garden, Journey, and Journal capture IDs remain unchanged. The approved current-source captures must be candidate-bound and read back before build 15 is submitted. The READY_TO_SUBMIT IAP is separate and not attached. No build-15 archive, upload, physical, review, or storefront claim exists.",
+    "App Store version 1.0 is rejected with unresolved issues while build 15 remains valid. Its historical live screenshots are not build-16 evidence. The Guided catalogue now renders inline, while the required Garden, Journey, and Journal capture IDs remain unchanged. The approved v4 narration replacement changes only audio, transcripts, provenance, and editorial state; it does not alter those captured pixels. The approved captures must be candidate-bound and read back before build 16 is submitted. The IAP remains separately IN_REVIEW. No build-16 archive, upload, physical, review, or storefront claim exists.",
 };
 
 function accepts(
@@ -34,9 +35,9 @@ function accepts(
 assert.equal(accepts(), true, "the exact historical-capture retention must pass");
 assert.equal(accepts(exact, `${RETAINED_CAPTURE_SOURCE_REVISION.slice(0, -1)}0`), false, "a near-match revision must fail");
 assert.equal(accepts(exact, RETAINED_CAPTURE_SOURCE_REVISION, [...RETAINED_CAPTURE_CHANGED_PATHS, "Renderer/src/scene.ts"]), false, "an extra changed file must fail");
-assert.equal(accepts({ ...exact, replacement_candidate_build: 16 as 15 }), false, "another replacement build must fail");
-assert.equal(accepts({ ...exact, valid_until: "expired" as "build-15-candidate-bound-capture" }), false, "an expired retention must fail");
-assert.equal(accepts({ ...exact, listing_mutation: "review-withdrawn-existing-live-images-retained " as "review-withdrawn-existing-live-images-retained" }), false, "a near-match mutation boundary must fail");
+assert.equal(accepts({ ...exact, replacement_candidate_build: 15 as 16 }), false, "another replacement build must fail");
+assert.equal(accepts({ ...exact, valid_until: "expired" as "build-16-candidate-bound-capture" }), false, "an expired retention must fail");
+assert.equal(accepts({ ...exact, change_scope: "prior-reviewed-ui-delta-plus-approved-v4-narration-only " as "prior-reviewed-ui-delta-plus-approved-v4-narration-only" }), false, "a near-match scope must fail");
 assert.equal(accepts({ ...exact, rationale: exact.rationale.replace("candidate-bound", "available") }), false, "a missing candidate-binding action must fail");
 
 process.stdout.write("Capture drift policy passed: exact historical-capture retention plus 6 negative controls.\n");

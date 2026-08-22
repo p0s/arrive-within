@@ -20,7 +20,7 @@ CANDIDATE_ROOT = (
     ROOT
     / "ContentProduction"
     / "production-candidates"
-    / "chatterbox-production-candidates-v2"
+    / "chatterbox-production-candidates-v4-whole-utterance"
 )
 CATALOG_PATH = ROOT / "Content" / "guided" / "catalog.json"
 PRIVATE_OUTPUT_ROOT = ROOT / ".evidence" / "audio"
@@ -198,8 +198,8 @@ def render_index(items: list[dict[str, Any]], review: dict[str, Any]) -> str:
         json.dumps(review, ensure_ascii=False, sort_keys=True).encode("utf-8")
     ).decode("ascii")
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'none'; img-src 'none'; media-src 'self'; object-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'"><title>Arrive Within narration review</title><style>
-body{{font:16px system-ui;max-width:900px;margin:40px auto;padding:0 20px;color:#17211d;background:#f4f0e7}}article{{padding:22px 0;border-top:1px solid #aaa}}audio,textarea{{width:100%}}.gates,.library{{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}}label{{display:grid;gap:4px}}select,textarea,button{{font:inherit;padding:8px}}code{{overflow-wrap:anywhere}}#progress{{font-weight:600;position:sticky;top:0;background:#f4f0e7;padding:12px 0}}
-</style></head><body><h1>Private narration review packet</h1><p>This offline packet contains only completed, hash-verified production candidates and makes no network request. Listen in full before approving. Promotion into a TestFlight device candidate accepts only a complete 84-track record whose hashes, track gates, rights sign-off, and device-candidate approval all validate. iPhone/iPad audio testing follows in that build.</p><p id="progress"></p><section><h2>Library decisions</h2><div class="library">{''.join(library_controls)}</div><label>Approval notes<textarea id="approval-notes">{html.escape(review['approvalNotes'])}</textarea></label><button type="button" id="export-review">Export review-template.json</button></section>{''.join(cards)}<script>
+body{{font:16px system-ui;max-width:900px;margin:40px auto;padding:0 20px;color:#17211d;background:#f4f0e7}}article{{padding:22px 0;border-top:1px solid #aaa}}audio,textarea{{width:100%}}.gates,.library{{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}}label{{display:grid;gap:4px}}select,textarea,button{{font:inherit;padding:8px}}code{{overflow-wrap:anywhere}}#progress{{font-weight:600;position:sticky;top:0;background:#f4f0e7;padding:12px 0}}.playback{{max-width:260px;margin:16px 0}}
+</style></head><body><h1>Private narration review packet</h1><p>This offline packet contains only completed, hash-verified production candidates and makes no network request. Listen in full before approving. Promotion into a TestFlight device candidate accepts only a complete 84-track record whose hashes, track gates, rights sign-off, and device-candidate approval all validate. iPhone/iPad audio testing follows in that build.</p><label class="playback">Playback speed<select id="playback-rate"><option value="1" selected>1× — naturalness review</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label><p>Speed changes playback only; reviewed files and hashes stay unchanged. Return to 1× for any passage whose pace, pitch, pause, or join sounds unusual.</p><p id="progress"></p><section><h2>Library decisions</h2><div class="library">{''.join(library_controls)}</div><label>Approval notes<textarea id="approval-notes">{html.escape(review['approvalNotes'])}</textarea></label><button type="button" id="export-review">Export review-template.json</button></section>{''.join(cards)}<script>
 const review=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob("{encoded_review}"),c=>c.charCodeAt(0))));
 const trackMap=new Map(review.tracks.map(track=>[`${{track.id}}/${{track.language}}`,track]));
 function sync(){{
@@ -216,9 +216,14 @@ function sync(){{
   document.getElementById("progress").textContent=`${{approvedTracks}}/${{review.tracks.length}} tracks fully approved · record state: ${{review.state}}`;
 }}
 document.addEventListener("change",sync);
+const playbackRate=document.getElementById("playback-rate");
+function applyPlaybackRate(){{const rate=Number(playbackRate.value);for(const audio of document.querySelectorAll("audio")){{audio.defaultPlaybackRate=rate;audio.playbackRate=rate;}}}}
+playbackRate.addEventListener("change",applyPlaybackRate);
+for(const audio of document.querySelectorAll("audio")) audio.addEventListener("play",applyPlaybackRate);
 for(const button of document.querySelectorAll("button[data-approve-track]")) button.addEventListener("click",()=>{{for(const select of document.querySelectorAll(`select[data-track="${{button.dataset.approveTrack}}"]`)) select.value="approved";sync();}});
 document.getElementById("export-review").addEventListener("click",()=>{{sync();const blob=new Blob([JSON.stringify(review,null,2)+"\\n"],{{type:"application/json"}});const link=document.createElement("a");link.href=URL.createObjectURL(blob);link.download="review-template.json";link.click();setTimeout(()=>URL.revokeObjectURL(link.href),1000);}});
 sync();
+applyPlaybackRate();
 </script></body></html>\n"""
 
 

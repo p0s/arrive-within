@@ -6,10 +6,11 @@ UV_CACHE_DIR="$ROOT/.build/uv-cache"
 PROJECT="$ROOT/ContentProduction/chatterbox-audition"
 DEVICE=${NARRATION_DEVICE:-mps}
 BACKEND=${NARRATION_BACKEND:-mlx-audio}
-# Real MLX startup from 12.24 GiB fell to the unchanged 10.80 GiB stop sample
-# before its first checkpoint. Fourteen GiB retains a measured startup margin
-# above the independent 10 GiB floor plus 1 GiB early-stop buffer.
-START_HEADROOM_GIB=${NARRATION_START_HEADROOM_GIB:-14}
+# The whole-utterance pilot showed that a German MLX startup can transiently
+# consume about 5.4 GiB before its first checkpoint. Requiring 16.5 GiB avoids
+# wasteful launch/kill cycles while preserving the 10 GiB floor plus the 1 GiB
+# early-stop buffer throughout model initialization.
+START_HEADROOM_GIB=${NARRATION_START_HEADROOM_GIB:-16.5}
 # Keep the lifecycle owner waiting through an overnight memory window instead of
 # exiting after the runner's five-minute diagnostic default.
 WAIT_SECONDS=${NARRATION_WAIT_SECONDS:-43200}

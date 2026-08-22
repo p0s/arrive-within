@@ -12,6 +12,7 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
+from narration_pause_contract import extract_bounded_natural_prosody_pauses
 from validate_narration_review_approval import ApprovalFailure, validate_approval
 
 
@@ -142,6 +143,9 @@ def provenance(
         "productionManifestSHA256": item["manifestSHA256"],
         "productionVersion": report["productionVersion"],
         "productionDirection": track["direction"],
+        "boundedNaturalProsodyPauses": extract_bounded_natural_prosody_pauses(
+            manifest.get("segments", [])
+        ),
         "source": report["source"],
         "model": report["model"],
         "referenceVoiceUsed": False,

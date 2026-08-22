@@ -57,6 +57,7 @@ AuthKey_*.p8
 /ContentProduction/auditions/
 /ContentProduction/production-candidates/
 /ContentProduction/model-cache/
+/.quarantine/
 /Marketing/SoundDesignLab/output/
 /Marketing/AppStoreScreenshots/exports/alternatives/
 !/Content/guided/

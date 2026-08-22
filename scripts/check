@@ -38,6 +38,7 @@ print "== Manual security review boundary =="
 node scripts/validate_manual_security_review.mjs
 
 print "== Guided content and localization =="
+python3 scripts/test_narration_pause_contract.py
 guided_gate="${ARRIVE_WITHIN_GUIDED_GATE:-source}"
 case "$guided_gate" in
   source|device-candidate) ;;

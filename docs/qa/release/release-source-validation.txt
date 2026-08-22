@@ -1,4 +1,4 @@
-status: passed-source-contract-selected-candidate-submitted
+status: passed-source-contract-build-15-rejected-v4-pending
 release_ready: false
 source_contract_passed: true
 candidate_bound: true

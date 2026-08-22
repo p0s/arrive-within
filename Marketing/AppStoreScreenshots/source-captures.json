@@ -14,29 +14,19 @@
     "notes": "English and German iPhone and iPad contact sheets plus representative full-resolution comparisons were inspected after the current-source recapture: all slides retain one headline, a tight headline-to-product gap, unclipped legible real app UI, and the purposeful overlapping framed comparison."
   },
   "post_capture_change": {
-    "classification": "build-7-withdrawn-build-15-capture-retention",
-    "current_source_revision": "75031c7ee16fdf7f7463cfe943b573b0ba785af1051027296e32dd2c345d8bdf",
-    "changed_paths": [
-      "Apps/ArriveWithin/Resources/de.lproj/Localizable.strings",
-      "Apps/ArriveWithin/Resources/en.lproj/Localizable.strings",
-      "Apps/ArriveWithin/Sources/AppModel.swift",
-      "Apps/ArriveWithin/Sources/GuidedLibraryView.swift",
-      "Apps/ArriveWithin/Sources/MeditationAudioController.swift",
-      "Apps/ArriveWithin/Sources/PracticeView.swift",
-      "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinUITests.swift",
-      "ArriveWithin.xcodeproj/project.pbxproj",
-      "Config/Base.xcconfig",
-      "project.yml"
-    ],
+    "classification": "build-7-captures-retained-for-build-16-audio-replacement",
+    "current_source_revision": "970cbd8250bbb522a5b09570f349fd6967b8f7fcc5d863216c3c7c45a0e94a49",
+    "changed_path_count": 264,
+    "change_scope": "prior-reviewed-ui-delta-plus-approved-v4-narration-only",
     "historical_submitted_version": "1.0",
     "historical_submitted_build": 7,
-    "historical_review_state": "DEVELOPER_REJECTED_AFTER_WITHDRAWAL",
-    "replacement_candidate_build": 15,
-    "valid_until": "build-15-candidate-bound-capture",
-    "listing_mutation": "review-withdrawn-existing-live-images-retained",
-    "separate_iap_state": "READY_TO_SUBMIT_NOT_ATTACHED",
-    "next_action": "candidate-bind-and-read-back-before-build-15-submission",
-    "rationale": "The build 7 review was withdrawn and version 1.0 now reads DEVELOPER_REJECTED. Its historical live screenshots are not build-15 evidence. The Guided catalogue now renders inline, while the required Garden, Journey, and Journal capture IDs remain unchanged. The approved current-source captures must be candidate-bound and read back before build 15 is submitted. The READY_TO_SUBMIT IAP is separate and not attached. No build-15 archive, upload, physical, review, or storefront claim exists."
+    "current_review_state": "REJECTED_UNRESOLVED_ISSUES",
+    "replacement_candidate_build": 16,
+    "valid_until": "build-16-candidate-bound-capture",
+    "listing_mutation": "rejected-version-existing-live-images-retained",
+    "separate_iap_state": "IN_REVIEW",
+    "next_action": "candidate-bind-and-read-back-before-build-16-resubmission",
+    "rationale": "App Store version 1.0 is rejected with unresolved issues while build 15 remains valid. Its historical live screenshots are not build-16 evidence. The Guided catalogue now renders inline, while the required Garden, Journey, and Journal capture IDs remain unchanged. The approved v4 narration replacement changes only audio, transcripts, provenance, and editorial state; it does not alter those captured pixels. The approved captures must be candidate-bound and read back before build 16 is submitted. The IAP remains separately IN_REVIEW. No build-16 archive, upload, physical, review, or storefront claim exists."
   },
   "result_bundles": [
     {

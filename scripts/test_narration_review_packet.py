@@ -79,6 +79,9 @@ class NarrationReviewPacketTests(unittest.TestCase):
             self.assertIn("connect-src 'none'", index)
             self.assertIn("raw-source clipping attention", index)
             self.assertIn("Export review-template.json", index)
+            self.assertIn('id="playback-rate"', index)
+            self.assertIn('audio.playbackRate=rate', index)
+            self.assertIn("reviewed files and hashes stay unchanged", index)
             self.assertEqual(stat.S_IMODE((output / "index.html").stat().st_mode), 0o644)
             self.assertEqual(stat.S_IMODE((output / "review-template.json").stat().st_mode), 0o600)
 

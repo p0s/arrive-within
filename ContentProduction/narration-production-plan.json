@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "productionVersion": "chatterbox-production-candidates-v2",
+  "productionVersion": "chatterbox-production-candidates-v4-whole-utterance",
   "status": "owner-selected-directions-private-production-candidate-generation",
   "rights": {
     "privateGeneration": "approved-for-private-default-voice-production-candidates",
@@ -44,6 +44,22 @@
     "timeStretch": "none",
     "runtimeNetwork": "forbidden-local-files-only",
     "scriptPauseAllocation": "preserve-relative-authored-weights-and-hit-catalog-target-duration",
+    "semanticPausePolicy": "natural-punctuation-only-no-synthetic-intra-sentence-silence",
+    "internalSilenceMaximumSeconds": 0.45,
+    "noSyntheticSpeechOnlyWPMRange": [
+      105,
+      210
+    ],
+    "noSyntheticSpeechOnlyWPMRangeByLanguage": {
+      "de": [
+        105,
+        220
+      ],
+      "en": [
+        105,
+        210
+      ]
+    },
     "durationTargetToleranceSeconds": 1.0,
     "aggregateSpeechWPMTolerance": 0.5
   },
@@ -57,15 +73,15 @@
         105,
         120
       ],
-      "listPauseMs": 650,
-      "clausePauseMs": 1500,
+      "listPauseMs": 0,
+      "clausePauseMs": 0,
       "sentenceGapMs": 1700,
       "paragraphGapMs": 2400,
       "exaggeration": 0.18,
       "cfgWeight": 0.03,
       "temperature": 0.62,
       "languageID": null,
-      "assembly": "context-aware-sentence-clause-units-with-bounded-semantic-pauses"
+      "assembly": "complete-sentence-and-punctuation-units-with-trimmed-edge-concatenation"
     },
     "de": {
       "id": "de-c2-accent-stability",
@@ -76,8 +92,8 @@
         95,
         210
       ],
-      "listPauseMs": 450,
-      "clausePauseMs": 500,
+      "listPauseMs": 0,
+      "clausePauseMs": 0,
       "sentenceGapMs": 750,
       "paragraphGapMs": 1200,
       "exaggeration": 0.26,

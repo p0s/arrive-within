@@ -1,13 +1,13 @@
 ---
 id: G02
 language: en
-revision: 1
+revision: 2
 status: production-candidate
 target_minutes: 5
 ---
 # One Breath at a Time
 
-Settle into a position you can leave or change whenever you need. Let your eyes close only if that feels comfortable; otherwise keep a soft, steady view of the space in front of you. Feel the surface beneath you doing some of the work of holding you.
+Settle into a position you can leave or change whenever you need. Let your eyes close only if that feels comfortable. Otherwise, keep a soft, steady view of the space in front of you. Feel the surface beneath you doing some of the work of holding you.
 
 [Pause 8 seconds]
 

@@ -1,15 +1,16 @@
 {
-  "audioSHA256": "738d440e1267e14ecd5f2827b27b8216ecb8b028788842711458f4024bf502bb",
+  "audioSHA256": "034d07fed9eeb964299e3a5f851900dd3217b4757a897391898451890339c5f6",
   "automatedObjectiveState": "passed",
+  "boundedNaturalProsodyPauses": [],
   "claimBoundary": "Human-approved narration device candidate; TestFlight physical-device audio and finished-library approval remain pending.",
   "contentID": "G40",
   "deliveryBitrateBPS": 64003,
   "durationSeconds": 720.0,
   "finishedLibraryApproval": false,
   "finishedTrackApproval": true,
-  "generationScriptSHA256": "c1069220508c12d65ec6cf6adfa5bd036e0c94449b7ba62cb23769a541eaa369",
+  "generationScriptSHA256": "104d206cbb62ae4b85866b756bf77664bc2e57d925876528a5c4dca54fe88b5f",
   "humanListeningState": "approved",
-  "integratedLUFS": -19.57,
+  "integratedLUFS": -19.58,
   "language": "en",
   "model": {
     "germanT3Model": "t3_mtl23ls_v3.safetensors",
@@ -19,12 +20,12 @@
   },
   "physicalDeviceAudioState": "pending-testflight-review",
   "productionDirection": "en-f2-spacious-slow",
-  "productionManifestSHA256": "f359b8754f5098666eaa0c5c8ea78f34447439ef7edf2bed2e10e59208a4a17a",
+  "productionManifestSHA256": "5161c18c8af6d8c392b0d9ae881955aa5fea62c64f0d600a3e8073c3b70c7512",
   "productionMasterApproval": true,
-  "productionVersion": "chatterbox-production-candidates-v2",
+  "productionVersion": "chatterbox-production-candidates-v4-whole-utterance",
   "referenceVoiceUsed": false,
-  "reviewPacketManifestSHA256": "1374d21aab570163b29f55540b5f45e2b835e5967078796cff63a4d1031376d2",
-  "reviewRecordSHA256": "420b94186aabac381924902a8fba8573bd548235fcc19592f0e1b954acad6fa3",
+  "reviewPacketManifestSHA256": "34929c585a65e73f69a39925a332196be605aa6bd744d34788b9c22b636ffa79",
+  "reviewRecordSHA256": "0a66d033f3da564e9ccd05a9d60a1268a4d6a9378e10713a55da695d9059d725",
   "rightsState": "approved",
   "runtimeNetworkUsed": false,
   "schemaVersion": 1,
@@ -39,6 +40,6 @@
     "repository": "https://github.com/resemble-ai/chatterbox"
   },
   "transcriptAlignmentState": "approved",
-  "transcriptSHA256": "5b9f0ac8560805ce76f3eb25f1f58c5eeeb30ba42fbdfc8e74968c0d30e2d753",
-  "truePeakDBTP": -2.2
+  "transcriptSHA256": "602adec9d6f1cf5f0a92861c76339441d16f9ecce2aaf367e5e44188881b06ee",
+  "truePeakDBTP": -2.14
 }
