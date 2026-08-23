@@ -3,14 +3,14 @@
   "proving_probe": {
     "acceptance_criterion": "AC-001",
     "scenario": "SCN-001",
-    "status": "build-15-rejected-v4-human-review-pending",
-    "claim_boundary": "Apple still reports exact build 15 VALID, but version 1.0 is REJECTED and submission 9cb4ed98-7a4e-41da-8cf4-41b1bec16a11 has UNRESOLVED_ISSUES. The public API does not expose the Resolution Center message. Separately, the regenerated v4 narration set passes every objective 42x2 check but remains private and unpromoted until its exact hashes receive bilingual human, editorial, transcript, rights, and device-candidate approval. No Apple state was changed.",
+    "status": "build-16-waiting-for-review",
+    "claim_boundary": "All 84 exact v4 English/German narration hashes received owner listening/editorial/transcript/device-candidate approval, were promoted, merged through PR 30, and packaged byte-identically in build 16. Apple reports build 16 VALID and App Store eligible, linked to Internal Testing, attached to version 1.0, and WAITING_FOR_REVIEW with the replacement non-consumable. Physical interaction is not claimed because the host agent-device runner lacks its own development provisioning profile.",
     "evidence": "docs/qa/persona-runs/SCN-001/local-simulator-probe.md",
-    "next_action": "Complete the hash-bound 84-track human review, promote the approved v4 AAC/VTT/provenance set, run the full local and physical candidate gates, then upload build 16 and resolve the exact App Review issue before resubmission."
+    "next_action": "Wait for Apple review while independently repairing the host UI-runner profile and verifying exact build 16 on authorized hardware; after approval verify automatic release and public storefront installation."
   },
   "current_batch": {
     "id": "narration-pause-contract-regeneration",
-    "status": "v4-objective-passed-human-review-pending",
+    "status": "v4-approved-promoted-build-16-submitted",
     "evidence": [
       "Marketing/AppStoreScreenshots/screenshot-plan.json",
       "Marketing/AppStoreScreenshots/source-captures.json",
@@ -54,6 +54,7 @@
       "docs/release/candidate.example.json",
       "docs/release/release-train.json",
       "docs/qa/release/release-source-validation.json",
+      "docs/qa/release/build-16-narration-release.md",
       "docs/qa/release/concrete-simulator-release-builds.json",
       "docs/qa/release/concrete-simulator-release-builds.md",
       "docs/qa/final-local-gate.md",
@@ -63,13 +64,13 @@
     ]
   },
   "release_source_contract": {
-    "status": "superseded-by-no-synthetic-pause-regeneration",
+    "status": "passed-whole-utterance-build-16",
     "checks_passed": 121,
     "checks_failed": 0,
     "shipping_source_file_count": 71,
     "shipping_source_sha256": "cbc2e2a636a816a2168da66b655342f7b6f0de871b0648a73a4a6f3ec8d68ec5",
     "release_ready": false,
-    "candidate_bound": false
+    "candidate_bound": true
   },
   "icon_direction": {
     "concepts": "A-Living-Rings; B-Quiet-Threshold; C-Rooted-Light",
@@ -83,20 +84,20 @@
     "german_previous_delivery": "default-de-v3-and-accent-drifting-C-rejected",
     "german_alternatives": "owner-selected-C2-direction; fluent-German-review-remains-separate",
     "production_candidate_directories": 84,
-    "production_batch": "The v4 whole-utterance batch is complete: all 42 English and 42 German candidates were regenerated from lossless model output, mastered once, aligned to VTT, and objectively validated. The set contains 84 tracks, 46,801.068 seconds, and 378,951,381 delivery bytes. Sentence-level calls preserve fluent prosody and natural punctuation pauses without inserted intra-sentence zero-filled audio; a 450 ms cue-internal near-digital-silence gate remains fail-closed. Three boundary findings were repaired by deterministic whole-track regeneration and the final complete scan has no unresolved objective finding. Human review, rights approval, public promotion, and exact physical candidate proof remain pending.",
+    "production_batch": "The v4 whole-utterance batch is complete: all 42 English and 42 German candidates were regenerated from lossless model output, mastered once, aligned to VTT, and objectively validated. The set contains 84 tracks, 46,801.068 seconds, and 378,951,381 delivery bytes. Sentence-level calls preserve fluent prosody and natural punctuation pauses without inserted intra-sentence zero-filled audio; a 450 ms cue-internal near-digital-silence gate remains fail-closed. Three boundary findings were repaired by deterministic whole-track regeneration and the final complete scan has no unresolved objective finding. The owner approved every exact hash, and the approved set was promoted, merged, packaged byte-identically in build 16, and submitted to Apple.",
     "pause_contract": {
       "productionVersion": "chatterbox-production-candidates-v4-whole-utterance",
       "maximumInternalSilenceSeconds": 0.45,
       "legacyTrackFindings": 3323,
-      "state": "objective-passed-human-review-pending",
+      "state": "owner-approved-promoted-packaged-build-16",
       "pilotScript": "scripts/run_narration_pause_pilot.sh"
     },
     "shipping_asset_boundary": "raw-candidates-ignored-validated-promoted-content-guided-assets-not-ignored",
-    "baseline_testflight_dependency": "build-15-installed-and-submitted-visible-library-and-audio-readback-pending"
+    "baseline_testflight_dependency": "build-16-valid-internal-group-linked-and-submitted; physical-ui-readback-blocked-by-host-runner-provisioning"
   },
   "terminal_local_state": {
-    "status": "narration-v4-human-review-pending",
-    "root_gate": "blocked-by-unpromoted-shipping-audio-after-objective-candidate-pass",
+    "status": "build-16-waiting-for-review",
+    "root_gate": "passed-on-build-16-source; apple-review-and-physical-runtime-remain-separate",
     "acceptance_verified": 11,
     "acceptance_blocked_external": 10,
     "acceptance_in_progress": 8,
@@ -107,6 +108,6 @@
     "scenarios_in_progress": 2,
     "scenarios_open": 0,
     "release_ready": false,
-    "claim_boundary": "The pinned Node 26.7.0/pnpm 11.20.0 toolchain is available and 111 focused narration/release-boundary tests pass. The complete source gate reaches the intended fail-closed stop at legacy shipping G01 audio because the objectively passed v4 set is not yet human-approved or promoted. Apple reports build 15 VALID while version 1.0 is REJECTED and its submission has unresolved issues. No replacement upload, GitHub mutation, or Apple mutation was performed."
+    "claim_boundary": "The pinned toolchain, focused narration gates, full source gate, exact 42x2 objective validation, owner approval, public promotion, archive/IPA inspection, Apple processing, Internal Testing linkage, build attachment, review-item resolution, and resubmission all pass for build 16. Apple review/storefront and physical runtime are not inferred; the latter is blocked by missing host UI-runner development provisioning."
   }
 }

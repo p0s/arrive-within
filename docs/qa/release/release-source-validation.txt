@@ -1,4 +1,4 @@
-status: passed-source-contract-build-15-rejected-v4-pending
+status: passed-source-contract-build-16-waiting-for-review
 release_ready: false
 source_contract_passed: true
 candidate_bound: true
@@ -10,6 +10,6 @@ shipping_source_sha256: cbc2e2a636a816a2168da66b655342f7b6f0de871b0648a73a4a6f3e
 Remaining gates:
 - Apple App Review approval and automatic release
 - public storefront availability and storefront installation readback after approval
-- independent exact build-15 physical iPad library and audio confirmation
+- independent exact build-16 physical iPhone/iPad runtime confirmation after host UI-runner provisioning is restored
 
-This deterministic source check validates the repository's exact submitted build-15 release binding and completed public-repository readbacks but does not itself reproduce the frozen archive/IPA, live ASC or TestFlight state, physical-device audio observation, Apple approval, storefront, or external GitHub readback.
+This deterministic source check validates the repository's exact submitted build-16 release binding and completed public-repository readbacks but does not itself reproduce the frozen archive/IPA, live ASC or TestFlight state, physical-device runtime, Apple approval, storefront, or external GitHub readback.

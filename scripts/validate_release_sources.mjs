@@ -19,7 +19,7 @@ const checks = [];
 const blockers = [
   "Apple App Review approval and automatic release",
   "public storefront availability and storefront installation readback after approval",
-  "independent exact build-15 physical iPad library and audio confirmation",
+  "independent exact build-16 physical iPhone/iPad runtime confirmation after host UI-runner provisioning is restored",
 ];
 
 function pathFromRoot(path) {
@@ -97,7 +97,7 @@ const infoPlist = parsePlist("Apps/ArriveWithin/Resources/Info.plist");
 
 equal("metadata.locales", Object.keys(localeMetadata).sort(), ["de-DE", "en-US"]);
 equal("metadata.plan-locales", [...screenshotPlan.locales].sort(), ["de-DE", "en-US"]);
-record("metadata.shared-submitted", shared.state === "build-15-submitted" && shared.release_attachable === true, "shared metadata must bind the exact submitted build-15 listing while preserving the verified public URL binding");
+record("metadata.shared-submitted", shared.state === "build-16-submitted-waiting-for-review" && shared.release_attachable === true, "shared metadata must bind the exact submitted build-16 listing while preserving the verified public URL binding");
 record("metadata.rules-date", shared.current_rules?.verified_at === "2026-08-10", "current Apple-rule verification date must be explicit");
 
 const expectedRuleURLs = {
@@ -112,7 +112,7 @@ equal("metadata.rule-sources", shared.current_rules?.sources, expectedRuleURLs);
 
 const limits = shared.current_rules?.limits ?? {};
 for (const [locale, metadata] of Object.entries(localeMetadata)) {
-  record(`metadata.${locale}.submitted`, metadata.state === "build-15-live-metadata" && metadata.release_attachable === true, "locale metadata must bind the exact live build-15 listing copy");
+  record(`metadata.${locale}.submitted`, metadata.state === "build-16-live-metadata" && metadata.release_attachable === true, "locale metadata must bind the exact live build-16 listing copy");
   record(`metadata.${locale}.name`, countCharacters(metadata.name) >= limits.name_characters_min && countCharacters(metadata.name) <= limits.name_characters_max, `name is ${countCharacters(metadata.name)} characters`);
   record(`metadata.${locale}.subtitle`, countCharacters(metadata.subtitle) <= limits.subtitle_characters_max, `subtitle is ${countCharacters(metadata.subtitle)} characters`);
   record(`metadata.${locale}.promotional-text`, countCharacters(metadata.promotional_text) <= limits.promotional_text_characters_max, `promotional text is ${countCharacters(metadata.promotional_text)} characters`);
@@ -171,24 +171,24 @@ record(
     && shared.storekit_contract?.available_territories === 175
     && shared.storekit_contract?.available_in_new_territories === true
     && JSON.stringify(shared.storekit_contract?.locales) === JSON.stringify(["de-DE", "en-US"])
-    && shared.storekit_contract?.app_store_connect_state === "IN_REVIEW"
+    && shared.storekit_contract?.app_store_connect_state === "WAITING_FOR_REVIEW"
     && shared.storekit_contract?.current_app_review_attachment === true,
   "StoreKit must remain one exact non-consumable Garden entitlement attached to the submitted app version",
 );
 record(
   "metadata.candidate-submitted",
   shared.candidate_binding?.marketing_version === "1.0"
-    && shared.candidate_binding?.build_number === 15
-    && shared.candidate_binding?.build_id === "a77535f4-dc54-458c-a3ac-0dbf3a655bde"
-    && shared.candidate_binding?.source_commit === "ebe073c26c58fdc32912d96ad30cd7833659f027"
-    && shared.candidate_binding?.source_tree === "467708c15f766ade65788c251236dfcabba33014"
-    && shared.candidate_binding?.archive_zip_sha256 === "30f16f26969604b8be64a903db320585479b0c058dfe421357f7005819c6282c"
-    && shared.candidate_binding?.ipa_sha256 === "cf2f81858656d339462183719b4a2738d36f54b370613b7b761eae8d891b39c6"
+    && shared.candidate_binding?.build_number === 16
+    && shared.candidate_binding?.build_id === "1356a2e4-1515-4b5b-833a-b4ecdb2f7754"
+    && shared.candidate_binding?.source_commit === "b993fd8533381e01557d9ee9da22322b4f4c8ecb"
+    && shared.candidate_binding?.source_tree === "c229005b5eed58e224f716f9ff8989f86bd1c462"
+    && shared.candidate_binding?.archive_zip_sha256 === "02ca79bc6eb0446a2b7eef8d4e59574b2ebbde8217c0bbfaf9270158d2aba329"
+    && shared.candidate_binding?.ipa_sha256 === "0f04813b49ba2af40dcc51b962bb50e65c18cc3192e430690aa90f6522c3c718"
     && shared.candidate_binding?.app_store_version_id === "e3b3b152-a874-437d-9b59-17d23ce46739"
     && shared.candidate_binding?.review_submission_id === "9cb4ed98-7a4e-41da-8cf4-41b1bec16a11"
     && shared.candidate_binding?.review_item_count === 2
-    && shared.candidate_binding?.review_state === "UNRESOLVED_ISSUES"
-    && shared.candidate_binding?.app_store_version_state === "REJECTED",
+    && shared.candidate_binding?.review_state === "WAITING_FOR_REVIEW"
+    && shared.candidate_binding?.app_store_version_state === "WAITING_FOR_REVIEW",
   "metadata must bind the exact submitted build, archive, version, and two-item review submission",
 );
 
@@ -369,9 +369,9 @@ record(
     && releaseTrain.stages[0].readback.includes("historical future-capability configuration")
     && releaseTrain.stages[0].readback.includes("binds no container")
     && releaseTrain.stages[0].readback.includes("No signing certificate was created or revoked")
-    && releaseTrain.stages[1].status === "verified-build-15"
+    && releaseTrain.stages[1].status === "verified-build-16"
     && typeof releaseTrain.stages[1].readback === "string"
-    && releaseTrain.stages[1].readback.includes("Exact source commit ebe073c26c58fdc32912d96ad30cd7833659f027")
+    && releaseTrain.stages[1].readback.includes("Exact source commit b993fd8533381e01557d9ee9da22322b4f4c8ecb")
     && releaseTrain.stages[1].readback.includes("no CloudKit or push entitlement")
     && releaseTrain.stages[1].readback.includes("84 narrated M4A tracks")
     && releaseTrain.stages.slice(2, 7).every((stage) => typeof stage.readback === "string")
@@ -390,27 +390,27 @@ record("release-train.repository-authority", releaseTrain.stages.slice(0, 12).ev
 record(
   "release-train.candidate-current-state",
   releaseTrain.candidate_manifest === null
-    && releaseTrain.status === "build-15-rejected-unresolved-issues"
+    && releaseTrain.status === "build-16-waiting-for-review"
     && releaseTrain.replacement_candidate?.marketing_version === "1.0"
-    && releaseTrain.replacement_candidate?.build_number === 15
-    && releaseTrain.replacement_candidate?.apple_state === "REJECTED"
-    && releaseTrain.replacement_candidate?.review_submission_state === "UNRESOLVED_ISSUES"
-    && releaseTrain.replacement_candidate?.apple_build_id === "a77535f4-dc54-458c-a3ac-0dbf3a655bde"
+    && releaseTrain.replacement_candidate?.build_number === 16
+    && releaseTrain.replacement_candidate?.apple_state === "WAITING_FOR_REVIEW"
+    && releaseTrain.replacement_candidate?.review_submission_state === "WAITING_FOR_REVIEW"
+    && releaseTrain.replacement_candidate?.apple_build_id === "1356a2e4-1515-4b5b-833a-b4ecdb2f7754"
     && releaseTrain.replacement_candidate?.review_submission_id === "9cb4ed98-7a4e-41da-8cf4-41b1bec16a11"
     && releaseTrain.replacement_candidate?.review_item_count === 2
-    && releaseTrain.replacement_candidate?.ipa_sha256 === "cf2f81858656d339462183719b4a2738d36f54b370613b7b761eae8d891b39c6"
+    && releaseTrain.replacement_candidate?.ipa_sha256 === "0f04813b49ba2af40dcc51b962bb50e65c18cc3192e430690aa90f6522c3c718"
     && releaseTrain.replacement_candidate?.required_scope?.includes("inline-searchable-bilingual-guided-library")
-    && releaseTrain.replacement_candidate?.claim_boundary?.includes("UNRESOLVED_ISSUES")
-    && releaseTrain.replacement_candidate?.claim_boundary?.includes("v4 narration set remains private")
+    && releaseTrain.replacement_candidate?.claim_boundary?.includes("WAITING_FOR_REVIEW")
+    && releaseTrain.replacement_candidate?.claim_boundary?.includes("All 84 exact narration hashes are owner-approved")
     && releaseTrain.narrated_update_preparation?.build13_testflight_readback?.build_number === 13
     && releaseTrain.narrated_update_preparation?.build13_testflight_readback?.apple_processing === "VALID"
     && releaseTrain.narrated_update_preparation?.build13_testflight_readback?.disposition === "rejected-owner-observed-incomplete-product"
     && releaseTrain.narrated_update_preparation?.build14_testflight_readback?.build_number === 14
     && releaseTrain.narrated_update_preparation?.build14_testflight_readback?.apple_processing === "VALID"
     && releaseTrain.narrated_update_preparation?.build14_testflight_readback?.disposition === "rejected-owner-observed-selector-first-ui"
-    && releaseTrain.stages[8].status === "rejected-unresolved-issues-build-15-and-garden-styles"
-    && releaseTrain.stages[8].readback?.includes("one submission item REJECTED")
-    && releaseTrain.stages[8].readback?.includes("UNRESOLVED_ISSUES")
+    && releaseTrain.stages[8].status === "waiting-for-review-build-16-and-garden-styles"
+    && releaseTrain.stages[8].readback?.includes("previously rejected app-version item was marked resolved")
+    && releaseTrain.stages[8].readback?.includes("WAITING_FOR_REVIEW")
     && releaseTrain.baseline_internal_testflight?.build_number === 1
     && releaseTrain.baseline_internal_testflight?.apple_processing === "VALID"
     && releaseTrain.baseline_internal_testflight?.internal_distribution === "IN_BETA_TESTING"
@@ -461,17 +461,17 @@ record(
     && releaseTrain.renderer_replacement_lane?.notice_complete_replacement_candidate?.physical_runtime_readback?.includes("owner directly confirmed its real Three.js Twilight Garden is good")
     && releaseTrain.renderer_replacement_lane?.notice_complete_replacement_candidate?.distribution_state === "apple-valid-app-store-eligible-in-beta-testing-physical-ipad-owner-verified"
     && releaseTrain.renderer_replacement_lane?.notice_complete_replacement_candidate?.media_boundary?.includes("zero packaged guided narration tracks"),
-  "verified historical builds and the exact submitted build-15 replacement must remain bound without claiming physical audio, approval, or storefront proof",
+  "verified historical builds and the exact submitted build-16 replacement must remain bound without claiming physical runtime, approval, or storefront proof",
 );
 
 record(
   "release-train.post-publication-garden-follow-up",
-  releaseTrain.post_publication_garden_follow_up?.status === "completed-build-15-current-source-media-live"
+  releaseTrain.post_publication_garden_follow_up?.status === "completed-current-source-media-retained-for-build-16"
     && releaseTrain.post_publication_garden_follow_up?.submitted_artifact?.includes("24 owner-approved current-source")
     && releaseTrain.post_publication_garden_follow_up?.current_source_boundary?.includes("c1a6c543a699fc011b55aa7c58581c52fd53178c003287eb07331e95448b7f3b")
     && releaseTrain.post_publication_garden_follow_up?.current_source_boundary?.includes("All 24 live App Store Connect checksums match")
     && releaseTrain.post_publication_garden_follow_up?.required_action?.includes("Preserve these submitted assets"),
-  "submitted build-15 media must remain bound to the exact approved export tree and live checksum readback",
+  "submitted listing media must remain bound to the exact approved export tree and live checksum readback",
 );
 
 const sourceHashes = Object.fromEntries([
@@ -488,7 +488,7 @@ const sourceHashes = Object.fromEntries([
 
 const report = {
   schema_version: 1,
-  status: failures.length === 0 ? "passed-source-contract-build-15-rejected-v4-pending" : "failed",
+  status: failures.length === 0 ? "passed-source-contract-build-16-waiting-for-review" : "failed",
   release_ready: false,
   source_contract_passed: failures.length === 0,
   candidate_bound: true,
@@ -501,7 +501,7 @@ const report = {
   blockers,
   failures,
   checks,
-  claim_boundary: "This deterministic source check validates the repository's exact submitted build-15 release binding and completed public-repository readbacks but does not itself reproduce the frozen archive/IPA, live ASC or TestFlight state, physical-device audio observation, Apple approval, storefront, or external GitHub readback.",
+  claim_boundary: "This deterministic source check validates the repository's exact submitted build-16 release binding and completed public-repository readbacks but does not itself reproduce the frozen archive/IPA, live ASC or TestFlight state, physical-device runtime, Apple approval, storefront, or external GitHub readback.",
 };
 
 if (process.argv.includes("--write-report")) {
@@ -528,6 +528,6 @@ if (process.argv.includes("--write-report")) {
   writeFileSync(join(outputDirectory, "release-source-validation.txt"), textReport);
 }
 
-console.log(`Release source validation ${report.status}: ${report.checks_passed} passed, ${report.checks_failed} failed; exact build 15, its unresolved review state, and the private v4 narration boundary remain bound.`);
+console.log(`Release source validation ${report.status}: ${report.checks_passed} passed, ${report.checks_failed} failed; exact build 16, owner-approved narration, and the waiting-for-review boundary remain bound.`);
 for (const failure of failures) console.error(`error: ${failure}`);
 process.exitCode = failures.length === 0 ? 0 : 1;

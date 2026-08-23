@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "locale": "de-DE",
-  "state": "build-15-live-metadata",
+  "state": "build-16-live-metadata",
   "release_attachable": true,
   "name": "Arrive Within: Meditation",
   "subtitle": "Meditation, die wächst",
@@ -28,7 +28,7 @@
   "tester_instructions": "Beginne mit einer Neuinstallation. Starte auf dem ersten Bildschirm die dreiminütige Timer-Praxis, schließe sie ab, bestätige genau eine dauerhafte Gartenveränderung und starte die App neu. Prüfe danach Timer, Stoppuhr, Renderer-Ersatzansicht, Journal, Weg, Einstellungen, den Sprachwechsel und Offline-Verhalten. Verwende keine persönlichen Journalinhalte.",
   "review_notes": "Arrive Within funktioniert ohne Konto. Primärer Prüfpfad: Öffne Meditieren > Geführt; die vollständige durchsuchbare Liste mit 42 Meditationen ist direkt sichtbar. Öffne G01 Ankommender Atem, tippe auf Start und prüfe die enthaltene Offline-Narration und den Player. Timer, Stoppuhr, Journal, Weg und Einstellungen sind über native Navigation erreichbar. Der vollständige Twilight-Garten ist kostenlos. Einstellungen > Gartenstile bietet einen optionalen nicht verbrauchbaren Kauf, Premium-Gartenstile, der vier visuelle Stile gemeinsam freischaltet; Käufe wiederherstellen ist vorhanden. Meditationen und Fortschritt bleiben unverändert, und es gibt kein Abo. Datenschutz: Die App enthält weder Analyse- noch Werbe-SDKs und nutzt keine Drittanbieter-Analyse, Nachverfolgung, Konten, eigenes Backend oder Cloud-Synchronisierung. Es werden keine Daten automatisch an den Entwickler oder Dritte weitergegeben. Praxis, Einstellungen, Fortschritt, Journaltext und optionale Sprachreflexionen bleiben auf dem Gerät, sofern sie nicht ausdrücklich über Apples Teilen-Funktion exportiert werden. Die App erfasst weder Namen, E-Mail-Adressen, Standort, Fotos, Audio, Werbekennungen noch andere Personen- oder Gerätedaten.",
   "claim_dependencies": [
-    "exaktes Build-15-Paket mit 42 englischen und 42 deutschen Narrationsdateien",
+    "exaktes Build-16-Paket mit 42 englischen und 42 deutschen, vom Eigentümer freigegebenen Narrationsdateien",
     "exakter lokaler Kandidat ohne CloudKit-Laufzeit oder Signaturberechtigung",
     "ein optionaler nicht verbrauchbarer Gartenstil-Kauf und kein Abo"
   ]

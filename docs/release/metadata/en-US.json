@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "locale": "en-US",
-  "state": "build-15-live-metadata",
+  "state": "build-16-live-metadata",
   "release_attachable": true,
   "name": "Arrive Within: Meditation",
   "subtitle": "Meditation that grows",
@@ -28,7 +28,7 @@
   "tester_instructions": "Start from a clean install. Begin the three-minute timer practice from first use, complete it, confirm one permanent Garden change, relaunch, then exercise timer, stopwatch, renderer fallback, Journal, Journey, Settings, English/German switching, and offline behavior. Do not enter personal journal content.",
   "review_notes": "Arrive Within works without an account. Primary review path: open Meditate > Guided; the complete searchable list of 42 meditations is visible directly. Open G01 Arriving Breath, tap Start, and verify the bundled offline narration and player. Timer, stopwatch, Journal, Journey, and Settings are available through native navigation. The complete Twilight Garden is free. Settings > Garden Styles exposes one optional non-consumable purchase, Premium Garden Material Styles, which unlocks four visual styles together; Restore Purchases is provided. It never changes practice content or progress, and there is no subscription. Privacy: the app has no analytics SDKs, advertising SDKs, third-party analytics, tracking, account system, developer backend, or cloud sync. No data is automatically shared with the developer or any third party. Practice, preferences, progress, journal text, and optional voice reflections stay on device unless the user explicitly exports them through Apple's system share sheet. The app does not collect names, email addresses, location, photos, audio, advertising identifiers, or other personal or device data.",
   "claim_dependencies": [
-    "exact build-15 package with 42 English and 42 German narration tracks",
+    "exact build-16 package with 42 English and 42 German owner-approved narration tracks",
     "exact local-only candidate with no CloudKit runtime or signing entitlement",
     "one optional non-consumable Garden-style purchase and no subscription"
   ]
