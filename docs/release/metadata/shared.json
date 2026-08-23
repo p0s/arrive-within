@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "state": "build-15-submitted",
+  "state": "build-16-submitted-waiting-for-review",
   "release_attachable": true,
   "primary_category": "HEALTH_AND_FITNESS",
   "secondary_category": "LIFESTYLE",
@@ -51,7 +51,7 @@
     "available_territories": 175,
     "available_in_new_territories": true,
     "locales": ["de-DE", "en-US"],
-    "app_store_connect_state": "IN_REVIEW",
+    "app_store_connect_state": "WAITING_FOR_REVIEW",
     "current_app_review_attachment": true
   },
   "current_rules": {
@@ -82,17 +82,17 @@
   },
   "candidate_binding": {
     "marketing_version": "1.0",
-    "build_number": 15,
-    "build_id": "a77535f4-dc54-458c-a3ac-0dbf3a655bde",
-    "source_commit": "ebe073c26c58fdc32912d96ad30cd7833659f027",
-    "source_tree": "467708c15f766ade65788c251236dfcabba33014",
-    "archive_zip_sha256": "30f16f26969604b8be64a903db320585479b0c058dfe421357f7005819c6282c",
-    "ipa_sha256": "cf2f81858656d339462183719b4a2738d36f54b370613b7b761eae8d891b39c6",
+    "build_number": 16,
+    "build_id": "1356a2e4-1515-4b5b-833a-b4ecdb2f7754",
+    "source_commit": "b993fd8533381e01557d9ee9da22322b4f4c8ecb",
+    "source_tree": "c229005b5eed58e224f716f9ff8989f86bd1c462",
+    "archive_zip_sha256": "02ca79bc6eb0446a2b7eef8d4e59574b2ebbde8217c0bbfaf9270158d2aba329",
+    "ipa_sha256": "0f04813b49ba2af40dcc51b962bb50e65c18cc3192e430690aa90f6522c3c718",
     "app_store_version_id": "e3b3b152-a874-437d-9b59-17d23ce46739",
     "review_submission_id": "9cb4ed98-7a4e-41da-8cf4-41b1bec16a11",
     "review_item_count": 2,
-    "review_state": "UNRESOLVED_ISSUES",
-    "app_store_version_state": "REJECTED",
-    "submitted_at": "2026-08-16T02:25:48.664Z"
+    "review_state": "WAITING_FOR_REVIEW",
+    "app_store_version_state": "WAITING_FOR_REVIEW",
+    "submitted_at": "2026-08-22T23:57:39.645Z"
   }
 }
