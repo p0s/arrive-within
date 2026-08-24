@@ -627,7 +627,10 @@ private final class JournalVoicePreviewPlayer: NSObject, AVAudioPlayerDelegate {
       try session.setActive(true)
       let player = try AVAudioPlayer(contentsOf: url)
       player.delegate = self
-      guard player.prepareToPlay(), player.play() else { return }
+      guard player.prepareToPlay(), player.play() else {
+        stop()
+        return
+      }
       self.player = player
       isPlaying = true
     } catch {

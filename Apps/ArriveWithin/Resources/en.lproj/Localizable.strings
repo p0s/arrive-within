@@ -51,6 +51,7 @@
 "garden.styles.claymation.detail" = "Rounded clay with quiet fingerprint texture";
 "garden.styles.selected" = "Selected";
 "garden.styles.locked" = "Premium style";
+"garden.styles.available" = "Available";
 "garden.styles.owned" = "All four premium styles are yours";
 "garden.styles.unlock" = "Unlock all four";
 "garden.styles.unavailable" = "Purchases aren’t available right now. Twilight remains fully usable.";

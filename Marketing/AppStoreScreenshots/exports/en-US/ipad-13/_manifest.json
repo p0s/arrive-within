@@ -18,9 +18,9 @@
   },
   "humanVisualReview": {
     "state": "approved",
-    "reviewer": "implementation-review",
-    "reviewedAt": "2026-08-14",
-    "notes": "English and German iPhone and iPad contact sheets plus representative full-resolution comparisons were inspected after the current-source recapture: all slides retain one headline, a tight headline-to-product gap, unclipped legible real app UI, and the purposeful overlapping framed comparison."
+    "reviewer": "release-implementation-review",
+    "reviewedAt": "2026-08-24",
+    "notes": "English and German iPhone and iPad contact sheets plus representative full-resolution exports were inspected against the current-source recapture. All 24 slides retain one unclipped headline block, tight headline-to-product spacing, legible localized real app UI, purposeful paired-device overlap where used, and no substituted or invented product imagery."
   },
   "network": {
     "policy": "Block all external requests; allow localhost only",
@@ -30,13 +30,13 @@
     "state": "human-reviewed",
     "method": "Guarded XCUITest using a pooled iPhone 17 Pro simulator and an iPad Pro 13-inch (M5) simulator on iOS 26.5, with deterministic safe synthetic product state",
     "test": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish and testCaptureAllRequiredMarketingStatesGerman — selected Garden/growth shipping states only",
-    "statusBarProfile": "Actual visible system status from each exact passed capture run using the simulator system status-bar override fixed at 09:41 local; no synthetic status-bar overlay.",
-    "sourceRevision": "c422692239d5f317c6ebb7e18b245826040245268c1bf9781bcb3c682e2588a1",
+    "statusBarProfile": "Actual visible system status from each exact passed capture run; no synthetic status-bar overlay.",
+    "sourceRevision": "aed3e83d30d6290cb99731be79675fcfbeb7941168ec960479e08148b1293925",
     "sourceRevisionKind": "sha256-capture-source-manifest",
     "sourceManifestPath": "capture-source-manifest.json",
     "resultBundle": {
-      "name": "Test-ArriveWithin-2026.08.14_21-36-26-+0800.xcresult",
-      "xcresult_tree_sha256": "1de6ecb7f1379d4e0d357aa0f4047b9313975736627dd2f406087fbefeb20b67",
+      "name": "arrive-within-b17-ipad13.xcresult",
+      "xcresult_tree_sha256": "b6aa3ad729f0ba0f2a08ab45bb726a6ee227bdd31722a19079f3f55324bc2a37",
       "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()"
     },
     "safeSyntheticData": true,
@@ -48,18 +48,18 @@
       "width": 2064,
       "height": 2752,
       "result_bundle": {
-        "name": "Test-ArriveWithin-2026.08.14_21-36-26-+0800.xcresult",
-        "xcresult_tree_sha256": "1de6ecb7f1379d4e0d357aa0f4047b9313975736627dd2f406087fbefeb20b67",
+        "name": "arrive-within-b17-ipad13.xcresult",
+        "xcresult_tree_sha256": "b6aa3ad729f0ba0f2a08ab45bb726a6ee227bdd31722a19079f3f55324bc2a37",
         "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()"
       },
       "captures": {
         "garden-hero": {
           "path": "public/runtime-ui/en-US/ipad-13/garden-hero.png",
-          "sha256": "03778adf4e1ec5feb46b6389ce3c82e9a629f96962ebdf22d4bae1468307da89"
+          "sha256": "07a71d2a31be7c34a47e945df6fe49cb95e88c9eee764fde063cb70b37b88e0c"
         },
         "garden-seed": {
           "path": "public/runtime-ui/en-US/ipad-13/garden-seed.png",
-          "sha256": "d2eafed09183d7a5a3c0fb2922aba857b58a76afb6776fc7a2e1b865576cdc08"
+          "sha256": "45d36e1fadcb004866c985dab8f058fcecacb7e5d9fcff70ae7b4d292b9c2e1d"
         },
         "guided-library": {
           "path": "public/runtime-ui/en-US/ipad-13/guided-library.png",
@@ -71,7 +71,7 @@
         },
         "journal": {
           "path": "public/runtime-ui/en-US/ipad-13/journal.png",
-          "sha256": "c74865194b1091a69db9a58303a463c6765f46f44bbd6901c58abb5385edfed0"
+          "sha256": "f0e76fa0bb0cb8a5bf85f715540a24c8a4ab2004c711e1db3e28fca6d45be4f2"
         },
         "data-sync": {
           "path": "public/runtime-ui/en-US/ipad-13/data-sync.png",
@@ -79,11 +79,11 @@
         },
         "journey-calendar": {
           "path": "public/runtime-ui/en-US/ipad-13/journey-calendar.png",
-          "sha256": "ad2a7de6c7cb4dd7227c70fc302fe95607793cab5fb77b7143d969c5eee9be5a"
+          "sha256": "3c3ca19ccf03e27983019b841cf20a0bda5d01691efafda621b224f301246c9b"
         },
         "journey-milestones": {
           "path": "public/runtime-ui/en-US/ipad-13/journey-milestones.png",
-          "sha256": "ad2a7de6c7cb4dd7227c70fc302fe95607793cab5fb77b7143d969c5eee9be5a"
+          "sha256": "3c3ca19ccf03e27983019b841cf20a0bda5d01691efafda621b224f301246c9b"
         }
       }
     },
@@ -94,13 +94,13 @@
       "os": "iOS 26.5 Simulator",
       "capture": {
         "path": "public/runtime-ui/en-US/iphone-6.9/garden-hero.png",
-        "sha256": "da9787a7af1f08fff651b6dc28e3b7f1e3b7d78859642a143f2ae2a564008188"
+        "sha256": "ee58d89056b981597e59f584d6b0f5490ed249359247eb38a60b5c2a6a433b56"
       }
     }
   },
   "contactSheet": {
     "filename": "_contact-sheet.jpg",
-    "sha256": "3eed0bd209fc1254b9af5c80d65c80a135819701d2ad7a0c47bbea710cc97f73",
+    "sha256": "1e143a8dcf26c412b76d8bc40f6a6e3922ab6a682eadd24d0ac6b14252013a52",
     "width": 1440,
     "height": 1890,
     "encoding": "sharp 0.35.3 JPEG quality 92, 4:4:4 chroma subsampling, no metadata"
@@ -108,7 +108,7 @@
   "items": [
     {
       "filename": "01-growth-arrive-en-us-ipad-13-2064x2752.png",
-      "sha256": "9f83f5e103deb737e86a48cdc3b86b25685e67826dbd777a10169c352fe68ba8",
+      "sha256": "2d3a664bd516f372287e495cacbc79afd9b632c25f851b45bab671c5da4a67f2",
       "slide": 1,
       "slideId": "growth-arrive",
       "idea": "Arrive in the present through the living Garden",
@@ -118,7 +118,7 @@
     },
     {
       "filename": "02-growth-take-root-en-us-ipad-13-2064x2752.png",
-      "sha256": "fff7f8a949cf3cd658bdd144ba0efe2ebf8df161915ec1a5d600ce22f8b78fb2",
+      "sha256": "a57f426409bf1443d7cc0043bc742ba2430b88477b13a2b12344a578f6f083a0",
       "slide": 2,
       "slideId": "growth-take-root",
       "idea": "A qualifying practice becomes lasting visible growth",
@@ -128,7 +128,7 @@
     },
     {
       "filename": "03-growth-rhythm-en-us-ipad-13-2064x2752.png",
-      "sha256": "41ff541840ec2c6434bc3f554d265eb681336d1754a8db8562f20bdcfb93e635",
+      "sha256": "4cf28a988a3d439db68c81183fa54383cf1280c2bc5260deb370b3d794a97180",
       "slide": 3,
       "slideId": "growth-rhythm",
       "idea": "Browse a private monthly practice rhythm without pressure",
@@ -138,7 +138,7 @@
     },
     {
       "filename": "04-growth-stays-en-us-ipad-13-2064x2752.png",
-      "sha256": "6c71f64edf59251c3623d19def5aaddef88965c69c39bd5190a5aa092ef5f3d6",
+      "sha256": "3af2390227d4f04d6e061cf815839bd79e666808ec235f72dda039db655ce952",
       "slide": 4,
       "slideId": "growth-stays",
       "idea": "Milestones remain as a nonpunitive record of practice",
@@ -148,7 +148,7 @@
     },
     {
       "filename": "05-growth-reflect-en-us-ipad-13-2064x2752.png",
-      "sha256": "b5662b7403cd1cb959768d2ca22c1eb04cded3af79fadda4662b3873ab71f18a",
+      "sha256": "715fd076d46406a4f509daa284e21d44a5e68532f54c1f240987ff344cb3ce71",
       "slide": 5,
       "slideId": "growth-reflect",
       "idea": "Private reflection gives practice personal meaning",
@@ -158,7 +158,7 @@
     },
     {
       "filename": "06-growth-refuge-en-us-ipad-13-2064x2752.png",
-      "sha256": "699cc679098768b558245094b72d05c3a036c0a48469d95d6ce8239c3ef23ad8",
+      "sha256": "151e05d3833ee92a8346b5fca58788d857195bfd560500a6505c80f7a35ffbcb",
       "slide": 6,
       "slideId": "growth-refuge",
       "idea": "The mature Garden remembers consistent practice",

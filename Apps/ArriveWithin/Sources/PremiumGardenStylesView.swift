@@ -21,13 +21,7 @@ struct PremiumGardenStylesView: View {
           }
           .buttonStyle(.plain)
           .accessibilityIdentifier("garden.style.\(style.rawValue)")
-          .accessibilityValue(
-            style == model.gardenRenderStyle
-              ? "selected"
-              : style.isPremium && !model.premiumGardenAccess.isOwned
-                ? "locked"
-                : "available"
-          )
+          .accessibilityValue(Text(accessibilityStatus(for: style)))
           .accessibilityHint(
             style == model.gardenRenderStyle
               ? Text("garden.styles.selected")
@@ -109,6 +103,14 @@ struct PremiumGardenStylesView: View {
     case .restoreFailed: "garden.styles.restore.failed"
     case nil: "common.error"
     }
+  }
+
+  private func accessibilityStatus(for style: GardenRenderStyle) -> LocalizedStringKey {
+    if style == model.gardenRenderStyle { return "garden.styles.selected" }
+    if style.isPremium, !model.premiumGardenAccess.isOwned {
+      return "garden.styles.locked"
+    }
+    return "garden.styles.available"
   }
 
   private func choose(_ style: GardenRenderStyle) {

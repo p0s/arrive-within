@@ -25,6 +25,6 @@ After intentionally recapturing the canonical App Store UI source, run `node Mar
 
 - The site makes no App Store availability claim and includes no badge until an exact released candidate and storefront readback exist.
 - After approval and successful storefront readback, add the canonical country-neutral `https://apps.apple.com/app/id6800192697` CTA to the root README and the website in one reviewed source change.
-- The site matches the submitted binary's Timer/Stopwatch and local-only scope; later narration and future CloudKit work preserve their separate human/external evidence boundaries.
+- The current local source matches the repository-recorded build-16 Guided, Timer, Stopwatch, and local-only data scope. Its Guided correction is not deployment proof; the older deployed artifact remains bound to its own exact readback evidence, and future CloudKit work retains a separate external boundary.
 - Deployment may target only the verified `arrive-within` Vercel Hobby project and owner-controlled `arrivewithin.com` domain. Unrelated domain, DNS, project, or account mutation remains unauthorized.
 - The exact public source link is `https://github.com/p0s/arrive-within`; validation permits no other external website link.

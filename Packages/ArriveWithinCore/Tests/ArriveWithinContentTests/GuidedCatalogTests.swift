@@ -35,6 +35,24 @@ struct GuidedCatalogTests {
     }
   }
 
+  @Test("Guided duration cannot exceed the session and UI contract")
+  func rejectsOutOfRangeDuration() {
+    let valid = samplePractice()
+    let invalid = GuidedPractice(
+      id: valid.id,
+      version: valid.version,
+      category: valid.category,
+      targetMinutes: GuidedPractice.maximumTargetMinutes + 1,
+      safetyContext: valid.safetyContext,
+      purposeTags: valid.purposeTags,
+      localized: valid.localized
+    )
+
+    #expect(throws: GuidedCatalogError.invalidMetadata("G01")) {
+      try GuidedCatalogValidator.validate([invalid], requireCompleteV1: false)
+    }
+  }
+
   @Test("The tracked source catalogue has exactly 42 bilingual concepts")
   func trackedCatalogIsComplete() throws {
     let packageRoot = URL(fileURLWithPath: #filePath)

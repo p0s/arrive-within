@@ -64,6 +64,36 @@ public struct LocalProfile: Codable, Equatable, Sendable {
       hasCompletedFirstUse: true
     )
   }
+
+  private enum CodingKeys: String, CodingKey {
+    case schemaVersion
+    case profileGenerationID
+    case gardenID
+    case gardenSeed
+    case installationID
+    case createdAt
+    case previousProfileGenerationID
+    case resetAt
+    case hasCompletedFirstUse
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    try self.init(
+      schemaVersion: container.decode(Int.self, forKey: .schemaVersion),
+      profileGenerationID: container.decode(UUID.self, forKey: .profileGenerationID),
+      gardenID: container.decode(UUID.self, forKey: .gardenID),
+      gardenSeed: container.decode(UInt64.self, forKey: .gardenSeed),
+      installationID: container.decode(UUID.self, forKey: .installationID),
+      createdAt: container.decode(Date.self, forKey: .createdAt),
+      previousProfileGenerationID: container.decodeIfPresent(
+        UUID.self,
+        forKey: .previousProfileGenerationID
+      ),
+      resetAt: container.decodeIfPresent(Date.self, forKey: .resetAt),
+      hasCompletedFirstUse: container.decode(Bool.self, forKey: .hasCompletedFirstUse)
+    )
+  }
 }
 
 public protocol LocalProfileRepository: Sendable {

@@ -82,6 +82,8 @@ public struct GuidedLocalizedText: Codable, Equatable, Sendable {
 }
 
 public struct GuidedPractice: Codable, Equatable, Identifiable, Sendable {
+  public static let maximumTargetMinutes = 180
+
   public let id: String
   public let version: Int
   public let category: GuidedCategory
@@ -155,7 +157,7 @@ public enum GuidedCatalogValidator {
         throw GuidedCatalogError.duplicateIdentifier(practice.id)
       }
       guard practice.version > 0,
-        practice.targetMinutes > 0,
+        (1...GuidedPractice.maximumTargetMinutes).contains(practice.targetMinutes),
         !practice.purposeTags.isEmpty,
         practice.purposeTags.allSatisfy({ !$0.isEmpty })
       else {

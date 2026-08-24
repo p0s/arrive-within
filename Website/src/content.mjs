@@ -17,7 +17,7 @@ export const siteContent = {
       metaDescription: "A private, offline-first meditation garden for iPhone and iPad. Practice your way and see one living world grow.",
       eyebrow: "Meditation that grows",
       title: "A quiet place to arrive.",
-      intro: "A dependable timer or an open-ended sit. Every qualifying practice becomes permanent, visible growth—without streak pressure, accounts, ads, or subscriptions.",
+      intro: "A guided practice, a dependable timer, or an open-ended sit. Every qualifying practice becomes permanent, visible growth—without streak pressure, accounts, ads, or subscriptions.",
       primaryAction: "See how it grows",
       secondaryAction: "Read the privacy promise",
       media: {
@@ -35,9 +35,10 @@ export const siteContent = {
       },
       modes: {
         kicker: "Your practice, your shape",
-        title: "Two quiet ways to begin.",
+        title: "Three quiet ways to begin.",
         body: "No mandatory tutorial or questionnaire. Choose the amount of structure that fits this moment.",
         items: [
+          { name: "Guided", text: "Choose from 42 original English or German practices, with narration and transcripts packaged for offline playback." },
           { name: "Timer", text: "A dependable interval timer with calm bells, ambience, and saved preferences." },
           { name: "Stopwatch", text: "Sit without an endpoint. Finish when you are ready; the app never invents completion." },
         ],
@@ -70,7 +71,7 @@ export const siteContent = {
       feedbackNote: "Version 1.0 has no in-app feedback transmission. The Support link opens this public page without attaching practice, journal, recording, transcript, screenshot, log, or device data.",
       faqs: [
         { q: "Does Arrive Within need an account?", a: "No. Practice, Garden progress, Journal, Journey, and reminders are stored locally and work without an account, backend, or cloud sync." },
-        { q: "Does this version include guided narration?", a: "No. This version offers the complete Timer and Stopwatch modes. Original bilingual offline narration is planned for a later update after rights, mastering, and fluent human review pass." },
+        { q: "Does this version include guided narration?", a: "Yes. Version 1.0 includes 42 original guided practices with approved English and German narration and bound transcripts, all packaged for offline playback. Timer and Stopwatch remain available." },
         { q: "How do I move or back up my data?", a: "Data & Storage creates a readable archive that you can deliberately share through Apple's system share sheet. The app keeps no cloud copy." },
         { q: "Can I delete everything?", a: "Yes. Local reset and delete-all are explicit. They remove local progress, journal content and audio, settings, and app-owned export archives." },
         { q: "Does the app send support or usage data?", a: "No. Version 1.0 links to this support page but has no analytics, advertising, tracking, backend, cloud sync, or in-app feedback transmission." },
@@ -125,7 +126,7 @@ export const siteContent = {
       metaDescription: "Ein privater, offline nutzbarer Meditationsgarten für iPhone und iPad. Meditiere auf deine Art und lass eine lebendige Welt wachsen.",
       eyebrow: "Meditation, die wächst",
       title: "Ein stiller Ort zum Ankommen.",
-      intro: "Ein verlässlicher Timer oder eine offene Stoppuhr. Jede qualifizierende Praxis wird zu dauerhaftem, sichtbarem Wachstum – ohne Streak-Druck, Konto, Werbung oder Abo.",
+      intro: "Eine geführte Meditation, ein verlässlicher Timer oder eine offene Stoppuhr. Jede qualifizierende Praxis wird zu dauerhaftem, sichtbarem Wachstum – ohne Streak-Druck, Konto, Werbung oder Abo.",
       primaryAction: "Sieh, wie der Garten wächst",
       secondaryAction: "Lies unser Datenschutzversprechen",
       media: {
@@ -143,9 +144,10 @@ export const siteContent = {
       },
       modes: {
         kicker: "Deine Praxis, deine Form",
-        title: "Zwei ruhige Wege zu beginnen.",
+        title: "Drei ruhige Wege zu beginnen.",
         body: "Kein verpflichtendes Tutorial und kein Fragebogen. Wähle so viel Struktur, wie dieser Moment braucht.",
         items: [
+          { name: "Geführt", text: "Wähle aus 42 originalen englischen oder deutschen Meditationen mit vollständig offline verfügbaren Audios und Transkripten." },
           { name: "Timer", text: "Ein verlässlicher Intervalltimer mit ruhigen Klängen, Atmosphäre und gespeicherten Einstellungen." },
           { name: "Stoppuhr", text: "Sitze ohne Endzeit. Du beendest die Praxis; die App erfindet keinen Abschluss." },
         ],
@@ -178,7 +180,7 @@ export const siteContent = {
       feedbackNote: "Version 1.0 überträgt keine Rückmeldung aus der App. Der Hilfe-Link öffnet diese öffentliche Seite, ohne Praxis-, Journal-, Aufnahme-, Transkript-, Bildschirmfoto-, Protokoll- oder Gerätedaten anzuhängen.",
       faqs: [
         { q: "Braucht Arrive Within ein Konto?", a: "Nein. Praxis, Garten, Journal, Weg und Erinnerungen werden lokal gespeichert und funktionieren ohne Konto, Backend oder Cloud-Synchronisierung." },
-        { q: "Enthält diese Version geführte Meditationen?", a: "Nein. Diese Version bietet den vollständigen Timer und die Stoppuhr. Eigene zweisprachige Offline-Meditationen sind für ein späteres Update geplant, sobald Rechte, Mastering und flüssige menschliche Hörprüfung bestanden sind." },
+        { q: "Enthält diese Version geführte Meditationen?", a: "Ja. Version 1.0 enthält 42 originale geführte Meditationen mit freigegebenen englischen und deutschen Audios sowie gebundenen Transkripten, vollständig für die Offline-Wiedergabe verpackt. Timer und Stoppuhr bleiben verfügbar." },
         { q: "Wie sichere oder übertrage ich meine Daten?", a: "Daten & Speicher erstellt ein lesbares Archiv, das du ausdrücklich über Apples Teilen-Funktion weitergeben kannst. Die App bewahrt keine Cloud-Kopie auf." },
         { q: "Kann ich alles löschen?", a: "Ja. Lokales Zurücksetzen und vollständiges Löschen sind ausdrücklich bestätigt. Sie entfernen Fortschritt, Journalinhalt und -audio, Einstellungen und app-eigene Exportarchive." },
         { q: "Sendet die App Hilfe- oder Nutzungsdaten?", a: "Nein. Version 1.0 verlinkt auf diese Hilfeseite, enthält aber weder Analyse, Werbung, Nachverfolgung, Backend, Cloud-Synchronisierung noch eine Rückmeldungsübertragung aus der App." },

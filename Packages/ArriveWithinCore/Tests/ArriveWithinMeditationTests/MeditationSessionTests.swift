@@ -205,6 +205,47 @@ struct MeditationSessionTests {
     #expect(throws: MeditationConfigurationError.invalidAmbienceVolume) {
       _ = try MeditationAudioConfiguration(ambienceVolume: .infinity)
     }
+    #expect(throws: MeditationSessionError.invalidTargetDuration) {
+      _ = try MeditationSession(
+        id: UUID(),
+        profileGenerationID: ArriveWithinFixtures.generationID,
+        mode: .timer,
+        targetDurationMilliseconds: MeditationSession.maximumTargetDurationMilliseconds + 1,
+        preparedAt: Date()
+      )
+    }
+  }
+
+  @Test("Persisted sessions revalidate phase and duration invariants")
+  func persistedSessionDecodingRevalidates() throws {
+    let base = Date(timeIntervalSince1970: 1_786_291_200)
+    var session = try makeSession(preparedAt: base)
+    try session.start(at: .init(monotonicMilliseconds: 1_000, wallClock: base))
+    let encoded = try JSONEncoder().encode(session)
+    #expect(try JSONDecoder().decode(MeditationSession.self, from: encoded) == session)
+
+    var invalidPhase = try #require(
+      JSONSerialization.jsonObject(with: encoded) as? [String: Any]
+    )
+    invalidPhase["phase"] = "completed"
+    invalidPhase.removeValue(forKey: "completedEventID")
+    #expect(throws: MeditationSessionError.invalidPersistedState) {
+      _ = try JSONDecoder().decode(
+        MeditationSession.self,
+        from: JSONSerialization.data(withJSONObject: invalidPhase)
+      )
+    }
+
+    var invalidDuration = try #require(
+      JSONSerialization.jsonObject(with: encoded) as? [String: Any]
+    )
+    invalidDuration["activeMilliseconds"] = -1
+    #expect(throws: MeditationSessionError.invalidPersistedState) {
+      _ = try JSONDecoder().decode(
+        MeditationSession.self,
+        from: JSONSerialization.data(withJSONObject: invalidDuration)
+      )
+    }
   }
 
   private func makeSession(preparedAt: Date) throws -> MeditationSession {

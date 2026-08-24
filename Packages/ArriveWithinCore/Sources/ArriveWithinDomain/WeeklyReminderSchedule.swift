@@ -79,6 +79,31 @@ public struct WeeklyReminderSchedule: Codable, Equatable, Hashable, Identifiable
       return lhs.id.uuidString < rhs.id.uuidString
     }
   }
+
+  private enum CodingKeys: String, CodingKey {
+    case schemaVersion
+    case id
+    case weekday
+    case hour
+    case minute
+    case isEnabled
+    case createdAt
+    case modifiedAt
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    try self.init(
+      schemaVersion: container.decode(Int.self, forKey: .schemaVersion),
+      id: container.decode(UUID.self, forKey: .id),
+      weekday: container.decode(Weekday.self, forKey: .weekday),
+      hour: container.decode(Int.self, forKey: .hour),
+      minute: container.decode(Int.self, forKey: .minute),
+      isEnabled: container.decode(Bool.self, forKey: .isEnabled),
+      createdAt: container.decode(Date.self, forKey: .createdAt),
+      modifiedAt: container.decode(Date.self, forKey: .modifiedAt)
+    )
+  }
 }
 
 public protocol WeeklyReminderScheduleRepository: Sendable {
