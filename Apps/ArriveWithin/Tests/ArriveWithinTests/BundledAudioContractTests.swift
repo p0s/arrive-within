@@ -10,6 +10,41 @@ import Testing
 @Suite("Bundled native audio contract")
 @MainActor
 struct BundledAudioContractTests {
+  @Test("Audio rebuilds preserve future interval and closing bells")
+  func rebuiltBellScheduleKeepsOnlyFutureCues() throws {
+    let audio = try MeditationAudioConfiguration(intervalBellMinutes: 1)
+    let session = try MeditationSession(
+      id: UUID(),
+      profileGenerationID: UUID(),
+      mode: .timer,
+      targetDurationMilliseconds: 180_000,
+      preparedAt: Date(),
+      configuration: MeditationSessionConfiguration(audio: audio)
+    )
+
+    #expect(
+      MeditationBellSchedule.remaining(for: session, elapsedMilliseconds: 0)
+        == MeditationBellSchedule(
+          intervalOffsetsMilliseconds: [60_000, 120_000],
+          closingOffsetMilliseconds: 180_000
+        )
+    )
+    #expect(
+      MeditationBellSchedule.remaining(for: session, elapsedMilliseconds: 75_000)
+        == MeditationBellSchedule(
+          intervalOffsetsMilliseconds: [45_000],
+          closingOffsetMilliseconds: 105_000
+        )
+    )
+    #expect(
+      MeditationBellSchedule.remaining(for: session, elapsedMilliseconds: 180_000)
+        == MeditationBellSchedule(
+          intervalOffsetsMilliseconds: [],
+          closingOffsetMilliseconds: nil
+        )
+    )
+  }
+
   @Test("Every enabled procedural layer resolves through the signed manifest")
   func proceduralAssetsVerify() throws {
     let audio = try MeditationAudioConfiguration(

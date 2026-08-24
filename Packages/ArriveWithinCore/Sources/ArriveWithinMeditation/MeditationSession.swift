@@ -27,6 +27,8 @@ public struct SystemSessionClock: SessionClock, Sendable {
 }
 
 public struct MeditationSession: Codable, Equatable, Identifiable, Sendable {
+  public static let maximumTargetDurationMilliseconds: Int64 = 180 * 60 * 1_000
+
   public enum Phase: String, Codable, Sendable {
     case prepared
     case running
@@ -63,7 +65,9 @@ public struct MeditationSession: Codable, Equatable, Identifiable, Sendable {
     preparedAt: Date,
     configuration: MeditationSessionConfiguration = .standard
   ) throws {
-    if let targetDurationMilliseconds, targetDurationMilliseconds <= 0 {
+    if let targetDurationMilliseconds,
+      !(1...Self.maximumTargetDurationMilliseconds).contains(targetDurationMilliseconds)
+    {
       throw MeditationSessionError.invalidTargetDuration
     }
     if mode == .stopwatch, targetDurationMilliseconds != nil {
@@ -240,41 +244,107 @@ public struct MeditationSession: Codable, Equatable, Identifiable, Sendable {
 
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    id = try container.decode(UUID.self, forKey: .id)
-    profileGenerationID = try container.decode(UUID.self, forKey: .profileGenerationID)
-    mode = try container.decode(PracticeMode.self, forKey: .mode)
-    guidedContentID = try container.decodeIfPresent(String.self, forKey: .guidedContentID)
-    guidedContentVersion = try container.decodeIfPresent(Int.self, forKey: .guidedContentVersion)
-    targetDurationMilliseconds = try container.decodeIfPresent(
-      Int64.self,
-      forKey: .targetDurationMilliseconds
-    )
-    if mode == .stopwatch, targetDurationMilliseconds != nil {
-      throw MeditationSessionError.unexpectedStopwatchTarget
-    }
-    preparedAt = try container.decode(Date.self, forKey: .preparedAt)
-    if let decoded = try container.decodeIfPresent(
+    let decodedMode = try container.decode(PracticeMode.self, forKey: .mode)
+    let decodedConfiguration: MeditationSessionConfiguration
+    if let configuration = try container.decodeIfPresent(
       MeditationSessionConfiguration.self,
       forKey: .configuration
     ) {
-      configuration = decoded
-    } else if mode == .guided {
-      configuration = MeditationSessionConfiguration(
+      decodedConfiguration = configuration
+    } else if decodedMode == .guided {
+      decodedConfiguration = MeditationSessionConfiguration(
         audio: try MeditationAudioConfiguration(narrationLanguageCode: "en")
       )
     } else {
-      configuration = .standard
+      decodedConfiguration = .standard
     }
-    phase = try container.decode(Phase.self, forKey: .phase)
-    startedAt = try container.decodeIfPresent(Date.self, forKey: .startedAt)
-    endedAt = try container.decodeIfPresent(Date.self, forKey: .endedAt)
-    activeMilliseconds = try container.decode(Int64.self, forKey: .activeMilliseconds)
-    runningSinceMonotonicMilliseconds = try container.decodeIfPresent(
+    try self.init(
+      id: container.decode(UUID.self, forKey: .id),
+      profileGenerationID: container.decode(UUID.self, forKey: .profileGenerationID),
+      mode: decodedMode,
+      guidedContentID: container.decodeIfPresent(String.self, forKey: .guidedContentID),
+      guidedContentVersion: container.decodeIfPresent(Int.self, forKey: .guidedContentVersion),
+      targetDurationMilliseconds: container.decodeIfPresent(
+        Int64.self,
+        forKey: .targetDurationMilliseconds
+      ),
+      preparedAt: container.decode(Date.self, forKey: .preparedAt),
+      configuration: decodedConfiguration
+    )
+
+    let decodedPhase = try container.decode(Phase.self, forKey: .phase)
+    let decodedStartedAt = try container.decodeIfPresent(Date.self, forKey: .startedAt)
+    let decodedEndedAt = try container.decodeIfPresent(Date.self, forKey: .endedAt)
+    let decodedActiveMilliseconds = try container.decode(Int64.self, forKey: .activeMilliseconds)
+    let decodedRunningSinceMonotonicMilliseconds = try container.decodeIfPresent(
       Int64.self,
       forKey: .runningSinceMonotonicMilliseconds
     )
-    runningSinceWallClock = try container.decodeIfPresent(Date.self, forKey: .runningSinceWallClock)
-    completedEventID = try container.decodeIfPresent(UUID.self, forKey: .completedEventID)
+    let decodedRunningSinceWallClock = try container.decodeIfPresent(
+      Date.self,
+      forKey: .runningSinceWallClock
+    )
+    let decodedCompletedEventID = try container.decodeIfPresent(
+      UUID.self,
+      forKey: .completedEventID
+    )
+    guard decodedActiveMilliseconds >= 0,
+      decodedActiveMilliseconds <= Int64.max / 2,
+      decodedRunningSinceMonotonicMilliseconds.map({ $0 >= 0 }) ?? true,
+      Self.persistedStateIsValid(
+        phase: decodedPhase,
+        startedAt: decodedStartedAt,
+        endedAt: decodedEndedAt,
+        activeMilliseconds: decodedActiveMilliseconds,
+        runningSinceMonotonicMilliseconds: decodedRunningSinceMonotonicMilliseconds,
+        runningSinceWallClock: decodedRunningSinceWallClock,
+        completedEventID: decodedCompletedEventID
+      )
+    else {
+      throw MeditationSessionError.invalidPersistedState
+    }
+
+    phase = decodedPhase
+    startedAt = decodedStartedAt
+    endedAt = decodedEndedAt
+    activeMilliseconds = decodedActiveMilliseconds
+    runningSinceMonotonicMilliseconds = decodedRunningSinceMonotonicMilliseconds
+    runningSinceWallClock = decodedRunningSinceWallClock
+    completedEventID = decodedCompletedEventID
+  }
+
+  private static func persistedStateIsValid(
+    phase: Phase,
+    startedAt: Date?,
+    endedAt: Date?,
+    activeMilliseconds: Int64,
+    runningSinceMonotonicMilliseconds: Int64?,
+    runningSinceWallClock: Date?,
+    completedEventID: UUID?
+  ) -> Bool {
+    let hasBothRunningOrigins = runningSinceMonotonicMilliseconds != nil
+      && runningSinceWallClock != nil
+    let hasNoRunningOrigin = runningSinceMonotonicMilliseconds == nil
+      && runningSinceWallClock == nil
+    switch phase {
+    case .prepared:
+      return startedAt == nil && endedAt == nil && activeMilliseconds == 0
+        && hasNoRunningOrigin && completedEventID == nil
+    case .running:
+      return startedAt != nil && endedAt == nil && hasBothRunningOrigins
+        && completedEventID == nil
+    case .paused:
+      return startedAt != nil && endedAt == nil && hasNoRunningOrigin
+        && completedEventID == nil
+    case .completing:
+      return startedAt != nil && endedAt != nil && hasNoRunningOrigin
+        && completedEventID == nil
+    case .completed:
+      return startedAt != nil && endedAt != nil && hasNoRunningOrigin
+        && completedEventID != nil
+    case .abandoned:
+      return endedAt != nil && hasNoRunningOrigin && completedEventID == nil
+    }
   }
 
   public func encode(to encoder: Encoder) throws {
@@ -331,6 +401,7 @@ public enum MeditationSessionError: Error, Equatable, Sendable {
   case conflictingCompletion
   case recoveryNotRequired
   case invalidRecoveryDuration
+  case invalidPersistedState
 }
 
 extension Int64 {

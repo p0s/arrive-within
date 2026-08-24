@@ -12,6 +12,37 @@ enum MeditationAudioControllerError: Error, Equatable {
   case invalidAudioFile(String)
 }
 
+struct MeditationBellSchedule: Equatable {
+  let intervalOffsetsMilliseconds: [Int64]
+  let closingOffsetMilliseconds: Int64?
+
+  static func remaining(
+    for session: MeditationSession,
+    elapsedMilliseconds: Int64
+  ) -> Self {
+    let elapsed = max(0, elapsedMilliseconds)
+    guard let target = session.targetDurationMilliseconds, target > elapsed else {
+      return Self(intervalOffsetsMilliseconds: [], closingOffsetMilliseconds: nil)
+    }
+
+    var intervalOffsets: [Int64] = []
+    if let intervalMinutes = session.configuration.audio.intervalBellMinutes {
+      let interval = Int64(intervalMinutes) * 60_000
+      var signalAt = (elapsed / interval + 1) * interval
+      while signalAt < target {
+        intervalOffsets.append(signalAt - elapsed)
+        signalAt += interval
+      }
+    }
+    return Self(
+      intervalOffsetsMilliseconds: intervalOffsets,
+      closingOffsetMilliseconds: session.configuration.audio.closingBellEnabled
+        ? target - elapsed
+        : nil
+    )
+  }
+}
+
 @MainActor
 protocol MeditationAudioControlling: AnyObject {
   var eventHandler: ((MeditationAudioSystemEvent) -> Void)? { get set }
@@ -381,36 +412,31 @@ final class NativeMeditationAudioController: NSObject, MeditationAudioControllin
         }
       }
     }
-    if hasContinuousAudio, !isResume, let closingBell {
+    if hasContinuousAudio, let closingBell {
       let sampleRate = closingBell.format.sampleRate
-      if let intervalMinutes = session.configuration.audio.intervalBellMinutes,
-        let target = session.targetDurationMilliseconds
-      {
-        let intervalMilliseconds = Int64(intervalMinutes) * 60_000
-        var signalAt = intervalMilliseconds
-        while signalAt < target {
-          bellHasScheduledContent = true
-          bellPlayer.scheduleBuffer(
-            closingBell,
-            at: AVAudioTime(
-              sampleTime: AVAudioFramePosition(Double(signalAt) * sampleRate / 1_000),
-              atRate: sampleRate
-            ),
-            options: []
-          )
-          signalAt += intervalMilliseconds
-        }
+      let schedule = MeditationBellSchedule.remaining(
+        for: session,
+        elapsedMilliseconds: resumedAtMilliseconds ?? 0
+      )
+      for offset in schedule.intervalOffsetsMilliseconds {
+        bellHasScheduledContent = true
+        bellPlayer.scheduleBuffer(
+          closingBell,
+          at: AVAudioTime(
+            sampleTime: AVAudioFramePosition(Double(offset) * sampleRate / 1_000),
+            atRate: sampleRate
+          ),
+          options: []
+        )
       }
-      if session.configuration.audio.closingBellEnabled,
-        let target = session.targetDurationMilliseconds
-      {
+      if let offset = schedule.closingOffsetMilliseconds {
         bellHasScheduledContent = true
         scheduledClosingBell = true
         let generation = playbackGeneration
         bellPlayer.scheduleBuffer(
           closingBell,
           at: AVAudioTime(
-            sampleTime: AVAudioFramePosition(Double(target) * sampleRate / 1_000),
+            sampleTime: AVAudioFramePosition(Double(offset) * sampleRate / 1_000),
             atRate: sampleRate
           ),
           options: [],

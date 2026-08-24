@@ -1,6 +1,6 @@
 # Arrive Within
 
-Arrive Within is a free, bilingual meditation app for iPhone and iPad. A configurable timer, an open-ended stopwatch, private reflections, and a deterministic living garden all work without an account. Every qualifying practice becomes one immutable event; the same event history always grows the same garden. The repository contains the complete original English/German guided-practice source and the approved narrated update now submitted to App Review in version 1.0 build 15.
+Arrive Within is a free, bilingual meditation app for iPhone and iPad. A configurable timer, an open-ended stopwatch, private reflections, and a deterministic living garden all work without an account. Every qualifying practice becomes one immutable event; the same event history always grows the same garden. The repository contains the complete original English/German guided-practice source and release evidence for the approved narrated update in version 1.0 build 16.
 
 <p align="center">
   <img src="Marketing/AppStoreScreenshots/exports/en-US/iphone-6.9/01-growth-arrive-en-us-iphone-6.9-1320x2868.png" width="31%" alt="Arrive Within's Twilight Refuge garden on iPhone">
@@ -12,13 +12,13 @@ Arrive Within is a free, bilingual meditation app for iPhone and iPad. A configu
 
 ## Project status
 
-Arrive Within 1.0 build 15 is `WAITING_FOR_REVIEW` at Apple with automatic release selected after approval; this repository therefore does **not** claim App Store availability yet. The submitted package contains the approved 84-track English/German narrated library (42 concepts × 2 languages), bound transcripts, provenance, and the searchable 42-practice list directly in the Guided tab. The listing uses the approved bilingual 24-image screenshot set and includes one optional non-consumable purchase for four Garden material styles. Earlier builds 7, 13, and 14 remain historical or rejected candidates. English F2 and German C2 are the selected narration directions, Quiet Threshold B is the packaged icon, and C — Twilight Refuge is the only shipping garden; A/B remain non-shipping source references.
+The repository-recorded App Store Connect snapshot places Arrive Within 1.0 build 16 in `WAITING_FOR_REVIEW` with automatic release selected after approval; this repository therefore does **not** claim App Store availability yet. The submitted package contains the approved 84-track English/German narrated library (42 concepts × 2 languages), bound transcripts, provenance, and the searchable 42-practice list directly in the Guided tab. The listing uses the approved bilingual 24-image screenshot set and includes one optional non-consumable purchase for four Garden material styles. Earlier builds 7, 13, 14, and 15 remain historical or superseded candidates. English F2 and German C2 are the selected narration directions, Quiet Threshold B is the packaged icon, and C — Twilight Refuge is the only shipping garden; A/B remain non-shipping source references.
 
 There is no App Store download link until an exact reviewed candidate is actually available. The country-neutral URL is reserved as `https://apps.apple.com/app/id6800192697`; add it to this README and the website only after Apple approval and a successful storefront readback.
 
 ## What is here
 
-- Timer and stopwatch remain complete offline practice modes; submitted build 15 adds the inline, offline bilingual Guided library.
+- Timer and stopwatch remain complete offline practice modes; submitted build 16 includes the inline, offline bilingual Guided library.
 - Exactly 42 original guided concepts with approved English and German narration, transcripts, and provenance in `Content/guided`.
 - A monotonic, persisted session state machine with exact-once completion.
 - Permanent deterministic garden progression, a typed Swift/TypeScript bridge, bounded Three.js rendering, recovery, and a native fallback.
@@ -67,7 +67,7 @@ The complete local gate is:
 ./scripts/check
 ```
 
-It includes full 84-track source validation and an unsigned iOS build, and therefore requires Xcode. The strict pre-TestFlight package gate is `ARRIVE_WITHIN_GUIDED_GATE=device-candidate ./scripts/check`; the submitted build-15 source passed that gate before archive and upload. Apple approval, public storefront readback, and independent exact-build physical library/audio confirmation remain separate. Simulator UI tests use the repository’s serialized guarded runner; do not start overlapping XCTest or simulator-control processes.
+It includes full 84-track source validation and an unsigned iOS build, and therefore requires Xcode. The strict pre-TestFlight package gate is `ARRIVE_WITHIN_GUIDED_GATE=device-candidate ./scripts/check`; the submitted build-16 source passed that gate before archive and upload. Apple approval, public storefront readback, and independent exact-build physical library/audio confirmation remain separate. Simulator UI tests use the repository’s serialized guarded runner; do not start overlapping XCTest or simulator-control processes.
 
 ## Safe local configuration
 

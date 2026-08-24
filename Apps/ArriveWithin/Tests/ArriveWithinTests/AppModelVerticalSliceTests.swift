@@ -62,6 +62,53 @@ struct AppModelVerticalSliceTests {
     }
   #endif
 
+  @Test("Delete all refuses to run while a practice is active")
+  func deleteAllRefusesActivePractice() async throws {
+    let parent = FileManager.default.temporaryDirectory
+      .appending(path: "arrive-within-active-delete-\(UUID().uuidString)")
+    let root = parent.appending(path: "ArriveWithin", directoryHint: .isDirectory)
+    defer { try? FileManager.default.removeItem(at: parent) }
+    try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+    let store = try CoreDataProductStore(
+      configuration: ProductStoreConfiguration(
+        storeURL: root.appending(path: "product-v1.sqlite")
+      )
+    )
+    let controller = try ProductDataController(store: store, dataDirectory: root)
+    let eventRepository = InMemoryPracticeEventRepository()
+    let model = AppModel(
+      dependencies: AppDependencies(
+        profileRepository: TestProfileRepository(),
+        eventRepository: eventRepository,
+        sessionRepository: TestSessionRepository(),
+        preferencesRepository: TestPreferencesRepository(),
+        productStore: store,
+        productDataController: controller,
+        completionCoordinator: SessionCompletionCoordinator(repository: eventRepository),
+        clock: VirtualSessionClock(
+          moment: SessionMoment(
+            monotonicMilliseconds: 1_000,
+            wallClock: Date(timeIntervalSince1970: 1_786_320_000)
+          )
+        ),
+        dataDirectory: root,
+        audioController: NoOpMeditationAudioController(),
+        timerEndAlertController: NoOpTimerEndAlertController(),
+        hapticController: NoOpMeditationHapticController()
+      )
+    )
+
+    await model.start()
+    await model.exploreGarden()
+    try await model.startPractice(mode: .stopwatch, targetMinutes: nil)
+
+    await model.deleteAllProductData()
+
+    #expect(model.activeSession?.phase == .running)
+    #expect(model.profile != nil)
+    #expect(model.dataNotice == .deletionFailed)
+  }
+
   @Test("A three-minute completion visibly and durably advances the projection")
   func completionAdvancesGarden() async throws {
     let eventRepository = InMemoryPracticeEventRepository()

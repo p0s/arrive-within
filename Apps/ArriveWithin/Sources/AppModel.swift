@@ -289,6 +289,14 @@ final class AppModel {
       audioNotice = .guidedCatalogUnavailable
       return
     }
+    let targetDurationMilliseconds: Int64?
+    if let targetMinutes {
+      let (milliseconds, overflow) = Int64(targetMinutes).multipliedReportingOverflow(by: 60_000)
+      guard !overflow else { throw MeditationSessionError.invalidTargetDuration }
+      targetDurationMilliseconds = milliseconds
+    } else {
+      targetDurationMilliseconds = nil
+    }
     let configuration = try suppliedConfiguration ?? defaultConfiguration(for: mode)
     let session = try MeditationSession(
       id: UUID(),
@@ -296,7 +304,7 @@ final class AppModel {
       mode: mode,
       guidedContentID: resolvedGuidedContentID,
       guidedContentVersion: resolvedGuidedContentVersion,
-      targetDurationMilliseconds: targetMinutes.map { Int64($0) * 60_000 },
+      targetDurationMilliseconds: targetDurationMilliseconds,
       preparedAt: moment.wallClock,
       configuration: configuration
     )
@@ -991,7 +999,7 @@ final class AppModel {
   }
 
   func deleteAllProductData() async {
-    guard let controller = dependencies.productDataController else {
+    guard activeSession == nil, let controller = dependencies.productDataController else {
       dataNotice = .deletionFailed
       return
     }
@@ -999,9 +1007,6 @@ final class AppModel {
     defer { isPerformingDataAction = false }
     ticker?.cancel()
     preparationTask?.cancel()
-    if let session = activeSession {
-      dependencies.timerEndAlertController.cancel(sessionID: session.id)
-    }
     dependencies.audioController.stop()
     discardPendingJournalRecording()
     do {

@@ -217,6 +217,18 @@ async function main() {
   for (const token of ["TODO", "TBD", "lorem ipsum", "App Store badge", "Download now"]) {
     if (allHtml.toLowerCase().includes(token.toLowerCase())) throw new Error(`website contains forbidden placeholder or release claim: ${token}`);
   }
+  const guidedCopy = {
+    "/": ["Three quiet ways to begin.", "42 original English or German practices"],
+    "/de": ["Drei ruhige Wege zu beginnen.", "42 originalen englischen oder deutschen Meditationen"],
+    "/support": ["Version 1.0 includes 42 original guided practices", "packaged for offline playback"],
+    "/de/support": ["Version 1.0 enthält 42 originale geführte Meditationen", "Offline-Wiedergabe"],
+  };
+  for (const [route, phrases] of Object.entries(guidedCopy)) {
+    const html = await readFile(path.join(DIST, routeFiles[route]), "utf8");
+    for (const phrase of phrases) {
+      if (!html.includes(phrase)) throw new Error(`${route}: current Guided product copy missing: ${phrase}`);
+    }
+  }
   const privacyEnglish = await readFile(path.join(DIST, routeFiles["/privacy"]), "utf8");
   const privacyGerman = await readFile(path.join(DIST, routeFiles["/de/privacy"]), "utf8");
   for (const phrase of ["No third-party analytics", "no account, backend, or cloud sync", "Microphone access", "excluded from backup"]) {

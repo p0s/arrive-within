@@ -4,6 +4,7 @@ import UIKit
 
 struct ReminderSettingsView: View {
   @Bindable var model: AppModel
+  @Environment(\.locale) private var locale
   @Environment(\.openURL) private var openURL
   @State private var isShowingEditor = false
   @State private var editingSchedule: WeeklyReminderSchedule?
@@ -45,9 +46,15 @@ struct ReminderSettingsView: View {
                 isShowingEditor = true
               } label: {
                 VStack(alignment: .leading, spacing: 3) {
-                  Text(Self.weekdayName(schedule.weekday))
+                  Text(Self.weekdayName(schedule.weekday, locale: locale))
                     .font(.body.weight(.semibold))
-                  Text(Self.timeText(hour: schedule.hour, minute: schedule.minute))
+                  Text(
+                    Self.timeText(
+                      hour: schedule.hour,
+                      minute: schedule.minute,
+                      locale: locale
+                    )
+                  )
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 }
@@ -186,6 +193,7 @@ private struct ReminderEditorView: View {
   let model: AppModel
   let existing: WeeklyReminderSchedule?
   @Environment(\.dismiss) private var dismiss
+  @Environment(\.locale) private var locale
   @State private var weekday: Weekday
   @State private var time: Date
   @State private var isSaving = false
@@ -209,7 +217,7 @@ private struct ReminderEditorView: View {
       Form {
         Picker("reminders.editor.day", selection: $weekday) {
           ForEach(Weekday.allCases, id: \.self) { day in
-            Text(ReminderSettingsView.weekdayName(day)).tag(day)
+            Text(ReminderSettingsView.weekdayName(day, locale: locale)).tag(day)
           }
         }
         .accessibilityIdentifier("reminders.editor.day")

@@ -565,6 +565,47 @@ struct ProgressionReducerTests {
     #expect(leapCalendar.days.last?.isSelected == true)
   }
 
+  @Test("Persisted domain values cannot bypass their construction invariants")
+  func persistedDomainDecodingRevalidates() throws {
+    let base = Date(timeIntervalSince1970: 1_786_320_000)
+    let profile = try LocalProfile(
+      profileGenerationID: ArriveWithinFixtures.generationID,
+      gardenID: ArriveWithinFixtures.gardenID,
+      gardenSeed: 424_242,
+      installationID: ArriveWithinFixtures.installationID,
+      createdAt: base,
+      hasCompletedFirstUse: true
+    )
+    var profileObject = try #require(
+      JSONSerialization.jsonObject(with: JSONEncoder().encode(profile)) as? [String: Any]
+    )
+    profileObject["gardenSeed"] = GardenSeedContract.maximumExactCrossRuntimeValue + 1
+    let invalidProfile = try JSONSerialization.data(withJSONObject: profileObject)
+    #expect(throws: LocalProfileError.gardenSeedExceedsCrossRuntimePrecision) {
+      _ = try JSONDecoder().decode(LocalProfile.self, from: invalidProfile)
+    }
+
+    let day = try PracticeDayKey.containing(base, timeZone: ArriveWithinFixtures.utc)
+    var dayObject = try #require(
+      JSONSerialization.jsonObject(with: JSONEncoder().encode(day)) as? [String: Any]
+    )
+    dayObject["intervalEndUTC"] = dayObject["intervalStartUTC"]
+    let invalidDay = try JSONSerialization.data(withJSONObject: dayObject)
+    #expect(throws: PracticeEventError.invalidPracticeDayInterval) {
+      _ = try JSONDecoder().decode(PracticeDayKey.self, from: invalidDay)
+    }
+
+    let validEvent = try event(ordinal: 91, start: base, timeZone: ArriveWithinFixtures.utc)
+    var eventObject = try #require(
+      JSONSerialization.jsonObject(with: JSONEncoder().encode(validEvent)) as? [String: Any]
+    )
+    eventObject["activeMilliseconds"] = -1
+    let invalidEvent = try JSONSerialization.data(withJSONObject: eventObject)
+    #expect(throws: PracticeEventError.negativeActiveDuration) {
+      _ = try JSONDecoder().decode(PracticeEvent.self, from: invalidEvent)
+    }
+  }
+
   private func context() -> GardenProjectionContext {
     GardenProjectionContext(
       gardenID: ArriveWithinFixtures.gardenID,

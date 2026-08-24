@@ -1,3 +1,4 @@
+import ArriveWithinDomain
 import Foundation
 import Testing
 
@@ -20,6 +21,7 @@ struct AppSettingsTests {
   }
 
   @Test("Explicit app locale selects the matching localization bundle")
+  @MainActor
   func explicitLocaleLocalization() {
     #expect(
       AppLocalization.string("guided.results.count.format", locale: Locale(identifier: "en_US"))
@@ -32,6 +34,24 @@ struct AppSettingsTests {
     #expect(
       AppLocalization.string("notification.reminder.title", locale: Locale(identifier: "de_DE"))
         == "Ein Moment für dich"
+    )
+    #expect(
+      AppLocalization.string("garden.styles.available", locale: Locale(identifier: "de_DE"))
+        == "Verfügbar"
+    )
+    #expect(
+      ReminderSettingsView.weekdayName(.monday, locale: Locale(identifier: "en_US"))
+        == "Monday"
+    )
+    #expect(
+      ReminderSettingsView.weekdayName(.monday, locale: Locale(identifier: "de_DE"))
+        == "Montag"
+    )
+    #expect(
+      PracticeCalendarView.localizedList(
+        ["Montag", "Ausgewählt"],
+        locale: Locale(identifier: "de_DE")
+      ) == "Montag und Ausgewählt"
     )
   }
 

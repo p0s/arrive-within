@@ -51,6 +51,7 @@
 "garden.styles.claymation.detail" = "Weiche Knetformen mit feiner Fingerstruktur";
 "garden.styles.selected" = "Ausgewählt";
 "garden.styles.locked" = "Premiumstil";
+"garden.styles.available" = "Verfügbar";
 "garden.styles.owned" = "Alle vier Premiumstile gehören dir";
 "garden.styles.unlock" = "Alle vier freischalten";
 "garden.styles.unavailable" = "Käufe sind derzeit nicht verfügbar. Dämmerung bleibt vollständig nutzbar.";

@@ -68,6 +68,25 @@ public struct PracticeDayKey: Codable, Hashable, Sendable, Comparable {
     }
     return lhs.stableIdentifier < rhs.stableIdentifier
   }
+
+  private enum CodingKeys: String, CodingKey {
+    case localDate
+    case calendarIdentifier
+    case timeZoneIdentifier
+    case intervalStartUTC
+    case intervalEndUTC
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    try self.init(
+      localDate: container.decode(String.self, forKey: .localDate),
+      calendarIdentifier: container.decode(String.self, forKey: .calendarIdentifier),
+      timeZoneIdentifier: container.decode(String.self, forKey: .timeZoneIdentifier),
+      intervalStartUTC: container.decode(Date.self, forKey: .intervalStartUTC),
+      intervalEndUTC: container.decode(Date.self, forKey: .intervalEndUTC)
+    )
+  }
 }
 
 public struct PracticeEvent: Codable, Hashable, Identifiable, Sendable {
@@ -135,6 +154,39 @@ public struct PracticeEvent: Codable, Hashable, Identifiable, Sendable {
   public var growthCreditMilliseconds: Int64 {
     guard qualifiesForGrowth else { return 0 }
     return min(activeMilliseconds, Self.maximumGrowthCreditMilliseconds)
+  }
+
+  private enum CodingKeys: String, CodingKey {
+    case id
+    case sessionID
+    case profileGenerationID
+    case mode
+    case guidedContentID
+    case guidedContentVersion
+    case startedAt
+    case endedAt
+    case activeMilliseconds
+    case practiceDay
+    case sourceInstallationID
+    case createdAt
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    try self.init(
+      id: container.decode(UUID.self, forKey: .id),
+      sessionID: container.decode(UUID.self, forKey: .sessionID),
+      profileGenerationID: container.decode(UUID.self, forKey: .profileGenerationID),
+      mode: container.decode(PracticeMode.self, forKey: .mode),
+      guidedContentID: container.decodeIfPresent(String.self, forKey: .guidedContentID),
+      guidedContentVersion: container.decodeIfPresent(Int.self, forKey: .guidedContentVersion),
+      startedAt: container.decode(Date.self, forKey: .startedAt),
+      endedAt: container.decode(Date.self, forKey: .endedAt),
+      activeMilliseconds: container.decode(Int64.self, forKey: .activeMilliseconds),
+      practiceDay: container.decode(PracticeDayKey.self, forKey: .practiceDay),
+      sourceInstallationID: container.decode(UUID.self, forKey: .sourceInstallationID),
+      createdAt: container.decode(Date.self, forKey: .createdAt)
+    )
   }
 }
 

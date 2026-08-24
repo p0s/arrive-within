@@ -42,6 +42,30 @@ struct WeeklyReminderScheduleTests {
     #expect(!edited.isEnabled)
   }
 
+  @Test("Persisted reminders cannot bypass schedule invariants")
+  func persistedReminderDecodingRevalidates() throws {
+    let date = Date(timeIntervalSince1970: 1_786_320_000)
+    let reminder = try WeeklyReminderSchedule(
+      id: UUID(),
+      weekday: .monday,
+      hour: 20,
+      minute: 0,
+      createdAt: date,
+      modifiedAt: date
+    )
+    var object = try #require(
+      JSONSerialization.jsonObject(with: JSONEncoder().encode(reminder)) as? [String: Any]
+    )
+    object["hour"] = 24
+
+    #expect(throws: WeeklyReminderScheduleError.invalidLocalTime) {
+      _ = try JSONDecoder().decode(
+        WeeklyReminderSchedule.self,
+        from: JSONSerialization.data(withJSONObject: object)
+      )
+    }
+  }
+
   @Test("Reminder order is stable across weekdays, times, and identifiers")
   func deterministicOrder() throws {
     let date = Date(timeIntervalSince1970: 1_786_320_000)

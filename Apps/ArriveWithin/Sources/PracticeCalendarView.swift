@@ -311,7 +311,13 @@ struct PracticeCalendarView: View {
     if day.isSelected {
       parts.append(AppLocalization.string("journey.calendar.selected", locale: locale))
     }
-    return Text(ListFormatter.localizedString(byJoining: parts))
+    return Text(Self.localizedList(parts, locale: locale))
+  }
+
+  static func localizedList(_ parts: [String], locale: Locale) -> String {
+    let formatter = ListFormatter()
+    formatter.locale = locale
+    return formatter.string(from: parts) ?? parts.joined(separator: ", ")
   }
 
   private func statusText(_ status: PracticeCalendarDayStatus) -> String {

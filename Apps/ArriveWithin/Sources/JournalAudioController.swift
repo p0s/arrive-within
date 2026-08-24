@@ -84,33 +84,40 @@ final class NativeJournalAudioRecorder: NSObject, JournalAudioRecordingControlli
       at: fileURL.deletingLastPathComponent(),
       withIntermediateDirectories: true
     )
-    try audioSession.setCategory(
-      .record,
-      mode: .measurement,
-      options: [.allowBluetoothHFP]
-    )
-    try audioSession.setActive(true)
-    let recorder = try AVAudioRecorder(
-      url: fileURL,
-      settings: [
-        AVFormatIDKey: kAudioFormatMPEG4AAC,
-        AVSampleRateKey: 24_000,
-        AVNumberOfChannelsKey: 1,
-        AVEncoderBitRateKey: 64_000,
-        AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue,
-      ]
-    )
-    recorder.delegate = self
-    recorder.isMeteringEnabled = true
-    guard recorder.prepareToRecord(),
-      recorder.record(forDuration: Double(JournalAudioAttachment.maximumDurationMilliseconds) / 1_000)
-    else {
+    do {
+      try audioSession.setCategory(
+        .record,
+        mode: .measurement,
+        options: [.allowBluetoothHFP]
+      )
+      try audioSession.setActive(true)
+      let recorder = try AVAudioRecorder(
+        url: fileURL,
+        settings: [
+          AVFormatIDKey: kAudioFormatMPEG4AAC,
+          AVSampleRateKey: 24_000,
+          AVNumberOfChannelsKey: 1,
+          AVEncoderBitRateKey: 64_000,
+          AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue,
+        ]
+      )
+      recorder.delegate = self
+      recorder.isMeteringEnabled = true
+      guard recorder.prepareToRecord(),
+        recorder.record(
+          forDuration: Double(JournalAudioAttachment.maximumDurationMilliseconds) / 1_000
+        )
+      else {
+        throw JournalAudioRecordingError.couldNotCreateFile
+      }
+      self.recorder = recorder
+      outputURL = fileURL
+      recordedAt = Date()
+    } catch {
       try? audioSession.setActive(false, options: .notifyOthersOnDeactivation)
-      throw JournalAudioRecordingError.couldNotCreateFile
+      try? FileManager.default.removeItem(at: fileURL)
+      throw error
     }
-    self.recorder = recorder
-    outputURL = fileURL
-    recordedAt = Date()
   }
 
   func stop() throws -> JournalAudioAttachment {
@@ -133,42 +140,48 @@ final class NativeJournalAudioRecorder: NSObject, JournalAudioRecordingControlli
 
   private func finalize(recorder: AVAudioRecorder) throws -> JournalAudioAttachment {
     guard let outputURL, let recordedAt else {
+      cancel()
       throw JournalAudioRecordingError.emptyRecording
     }
     let reportedDuration = max(0, recorder.currentTime)
-    self.recorder = nil
-    self.outputURL = nil
-    self.recordedAt = nil
-    try? audioSession.setActive(false, options: .notifyOthersOnDeactivation)
-    let data = try Data(contentsOf: outputURL)
-    guard !data.isEmpty else {
-      try? FileManager.default.removeItem(at: outputURL)
-      throw JournalAudioRecordingError.emptyRecording
+    defer {
+      self.recorder = nil
+      self.outputURL = nil
+      self.recordedAt = nil
+      try? audioSession.setActive(false, options: .notifyOthersOnDeactivation)
     }
-    let audioFile = try AVAudioFile(forReading: outputURL)
-    let fileDuration = Double(audioFile.length) / audioFile.processingFormat.sampleRate
-    let duration = min(
-      Double(JournalAudioAttachment.maximumDurationMilliseconds) / 1_000,
-      max(reportedDuration, fileDuration)
-    )
-    guard duration > 0 else {
-      try? FileManager.default.removeItem(at: outputURL)
-      throw JournalAudioRecordingError.emptyRecording
-    }
-    let checksum = SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
-    #if os(iOS)
-      try FileManager.default.setAttributes(
-        [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication],
-        ofItemAtPath: outputURL.path
+    do {
+      let data = try Data(contentsOf: outputURL)
+      guard !data.isEmpty else {
+        throw JournalAudioRecordingError.emptyRecording
+      }
+      let audioFile = try AVAudioFile(forReading: outputURL)
+      let fileDuration = Double(audioFile.length) / audioFile.processingFormat.sampleRate
+      let duration = min(
+        Double(JournalAudioAttachment.maximumDurationMilliseconds) / 1_000,
+        max(reportedDuration, fileDuration)
       )
-    #endif
-    return try JournalAudioAttachment(
-      relativeFileName: outputURL.lastPathComponent,
-      durationMilliseconds: max(1, Int64((duration * 1_000).rounded())),
-      byteCount: Int64(data.count),
-      checksumSHA256: checksum,
-      recordedAt: recordedAt
-    )
+      guard duration > 0 else {
+        throw JournalAudioRecordingError.emptyRecording
+      }
+      let checksum = SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+      #if os(iOS)
+        try FileManager.default.setAttributes(
+          [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication],
+          ofItemAtPath: outputURL.path
+        )
+      #endif
+      return try JournalAudioAttachment(
+        relativeFileName: outputURL.lastPathComponent,
+        durationMilliseconds: max(1, Int64((duration * 1_000).rounded())),
+        byteCount: Int64(data.count),
+        checksumSHA256: checksum,
+        recordedAt: recordedAt
+      )
+    } catch {
+      try? FileManager.default.removeItem(at: outputURL)
+      throw error
+    }
   }
 
   @objc private func handleInterruption(_ notification: Notification) {
