@@ -14,7 +14,10 @@ import {
   type SourceCaptures,
 } from "./contracts";
 import { validateOpaqueRgbPng } from "./image-validation";
-import { isExactHistoricalCaptureRetention } from "./capture-drift-policy";
+import {
+  isExactHistoricalCaptureRetention,
+  isExactLiveActivityCaptureRetention,
+} from "./capture-drift-policy";
 import { computeCaptureSourceManifest, type CaptureSourceManifest } from "./source-provenance";
 
 function sha256(data: Buffer): string {
@@ -78,7 +81,15 @@ export async function validateCaptures(
     const changedPaths = [...new Set([...storedHashes.keys(), ...currentHashes.keys()])]
       .filter((file) => storedHashes.get(file) !== currentHashes.get(file))
       .sort();
-    if (!isExactHistoricalCaptureRetention(captures.post_capture_change, currentManifest.source_revision, changedPaths)) {
+    if (
+      !isExactHistoricalCaptureRetention(captures.post_capture_change, currentManifest.source_revision, changedPaths) &&
+      !isExactLiveActivityCaptureRetention(
+        captures.post_capture_change,
+        captures.source_revision,
+        currentManifest.source_revision,
+        changedPaths,
+      )
+    ) {
       throw new Error(
         `source capture revision drift is not the exact retained historical-capture boundary: ${currentManifest.source_revision}; ${changedPaths.join(", ")}`,
       );

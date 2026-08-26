@@ -109,6 +109,8 @@
 "session.qualifies" = "Diese Praxis lässt deinen Garten wachsen";
 "session.pause" = "Pausieren";
 "session.resume" = "Fortsetzen";
+"live.activity.running" = "Meditation läuft";
+"live.activity.paused" = "Meditation pausiert";
 "session.finish" = "Beenden";
 "session.end.early" = "Früher beenden";
 "session.end.early.confirm.title" = "Diese Praxis beenden?";

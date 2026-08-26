@@ -31,6 +31,8 @@
   <string>public.app-category.healthcare-fitness</string>
   <key>NSMicrophoneUsageDescription</key>
   <string>Record a private voice reflection when you choose.</string>
+  <key>NSSupportsLiveActivities</key>
+  <true/>
   <key>NSSpeechRecognitionUsageDescription</key>
   <string>Transcribe a private voice reflection on this device when available.</string>
   <key>UIBackgroundModes</key>

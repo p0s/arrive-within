@@ -109,6 +109,8 @@
 "session.qualifies" = "This practice now grows your garden";
 "session.pause" = "Pause";
 "session.resume" = "Continue";
+"live.activity.running" = "Practice in progress";
+"live.activity.paused" = "Practice paused";
 "session.finish" = "Finish";
 "session.end.early" = "End early";
 "session.end.early.confirm.title" = "End this practice?";

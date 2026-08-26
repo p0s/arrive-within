@@ -14,8 +14,42 @@ export type HistoricalCaptureRetention = {
   rationale: string;
 };
 
+export type LiveActivityCaptureRetention = {
+  classification: "iphone-live-activity-nonvisual-capture-retention";
+  captured_source_revision: string;
+  current_source_revision: string;
+  changed_path_count: number;
+  change_scope: "iphone-live-activity-only-no-required-capture-pixel-delta";
+  required_capture_ids_unchanged: true;
+  prior_human_visual_review_retained: true;
+  live_activity_physical_proof: "pending-exact-iphone-lock-screen-and-dynamic-island-review";
+  app_store_listing_mutation: "none";
+  rationale: string;
+};
+
+export type CaptureDriftAttestation = HistoricalCaptureRetention | LiveActivityCaptureRetention;
+
 export const RETAINED_CAPTURE_SOURCE_REVISION =
   "970cbd8250bbb522a5b09570f349fd6967b8f7fcc5d863216c3c7c45a0e94a49";
+
+export const LIVE_ACTIVITY_CAPTURED_SOURCE_REVISION =
+  "aed3e83d30d6290cb99731be79675fcfbeb7941168ec960479e08148b1293925";
+
+export const LIVE_ACTIVITY_CURRENT_SOURCE_REVISION =
+  "ba4c65d139f25e3e841420d95593bda6f06b3740895dd0dcf3e960bc116f7e74";
+
+export const LIVE_ACTIVITY_CHANGED_PATHS = [
+  "Apps/ArriveWithin/Resources/Info.plist",
+  "Apps/ArriveWithin/Resources/de.lproj/Localizable.strings",
+  "Apps/ArriveWithin/Resources/en.lproj/Localizable.strings",
+  "Apps/ArriveWithin/Sources/AppDependencies.swift",
+  "Apps/ArriveWithin/Sources/AppModel.swift",
+  "Apps/ArriveWithin/Sources/MeditationActivityAttributes.swift",
+  "Apps/ArriveWithin/Sources/MeditationLiveActivity.swift",
+  "ArriveWithin.xcodeproj/project.pbxproj",
+  "Config/Base.xcconfig",
+  "project.yml",
+] as const;
 
 const PRIOR_REVIEWED_UI_CHANGED_PATHS = [
   "Apps/ArriveWithin/Resources/de.lproj/Localizable.strings",
@@ -62,14 +96,24 @@ const REQUIRED_RATIONALE_FRAGMENTS = [
   "No build-16 archive, upload, physical, review, or storefront claim exists",
 ] as const;
 
+const LIVE_ACTIVITY_RATIONALE_FRAGMENTS = [
+  "iPhone Live Activity",
+  "required Garden, Journey, and Journal capture IDs are unchanged",
+  "no existing localized value changed",
+  "no required App Store screenshot pixel changed",
+  "prior human review remains scoped to the retained 24 images",
+  "physical iPhone Lock Screen and Dynamic Island proof remains pending",
+  "No App Store Connect mutation was performed",
+] as const;
+
 export function isExactHistoricalCaptureRetention(
-  attestation: HistoricalCaptureRetention | undefined,
+  attestation: CaptureDriftAttestation | undefined,
   currentSourceRevision: string,
   changedPaths: string[],
 ): boolean {
+  if (attestation?.classification !== "build-7-captures-retained-for-build-16-audio-replacement") return false;
   return Boolean(
-    attestation?.classification === "build-7-captures-retained-for-build-16-audio-replacement" &&
-      attestation.current_source_revision === RETAINED_CAPTURE_SOURCE_REVISION &&
+    attestation.current_source_revision === RETAINED_CAPTURE_SOURCE_REVISION &&
       currentSourceRevision === RETAINED_CAPTURE_SOURCE_REVISION &&
       attestation.changed_path_count === RETAINED_CAPTURE_CHANGED_PATHS.length &&
       attestation.change_scope === "prior-reviewed-ui-delta-plus-approved-v4-narration-only" &&
@@ -83,5 +127,28 @@ export function isExactHistoricalCaptureRetention(
       attestation.separate_iap_state === "IN_REVIEW" &&
       attestation.next_action === "candidate-bind-and-read-back-before-build-16-resubmission" &&
       REQUIRED_RATIONALE_FRAGMENTS.every((fragment) => attestation.rationale.includes(fragment)),
+  );
+}
+
+export function isExactLiveActivityCaptureRetention(
+  attestation: CaptureDriftAttestation | undefined,
+  capturedSourceRevision: string,
+  currentSourceRevision: string,
+  changedPaths: string[],
+): boolean {
+  if (attestation?.classification !== "iphone-live-activity-nonvisual-capture-retention") return false;
+  return Boolean(
+    capturedSourceRevision === LIVE_ACTIVITY_CAPTURED_SOURCE_REVISION &&
+      attestation.captured_source_revision === LIVE_ACTIVITY_CAPTURED_SOURCE_REVISION &&
+      currentSourceRevision === LIVE_ACTIVITY_CURRENT_SOURCE_REVISION &&
+      attestation.current_source_revision === LIVE_ACTIVITY_CURRENT_SOURCE_REVISION &&
+      attestation.changed_path_count === LIVE_ACTIVITY_CHANGED_PATHS.length &&
+      JSON.stringify(changedPaths) === JSON.stringify([...LIVE_ACTIVITY_CHANGED_PATHS]) &&
+      attestation.change_scope === "iphone-live-activity-only-no-required-capture-pixel-delta" &&
+      attestation.required_capture_ids_unchanged === true &&
+      attestation.prior_human_visual_review_retained === true &&
+      attestation.live_activity_physical_proof === "pending-exact-iphone-lock-screen-and-dynamic-island-review" &&
+      attestation.app_store_listing_mutation === "none" &&
+      LIVE_ACTIVITY_RATIONALE_FRAGMENTS.every((fragment) => attestation.rationale.includes(fragment)),
   );
 }
