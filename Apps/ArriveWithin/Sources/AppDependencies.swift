@@ -83,6 +83,7 @@ struct AppDependencies {
   let exportStagingManager: ExportStagingManager
   let audioController: any MeditationAudioControlling
   let timerEndAlertController: any TimerEndAlertControlling
+  let liveActivityController: any MeditationLiveActivityControlling
   let weeklyReminderNotificationController: any WeeklyReminderNotificationControlling
   let hapticController: any MeditationHapticControlling
   let journalAudioRecorder: any JournalAudioRecordingControlling
@@ -107,6 +108,7 @@ struct AppDependencies {
     dataDirectory: URL,
     audioController: any MeditationAudioControlling,
     timerEndAlertController: any TimerEndAlertControlling,
+    liveActivityController: any MeditationLiveActivityControlling = NoOpMeditationLiveActivityController(),
     weeklyReminderNotificationController: any WeeklyReminderNotificationControlling = NoOpWeeklyReminderNotificationController(),
     hapticController: any MeditationHapticControlling,
     journalAudioRecorder: any JournalAudioRecordingControlling = UnavailableJournalAudioRecorder(),
@@ -138,6 +140,7 @@ struct AppDependencies {
     }
     self.audioController = audioController
     self.timerEndAlertController = timerEndAlertController
+    self.liveActivityController = liveActivityController
     self.weeklyReminderNotificationController = weeklyReminderNotificationController
     self.hapticController = hapticController
     self.journalAudioRecorder = journalAudioRecorder
@@ -244,6 +247,7 @@ struct AppDependencies {
       dataDirectory: root,
       audioController: audioController,
       timerEndAlertController: NativeTimerEndAlertController(),
+      liveActivityController: SystemMeditationLiveActivityController(),
       weeklyReminderNotificationController: weeklyReminderController(arguments: arguments),
       hapticController: NativeMeditationHapticController(),
       journalAudioRecorder: journalAudioRecorder,

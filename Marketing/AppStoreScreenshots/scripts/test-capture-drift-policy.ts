@@ -2,9 +2,14 @@ import assert from "node:assert/strict";
 
 import {
   isExactHistoricalCaptureRetention,
+  isExactLiveActivityCaptureRetention,
+  LIVE_ACTIVITY_CAPTURED_SOURCE_REVISION,
+  LIVE_ACTIVITY_CHANGED_PATHS,
+  LIVE_ACTIVITY_CURRENT_SOURCE_REVISION,
   RETAINED_CAPTURE_CHANGED_PATHS,
   RETAINED_CAPTURE_SOURCE_REVISION,
   type HistoricalCaptureRetention,
+  type LiveActivityCaptureRetention,
 } from "./capture-drift-policy";
 
 const exact: HistoricalCaptureRetention = {
@@ -40,4 +45,34 @@ assert.equal(accepts({ ...exact, valid_until: "expired" as "build-16-candidate-b
 assert.equal(accepts({ ...exact, change_scope: "prior-reviewed-ui-delta-plus-approved-v4-narration-only " as "prior-reviewed-ui-delta-plus-approved-v4-narration-only" }), false, "a near-match scope must fail");
 assert.equal(accepts({ ...exact, rationale: exact.rationale.replace("candidate-bound", "available") }), false, "a missing candidate-binding action must fail");
 
-process.stdout.write("Capture drift policy passed: exact historical-capture retention plus 6 negative controls.\n");
+const liveActivityExact: LiveActivityCaptureRetention = {
+  classification: "iphone-live-activity-nonvisual-capture-retention",
+  captured_source_revision: LIVE_ACTIVITY_CAPTURED_SOURCE_REVISION,
+  current_source_revision: LIVE_ACTIVITY_CURRENT_SOURCE_REVISION,
+  changed_path_count: LIVE_ACTIVITY_CHANGED_PATHS.length,
+  change_scope: "iphone-live-activity-only-no-required-capture-pixel-delta",
+  required_capture_ids_unchanged: true,
+  prior_human_visual_review_retained: true,
+  live_activity_physical_proof: "pending-exact-iphone-lock-screen-and-dynamic-island-review",
+  app_store_listing_mutation: "none",
+  rationale:
+    "The iPhone Live Activity adds a read-only system surface while the required Garden, Journey, and Journal capture IDs are unchanged. New localization keys were appended and no existing localized value changed, so no required App Store screenshot pixel changed. The prior human review remains scoped to the retained 24 images; physical iPhone Lock Screen and Dynamic Island proof remains pending. No App Store Connect mutation was performed.",
+};
+
+function acceptsLiveActivity(
+  attestation: LiveActivityCaptureRetention = liveActivityExact,
+  capturedRevision: string = LIVE_ACTIVITY_CAPTURED_SOURCE_REVISION,
+  currentRevision: string = LIVE_ACTIVITY_CURRENT_SOURCE_REVISION,
+  paths: string[] = [...LIVE_ACTIVITY_CHANGED_PATHS],
+): boolean {
+  return isExactLiveActivityCaptureRetention(attestation, capturedRevision, currentRevision, paths);
+}
+
+assert.equal(acceptsLiveActivity(), true, "the exact nonvisual Live Activity retention must pass");
+assert.equal(acceptsLiveActivity(liveActivityExact, "0".repeat(64)), false, "another captured source must fail");
+assert.equal(acceptsLiveActivity(liveActivityExact, LIVE_ACTIVITY_CAPTURED_SOURCE_REVISION, "0".repeat(64)), false, "another current source must fail");
+assert.equal(acceptsLiveActivity(liveActivityExact, LIVE_ACTIVITY_CAPTURED_SOURCE_REVISION, LIVE_ACTIVITY_CURRENT_SOURCE_REVISION, [...LIVE_ACTIVITY_CHANGED_PATHS, "Apps/ArriveWithin/Sources/PracticeView.swift"]), false, "an additional app-screen change must fail");
+assert.equal(acceptsLiveActivity({ ...liveActivityExact, live_activity_physical_proof: "complete" as LiveActivityCaptureRetention["live_activity_physical_proof"] }), false, "unverified physical proof must fail");
+assert.equal(acceptsLiveActivity({ ...liveActivityExact, rationale: liveActivityExact.rationale.replace("No App Store Connect mutation was performed", "Listing updated") }), false, "a missing listing boundary must fail");
+
+process.stdout.write("Capture drift policy passed: exact historical and Live Activity nonvisual retention boundaries plus negative controls.\n");

@@ -113,6 +113,7 @@ struct AppModelVerticalSliceTests {
   func completionAdvancesGarden() async throws {
     let eventRepository = InMemoryPracticeEventRepository()
     let sessionRepository = TestSessionRepository()
+    let liveActivityController = RecordingMeditationLiveActivityController()
     let clock = VirtualSessionClock(
       moment: SessionMoment(
         monotonicMilliseconds: 1_000,
@@ -131,6 +132,7 @@ struct AppModelVerticalSliceTests {
           .appending(path: UUID().uuidString, directoryHint: .isDirectory),
         audioController: NoOpMeditationAudioController(),
         timerEndAlertController: NoOpTimerEndAlertController(),
+        liveActivityController: liveActivityController,
         hapticController: NoOpMeditationHapticController()
       )
     )
@@ -141,13 +143,38 @@ struct AppModelVerticalSliceTests {
     #expect(model.gardenState?.journeyDay == 0)
 
     try await model.startPractice(mode: .timer, targetMinutes: 3)
-    clock.advance(milliseconds: 180_000)
+    let sessionID = try #require(model.activeSession?.id)
+    let runningActivity = try #require(liveActivityController.snapshots.last)
+    #expect(runningActivity.sessionID == sessionID)
+    #expect(runningActivity.mode == .timer)
+    #expect(runningActivity.phase == .running)
+    #expect(runningActivity.elapsedMilliseconds == 0)
+    #expect(runningActivity.targetDurationMilliseconds == 180_000)
+
+    clock.advance(milliseconds: 60_000)
+    await model.pausePractice()
+    let pausedActivity = try #require(liveActivityController.snapshots.last)
+    #expect(pausedActivity.phase == .paused)
+    #expect(pausedActivity.elapsedMilliseconds == 60_000)
+
+    await model.setAppLanguage(.german)
+    #expect(liveActivityController.snapshots.last?.modeName == "Timer")
+    #expect(liveActivityController.snapshots.last?.statusName == "Meditation pausiert")
+
+    await model.resumePractice()
+    let resumedActivity = try #require(liveActivityController.snapshots.last)
+    #expect(resumedActivity.phase == .running)
+    #expect(resumedActivity.elapsedMilliseconds == 60_000)
+    #expect(resumedActivity.runningSince == clock.now().wallClock)
+
+    clock.advance(milliseconds: 120_000)
     await model.finishPractice()
 
     #expect(model.activeSession == nil)
     #expect(model.completionPresentation?.qualifiedForGrowth == true)
     #expect(model.gardenState?.journeyDay == 1)
     #expect(model.gardenState?.qualifyingSessionCount == 1)
+    #expect(liveActivityController.endedSessionIDs.last == sessionID)
   }
 
   @Test("Preparation remains prepared until the monotonic boundary")
@@ -441,6 +468,7 @@ struct AppModelVerticalSliceTests {
     let sessionRepository = TestSessionRepository()
     let profileRepository = TestProfileRepository()
     let preferencesRepository = TestPreferencesRepository()
+    let liveActivityController = RecordingMeditationLiveActivityController()
     let clock = VirtualSessionClock(
       moment: SessionMoment(
         monotonicMilliseconds: 1_000,
@@ -460,6 +488,7 @@ struct AppModelVerticalSliceTests {
         dataDirectory: directory,
         audioController: NoOpMeditationAudioController(),
         timerEndAlertController: NoOpTimerEndAlertController(),
+        liveActivityController: liveActivityController,
         hapticController: NoOpMeditationHapticController()
       )
     )
@@ -480,6 +509,7 @@ struct AppModelVerticalSliceTests {
         dataDirectory: directory,
         audioController: NoOpMeditationAudioController(),
         timerEndAlertController: NoOpTimerEndAlertController(),
+        liveActivityController: liveActivityController,
         hapticController: NoOpMeditationHapticController()
       )
     )
@@ -487,15 +517,21 @@ struct AppModelVerticalSliceTests {
     let assessment = try #require(restoredModel.recoveryAssessment)
     #expect(assessment.lastConfirmedActiveMilliseconds == 0)
     #expect(assessment.maximumPlausibleActiveMilliseconds == 120_000)
+    #expect(liveActivityController.snapshots.last?.phase == .paused)
+    #expect(liveActivityController.snapshots.last?.elapsedMilliseconds == 0)
 
     await restoredModel.confirmRecovery(useMaximumPlausibleTime: true)
     #expect(restoredModel.recoveryAssessment == nil)
     #expect(restoredModel.activeSession?.phase == .paused)
     #expect(restoredModel.elapsedMilliseconds == 120_000)
+    #expect(liveActivityController.snapshots.last?.phase == .paused)
+    #expect(liveActivityController.snapshots.last?.elapsedMilliseconds == 120_000)
 
     clock.advance(milliseconds: 60_000)
     #expect(restoredModel.elapsedMilliseconds == 120_000)
     await restoredModel.resumePractice()
+    #expect(liveActivityController.snapshots.last?.phase == .running)
+    #expect(liveActivityController.snapshots.last?.elapsedMilliseconds == 120_000)
     clock.advance(milliseconds: 60_000)
     await restoredModel.updateForForeground()
     #expect(restoredModel.elapsedMilliseconds == PracticeEvent.qualificationMilliseconds)
@@ -804,6 +840,27 @@ private final class RecordingTimerEndAlertController: TimerEndAlertControlling {
     scheduled.append((sessionID, seconds, locale.identifier))
   }
   func cancel(sessionID: UUID) { cancelled.append(sessionID) }
+}
+
+@MainActor
+private final class RecordingMeditationLiveActivityController:
+  MeditationLiveActivityControlling
+{
+  var snapshots: [MeditationLiveActivitySnapshot] = []
+  var endedSessionIDs: [UUID] = []
+  var endAllCount = 0
+
+  func synchronize(_ snapshot: MeditationLiveActivitySnapshot) async {
+    snapshots.append(snapshot)
+  }
+
+  func end(sessionID: UUID) async {
+    endedSessionIDs.append(sessionID)
+  }
+
+  func endAll() async {
+    endAllCount += 1
+  }
 }
 
 @MainActor

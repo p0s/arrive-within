@@ -222,6 +222,7 @@ final class AppModel {
 
     do {
       guard let restoredProfile = try await dependencies.profileRepository.load() else {
+        await dependencies.liveActivityController.endAll()
         launchPhase = .firstUse
         return
       }
@@ -441,6 +442,9 @@ final class AppModel {
       appLanguage = language
       settingsNotice = nil
       await reconcileWeeklyReminders()
+      if let session = activeSession {
+        await synchronizeLiveActivity(for: session)
+      }
     } catch {
       settingsNotice = .couldNotSaveLanguage
     }
@@ -603,6 +607,7 @@ final class AppModel {
       ticker?.cancel()
       dependencies.audioController.pause()
       dependencies.timerEndAlertController.cancel(sessionID: session.id)
+      await synchronizeLiveActivity(for: session)
     } catch {
       launchPhase = .failed
     }
@@ -629,6 +634,7 @@ final class AppModel {
       activeSession = session
       await scheduleTimerEndAlertIfNeeded(for: session)
       startTicker()
+      await synchronizeLiveActivity(for: session)
     } catch {
       launchPhase = .failed
     }
@@ -645,6 +651,7 @@ final class AppModel {
         audioNotice = nil
         dependencies.audioController.stop()
         dependencies.timerEndAlertController.cancel(sessionID: session.id)
+        await dependencies.liveActivityController.end(sessionID: session.id)
       } catch {
         launchPhase = .failed
       }
@@ -1021,6 +1028,7 @@ final class AppModel {
         return
       }
       try await dependencies.appSettingsRepository.deleteAll()
+      await dependencies.liveActivityController.endAll()
       clearLoadedPrivateData()
       appLanguage = .system
       gardenRenderStyle = .twilight
@@ -1056,6 +1064,7 @@ final class AppModel {
       elapsedMilliseconds = confirmed
       updateIntervalBellOrdinal(for: confirmed, session: session)
       self.recoveryAssessment = nil
+      await synchronizeLiveActivity(for: session)
     } catch {
       launchPhase = .failed
     }
@@ -1073,6 +1082,7 @@ final class AppModel {
       recoveryAssessment = nil
       dependencies.audioController.stop()
       dependencies.timerEndAlertController.cancel(sessionID: session.id)
+      await dependencies.liveActivityController.end(sessionID: session.id)
     } catch {
       launchPhase = .failed
     }
@@ -1401,12 +1411,14 @@ final class AppModel {
         profileGenerationID: profile.profileGenerationID
       )
     else {
+      await dependencies.liveActivityController.endAll()
       return
     }
     activeSession = session
     elapsedMilliseconds = session.activeMilliseconds
     updateIntervalBellOrdinal(for: session.activeMilliseconds, session: session)
     if session.phase == .prepared {
+      await dependencies.liveActivityController.endAll()
       preparationRemainingMilliseconds = session.configuration.preparation.milliseconds
       startPreparationCountdown(for: session)
     } else if let assessment = session.recoveryAssessment(
@@ -1414,8 +1426,16 @@ final class AppModel {
     ) {
       recoveryAssessment = assessment
       dependencies.timerEndAlertController.cancel(sessionID: session.id)
+      await synchronizeLiveActivity(
+        for: session,
+        phase: .paused,
+        elapsedMilliseconds: assessment.lastConfirmedActiveMilliseconds
+      )
     } else if session.phase == .running {
       startTicker()
+      await synchronizeLiveActivity(for: session)
+    } else if session.phase == .paused {
+      await synchronizeLiveActivity(for: session)
     }
   }
 
@@ -1554,6 +1574,7 @@ final class AppModel {
       }
       await scheduleTimerEndAlertIfNeeded(for: session)
       startTicker()
+      await synchronizeLiveActivity(for: session)
     } catch {
       launchPhase = .failed
     }
@@ -1598,6 +1619,7 @@ final class AppModel {
       lastIntervalBellOrdinal = 0
       audioNotice = nil
       dependencies.timerEndAlertController.cancel(sessionID: session.id)
+      await dependencies.liveActivityController.end(sessionID: session.id)
       completionPresentation = CompletionPresentation(
         qualifiedForGrowth: outcome.event.qualifiesForGrowth,
         eventID: outcome.event.id
@@ -1638,6 +1660,51 @@ final class AppModel {
     case .stopwatch:
       return .standard
     }
+  }
+
+  private func synchronizeLiveActivity(
+    for session: MeditationSession,
+    phase suppliedPhase: MeditationLiveActivitySnapshot.Phase? = nil,
+    elapsedMilliseconds suppliedElapsedMilliseconds: Int64? = nil
+  ) async {
+    let phase: MeditationLiveActivitySnapshot.Phase
+    if let suppliedPhase {
+      phase = suppliedPhase
+    } else if session.phase == .running {
+      phase = .running
+    } else if session.phase == .paused {
+      phase = .paused
+    } else {
+      await dependencies.liveActivityController.end(sessionID: session.id)
+      return
+    }
+
+    let elapsedMilliseconds = suppliedElapsedMilliseconds
+      ?? (try? session.elapsedMilliseconds(at: dependencies.clock.now()))
+      ?? session.activeMilliseconds
+    let modeKey = switch session.mode {
+    case .guided: "mode.guided"
+    case .timer: "mode.timer"
+    case .stopwatch: "mode.stopwatch"
+    }
+    let timerKey = session.targetDurationMilliseconds == nil
+      ? "session.elapsed"
+      : "session.remaining"
+    let statusKey = phase == .running ? "live.activity.running" : "live.activity.paused"
+
+    await dependencies.liveActivityController.synchronize(
+      MeditationLiveActivitySnapshot(
+        sessionID: session.id,
+        mode: session.mode,
+        modeName: AppLocalization.string(modeKey, locale: appLocale),
+        timerLabel: AppLocalization.string(timerKey, locale: appLocale),
+        statusName: AppLocalization.string(statusKey, locale: appLocale),
+        phase: phase,
+        elapsedMilliseconds: elapsedMilliseconds,
+        targetDurationMilliseconds: session.targetDurationMilliseconds,
+        runningSince: phase == .running ? session.runningSinceWallClock : nil
+      )
+    )
   }
 
   private func handleAudioSystemEvent(_ event: MeditationAudioSystemEvent) {

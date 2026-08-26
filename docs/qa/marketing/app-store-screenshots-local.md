@@ -1,6 +1,6 @@
 # Local App Store screenshot matrix
 
-Status: Build-17 local candidate set mechanically verified, visually approved, and intentionally not uploaded or attached. The existing build-16 version 1.0 listing remains `WAITING_FOR_REVIEW` with its previously approved live screenshots unchanged.
+Status: Build-17 local source set mechanically verified and visually approved, then retained for the nonvisual build-18 Live Activity delta. The public version 1.0 listing remains untouched with its previously approved live screenshots unchanged.
 
 ## Frozen output
 
@@ -23,6 +23,8 @@ The inputs are attachments from the guarded `ArriveWithinMarketingCaptureUITests
 The capture-source revision is `aed3e83d30d6290cb99731be79675fcfbeb7941168ec960479e08148b1293925`. The selected test wave ingested exactly five safe actual-UI states per locale/device set (20 attachments total): Garden hero, Garden seed, Journey calendar, Journey milestones, and Journal. It binds the version 1.0 (17) local candidate surface, including the Garden-first full-canvas composition, the reduced Twilight fixed-fill lighting, the hardened local-only Journal/export behavior, and the current English/German labels. These screenshots make no guided-narration or CloudKit-convergence claim.
 
 The capture validator binds the refreshed local images to capture-source revision `aed3e83d30d6290cb99731be79675fcfbeb7941168ec960479e08148b1293925` and export tree `93256827a2674dfb6eab66a278631f9472d93402e8a4a7380304bc9dc3d2df4d`. No App Store Connect screenshot mutation was performed. The existing build-16 version 1.0 listing and review submission remain untouched; the local build-17 screenshots are candidate evidence only and are not represented as distribution-archive frames.
+
+The later iPhone Live Activity implementation and build-18 version metadata are bound as an exact nonvisual capture delta at source revision `ba4c65d139f25e3e841420d95593bda6f06b3740895dd0dcf3e960bc116f7e74`. Its ten changed capture-source paths add the system activity, append two localization keys per language, connect read-only session synchronization, and select build 18; they do not change the required Garden, Journey, or Journal capture IDs or their pixels. The prior review therefore remains evidence only for the retained 24 images. Exact physical iPhone Lock Screen and Dynamic Island presentation remains pending and is not inferred from this retention boundary.
 
 ## Deterministic export proof
 
