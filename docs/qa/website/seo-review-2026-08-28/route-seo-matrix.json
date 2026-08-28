@@ -1,0 +1,435 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "generated_at": null,
+  "generation_time_policy": "omitted-for-byte-reproducibility",
+  "evidence_origin": "https://arrive-within.local.invalid",
+  "evidence_boundary": "local deterministic build; not deployment or storefront proof",
+  "browser": "Playwright Chromium 1.61.1",
+  "routes": [
+    {
+      "route": "/",
+      "title": "Arrive Within — Meditation that grows",
+      "meta_description": "A private, offline-first meditation garden for iPhone and iPad. Practice your way and see one living world grow.",
+      "h1": "Arrive Within\nA quiet place to arrive.",
+      "canonical": "https://arrive-within.local.invalid/",
+      "hreflang": [
+        {
+          "hreflang": "en",
+          "href": "https://arrive-within.local.invalid/"
+        },
+        {
+          "hreflang": "de",
+          "href": "https://arrive-within.local.invalid/de"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://arrive-within.local.invalid/"
+        }
+      ],
+      "robots": "index,follow",
+      "schema_types": [
+        "Organization",
+        "WebSite",
+        "SoftwareApplication"
+      ],
+      "breadcrumbs": [],
+      "app_store_link_count": 2,
+      "internal_link_paths": [
+        "/",
+        "/#garden-film",
+        "/#main",
+        "/#practice",
+        "/assets/garden-growth-v1.mp4",
+        "/de",
+        "/open-source",
+        "/privacy",
+        "/support"
+      ],
+      "external_links": [
+        "https://apps.apple.com/app/id6800192697",
+        "https://github.com/p0s/arrive-within"
+      ],
+      "screenshots": [
+        "en-home-desktop.png",
+        "en-availability-desktop.png"
+      ]
+    },
+    {
+      "route": "/de",
+      "title": "Arrive Within — Meditation, die wächst",
+      "meta_description": "Ein privater, offline nutzbarer Meditationsgarten für iPhone und iPad. Meditiere auf deine Art und lass eine lebendige Welt wachsen.",
+      "h1": "Arrive Within\nEin stiller Ort zum Ankommen.",
+      "canonical": "https://arrive-within.local.invalid/de",
+      "hreflang": [
+        {
+          "hreflang": "de",
+          "href": "https://arrive-within.local.invalid/de"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://arrive-within.local.invalid/"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://arrive-within.local.invalid/"
+        }
+      ],
+      "robots": "index,follow",
+      "schema_types": [
+        "Organization",
+        "WebSite",
+        "SoftwareApplication"
+      ],
+      "breadcrumbs": [],
+      "app_store_link_count": 2,
+      "internal_link_paths": [
+        "/",
+        "/assets/garden-growth-v1.mp4",
+        "/de",
+        "/de#garden-film",
+        "/de#main",
+        "/de#practice",
+        "/de/open-source",
+        "/de/privacy",
+        "/de/support"
+      ],
+      "external_links": [
+        "https://apps.apple.com/app/id6800192697",
+        "https://github.com/p0s/arrive-within"
+      ],
+      "screenshots": [
+        "de-home-mobile.png",
+        "de-availability-mobile.png"
+      ]
+    },
+    {
+      "route": "/support",
+      "title": "Support — Arrive Within",
+      "meta_description": "Support information and self-service answers for Arrive Within.",
+      "h1": "Help without asking for your private data.",
+      "canonical": "https://arrive-within.local.invalid/support",
+      "hreflang": [
+        {
+          "hreflang": "en",
+          "href": "https://arrive-within.local.invalid/support"
+        },
+        {
+          "hreflang": "de",
+          "href": "https://arrive-within.local.invalid/de/support"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://arrive-within.local.invalid/support"
+        }
+      ],
+      "robots": "index,follow",
+      "schema_types": [
+        "Organization",
+        "WebSite",
+        "BreadcrumbList"
+      ],
+      "breadcrumbs": [
+        {
+          "text": "Home",
+          "href": "/",
+          "current": null
+        },
+        {
+          "text": "Support",
+          "href": null,
+          "current": "page"
+        }
+      ],
+      "app_store_link_count": 1,
+      "internal_link_paths": [
+        "/",
+        "/#practice",
+        "/de/support",
+        "/open-source",
+        "/privacy",
+        "/support",
+        "/support#main"
+      ],
+      "external_links": [
+        "https://apps.apple.com/app/id6800192697",
+        "https://github.com/p0s/arrive-within"
+      ],
+      "screenshots": [
+        "en-support-mobile.png"
+      ]
+    },
+    {
+      "route": "/de/support",
+      "title": "Hilfe — Arrive Within",
+      "meta_description": "Hilfe und Antworten zur Selbsthilfe für Arrive Within.",
+      "h1": "Unterstützung, ohne nach deinen privaten Daten zu fragen.",
+      "canonical": "https://arrive-within.local.invalid/de/support",
+      "hreflang": [
+        {
+          "hreflang": "de",
+          "href": "https://arrive-within.local.invalid/de/support"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://arrive-within.local.invalid/support"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://arrive-within.local.invalid/support"
+        }
+      ],
+      "robots": "index,follow",
+      "schema_types": [
+        "Organization",
+        "WebSite",
+        "BreadcrumbList"
+      ],
+      "breadcrumbs": [
+        {
+          "text": "Start",
+          "href": "/de",
+          "current": null
+        },
+        {
+          "text": "Hilfe",
+          "href": null,
+          "current": "page"
+        }
+      ],
+      "app_store_link_count": 1,
+      "internal_link_paths": [
+        "/de",
+        "/de#practice",
+        "/de/open-source",
+        "/de/privacy",
+        "/de/support",
+        "/de/support#main",
+        "/support"
+      ],
+      "external_links": [
+        "https://apps.apple.com/app/id6800192697",
+        "https://github.com/p0s/arrive-within"
+      ],
+      "screenshots": []
+    },
+    {
+      "route": "/privacy",
+      "title": "Privacy — Arrive Within",
+      "meta_description": "The Arrive Within privacy promise: local device storage, no collection, and no tracking.",
+      "h1": "Your practice stays yours.",
+      "canonical": "https://arrive-within.local.invalid/privacy",
+      "hreflang": [
+        {
+          "hreflang": "en",
+          "href": "https://arrive-within.local.invalid/privacy"
+        },
+        {
+          "hreflang": "de",
+          "href": "https://arrive-within.local.invalid/de/privacy"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://arrive-within.local.invalid/privacy"
+        }
+      ],
+      "robots": "index,follow",
+      "schema_types": [
+        "Organization",
+        "WebSite",
+        "BreadcrumbList"
+      ],
+      "breadcrumbs": [
+        {
+          "text": "Home",
+          "href": "/",
+          "current": null
+        },
+        {
+          "text": "Privacy",
+          "href": null,
+          "current": "page"
+        }
+      ],
+      "app_store_link_count": 1,
+      "internal_link_paths": [
+        "/",
+        "/#practice",
+        "/de/privacy",
+        "/open-source",
+        "/privacy",
+        "/privacy#main",
+        "/support"
+      ],
+      "external_links": [
+        "https://apps.apple.com/app/id6800192697",
+        "https://github.com/p0s/arrive-within"
+      ],
+      "screenshots": []
+    },
+    {
+      "route": "/de/privacy",
+      "title": "Datenschutz — Arrive Within",
+      "meta_description": "Das Datenschutzversprechen von Arrive Within: lokale Gerätespeicherung, keine Datenerfassung und keine Nachverfolgung.",
+      "h1": "Deine Praxis bleibt deine.",
+      "canonical": "https://arrive-within.local.invalid/de/privacy",
+      "hreflang": [
+        {
+          "hreflang": "de",
+          "href": "https://arrive-within.local.invalid/de/privacy"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://arrive-within.local.invalid/privacy"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://arrive-within.local.invalid/privacy"
+        }
+      ],
+      "robots": "index,follow",
+      "schema_types": [
+        "Organization",
+        "WebSite",
+        "BreadcrumbList"
+      ],
+      "breadcrumbs": [
+        {
+          "text": "Start",
+          "href": "/de",
+          "current": null
+        },
+        {
+          "text": "Datenschutz",
+          "href": null,
+          "current": "page"
+        }
+      ],
+      "app_store_link_count": 1,
+      "internal_link_paths": [
+        "/de",
+        "/de#practice",
+        "/de/open-source",
+        "/de/privacy",
+        "/de/privacy#main",
+        "/de/support",
+        "/privacy"
+      ],
+      "external_links": [
+        "https://apps.apple.com/app/id6800192697",
+        "https://github.com/p0s/arrive-within"
+      ],
+      "screenshots": []
+    },
+    {
+      "route": "/open-source",
+      "title": "Open source — Arrive Within",
+      "meta_description": "Explore and contribute to the canonical public source for the Arrive Within iPhone and iPad app.",
+      "h1": "The public repository is the real product.",
+      "canonical": "https://arrive-within.local.invalid/open-source",
+      "hreflang": [
+        {
+          "hreflang": "en",
+          "href": "https://arrive-within.local.invalid/open-source"
+        },
+        {
+          "hreflang": "de",
+          "href": "https://arrive-within.local.invalid/de/open-source"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://arrive-within.local.invalid/open-source"
+        }
+      ],
+      "robots": "index,follow",
+      "schema_types": [
+        "Organization",
+        "WebSite",
+        "BreadcrumbList"
+      ],
+      "breadcrumbs": [
+        {
+          "text": "Home",
+          "href": "/",
+          "current": null
+        },
+        {
+          "text": "Open source",
+          "href": null,
+          "current": "page"
+        }
+      ],
+      "app_store_link_count": 1,
+      "internal_link_paths": [
+        "/",
+        "/#practice",
+        "/de/open-source",
+        "/open-source",
+        "/open-source#main",
+        "/privacy",
+        "/support"
+      ],
+      "external_links": [
+        "https://apps.apple.com/app/id6800192697",
+        "https://github.com/p0s/arrive-within"
+      ],
+      "screenshots": []
+    },
+    {
+      "route": "/de/open-source",
+      "title": "Open Source — Arrive Within",
+      "meta_description": "Entdecke den kanonischen öffentlichen Quellcode der Arrive Within App für iPhone und iPad und wirke daran mit.",
+      "h1": "Das öffentliche Repository ist das echte Produkt.",
+      "canonical": "https://arrive-within.local.invalid/de/open-source",
+      "hreflang": [
+        {
+          "hreflang": "de",
+          "href": "https://arrive-within.local.invalid/de/open-source"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://arrive-within.local.invalid/open-source"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://arrive-within.local.invalid/open-source"
+        }
+      ],
+      "robots": "index,follow",
+      "schema_types": [
+        "Organization",
+        "WebSite",
+        "BreadcrumbList"
+      ],
+      "breadcrumbs": [
+        {
+          "text": "Start",
+          "href": "/de",
+          "current": null
+        },
+        {
+          "text": "Open Source",
+          "href": null,
+          "current": "page"
+        }
+      ],
+      "app_store_link_count": 1,
+      "internal_link_paths": [
+        "/de",
+        "/de#practice",
+        "/de/open-source",
+        "/de/open-source#main",
+        "/de/privacy",
+        "/de/support",
+        "/open-source"
+      ],
+      "external_links": [
+        "https://apps.apple.com/app/id6800192697",
+        "https://github.com/p0s/arrive-within"
+      ],
+      "screenshots": [
+        "de-open-source-desktop.png"
+      ]
+    }
+  ]
+}

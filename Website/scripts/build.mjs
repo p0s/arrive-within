@@ -1,7 +1,7 @@
 import { copyFile, lstat, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { repositoryURL, siteContent } from "../src/content.mjs";
+import { appStoreURL, repositoryURL, siteContent } from "../src/content.mjs";
 import {
   DIST,
   ROOT,
@@ -41,6 +41,89 @@ function brandMark() {
   return '<img class="brand-mark" src="/assets/brand-icon-180.png" width="180" height="180" alt="" aria-hidden="true">';
 }
 
+function jsonLdScript(value) {
+  const serialized = JSON.stringify(value).replaceAll("<", "\\u003c");
+  return `<script type="application/ld+json">${serialized}</script>`;
+}
+
+function structuredData(locale, page, metaTitle, metaDescription) {
+  const content = siteContent[locale];
+  const route = routeFor(locale, page);
+  const pageURL = `${BASE_URL}${route}`;
+  const organizationID = `${BASE_URL}/#organization`;
+  const websiteID = `${BASE_URL}/#website`;
+  const graph = [
+    {
+      "@type": "Organization",
+      "@id": organizationID,
+      name: "Arrive Within",
+      url: `${BASE_URL}/`,
+      logo: {
+        "@type": "ImageObject",
+        url: `${BASE_URL}/assets/brand-icon-180.png`,
+        width: 180,
+        height: 180,
+      },
+      sameAs: [repositoryURL],
+    },
+    {
+      "@type": "WebSite",
+      "@id": websiteID,
+      name: "Arrive Within",
+      url: `${BASE_URL}/`,
+      description: content.home.metaDescription,
+      inLanguage: ["en-US", "de-DE"],
+      publisher: { "@id": organizationID },
+    },
+  ];
+
+  if (page === "home") {
+    graph.push({
+      "@type": "SoftwareApplication",
+      "@id": `${BASE_URL}/#application`,
+      name: "Arrive Within",
+      description: metaDescription,
+      url: `${BASE_URL}/`,
+      downloadUrl: appStoreURL,
+      sameAs: [appStoreURL, repositoryURL],
+      image: `${BASE_URL}/assets/social-preview.png`,
+      applicationCategory: "HealthApplication",
+      operatingSystem: "iOS 18.0 or later",
+      isAccessibleForFree: true,
+      inLanguage: ["en", "de"],
+      featureList: content.home.modes.items.map((item) => `${item.name}: ${item.text}`),
+      author: { "@id": organizationID },
+      isPartOf: { "@id": websiteID },
+    });
+  } else {
+    graph.push({
+      "@type": "BreadcrumbList",
+      "@id": `${pageURL}#breadcrumb`,
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: content.nav.home,
+          item: `${BASE_URL}${routeFor(locale, "home")}`,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: content.nav[page],
+          item: pageURL,
+        },
+      ],
+    });
+  }
+
+  return jsonLdScript({ "@context": "https://schema.org", "@graph": graph });
+}
+
+function breadcrumbs(locale, page) {
+  const content = siteContent[locale];
+  return `<nav class="breadcrumbs" aria-label="${locale === "de" ? "Brotkrümelnavigation" : "Breadcrumb"}"><ol><li><a href="${routeFor(locale, "home")}">${escapeHtml(content.nav.home)}</a></li><li aria-current="page">${escapeHtml(content.nav[page])}</li></ol></nav>`;
+}
+
 function navigation(locale, activePage) {
   const content = siteContent[locale];
   const home = routeFor(locale, "home");
@@ -65,7 +148,7 @@ function footer(locale) {
   const content = siteContent[locale];
   return `<footer class="site-footer">
     <div><a class="brand footer-brand" href="${routeFor(locale, "home")}">${brandMark()}<span>Arrive Within</span></a><p>${escapeHtml(content.footer.statement)}</p></div>
-    <div class="footer-status"><p>${escapeHtml(content.footer.status)}</p><p>${escapeHtml(content.footer.copyright)}</p></div>
+    <div class="footer-status"><p><a href="${appStoreURL}">${escapeHtml(content.footer.status)}</a></p><p>${escapeHtml(content.footer.copyright)}</p></div>
     <nav aria-label="${locale === "de" ? "Fußzeile" : "Footer"}">
       <a href="${routeFor(locale, "support")}">${escapeHtml(content.nav.support)}</a>
       <a href="${routeFor(locale, "privacy")}">${escapeHtml(content.nav.privacy)}</a>
@@ -75,7 +158,7 @@ function footer(locale) {
   </footer>`;
 }
 
-function shell(locale, page, metaTitle, metaDescription, body) {
+function shell(locale, page, metaTitle, metaDescription, body, { indexable = true } = {}) {
   const content = siteContent[locale];
   const counterpart = locale === "en" ? "de" : "en";
   const route = routeFor(locale, page);
@@ -83,6 +166,13 @@ function shell(locale, page, metaTitle, metaDescription, body) {
   const socialImageAlt = locale === "de"
     ? "Arrive Within mit einem gewachsenen nächtlichen Garten und dem Satz Meditation, die wächst."
     : "Arrive Within with a mature night garden and the words Meditation that grows.";
+  const discoveryLinks = indexable
+    ? `<link rel="canonical" href="${BASE_URL}${route}">
+  <link rel="alternate" hreflang="${locale}" href="${BASE_URL}${route}">
+  <link rel="alternate" hreflang="${counterpart}" href="${BASE_URL}${alternateRoute}">
+  <link rel="alternate" hreflang="x-default" href="${BASE_URL}${routeFor("en", page)}">`
+    : "";
+  const schema = indexable ? `\n  ${structuredData(locale, page, metaTitle, metaDescription)}` : "";
   return `<!doctype html>
 <html lang="${locale}">
 <head>
@@ -97,7 +187,8 @@ function shell(locale, page, metaTitle, metaDescription, body) {
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Arrive Within">
   <meta property="og:locale" content="${content.locale.replace("-", "_")}">
-  <meta property="og:url" content="${BASE_URL}${route}">
+  ${indexable ? `<meta property="og:locale:alternate" content="${siteContent[counterpart].locale.replace("-", "_")}">` : ""}
+  ${indexable ? `<meta property="og:url" content="${BASE_URL}${route}">` : ""}
   <meta property="og:title" content="${escapeHtml(metaTitle)}">
   <meta property="og:description" content="${escapeHtml(metaDescription)}">
   <meta property="og:image" content="${BASE_URL}/assets/social-preview.png">
@@ -109,15 +200,13 @@ function shell(locale, page, metaTitle, metaDescription, body) {
   <meta name="twitter:description" content="${escapeHtml(metaDescription)}">
   <meta name="twitter:image" content="${BASE_URL}/assets/social-preview.png">
   <meta name="twitter:image:alt" content="${escapeHtml(socialImageAlt)}">
-  <meta name="robots" content="index,follow">
+  <meta name="robots" content="${indexable ? "index,follow" : "noindex,follow"}">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; media-src 'self'; style-src 'self'; base-uri 'none'; form-action 'none'">
-  <link rel="canonical" href="${BASE_URL}${route}">
-  <link rel="alternate" hreflang="${locale}" href="${BASE_URL}${route}">
-  <link rel="alternate" hreflang="${counterpart}" href="${BASE_URL}${alternateRoute}">
-  <link rel="alternate" hreflang="x-default" href="${BASE_URL}${routeFor("en", page)}">
+  ${discoveryLinks}
   <link rel="icon" type="image/png" sizes="40x40" href="/assets/brand-icon-40.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/brand-icon-180.png">
   <link rel="stylesheet" href="/assets/site.css">
+  ${schema}
   <title>${escapeHtml(metaTitle)}</title>
 </head>
 <body class="page-${page}">
@@ -164,6 +253,11 @@ function homePage(locale) {
       </div>
     </section>
 
+    <section class="availability-section" aria-labelledby="availability-title">
+      <div><p class="eyebrow">${escapeHtml(home.availability.kicker)}</p><h2 id="availability-title">${escapeHtml(home.availability.title)}</h2><p>${escapeHtml(home.availability.body)}</p><p class="status-note">${escapeHtml(home.availability.note)}</p></div>
+      <a class="primary-action" href="${appStoreURL}">${escapeHtml(home.availability.action)}</a>
+    </section>
+
     <section class="growth-film-section" id="garden-film">
       <div class="section-heading"><p class="eyebrow">${escapeHtml(home.media.kicker)}</p><h2>${escapeHtml(home.media.title)}</h2><p>${escapeHtml(home.media.body)}</p></div>
       <figure class="growth-film">
@@ -204,21 +298,21 @@ function homePage(locale) {
 function supportPage(locale) {
   const page = siteContent[locale].support;
   const faqs = page.faqs.map((item) => `<section><h2>${escapeHtml(item.q)}</h2><p>${escapeHtml(item.a)}</p></section>`).join("");
-  const body = `<main id="main" class="article-shell"><header class="article-hero"><p class="eyebrow">${escapeHtml(page.eyebrow)}</p><h1>${escapeHtml(page.title)}</h1><p class="lede">${escapeHtml(page.intro)}</p></header><article class="article-content">${faqs}<section class="support-route"><h2>${locale === "de" ? "Rückmeldung" : "Feedback"}</h2><p>${escapeHtml(page.feedbackNote)}</p><p class="status-note">${escapeHtml(page.feedbackLabel)}</p></section></article></main>`;
+  const body = `<main id="main" class="article-shell">${breadcrumbs(locale, "support")}<header class="article-hero"><p class="eyebrow">${escapeHtml(page.eyebrow)}</p><h1>${escapeHtml(page.title)}</h1><p class="lede">${escapeHtml(page.intro)}</p></header><article class="article-content">${faqs}<section class="support-route"><h2>${locale === "de" ? "Rückmeldung" : "Feedback"}</h2><p>${escapeHtml(page.feedbackNote)}</p><p class="status-note">${escapeHtml(page.feedbackLabel)}</p></section></article></main>`;
   return shell(locale, "support", page.metaTitle, page.metaDescription, body);
 }
 
 function privacyPage(locale) {
   const page = siteContent[locale].privacyPage;
   const sections = page.sections.map((section) => `<section><h2>${escapeHtml(section.title)}</h2>${section.paragraphs.map((text) => `<p>${escapeHtml(text)}</p>`).join("")}</section>`).join("");
-  const body = `<main id="main" class="article-shell"><header class="article-hero"><p class="eyebrow">${escapeHtml(page.eyebrow)}</p><h1>${escapeHtml(page.title)}</h1><p class="lede">${escapeHtml(page.intro)}</p></header><article class="article-content">${sections}</article></main>`;
+  const body = `<main id="main" class="article-shell">${breadcrumbs(locale, "privacy")}<header class="article-hero"><p class="eyebrow">${escapeHtml(page.eyebrow)}</p><h1>${escapeHtml(page.title)}</h1><p class="lede">${escapeHtml(page.intro)}</p></header><article class="article-content">${sections}</article></main>`;
   return shell(locale, "privacy", page.metaTitle, page.metaDescription, body);
 }
 
 function openSourcePage(locale) {
   const page = siteContent[locale].openSourcePage;
   const principles = page.principles.map((item, index) => `<li><span class="mode-number">0${index + 1}</span><h2>${escapeHtml(item.title)}</h2><p>${escapeHtml(item.text)}</p></li>`).join("");
-  const body = `<main id="main" class="article-shell open-source-shell"><header class="article-hero"><p class="eyebrow">${escapeHtml(page.eyebrow)}</p><h1>${escapeHtml(page.title)}</h1><p class="lede">${escapeHtml(page.intro)}</p></header><ol class="principle-list">${principles}</ol><section class="repository-callout"><a class="primary-action repository-status" href="${repositoryURL}">${escapeHtml(page.repoLabel)}</a><p>${escapeHtml(page.repoNote)}</p></section></main>`;
+  const body = `<main id="main" class="article-shell open-source-shell">${breadcrumbs(locale, "openSource")}<header class="article-hero"><p class="eyebrow">${escapeHtml(page.eyebrow)}</p><h1>${escapeHtml(page.title)}</h1><p class="lede">${escapeHtml(page.intro)}</p></header><ol class="principle-list">${principles}</ol><section class="repository-callout"><a class="primary-action repository-status" href="${repositoryURL}">${escapeHtml(page.repoLabel)}</a><p>${escapeHtml(page.repoNote)}</p></section></main>`;
   return shell(locale, "openSource", page.metaTitle, page.metaDescription, body);
 }
 
@@ -262,7 +356,7 @@ async function main() {
   const sitemapUrls = ROUTES.map((route) => `  <url><loc>${BASE_URL}${route.route}</loc></url>`).join("\n");
   await writeFile(path.join(DIST, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapUrls}\n</urlset>\n`);
   await writeFile(path.join(DIST, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${BASE_URL}/sitemap.xml\n`);
-  await writeFile(path.join(DIST, "404.html"), shell("en", "home", "Not found — Arrive Within", "The requested Arrive Within page was not found.", `<main id="main" class="article-shell"><header class="article-hero"><p class="eyebrow">404</p><h1>That path has not taken root.</h1><p class="lede">Return to the quiet place we know.</p><a class="primary-action" href="/">Return home</a></header></main>`));
+  await writeFile(path.join(DIST, "404.html"), shell("en", "home", "Not found — Arrive Within", "The requested Arrive Within page was not found.", `<main id="main" class="article-shell"><header class="article-hero"><p class="eyebrow">404</p><h1>That path has not taken root.</h1><p class="lede">Return to the quiet place we know.</p><a class="primary-action" href="/">Return home</a></header></main>`, { indexable: false }));
 
   const contentHash = await hashTree(DIST, new Set(["_build-manifest.json"]));
   const assetProvenance = JSON.parse(await readFile(path.join(ROOT, "src", "assets", "provenance.json"), "utf8"));

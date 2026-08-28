@@ -13,7 +13,7 @@ import {
   resolvePublicBaseURL,
   sha256,
 } from "./lib.mjs";
-import { repositoryURL } from "../src/content.mjs";
+import { appStoreURL, repositoryURL, siteContent } from "../src/content.mjs";
 
 const expectedRoutes = ["/", "/de", "/support", "/de/support", "/privacy", "/de/privacy", "/open-source", "/de/open-source"];
 const routeFiles = {
@@ -25,6 +25,16 @@ const routeFiles = {
   "/de/privacy": "de/privacy/index.html",
   "/open-source": "open-source/index.html",
   "/de/open-source": "de/open-source/index.html",
+};
+const routeContracts = {
+  "/": { locale: "en", page: "home", alternate: "/de", xDefault: "/" },
+  "/de": { locale: "de", page: "home", alternate: "/", xDefault: "/" },
+  "/support": { locale: "en", page: "support", alternate: "/de/support", xDefault: "/support" },
+  "/de/support": { locale: "de", page: "support", alternate: "/support", xDefault: "/support" },
+  "/privacy": { locale: "en", page: "privacy", alternate: "/de/privacy", xDefault: "/privacy" },
+  "/de/privacy": { locale: "de", page: "privacy", alternate: "/privacy", xDefault: "/privacy" },
+  "/open-source": { locale: "en", page: "openSource", alternate: "/de/open-source", xDefault: "/open-source" },
+  "/de/open-source": { locale: "de", page: "openSource", alternate: "/open-source", xDefault: "/open-source" },
 };
 
 function localTarget(href) {
@@ -159,18 +169,81 @@ async function main() {
   for (const [route, file] of Object.entries(routeFiles)) {
     if (!outputFiles.includes(file)) throw new Error(`missing output for ${route}`);
     const html = await readFile(path.join(DIST, file), "utf8");
-    const expectedLang = route.startsWith("/de") ? "de" : "en";
+    const contract = routeContracts[route];
+    const expectedLang = contract.locale;
+    const counterpart = expectedLang === "en" ? "de" : "en";
     if (!html.includes(`<html lang="${expectedLang}">`) || !html.includes('<main id="main"') || !html.includes('class="skip-link"')) {
       throw new Error(`${route}: missing language or accessibility landmarks`);
     }
     if (!html.includes(`rel="canonical" href="${publicBaseURL}${route}"`)) throw new Error(`${route}: incorrect canonical URL`);
+    if (!html.includes('<meta name="robots" content="index,follow">')) throw new Error(`${route}: indexable route robots policy mismatch`);
+    const alternates = [...html.matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)">/g)].map((match) => [match[1], match[2]]);
+    const expectedAlternates = [
+      [expectedLang, `${publicBaseURL}${route}`],
+      [counterpart, `${publicBaseURL}${contract.alternate}`],
+      ["x-default", `${publicBaseURL}${contract.xDefault}`],
+    ];
+    if (JSON.stringify(alternates) !== JSON.stringify(expectedAlternates)) throw new Error(`${route}: hreflang set is not exact and reciprocal`);
     if (!html.includes(`property="og:image" content="${publicBaseURL}/assets/social-preview.png"`)) throw new Error(`${route}: missing canonical social preview`);
     if (!html.includes(`href="${repositoryURL}"`)) throw new Error(`${route}: missing canonical public repository link`);
+    if (!html.includes(`href="${appStoreURL}"`)) throw new Error(`${route}: missing verified App Store discovery link`);
     if (!html.includes('property="og:site_name" content="Arrive Within"') || !html.includes('property="og:image:alt"')) throw new Error(`${route}: incomplete social metadata`);
+    if (!html.includes(`property="og:locale:alternate" content="${siteContent[counterpart].locale.replace("-", "_")}"`)) throw new Error(`${route}: missing alternate Open Graph locale`);
     if (!html.includes('rel="icon" type="image/png" sizes="40x40" href="/assets/brand-icon-40.png"')) throw new Error(`${route}: missing browser icon`);
     if (!html.includes('rel="apple-touch-icon" sizes="180x180" href="/assets/brand-icon-180.png"')) throw new Error(`${route}: missing Apple touch icon`);
     if ((html.match(/class="brand-mark"/g) ?? []).length !== 2) throw new Error(`${route}: header and footer must use the selected visible brand mark`);
-    if (/<script\b|<form\b|<iframe\b|<object\b|<embed\b/i.test(html)) throw new Error(`${route}: active or form content is forbidden`);
+    const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
+    if (scripts.length !== 1 || !/^\s+type="application\/ld\+json"\s*$/i.test(scripts[0][1])) throw new Error(`${route}: exactly one inert JSON-LD script is required`);
+    let schema;
+    try {
+      schema = JSON.parse(scripts[0][2]);
+    } catch {
+      throw new Error(`${route}: JSON-LD must be valid JSON`);
+    }
+    if (schema["@context"] !== "https://schema.org" || !Array.isArray(schema["@graph"])) throw new Error(`${route}: invalid schema graph envelope`);
+    const schemaTypes = schema["@graph"].map((item) => item["@type"]);
+    const expectedSchemaTypes = contract.page === "home"
+      ? ["Organization", "WebSite", "SoftwareApplication"]
+      : ["Organization", "WebSite", "BreadcrumbList"];
+    if (JSON.stringify(schemaTypes) !== JSON.stringify(expectedSchemaTypes)) throw new Error(`${route}: structured-data types do not match the visible page`);
+    const organization = schema["@graph"].find((item) => item["@type"] === "Organization");
+    const website = schema["@graph"].find((item) => item["@type"] === "WebSite");
+    if (
+      organization?.name !== "Arrive Within"
+      || organization?.url !== `${publicBaseURL}/`
+      || organization?.logo?.url !== `${publicBaseURL}/assets/brand-icon-180.png`
+      || JSON.stringify(organization?.sameAs) !== JSON.stringify([repositoryURL])
+      || website?.name !== "Arrive Within"
+      || website?.url !== `${publicBaseURL}/`
+      || JSON.stringify(website?.inLanguage) !== JSON.stringify(["en-US", "de-DE"])
+      || website?.publisher?.["@id"] !== `${publicBaseURL}/#organization`
+    ) throw new Error(`${route}: WebSite or organization schema is unsupported or inconsistent`);
+    if (contract.page === "home") {
+      const application = schema["@graph"].find((item) => item["@type"] === "SoftwareApplication");
+      if (
+        application?.name !== "Arrive Within"
+        || application?.url !== `${publicBaseURL}/`
+        || application?.downloadUrl !== appStoreURL
+        || application?.applicationCategory !== "HealthApplication"
+        || application?.operatingSystem !== "iOS 18.0 or later"
+        || application?.isAccessibleForFree !== true
+        || !Array.isArray(application?.featureList)
+        || application.featureList.length !== 3
+        || ["offers", "aggregateRating", "review", "datePublished", "availabilityStarts"].some((key) => key in application)
+      ) throw new Error(`${route}: application schema exceeds or misses the visible verified claims`);
+      if ((html.match(new RegExp(`href="${appStoreURL}"`, "g")) ?? []).length < 2 || html.includes('class="breadcrumbs"')) {
+        throw new Error(`${route}: home availability discovery or breadcrumb boundary mismatch`);
+      }
+    } else {
+      const breadcrumb = schema["@graph"].find((item) => item["@type"] === "BreadcrumbList");
+      const expectedBreadcrumb = [
+        { "@type": "ListItem", position: 1, name: siteContent[expectedLang].nav.home, item: `${publicBaseURL}${expectedLang === "de" ? "/de" : "/"}` },
+        { "@type": "ListItem", position: 2, name: siteContent[expectedLang].nav[contract.page], item: `${publicBaseURL}${route}` },
+      ];
+      if (JSON.stringify(breadcrumb?.itemListElement) !== JSON.stringify(expectedBreadcrumb)) throw new Error(`${route}: breadcrumb schema does not match the visible route`);
+      if ((html.match(/class="breadcrumbs"/g) ?? []).length !== 1 || !html.includes('<li aria-current="page">')) throw new Error(`${route}: visible breadcrumb is missing`);
+    }
+    if (/<form\b|<iframe\b|<object\b|<embed\b/i.test(html)) throw new Error(`${route}: active or form content is forbidden`);
     if (/google-analytics|googletagmanager|gtag\s*\(|posthog|mixpanel|segment\.io|facebook\.net|doubleclick/i.test(html)) {
       throw new Error(`${route}: analytics or tracking marker found`);
     }
@@ -198,7 +271,7 @@ async function main() {
     for (const match of html.matchAll(/\bhref="([^"]+)"/g)) {
       const href = match[1];
       if (href.startsWith("https://")) {
-        if (href !== repositoryURL && new URL(href).origin !== publicBaseURL) {
+        if (href !== repositoryURL && href !== appStoreURL && new URL(href).origin !== publicBaseURL) {
           throw new Error(`${route}: unapproved external link ${href}`);
         }
         continue;
@@ -213,9 +286,31 @@ async function main() {
     }
   }
 
+  const notFound = await readFile(path.join(DIST, "404.html"), "utf8");
+  if (
+    !notFound.includes('<meta name="robots" content="noindex,follow">')
+    || /<link rel="canonical"|<link rel="alternate"|application\/ld\+json|property="og:url"|property="og:locale:alternate"/i.test(notFound)
+  ) throw new Error("404 output must be noindex,follow without canonical, alternate-locale, URL, or schema claims");
+
+  const robots = await readFile(path.join(DIST, "robots.txt"), "utf8");
+  if (robots !== `User-agent: *\nAllow: /\nSitemap: ${publicBaseURL}/sitemap.xml\n`) throw new Error("robots.txt does not match the exact crawl contract");
+  const sitemap = await readFile(path.join(DIST, "sitemap.xml"), "utf8");
+  const sitemapLocations = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+  if (JSON.stringify(sitemapLocations) !== JSON.stringify(expectedRoutes.map((route) => `${publicBaseURL}${route}`))) {
+    throw new Error("sitemap.xml must list each canonical indexable route exactly once");
+  }
+
   const allHtml = (await Promise.all(Object.values(routeFiles).map((file) => readFile(path.join(DIST, file), "utf8")))).join("\n");
   for (const token of ["TODO", "TBD", "lorem ipsum", "App Store badge", "Download now"]) {
     if (allHtml.toLowerCase().includes(token.toLowerCase())) throw new Error(`website contains forbidden placeholder or release claim: ${token}`);
+  }
+  const englishHome = await readFile(path.join(DIST, routeFiles["/"]), "utf8");
+  const germanHome = await readFile(path.join(DIST, routeFiles["/de"]), "utf8");
+  if (!englishHome.includes("Arrive Within is free for iPhone and iPad") || !englishHome.includes("one optional one-time purchase")) {
+    throw new Error("English home page is missing the verified App Store availability boundary");
+  }
+  if (!germanHome.includes("Arrive Within ist für iPhone und iPad kostenlos") || !germanHome.includes("ein optionaler einmaliger Kauf")) {
+    throw new Error("German home page is missing the verified App Store availability boundary");
   }
   const guidedCopy = {
     "/": ["Three quiet ways to begin.", "42 original English or German practices"],

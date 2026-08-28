@@ -1,8 +1,9 @@
 import { createRequire } from "node:module";
-import { readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { appStoreURL } from "../src/content.mjs";
 import { UNBOUND_PUBLIC_BASE_URL } from "./lib.mjs";
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
@@ -10,13 +11,38 @@ const ROOT = path.resolve(SCRIPT_DIR, "..");
 const REPOSITORY_ROOT = path.resolve(ROOT, "..");
 const DIST = path.join(ROOT, "dist");
 const REPORT = path.join(REPOSITORY_ROOT, "docs", "qa", "website", "browser-matrix.json");
+const REVIEW_ROOT = path.join(REPOSITORY_ROOT, "docs", "qa", "website", "seo-review-2026-08-28");
+const REVIEW_MATRIX = path.join(REVIEW_ROOT, "route-seo-matrix.json");
 const ORIGIN = UNBOUND_PUBLIC_BASE_URL;
 const ROUTES = ["/", "/de", "/support", "/de/support", "/privacy", "/de/privacy", "/open-source", "/de/open-source"];
+const ROUTE_CONTRACTS = {
+  "/": { locale: "en", alternate: "/de", xDefault: "/", schema: ["Organization", "WebSite", "SoftwareApplication"] },
+  "/de": { locale: "de", alternate: "/", xDefault: "/", schema: ["Organization", "WebSite", "SoftwareApplication"] },
+  "/support": { locale: "en", alternate: "/de/support", xDefault: "/support", schema: ["Organization", "WebSite", "BreadcrumbList"] },
+  "/de/support": { locale: "de", alternate: "/support", xDefault: "/support", schema: ["Organization", "WebSite", "BreadcrumbList"] },
+  "/privacy": { locale: "en", alternate: "/de/privacy", xDefault: "/privacy", schema: ["Organization", "WebSite", "BreadcrumbList"] },
+  "/de/privacy": { locale: "de", alternate: "/privacy", xDefault: "/privacy", schema: ["Organization", "WebSite", "BreadcrumbList"] },
+  "/open-source": { locale: "en", alternate: "/de/open-source", xDefault: "/open-source", schema: ["Organization", "WebSite", "BreadcrumbList"] },
+  "/de/open-source": { locale: "de", alternate: "/open-source", xDefault: "/open-source", schema: ["Organization", "WebSite", "BreadcrumbList"] },
+};
 const VIEWPORTS = [
   { id: "desktop", width: 1440, height: 1000 },
   { id: "mobile", width: 390, height: 844 },
   { id: "compact", width: 320, height: 700 },
 ];
+const CAPTURE_REVIEW = process.argv.includes("--capture-review");
+const unexpectedArguments = process.argv.slice(2).filter((argument) => argument !== "--capture-review");
+if (unexpectedArguments.length) throw new Error(`unsupported browser validation arguments: ${unexpectedArguments.join(", ")}`);
+const SCREENSHOT_CASES = new Map([
+  ["desktop:/", "en-home-desktop.png"],
+  ["mobile:/de", "de-home-mobile.png"],
+  ["mobile:/support", "en-support-mobile.png"],
+  ["desktop:/de/open-source", "de-open-source-desktop.png"],
+]);
+const AVAILABILITY_SCREENSHOT_CASES = new Map([
+  ["desktop:/", "en-availability-desktop.png"],
+  ["mobile:/de", "de-availability-mobile.png"],
+]);
 
 const requireFromMarketing = createRequire(
   path.join(REPOSITORY_ROOT, "Marketing", "AppStoreScreenshots", "package.json"),
@@ -103,6 +129,7 @@ async function fulfillFromDist(requestRoute, externalRequests) {
 }
 
 async function inspectRoute(browser, route, viewport) {
+  const contract = ROUTE_CONTRACTS[route];
   const context = await browser.newContext({
     locale: route.startsWith("/de") ? "de-DE" : "en-US",
     viewport: { width: viewport.width, height: viewport.height },
@@ -141,13 +168,36 @@ async function inspectRoute(browser, route, viewport) {
       });
     const icon = document.querySelector('link[rel="icon"]');
     const touchIcon = document.querySelector('link[rel="apple-touch-icon"]');
+    const schemaTypes = [...document.querySelectorAll('script[type="application/ld+json"]')]
+      .flatMap((script) => {
+        const payload = JSON.parse(script.textContent || "{}");
+        return Array.isArray(payload["@graph"]) ? payload["@graph"].map((item) => item["@type"]) : [];
+      });
+    const links = [...document.querySelectorAll("a[href]")].map((link) => ({
+      href: /** @type {HTMLAnchorElement} */ (link).href,
+      text: link.textContent?.trim() || link.getAttribute("aria-label") || "",
+    }));
     return {
+      alternateLinks: [...document.querySelectorAll('link[rel="alternate"]')].map((link) => ({
+        hreflang: /** @type {HTMLLinkElement} */ (link).hreflang,
+        href: /** @type {HTMLLinkElement} */ (link).href,
+      })),
+      appStoreLinkCount: links.filter((link) => link.href === "https://apps.apple.com/app/id6800192697").length,
       brandIconCount: document.querySelectorAll("img.brand-mark").length,
       brandIconsLoaded: [...document.querySelectorAll("img.brand-mark")].every((image) => image.complete && image.naturalWidth === 180 && image.naturalHeight === 180),
+      breadcrumbCount: document.querySelectorAll(".breadcrumbs").length,
+      breadcrumbItems: [...document.querySelectorAll(".breadcrumbs li")].map((item) => ({
+        text: item.textContent?.trim() || "",
+        href: item.querySelector("a") ? /** @type {HTMLAnchorElement} */ (item.querySelector("a")).pathname : null,
+        current: item.getAttribute("aria-current") || null,
+      })),
       browserIconPath: icon ? new URL(/** @type {HTMLLinkElement} */ (icon).href).pathname : null,
+      canonical: /** @type {HTMLLinkElement | null} */ (document.querySelector('link[rel="canonical"]'))?.href || null,
       documentLanguage: document.documentElement.lang,
+      externalLinks: [...new Set(links.map((link) => link.href).filter((href) => new URL(href).origin !== location.origin))].sort(),
       footerVisible: Boolean(document.querySelector("footer")?.getBoundingClientRect().height),
       h1Count: document.querySelectorAll("h1").length,
+      h1Text: document.querySelector("h1")?.innerText || null,
       headerLinkCount: headerLinks.length,
       hiddenHeaderLinks: headerLinks.filter((element) => {
         const style = getComputedStyle(element);
@@ -155,8 +205,13 @@ async function inspectRoute(browser, route, viewport) {
       }).length,
       imageCount: document.images.length,
       imagesMissingAlt: [...document.images].filter((image) => !image.hasAttribute("alt") || (!image.alt.trim() && image.getAttribute("aria-hidden") !== "true")).length,
+      internalLinkPaths: [...new Set(links.map((link) => link.href).filter((href) => new URL(href).origin === location.origin).map((href) => `${new URL(href).pathname}${new URL(href).hash}`))].sort(),
       mainCount: document.querySelectorAll("main").length,
+      metaDescription: document.querySelector('meta[name="description"]')?.getAttribute("content") || null,
+      ogLocaleAlternate: document.querySelector('meta[property="og:locale:alternate"]')?.getAttribute("content") || null,
       overflowPixels: Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth),
+      robots: document.querySelector('meta[name="robots"]')?.getAttribute("content") || null,
+      schemaTypes,
       tapTargetFailures: tapTargets.filter((target) => target.width < 44 || target.height < 44),
       title: document.title,
       touchIconPath: touchIcon ? new URL(/** @type {HTMLLinkElement} */ (touchIcon).href).pathname : null,
@@ -201,6 +256,21 @@ async function inspectRoute(browser, route, viewport) {
   const failures = [];
   if (response?.status() !== 200) failures.push(`HTTP status ${response?.status() ?? "missing"}`);
   if (facts.documentLanguage !== expectedLanguage) failures.push(`document language ${facts.documentLanguage}`);
+  if (!facts.metaDescription) failures.push("meta description is missing");
+  if (facts.robots !== "index,follow") failures.push(`robots policy ${facts.robots}`);
+  if (facts.canonical !== `${ORIGIN}${route}`) failures.push(`canonical ${facts.canonical}`);
+  const counterpart = contract.locale === "en" ? "de" : "en";
+  const expectedAlternates = [
+    { hreflang: contract.locale, href: `${ORIGIN}${route}` },
+    { hreflang: counterpart, href: `${ORIGIN}${contract.alternate}` },
+    { hreflang: "x-default", href: `${ORIGIN}${contract.xDefault}` },
+  ];
+  if (JSON.stringify(facts.alternateLinks) !== JSON.stringify(expectedAlternates)) failures.push("hreflang set mismatch");
+  if (facts.ogLocaleAlternate !== (contract.locale === "en" ? "de_DE" : "en_US")) failures.push(`Open Graph alternate locale ${facts.ogLocaleAlternate}`);
+  if (JSON.stringify(facts.schemaTypes) !== JSON.stringify(contract.schema)) failures.push(`schema types ${facts.schemaTypes.join(",")}`);
+  const expectedBreadcrumbCount = contract.schema.includes("BreadcrumbList") ? 1 : 0;
+  if (facts.breadcrumbCount !== expectedBreadcrumbCount) failures.push(`breadcrumb count ${facts.breadcrumbCount}`);
+  if (facts.appStoreLinkCount !== (route === "/" || route === "/de" ? 2 : 1)) failures.push(`App Store discovery link count ${facts.appStoreLinkCount}`);
   if (facts.mainCount !== 1) failures.push(`main count ${facts.mainCount}`);
   if (facts.h1Count !== 1) failures.push(`H1 count ${facts.h1Count}`);
   if (!facts.footerVisible) failures.push("footer is not rendered");
@@ -220,6 +290,16 @@ async function inspectRoute(browser, route, viewport) {
     if (!video || video.duration < 9 || video.duration > 11 || video.currentTime < 4.5) failures.push("video metadata/seek mismatch");
   } else if (facts.videoCount !== 0) {
     failures.push(`unexpected video count ${facts.videoCount}`);
+  }
+
+  const screenshotName = SCREENSHOT_CASES.get(`${viewport.id}:${route}`);
+  if (CAPTURE_REVIEW && screenshotName) {
+    await page.waitForTimeout(1_600);
+    await page.screenshot({ path: path.join(REVIEW_ROOT, screenshotName), fullPage: false });
+    const availabilityScreenshotName = AVAILABILITY_SCREENSHOT_CASES.get(`${viewport.id}:${route}`);
+    if (availabilityScreenshotName) {
+      await page.locator(".availability-section").screenshot({ path: path.join(REVIEW_ROOT, availabilityScreenshotName) });
+    }
   }
 
   await context.close();
@@ -267,9 +347,35 @@ async function inspectReducedMotion(browser) {
   return { status: passed ? "passed" : "failed", facts, external_requests: externalRequests };
 }
 
+function browserReportCase(item) {
+  const facts = item.facts;
+  return {
+    ...item,
+    facts: {
+      brandIconCount: facts.brandIconCount,
+      brandIconsLoaded: facts.brandIconsLoaded,
+      browserIconPath: facts.browserIconPath,
+      documentLanguage: facts.documentLanguage,
+      footerVisible: facts.footerVisible,
+      h1Count: facts.h1Count,
+      headerLinkCount: facts.headerLinkCount,
+      hiddenHeaderLinks: facts.hiddenHeaderLinks,
+      imageCount: facts.imageCount,
+      imagesMissingAlt: facts.imagesMissingAlt,
+      mainCount: facts.mainCount,
+      overflowPixels: facts.overflowPixels,
+      tapTargetFailures: facts.tapTargetFailures,
+      title: facts.title,
+      touchIconPath: facts.touchIconPath,
+      videoCount: facts.videoCount,
+    },
+  };
+}
+
 async function main() {
   let browser;
   try {
+    if (CAPTURE_REVIEW) await mkdir(REVIEW_ROOT, { recursive: true });
     browser = await chromium.launch({ headless: true });
     const cases = [];
     for (const viewport of VIEWPORTS) {
@@ -289,7 +395,7 @@ async function main() {
       external_network_policy: "blocked and treated as failure",
       routes: ROUTES,
       viewports: VIEWPORTS,
-      cases,
+      cases: cases.map(browserReportCase),
       language_round_trip: languageRoundTrip,
       reduced_motion: reducedMotion,
       summary: {
@@ -305,8 +411,41 @@ async function main() {
       },
     };
     await writeFile(REPORT, `${JSON.stringify(report, null, 2)}\n`);
+    if (CAPTURE_REVIEW) {
+      const routeEvidence = cases
+        .filter((item) => item.viewport === "desktop")
+        .map((item) => ({
+          route: item.route,
+          title: item.facts.title,
+          meta_description: item.facts.metaDescription,
+          h1: item.facts.h1Text,
+          canonical: item.facts.canonical,
+          hreflang: item.facts.alternateLinks,
+          robots: item.facts.robots,
+          schema_types: item.facts.schemaTypes,
+          breadcrumbs: item.facts.breadcrumbItems,
+          app_store_link_count: item.facts.appStoreLinkCount,
+          internal_link_paths: item.facts.internalLinkPaths,
+          external_links: item.facts.externalLinks,
+          screenshots: [
+            [...SCREENSHOT_CASES.entries()].find(([key]) => key.endsWith(`:${item.route}`))?.[1],
+            [...AVAILABILITY_SCREENSHOT_CASES.entries()].find(([key]) => key.endsWith(`:${item.route}`))?.[1],
+          ].filter(Boolean),
+        }));
+      const reviewMatrix = {
+        schema_version: 1,
+        status: report.status,
+        generated_at: null,
+        generation_time_policy: "omitted-for-byte-reproducibility",
+        evidence_origin: ORIGIN,
+        evidence_boundary: "local deterministic build; not deployment or storefront proof",
+        browser: report.browser,
+        routes: routeEvidence,
+      };
+      await writeFile(REVIEW_MATRIX, `${JSON.stringify(reviewMatrix, null, 2)}\n`);
+    }
     if (report.status !== "passed") throw new Error(`browser matrix failed: ${failedCases.length} route cases failed`);
-    process.stdout.write(`Website browser matrix passed: ${cases.length}/${cases.length} route/viewport cases, ${homeVideoCases.length}/${homeVideoCases.length} video loads/seeks, selected browser/touch/visible icons, 44px link targets, reduced motion, and 0 external requests.\n`);
+    process.stdout.write(`Website browser matrix passed: ${cases.length}/${cases.length} route/viewport cases, ${homeVideoCases.length}/${homeVideoCases.length} video loads/seeks, canonical/hreflang/schema/breadcrumb checks, selected browser/touch/visible icons, 44px link targets, reduced motion, and 0 external requests${CAPTURE_REVIEW ? "; review matrix and 6 screenshots captured" : ""}.\n`);
   } finally {
     await browser?.close();
   }

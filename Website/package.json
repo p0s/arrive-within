@@ -11,6 +11,7 @@
     "build": "node scripts/build.mjs",
     "sync:brand": "node scripts/sync-brand-assets.mjs",
     "test:browser": "node scripts/validate-browser.mjs",
+    "review:seo": "node scripts/validate-browser.mjs --capture-review",
     "test": "node scripts/validate.mjs",
     "verify": "node scripts/build.mjs && node scripts/validate.mjs"
   }

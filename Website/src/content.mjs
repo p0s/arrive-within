@@ -1,4 +1,5 @@
 export const repositoryURL = "https://github.com/p0s/arrive-within";
+export const appStoreURL = "https://apps.apple.com/app/id6800192697";
 
 export const siteContent = {
   en: {
@@ -9,7 +10,7 @@ export const siteContent = {
     nav: { home: "Home", practice: "Practice", privacy: "Privacy", openSource: "Open source", support: "Support", source: "Source on GitHub" },
     footer: {
       statement: "A private meditation garden for iPhone and iPad.",
-      status: "The source is public. App Store availability has not been announced.",
+      status: "Available on the App Store for iPhone and iPad.",
       copyright: "© 2026 Arrive Within contributors",
     },
     home: {
@@ -20,6 +21,13 @@ export const siteContent = {
       intro: "A guided practice, a dependable timer, or an open-ended sit. Every qualifying practice becomes permanent, visible growth—without streak pressure, accounts, ads, or subscriptions.",
       primaryAction: "See how it grows",
       secondaryAction: "Read the privacy promise",
+      availability: {
+        kicker: "Available on the App Store",
+        title: "Your garden is ready when you are.",
+        body: "Arrive Within is free for iPhone and iPad. The complete meditation app and Twilight Garden are included; one optional one-time purchase unlocks four additional visual styles.",
+        action: "View Arrive Within on the App Store",
+        note: "Requires iOS 18.0 or later.",
+      },
       media: {
         kicker: "One garden, faithfully grown",
         title: "See practice become a living world.",
@@ -118,7 +126,7 @@ export const siteContent = {
     nav: { home: "Start", practice: "Meditieren", privacy: "Datenschutz", openSource: "Open Source", support: "Hilfe", source: "Quellcode auf GitHub" },
     footer: {
       statement: "Ein privater Meditationsgarten für iPhone und iPad.",
-      status: "Der Quellcode ist öffentlich. Eine Verfügbarkeit im App Store wurde noch nicht angekündigt.",
+      status: "Im App Store für iPhone und iPad erhältlich.",
       copyright: "© 2026 Mitwirkende von Arrive Within",
     },
     home: {
@@ -129,6 +137,13 @@ export const siteContent = {
       intro: "Eine geführte Meditation, ein verlässlicher Timer oder eine offene Stoppuhr. Jede qualifizierende Praxis wird zu dauerhaftem, sichtbarem Wachstum – ohne Streak-Druck, Konto, Werbung oder Abo.",
       primaryAction: "Sieh, wie der Garten wächst",
       secondaryAction: "Lies unser Datenschutzversprechen",
+      availability: {
+        kicker: "Im App Store erhältlich",
+        title: "Dein Garten ist bereit, wenn du es bist.",
+        body: "Arrive Within ist für iPhone und iPad kostenlos. Die vollständige Meditations-App und der Twilight-Garten sind enthalten; ein optionaler einmaliger Kauf schaltet vier zusätzliche visuelle Stile frei.",
+        action: "Arrive Within im App Store ansehen",
+        note: "Erfordert iOS 18.0 oder neuer.",
+      },
       media: {
         kicker: "Ein Garten, verlässlich gewachsen",
         title: "Sieh, wie Praxis zu einer lebendigen Welt wird.",
