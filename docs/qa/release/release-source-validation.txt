@@ -1,15 +1,15 @@
-status: passed-source-contract-build-16-waiting-for-review
+status: passed-source-contract-public-1.0-build16-post-1.0-build18
 release_ready: false
 source_contract_passed: true
 candidate_bound: true
 checks_passed: 121
 checks_failed: 0
-shipping_source_file_count: 71
-shipping_source_sha256: cbc2e2a636a816a2168da66b655342f7b6f0de871b0648a73a4a6f3ec8d68ec5
+shipping_source_file_count: 75
+shipping_source_sha256: afecf83b08b9e781506d59ffa6dfa522ab52b69b0ecef44bb6752638d8fe8241
 
 Remaining gates:
-- Apple App Review approval and automatic release
-- public storefront availability and storefront installation readback after approval
-- independent exact build-16 physical iPhone/iPad runtime confirmation after host UI-runner provisioning is restored
+- exact build-18 Lock Screen and expanded Dynamic Island presentation
+- exact build-18 Live Activities-disabled, Dynamic Type, VoiceOver, and measured-energy rows
+- any App Review or public release mutation for version 1.0.1 remains separately authorized
 
-This deterministic source check validates the repository's exact submitted build-16 release binding and completed public-repository readbacks but does not itself reproduce the frozen archive/IPA, live ASC or TestFlight state, physical-device runtime, Apple approval, storefront, or external GitHub readback.
+This deterministic source check validates the repository's exact public build-16 binding and the recorded post-1.0 build-18 provenance/evidence contract. It does not itself reproduce frozen binaries, live ASC/TestFlight/storefront/GitHub state, physical-device runtime, or the remaining Lock Screen, expanded Dynamic Island, authorization-disabled, assistive-technology, and energy rows.

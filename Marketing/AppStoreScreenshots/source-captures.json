@@ -16,14 +16,14 @@
   "post_capture_change": {
     "classification": "iphone-live-activity-nonvisual-capture-retention",
     "captured_source_revision": "aed3e83d30d6290cb99731be79675fcfbeb7941168ec960479e08148b1293925",
-    "current_source_revision": "ba4c65d139f25e3e841420d95593bda6f06b3740895dd0dcf3e960bc116f7e74",
+    "current_source_revision": "ddee3520ef906537530f88c9a68f296dfdf6a62cfd208cddb3f31972162bae09",
     "changed_path_count": 10,
     "change_scope": "iphone-live-activity-only-no-required-capture-pixel-delta",
     "required_capture_ids_unchanged": true,
     "prior_human_visual_review_retained": true,
-    "live_activity_physical_proof": "pending-exact-iphone-lock-screen-and-dynamic-island-review",
+    "live_activity_physical_proof": "exact-build-18-compact-dynamic-island-core-verified-lock-screen-expanded-pending",
     "app_store_listing_mutation": "none",
-    "rationale": "The iPhone Live Activity adds a read-only system surface while the required Garden, Journey, and Journal capture IDs are unchanged. New localization keys were appended and no existing localized value changed, so no required App Store screenshot pixel changed. The build-18 Config/Base.xcconfig and project.yml edits change version metadata only. The prior human review remains scoped to the retained 24 images; physical iPhone Lock Screen and Dynamic Island proof remains pending. No App Store Connect mutation was performed."
+    "rationale": "The iPhone Live Activity adds a read-only system surface while the required Garden, Journey, and Journal capture IDs are unchanged. New localization keys were appended and no existing localized value changed, so no required App Store screenshot pixel changed. The build-18 Config/Base.xcconfig and project.yml edits change version metadata only. The prior human review remains scoped to the retained 24 images; exact build-18 compact Dynamic Island core lifecycle is verified while Lock Screen and expanded Dynamic Island proof remains pending. No App Store Connect mutation was performed."
   },
   "result_bundles": [
     {

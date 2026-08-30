@@ -53,10 +53,10 @@ const liveActivityExact: LiveActivityCaptureRetention = {
   change_scope: "iphone-live-activity-only-no-required-capture-pixel-delta",
   required_capture_ids_unchanged: true,
   prior_human_visual_review_retained: true,
-  live_activity_physical_proof: "pending-exact-iphone-lock-screen-and-dynamic-island-review",
+  live_activity_physical_proof: "exact-build-18-compact-dynamic-island-core-verified-lock-screen-expanded-pending",
   app_store_listing_mutation: "none",
   rationale:
-    "The iPhone Live Activity adds a read-only system surface while the required Garden, Journey, and Journal capture IDs are unchanged. New localization keys were appended and no existing localized value changed, so no required App Store screenshot pixel changed. The prior human review remains scoped to the retained 24 images; physical iPhone Lock Screen and Dynamic Island proof remains pending. No App Store Connect mutation was performed.",
+    "The iPhone Live Activity adds a read-only system surface while the required Garden, Journey, and Journal capture IDs are unchanged. New localization keys were appended and no existing localized value changed, so no required App Store screenshot pixel changed. The prior human review remains scoped to the retained 24 images; exact build-18 compact Dynamic Island core lifecycle is verified while Lock Screen and expanded Dynamic Island proof remains pending. No App Store Connect mutation was performed.",
 };
 
 function acceptsLiveActivity(

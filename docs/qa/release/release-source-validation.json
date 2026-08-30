@@ -1,30 +1,30 @@
 {
   "schema_version": 1,
-  "status": "passed-source-contract-build-16-waiting-for-review",
+  "status": "passed-source-contract-public-1.0-build16-post-1.0-build18",
   "release_ready": false,
   "source_contract_passed": true,
   "candidate_bound": true,
   "apple_rules_verified_at": "2026-08-10",
   "checks_passed": 121,
   "checks_failed": 0,
-  "shipping_source_file_count": 71,
-  "shipping_source_sha256": "cbc2e2a636a816a2168da66b655342f7b6f0de871b0648a73a4a6f3ec8d68ec5",
+  "shipping_source_file_count": 75,
+  "shipping_source_sha256": "afecf83b08b9e781506d59ffa6dfa522ab52b69b0ecef44bb6752638d8fe8241",
   "source_hashes": {
     "docs/release/metadata/en-US.json": "7c6407782e9125c29f504a96c939c7ae19ef28a4770dc1a7cd6805ca45315386",
     "docs/release/metadata/de-DE.json": "3e70e1fb55f3850b28b60ed3939cea4508c70ca93619701c75475d5acf9990b1",
-    "docs/release/metadata/shared.json": "fddfc59c7df314a54535747156496257d004334ae6ff708414f02cb8f76679f3",
+    "docs/release/metadata/shared.json": "505931c7bf3b04792f4b77159887208b71a263401913f5f3af3df1982c2bb14d",
     "docs/release/app-privacy-worksheet.json": "9ec7e0269c76b93b7030be1988587acc90ef3ae3e4b1e7573c0b258d64b97652",
     "docs/release/current-release.example.json": "ec582d76079c089e4ef2bda1af5a1f37b02aae0163a83a4f8d818412f322db4c",
     "docs/release/candidate.example.json": "a1c209e5786e4bd846efadc40e537f9b4bc0b9d9fdeb898c8f9ac4ce65e1162c",
-    "docs/release/release-train.json": "f4f5baa38a215e24c29083471f2fb171b0d2c9f614a31175cc8ebe6ad4ac5517",
+    "docs/release/release-train.json": "5d045ecdec2463bfc64fa3b588d29cf62c940f0511a00427f1ac3d6689942708",
     "Apps/ArriveWithin/Resources/PrivacyInfo.xcprivacy": "0562b6e4331f1fcffb4d7b7e3e11c240ebbf6dbef84ec1b66318408d9f2d524b",
-    "Apps/ArriveWithin/Resources/Info.plist": "aca2757b61bd93c87aa1a1ea5da1a939085cd939c02fe17f70561883336fd145",
+    "Apps/ArriveWithin/Resources/Info.plist": "cc2ff3758b5917c9975c6e4695b4625fa960e612f49581f44a382e9f080599a4",
     "Marketing/AppStoreScreenshots/screenshot-plan.json": "f53eb84de0d8907c86038409998b8193146a6c761e6489b52300911a8b5302d4"
   },
   "blockers": [
-    "Apple App Review approval and automatic release",
-    "public storefront availability and storefront installation readback after approval",
-    "independent exact build-16 physical iPhone/iPad runtime confirmation after host UI-runner provisioning is restored"
+    "exact build-18 Lock Screen and expanded Dynamic Island presentation",
+    "exact build-18 Live Activities-disabled, Dynamic Type, VoiceOver, and measured-energy rows",
+    "any App Review or public release mutation for version 1.0.1 remains separately authorized"
   ],
   "failures": [],
   "checks": [
@@ -39,9 +39,9 @@
       "detail": "expected [\"de-DE\",\"en-US\"]; found [\"de-DE\",\"en-US\"]"
     },
     {
-      "id": "metadata.shared-submitted",
+      "id": "metadata.shared-live",
       "passed": true,
-      "detail": "shared metadata must bind the exact submitted build-16 listing while preserving the verified public URL binding"
+      "detail": "shared metadata must bind public build 16 and the current valid post-1.0 candidate while preserving the verified public URL binding"
     },
     {
       "id": "metadata.rules-date",
@@ -221,12 +221,12 @@
     {
       "id": "metadata.storekit-contract",
       "passed": true,
-      "detail": "StoreKit must remain one exact non-consumable Garden entitlement attached to the submitted app version"
+      "detail": "StoreKit must remain one exact approved non-consumable Garden entitlement bound to the completed version-1.0 review"
     },
     {
       "id": "metadata.candidate-submitted",
       "passed": true,
-      "detail": "metadata must bind the exact submitted build, archive, version, and two-item review submission"
+      "detail": "metadata must bind the exact public build, archive, version, and completed two-item review submission"
     },
     {
       "id": "screenshots.devices",
@@ -626,7 +626,7 @@
     {
       "id": "release-train.candidate-current-state",
       "passed": true,
-      "detail": "verified historical builds and the exact submitted build-16 replacement must remain bound without claiming physical runtime, approval, or storefront proof"
+      "detail": "verified historical builds, public build 16, and exact valid build-18 physical evidence must remain separately bound without overstating the remaining system matrix"
     },
     {
       "id": "release-train.post-publication-garden-follow-up",
@@ -634,5 +634,5 @@
       "detail": "submitted listing media must remain bound to the exact approved export tree and live checksum readback"
     }
   ],
-  "claim_boundary": "This deterministic source check validates the repository's exact submitted build-16 release binding and completed public-repository readbacks but does not itself reproduce the frozen archive/IPA, live ASC or TestFlight state, physical-device runtime, Apple approval, storefront, or external GitHub readback."
+  "claim_boundary": "This deterministic source check validates the repository's exact public build-16 binding and the recorded post-1.0 build-18 provenance/evidence contract. It does not itself reproduce frozen binaries, live ASC/TestFlight/storefront/GitHub state, physical-device runtime, or the remaining Lock Screen, expanded Dynamic Island, authorization-disabled, assistive-technology, and energy rows."
 }

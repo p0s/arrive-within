@@ -1,17 +1,22 @@
 {
   "schema_version": 1,
   "proving_probe": {
-    "acceptance_criterion": "AC-001",
-    "scenario": "SCN-001",
-    "status": "build-16-waiting-for-review",
-    "claim_boundary": "All 84 exact v4 English/German narration hashes received owner listening/editorial/transcript/device-candidate approval, were promoted, merged through PR 30, and packaged byte-identically in build 16. Apple reports build 16 VALID and App Store eligible, linked to Internal Testing, attached to version 1.0, and WAITING_FOR_REVIEW with the replacement non-consumable. Physical interaction is not claimed because the host agent-device runner lacks its own development provisioning profile.",
-    "evidence": "docs/qa/persona-runs/SCN-001/local-simulator-probe.md",
-    "next_action": "Wait for Apple review while independently repairing the host UI-runner profile and verifying exact build 16 on authorized hardware; after approval verify automatic release and public storefront installation."
+    "acceptance_criterion": "AC-032",
+    "scenario": "SCN-003/SCN-004",
+    "status": "verified-existing-candidate-core-physical-evidence-complete-system-matrix-partial",
+    "claim_boundary": "Public version 1.0 remains bound to exact build 16 and live App Store readback. The current post-1.0 candidate is exact version 1.0.1 build 18 from signed source commit 28d5d75a5ed9d515898c779627c98dae61f608aa and tree c333250dd5f30452e574f22aba8bb00d0dce8fd9. Apple reports the build VALID, App Store eligible, and unexpired. An authorized physical iPhone directly proves the compact Dynamic Island running/countdown, pause/resume, recovery-to-last-confirmed-duration, and completion-cleanup lifecycle. Lock Screen, expanded Dynamic Island, authorization-disabled, assistive-technology, and measured-energy rows remain unverified.",
+    "evidence": "docs/qa/physical/build-18-live-activity.md",
+    "next_action": "Preserve exact build 18. Complete only the remaining system-owned Live Activity matrix when an approved surface can expose it; any App Review or public 1.0.1 release mutation requires separate authorization."
   },
   "current_batch": {
-    "id": "narration-pause-contract-regeneration",
-    "status": "v4-approved-promoted-build-16-submitted",
+    "id": "post-1.0-live-activity-evidence",
+    "status": "verified-existing-candidate-core-physical-evidence-complete-system-matrix-partial",
     "evidence": [
+      "docs/qa/physical/build-18-live-activity.md",
+      "docs/architecture/ADR-0007-session-live-activity.md",
+      "docs/evidence/INDEX.md",
+      "docs/product/ACCEPTANCE_MATRIX.md",
+      "docs/product/PERSONA_CLOSURE_MATRIX.md",
       "Marketing/AppStoreScreenshots/screenshot-plan.json",
       "Marketing/AppStoreScreenshots/source-captures.json",
       "Marketing/AppStoreScreenshots/scripts/export-playwright.ts",
@@ -64,11 +69,11 @@
     ]
   },
   "release_source_contract": {
-    "status": "passed-whole-utterance-build-16",
+    "status": "passed-source-contract-public-1.0-build16-post-1.0-build18",
     "checks_passed": 121,
     "checks_failed": 0,
-    "shipping_source_file_count": 71,
-    "shipping_source_sha256": "cbc2e2a636a816a2168da66b655342f7b6f0de871b0648a73a4a6f3ec8d68ec5",
+    "shipping_source_file_count": 75,
+    "shipping_source_sha256": "afecf83b08b9e781506d59ffa6dfa522ab52b69b0ecef44bb6752638d8fe8241",
     "release_ready": false,
     "candidate_bound": true
   },
@@ -93,21 +98,21 @@
       "pilotScript": "scripts/run_narration_pause_pilot.sh"
     },
     "shipping_asset_boundary": "raw-candidates-ignored-validated-promoted-content-guided-assets-not-ignored",
-    "baseline_testflight_dependency": "build-16-valid-internal-group-linked-and-submitted; physical-ui-readback-blocked-by-host-runner-provisioning"
+    "baseline_testflight_dependency": "public-build-16-preserved; exact-build-16-physical-playback-not-repeated; post-1.0-build-18-live-activity-core-physically-verified-separately"
   },
   "terminal_local_state": {
-    "status": "build-16-waiting-for-review",
-    "root_gate": "passed-on-build-16-source; apple-review-and-physical-runtime-remain-separate",
-    "acceptance_verified": 11,
-    "acceptance_blocked_external": 10,
-    "acceptance_in_progress": 8,
+    "status": "verified-existing-candidate",
+    "root_gate": "passed-on-post-1.0-evidence-ledger-source; external-readbacks-and-system-owned-physical-rows-remain-separate",
+    "acceptance_verified": 14,
+    "acceptance_blocked_external": 11,
+    "acceptance_in_progress": 5,
     "acceptance_open": 0,
     "acceptance_removed_by_contract": 2,
-    "scenarios_verified": 5,
-    "scenarios_blocked_external": 11,
-    "scenarios_in_progress": 2,
+    "scenarios_verified": 6,
+    "scenarios_blocked_external": 9,
+    "scenarios_in_progress": 3,
     "scenarios_open": 0,
     "release_ready": false,
-    "claim_boundary": "The pinned toolchain, focused narration gates, full source gate, exact 42x2 objective validation, owner approval, public promotion, archive/IPA inspection, Apple processing, Internal Testing linkage, build attachment, review-item resolution, and resubmission all pass for build 16. Apple review/storefront and physical runtime are not inferred; the latter is blocked by missing host UI-runner development provisioning."
+    "claim_boundary": "Public 1.0/build 16 provenance, completed review, approved non-consumable, READY_FOR_SALE / READY_FOR_DISTRIBUTION state, and public storefront readback are bound separately from exact post-1.0 build 18. Build 18 remains Apple VALID, eligible, and unexpired and now has direct authorized-iPhone proof for the compact Dynamic Island running, pause/resume, relaunch recovery, and end lifecycle. A public build-16 reinstall and build-18 Lock Screen, expanded, authorization-disabled, assistive-technology, and energy rows are not inferred; no release or CloudKit mutation was performed."
   }
 }

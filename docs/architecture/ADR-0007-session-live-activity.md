@@ -1,6 +1,6 @@
 # ADR 0007: Project active practice into one local Live Activity
 
-Status: accepted by the owner on 2026-08-26; local implementation complete, physical presentation pending
+Status: accepted by the owner on 2026-08-26; local implementation and exact build-18 compact Dynamic Island lifecycle verified, remaining system presentation matrix pending
 
 ## Context
 
@@ -17,4 +17,4 @@ Arrive Within already owns one persisted meditation-session state machine. The L
 
 ## Consequences
 
-Supported iPhones gain a calm Lock Screen and Dynamic Island view without weakening monotonic session truth or privacy. Unsupported/disabled Live Activities fail silently and never block a practice. Local lifecycle tests and an unsigned build can prove state wiring and packaging; exact Lock Screen/Dynamic Island layout, system settings, lifecycle, and energy behavior still require an authorized physical iPhone candidate.
+Supported iPhones gain a calm Lock Screen and Dynamic Island view without weakening monotonic session truth or privacy. Unsupported/disabled Live Activities fail silently and never block a practice. Local lifecycle tests and an unsigned build prove state wiring and packaging. Exact TestFlight build 18 additionally proves compact Dynamic Island running/countdown, pause, resume, relaunch recovery to the last confirmed duration, and activity removal on completion on an authorized physical iPhone. Lock Screen and expanded Dynamic Island presentation, disabled authorization, Dynamic Type, VoiceOver, and measured energy behavior remain a separate physical system matrix.

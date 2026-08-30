@@ -1,6 +1,6 @@
 {
-  "schema_version": 1,
-  "state": "build-16-submitted-waiting-for-review",
+  "schema_version": 2,
+  "state": "public-1.0-build-16-post-1.0-build-18-valid",
   "release_attachable": true,
   "primary_category": "HEALTH_AND_FITNESS",
   "secondary_category": "LIFESTYLE",
@@ -51,8 +51,8 @@
     "available_territories": 175,
     "available_in_new_territories": true,
     "locales": ["de-DE", "en-US"],
-    "app_store_connect_state": "WAITING_FOR_REVIEW",
-    "current_app_review_attachment": true
+    "app_store_connect_state": "APPROVED",
+    "completed_app_review_attachment": true
   },
   "current_rules": {
     "verified_at": "2026-08-10",
@@ -91,8 +91,9 @@
     "app_store_version_id": "e3b3b152-a874-437d-9b59-17d23ce46739",
     "review_submission_id": "9cb4ed98-7a4e-41da-8cf4-41b1bec16a11",
     "review_item_count": 2,
-    "review_state": "WAITING_FOR_REVIEW",
-    "app_store_version_state": "WAITING_FOR_REVIEW",
+    "review_state": "COMPLETE",
+    "app_store_state": "READY_FOR_SALE",
+    "app_store_version_state": "READY_FOR_DISTRIBUTION",
     "submitted_at": "2026-08-22T23:57:39.645Z"
   }
 }
