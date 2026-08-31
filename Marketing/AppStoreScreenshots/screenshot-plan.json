@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "implemented",
-  "copy_state": "selected-garden-growth-awaiting-final-visual-review",
+  "copy_state": "selected-garden-growth-tonal-wash-approved",
   "source_policy": "Actual deterministic rendered app UI with safe synthetic data only",
   "locales": ["en-US", "de-DE"],
   "devices": [
@@ -21,13 +21,13 @@
   "slides": [
     {
       "index": 1,
-      "id": "growth-arrive",
-      "idea": "Arrive in the present through the living Garden",
+      "id": "growth-rhythm",
+      "idea": "Browse a private monthly practice rhythm without pressure",
       "headline": {
-        "en-US": ["Arrive in", "the moment"],
-        "de-DE": ["Komm ganz", "hier an"]
+        "en-US": ["See your", "practice rhythm"],
+        "de-DE": ["Dein Rhythmus", "im Blick"]
       },
-      "runtime_surface": "Selected mature Garden composition"
+      "runtime_surface": "Journey monthly practice calendar in light mode"
     },
     {
       "index": 2,
@@ -41,13 +41,13 @@
     },
     {
       "index": 3,
-      "id": "growth-rhythm",
-      "idea": "Browse a private monthly practice rhythm without pressure",
+      "id": "growth-arrive",
+      "idea": "Arrive in the present through the living Garden",
       "headline": {
-        "en-US": ["See your", "practice rhythm"],
-        "de-DE": ["Dein Rhythmus", "im Blick"]
+        "en-US": ["Arrive in", "the moment"],
+        "de-DE": ["Komm ganz", "hier an"]
       },
-      "runtime_surface": "Journey monthly practice calendar"
+      "runtime_surface": "Selected mature Garden composition"
     },
     {
       "index": 4,
@@ -82,6 +82,11 @@
   ],
   "expected_final_images": 24,
   "expected_slides_per_set": 6,
+  "layout_geometry": {
+    "headline_to_proof_gap_canvas_height_percent": [4, 7],
+    "minimum_proof_canvas_height_percent": 60,
+    "proof_lower_edge_canvas_height_percent": [94, 104]
+  },
   "required_capture_ids": [
     "garden-hero",
     "garden-seed",

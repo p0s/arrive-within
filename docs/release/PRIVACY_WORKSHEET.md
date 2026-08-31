@@ -53,7 +53,7 @@ Current result: version 1.0 is local-only, contains no in-app feedback transmiss
 
 ## StoreKit purchase boundary
 
-The source scan permits StoreKit only in `PremiumGardenStyles.swift`, binds exactly one `NonConsumable` product and one local `.storekit` configuration, requires verified and unrevoked current entitlements, and forbids legacy payment APIs or subscription products. App Store Connect readback binds product `6801014376` at a USD 4.99 base price, English/German metadata, and 175 territories plus future territories. Apple currently reports both the product and version 1.0 `WAITING_FOR_REVIEW` in the resubmitted two-item package. Exact archive evidence and independent physical TestFlight readback remain separate.
+The source scan permits StoreKit only in `PremiumGardenStyles.swift`, binds exactly one `NonConsumable` product and one local `.storekit` configuration, requires verified and unrevoked current entitlements, and forbids legacy payment APIs or subscription products. App Store Connect readback binds product `6801014376` at a USD 4.99 base price, English/German metadata, and 175 territories plus future territories. Live readback on 2026-08-30 reports the product `APPROVED`, the two-item review submission `COMPLETE`, and version 1.0 `READY_FOR_SALE` / `READY_FOR_DISTRIBUTION`. Exact archive evidence and independent physical TestFlight readback remain separate.
 
 ## Candidate binding
 

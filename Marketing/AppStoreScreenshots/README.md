@@ -9,13 +9,15 @@ This tracked, localhost-only Next.js studio composes the frozen six-slide narrat
 - iPad 13-inch portrait at `2064×2752`
 - six slides per locale/device, 24 final PNGs total
 - exactly one localized headline block per slide; no product-name eyebrow, subtitle, or supporting-copy layer
+- Clean Editorial / Tonal Wash treatment: short left-aligned headlines, large straight device frames, and restrained app-palette gradient washes with a continuous light falloff
+- machine-enforced composition on every rendered slide: one tight `data-headline`, one tight `data-product-proof`, a 4–7% canvas-height gap, proof at least 60% of canvas height, and proof lower edge at 94–104%
 - the product screenshot begins close beneath the headline so the app remains the dominant proof surface
-- Garden/growth is the selected six-slide shipping narrative; the other complete narratives remain non-shipping source references
+- the selected six-slide story opens with the validated light-mode Journey calendar, moves through Garden growth, then introduces the Garden hero on slide 3; the other complete narratives remain non-shipping source references
 - one freshly captured and validated 24-image matrix is eligible for App Store attachment
 
 ## Capture boundary
 
-`screenshot-plan.json` defines the five selected Garden/growth product states for all four locale/device sets. A guarded XCUITest capture run must produce those opaque, safe-synthetic-data PNGs, then bind their source-tree revision and SHA-256 values in `source-captures.json`. The export refuses missing, transparent, wrong-size, unbound, or hash-mismatched captures. The two non-shipping alternatives reuse only retained Garden, Journey, and Journal captures whose pixels remain truthful for the zero-narration, local-only V1; obsolete guided-library and iCloud captures are excluded. Simulator captures prove only the marketing composition input; they do not substitute for physical-device or release-candidate evidence.
+`screenshot-plan.json` defines the five selected Garden/growth product states for all four locale/device sets. Slide 1 deliberately uses the existing validated light-mode Journey calendar capture; no new capture is required. A guarded XCUITest capture run must produce those opaque, safe-synthetic-data PNGs, then bind their source-tree revision and SHA-256 values in `source-captures.json`. The export refuses missing, transparent, wrong-size, unbound, or hash-mismatched captures. The two non-shipping alternatives reuse only retained Garden, Journey, and Journal captures whose pixels remain truthful for the zero-narration, local-only V1; obsolete guided-library and iCloud captures are excluded. Simulator captures prove only the marketing composition input; they do not substitute for physical-device or release-candidate evidence.
 
 The 24 tracked local images were freshly recaptured and human-reviewed for the build-17 source boundary on 2026-08-24. They are not attached to App Store Connect. The earlier owner-approved live listing images remain attached to version 1.0 with build 16 while that version is `WAITING_FOR_REVIEW`; this local refresh does not mutate or recast those live assets. The validator now requires an exact current-source match. Its fixed historical build-16 retention policy remains covered by negative controls for auditability, but it cannot authorize any later drift. Any future capture-source change fails closed until another complete current-source recapture and review.
 

@@ -23,6 +23,11 @@ export type ScreenshotPlan = {
   }>;
   expected_final_images: number;
   expected_slides_per_set: number;
+  layout_geometry: {
+    headline_to_proof_gap_canvas_height_percent: [number, number];
+    minimum_proof_canvas_height_percent: number;
+    proof_lower_edge_canvas_height_percent: [number, number];
+  };
   required_capture_ids: string[];
   renderer: string;
   network_policy: string;
@@ -147,9 +152,9 @@ export function assertPlan(plan: ScreenshotPlan): void {
     { id: "ipad-13", width: 2064, height: 2752 },
   ];
   const expectedSlideIds = [
-    "growth-arrive",
-    "growth-take-root",
     "growth-rhythm",
+    "growth-take-root",
+    "growth-arrive",
     "growth-stays",
     "growth-reflect",
     "growth-refuge",
@@ -182,6 +187,13 @@ export function assertPlan(plan: ScreenshotPlan): void {
   });
   if (plan.expected_slides_per_set !== 6 || plan.expected_final_images !== 24) {
     throw new Error("the matrix must remain six slides per set and 24 final images");
+  }
+  if (
+    JSON.stringify(plan.layout_geometry.headline_to_proof_gap_canvas_height_percent) !== JSON.stringify([4, 7])
+    || plan.layout_geometry.minimum_proof_canvas_height_percent !== 60
+    || JSON.stringify(plan.layout_geometry.proof_lower_edge_canvas_height_percent) !== JSON.stringify([94, 104])
+  ) {
+    throw new Error("the Clean Editorial geometry contract must remain 4-7% gap, 60% proof height, and 94-104% lower edge");
   }
   if (plan.slides.length !== 6 || plan.slides.some((slide, index) => slide.index !== index + 1)) {
     throw new Error("slides must have exact indices 1 through 6");

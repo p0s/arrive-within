@@ -3,9 +3,9 @@
 Arrive Within is a free, bilingual meditation app for iPhone and iPad. A configurable timer, an open-ended stopwatch, private reflections, and a deterministic living garden all work without an account. Every qualifying practice becomes one immutable event; the same event history always grows the same garden. The repository contains the complete original English/German guided-practice source and release evidence for the approved narrated update in version 1.0 build 16.
 
 <p align="center">
-  <img src="Marketing/AppStoreScreenshots/exports/en-US/iphone-6.9/01-growth-arrive-en-us-iphone-6.9-1320x2868.png" width="31%" alt="Arrive Within's Twilight Refuge garden on iPhone">
+  <img src="Marketing/AppStoreScreenshots/exports/en-US/iphone-6.9/01-growth-rhythm-en-us-iphone-6.9-1320x2868.png" width="31%" alt="Arrive Within's private practice rhythm on iPhone">
   &nbsp;
-  <img src="Marketing/AppStoreScreenshots/exports/en-US/iphone-6.9/02-growth-take-root-en-us-iphone-6.9-1320x2868.png" width="31%" alt="Two tilted Arrive Within practice screens showing growth">
+  <img src="Marketing/AppStoreScreenshots/exports/en-US/iphone-6.9/02-growth-take-root-en-us-iphone-6.9-1320x2868.png" width="31%" alt="Arrive Within practice becoming lasting Garden growth">
 </p>
 
 [Watch the silent garden-growth film](Marketing/PublicMedia/output/garden-growth-v1.mp4) · [Source](https://github.com/p0s/arrive-within) · [Architecture](docs/architecture/OVERVIEW.md) · [Contributing](CONTRIBUTING.md) · [Privacy](https://psapps.xyz/arrive-within/#privacy)

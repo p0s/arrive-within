@@ -22,7 +22,7 @@ export type LiveActivityCaptureRetention = {
   change_scope: "iphone-live-activity-only-no-required-capture-pixel-delta";
   required_capture_ids_unchanged: true;
   prior_human_visual_review_retained: true;
-  live_activity_physical_proof: "pending-exact-iphone-lock-screen-and-dynamic-island-review";
+  live_activity_physical_proof: "exact-build-18-compact-dynamic-island-core-verified-lock-screen-expanded-pending";
   app_store_listing_mutation: "none";
   rationale: string;
 };
@@ -36,7 +36,7 @@ export const LIVE_ACTIVITY_CAPTURED_SOURCE_REVISION =
   "aed3e83d30d6290cb99731be79675fcfbeb7941168ec960479e08148b1293925";
 
 export const LIVE_ACTIVITY_CURRENT_SOURCE_REVISION =
-  "ba4c65d139f25e3e841420d95593bda6f06b3740895dd0dcf3e960bc116f7e74";
+  "ddee3520ef906537530f88c9a68f296dfdf6a62cfd208cddb3f31972162bae09";
 
 export const LIVE_ACTIVITY_CHANGED_PATHS = [
   "Apps/ArriveWithin/Resources/Info.plist",
@@ -102,7 +102,8 @@ const LIVE_ACTIVITY_RATIONALE_FRAGMENTS = [
   "no existing localized value changed",
   "no required App Store screenshot pixel changed",
   "prior human review remains scoped to the retained 24 images",
-  "physical iPhone Lock Screen and Dynamic Island proof remains pending",
+  "exact build-18 compact Dynamic Island core lifecycle is verified",
+  "Lock Screen and expanded Dynamic Island proof remains pending",
   "No App Store Connect mutation was performed",
 ] as const;
 
@@ -147,7 +148,7 @@ export function isExactLiveActivityCaptureRetention(
       attestation.change_scope === "iphone-live-activity-only-no-required-capture-pixel-delta" &&
       attestation.required_capture_ids_unchanged === true &&
       attestation.prior_human_visual_review_retained === true &&
-      attestation.live_activity_physical_proof === "pending-exact-iphone-lock-screen-and-dynamic-island-review" &&
+      attestation.live_activity_physical_proof === "exact-build-18-compact-dynamic-island-core-verified-lock-screen-expanded-pending" &&
       attestation.app_store_listing_mutation === "none" &&
       LIVE_ACTIVITY_RATIONALE_FRAGMENTS.every((fragment) => attestation.rationale.includes(fragment)),
   );

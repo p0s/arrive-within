@@ -1,7 +1,7 @@
 {
-  "schema_version": 1,
-  "status": "build-16-waiting-for-review",
-  "narrated_update_status": "build-16-valid-testflight-app-store-waiting-for-review",
+  "schema_version": 2,
+  "status": "public-1.0-build16-post-1.0-build18-valid-internal-physical-core-verified",
+  "narrated_update_status": "build-16-ready-for-sale-review-complete",
   "narration_status": "v4-84-owner-approved-promoted-packaged",
   "current_release_snapshot": "docs/release/current-release.example.json",
   "candidate_manifest": null,
@@ -9,19 +9,40 @@
     "marketing_version": "1.0",
     "build_number": 16,
     "source_provenance": "signed-merge-commit-b993fd8533381e01557d9ee9da22322b4f4c8ecb-tree-c229005b5eed58e224f716f9ff8989f86bd1c462",
-    "apple_state": "WAITING_FOR_REVIEW",
+    "apple_state": "READY_FOR_SALE",
     "archive_zip_sha256": "02ca79bc6eb0446a2b7eef8d4e59574b2ebbde8217c0bbfaf9270158d2aba329",
     "ipa_sha256": "0f04813b49ba2af40dcc51b962bb50e65c18cc3192e430690aa90f6522c3c718",
     "apple_build_id": "1356a2e4-1515-4b5b-833a-b4ecdb2f7754",
     "app_store_version_id": "e3b3b152-a874-437d-9b59-17d23ce46739",
     "review_submission_id": "9cb4ed98-7a4e-41da-8cf4-41b1bec16a11",
-    "review_submission_state": "WAITING_FOR_REVIEW",
+    "review_submission_state": "COMPLETE",
     "review_item_count": 2,
     "submitted_at": "2026-08-22T23:57:39.645Z",
     "physical_testflight_readback": "not-completed-host-agent-device-runner-lacks-development-provisioning-profile",
     "owner_audio_listening": "approved-all-84-exact-hashes-packet-sha256-34929c585a65e73f69a39925a332196be605aa6bd744d34788b9c22b636ffa79",
     "required_scope": "inline-searchable-bilingual-guided-library-hash-bound-offline-playback-transcript-controls",
-    "claim_boundary": "Exact build 16 is archived, inspected, uploaded, Apple VALID and APP_STORE_ELIGIBLE, linked to the existing Internal Testing group, attached to version 1.0, and resubmitted with the replacement non-consumable. Apple reports both items WAITING_FOR_REVIEW. All 84 exact narration hashes are owner-approved and packaged byte-for-byte from the promoted public set. Physical TestFlight interaction remains unverified because the host automation runner lacks its own development provisioning profile; no device pass is inferred."
+    "claim_boundary": "Exact build 16 is archived, inspected, uploaded, Apple VALID and APP_STORE_ELIGIBLE, linked to the existing Internal Testing group, attached to version 1.0, and released after the completed two-item review. Apple reports version 1.0 READY_FOR_SALE and READY_FOR_DISTRIBUTION, the review submission COMPLETE, and the public storefront resolves. All 84 exact narration hashes are owner-approved and packaged byte-for-byte from the promoted public set. Exact build-16 physical interaction was not retrospectively repeated."
+  },
+  "post_1_0_live_activity_candidate": {
+    "status": "verified-existing-candidate-core-physical-evidence-complete-system-matrix-partial",
+    "marketing_version": "1.0.1",
+    "build_number": 18,
+    "source_commit": "28d5d75a5ed9d515898c779627c98dae61f608aa",
+    "source_tree": "c333250dd5f30452e574f22aba8bb00d0dce8fd9",
+    "live_activity_commit": "5feb6b881174cd6086e7d55c0bc71032dfeb3beb",
+    "version_commit": "f2209d9a67f3f068d5442a5dc9b580409a81c68b",
+    "apple_build_id": "dccf3c83-99c9-4671-aad6-9cd2f7fbfa9f",
+    "apple_processing": "VALID",
+    "app_store_eligible": true,
+    "expired": false,
+    "internal_distribution": "preserved release evidence binds explicit Internal Testing membership and IN_BETA_TESTING; no distribution mutation was performed during the 2026-08-30 readback",
+    "release_evidence_sha256": "2e008e43632a165944d831e78821b09fdab8dcd4e7db6401cb7bdd283c0f2230",
+    "archive_zip_sha256": "465303c903ec0ef1691b527a460e703461248551f691f54c4e935876c1b2cb3a",
+    "ipa_sha256": "ad4e14d2e9b93b461db528af1fff179a336aa2be47d46e901f5caa43ccddf22c",
+    "physical_runtime_readback": "An authorized physical iPhone exposed exact installed version 1.0.1 (18). Compact Dynamic Island presentation was directly captured for Timer running/countdown, Stopwatch paused, resumed, and relaunch-recovery states; natural Timer completion and explicit short-session completion removed the app-owned activity. Relaunch recovery restored the last confirmed paused duration instead of guessing background time.",
+    "remaining_physical_matrix": "Lock Screen and expanded Dynamic Island presentation, disabled authorization, Dynamic Type, VoiceOver, and measured energy behavior remain unverified because the approved device-pool surface cannot expose those system controls or measurements in this run.",
+    "public_safe_report": "docs/qa/physical/build-18-live-activity.md",
+    "release_mutations_performed_during_readback": []
   },
   "narrated_update_preparation": {
     "source_revision": "b993fd8533381e01557d9ee9da22322b4f4c8ecb",
@@ -58,7 +79,7 @@
       "disposition": "rejected-owner-observed-selector-first-ui",
       "claim_boundary": "Build 14 is a valid historical TestFlight binary, not the final narrated candidate or an App Review submission."
     },
-    "next_action": "wait-for-apple-review-while-independently-repairing-the-host-device-runner-profile-and-verifying-build-16-on-authorized-hardware; after approval verify automatic release and the public storefront"
+    "next_action": "preserve public version 1.0 and exact build-18 provenance; complete only the remaining Lock Screen, expanded Dynamic Island, disabled-authorization, assistive-technology, and measured-energy rows before any separately authorized 1.0.1 release mutation"
   },
   "baseline_internal_testflight": {
     "marketing_version": "1.0",
@@ -152,7 +173,7 @@
     "status": "completed-current-source-media-retained-for-build-16",
     "submitted_artifact": "The earlier build-7 screenshot set was replaced before the build-15 submission and retained unchanged for build 16. App Store Connect contains the 24 owner-approved current-source English/German iPhone/iPad images.",
     "current_source_boundary": "The live 6 x 2 x 2 matrix is human-reviewed and hash-bound to export tree c1a6c543a699fc011b55aa7c58581c52fd53178c003287eb07331e95448b7f3b and capture-source revision c422692239d5f317c6ebb7e18b245826040245268c1bf9781bcb3c682e2588a1. All 24 live App Store Connect checksums match the approved numbered PNGs.",
-    "required_action": "Preserve these submitted assets and their checksum binding while build 16 is reviewed; recapture only if a later build materially changes a represented surface."
+    "required_action": "Preserve these live assets and their checksum binding for public version 1.0; recapture only if a later released build materially changes a represented surface."
   },
   "stages": [
     {"order": 1, "id": "live-reconciliation", "status": "verified-exact-app-record-signing-ready-cloudkit-v1-deferred", "authorization": "exact-app-read-and-required-app-scoped-configuration-authorized", "readback": "App Store Connect API readback returns exactly one matching iOS app record with the owner-entered primary name, en-US locale, and exact bundle binding. A private CloudKit container and five production-schema record types exist as historical future-capability configuration, but version 1.0 source deliberately binds no container, CloudKit entitlement, push entitlement, remote-notification mode, or CloudKit runtime. The refreshed App Store profile reuses only existing unmodified distribution certificates and remains valid into 2027; the exact archive must prove the app requests none of its unused CloudKit/push capability. No signing certificate was created or revoked."},
@@ -163,11 +184,11 @@
     {"order": 6, "id": "in-beta-testing", "status": "build-16-group-link-verified-detail-readback-unavailable", "authorization": "read-only-processing-state-after-linkage", "readback": "The build-16 Internal Testing group mutation succeeded. Exact beta-detail relationship readback remains unavailable through the allowed public API, so IN_BETA_TESTING is not separately claimed."},
     {"order": 7, "id": "candidate-install-upgrade-physical", "status": "blocked-host-device-runner-provisioning", "authorization": "exact-candidate-install-upgrade-runtime-proof-authorized-on-available-approved-surfaces", "readback": "The authorized iPhone was available and TestFlight opened, but the host agent-device UI runner could not start because its own development provisioning profile is absent. No build-16 physical install, launch, or audible playback pass is claimed from this attempt."},
     {"order": 8, "id": "metadata-screenshots-attach", "status": "verified-build-16-and-24-live-images", "authorization": "exact-app-bilingual-metadata-privacy-and-media-attachment-authorized", "readback": "Version 1.0 is attached to exact build 16 with the unchanged corrected English/German descriptions and App Review notes, owner-published Data Not Collected privacy, support/privacy/marketing URLs, the one optional non-consumable Garden entitlement, and exactly 24 approved EN/DE phone/iPad screenshots."},
-    {"order": 9, "id": "app-review-submit", "status": "waiting-for-review-build-16-and-garden-styles", "authorization": "exact-app-validation-review-item-resolution-and-review-resubmission-authorized", "readback": "The previously rejected app-version item was marked resolved, exact build 16 was attached, and the existing two-item submission was resubmitted at 2026-08-22T23:57:39.645Z. API readback reports the submission, version 1.0, and Premium Garden Material Styles WAITING_FOR_REVIEW with no reported blocking issue."},
-    {"order": 10, "id": "after-approval", "status": "selected-automatic-release", "authorization": "after-approval-release-mode-authorized", "readback": "Version releaseType reads AFTER_APPROVAL; Apple will automatically release version 1.0 after approval."},
-    {"order": 11, "id": "approval-ready-for-distribution", "status": "waiting-for-apple-review", "authorization": "read-only-status-after-review", "readback": null},
-    {"order": 12, "id": "storefront-install-verify", "status": "authorized-after-approval", "authorization": "exact-app-release-and-public-readback-authorized-after-approval", "readback": null},
+    {"order": 9, "id": "app-review-submit", "status": "review-complete-build-16-and-garden-styles", "authorization": "exact-app-validation-review-item-resolution-and-review-resubmission-authorized", "readback": "The previously rejected app-version item was marked resolved, exact build 16 was attached, and the existing two-item submission was resubmitted at 2026-08-22T23:57:39.645Z. Live API readback on 2026-08-30 reports submission 9cb4ed98-7a4e-41da-8cf4-41b1bec16a11 COMPLETE, version 1.0 READY_FOR_SALE and READY_FOR_DISTRIBUTION, with no in-flight review."},
+    {"order": 10, "id": "after-approval", "status": "verified-automatic-release-completed", "authorization": "after-approval-release-mode-authorized", "readback": "Version releaseType was AFTER_APPROVAL; Apple completed review and version 1.0 subsequently reached READY_FOR_SALE / READY_FOR_DISTRIBUTION without a separate manual-release mutation."},
+    {"order": 11, "id": "approval-ready-for-distribution", "status": "verified-ready-for-sale-build-16", "authorization": "read-only-status-after-review", "readback": "Live App Store Connect API readback on 2026-08-30 reports version 1.0 READY_FOR_SALE and READY_FOR_DISTRIBUTION and review submission COMPLETE."},
+    {"order": 12, "id": "storefront-install-verify", "status": "verified-public-storefront-build-16-install-not-repeated", "authorization": "exact-app-release-and-public-readback-authorized-after-approval", "readback": "The public US App Store page at https://apps.apple.com/us/app/arrive-within-meditation/id6800192697 rendered Arrive Within: Meditation on 2026-08-30. A new storefront installation of public build 16 was not performed because exact internal build 18 was already installed for the authorized post-1.0 evidence run."},
     {"order": 13, "id": "public-repository-and-release-assets", "status": "verified-public-origin-main-signed-root", "authorization": "owner-authorized-git-initialization-staging-ssh-signed-initial-commit-exact-existing-origin-main-push-and-public-visibility; github-actions-tags-releases-and-unrelated-repository-settings-remain-separate", "readback": "GitHub initial publication readback confirmed the canonical repository is public with default branch main and origin/main byte-exact at SSH-signed root commit 6d7ba49967f3082e39dcb0437402a97593897276. The exact initial 689-file tracked tree and then-reachable one-commit history passed public/privacy/secret/size/license review, and a tracked-only clean clone reproduced the complete root gate plus unsigned universal Release build. The root remains immutable reachable history as later reviewed commits advance main. Signed narration PR 30 is merged in main at b993fd8533381e01557d9ee9da22322b4f4c8ecb, the exact source used for build 16, and the complete narrated-source gate passes. No GitHub Actions workflow or run exists. This post-build repository publication does not replace or retrofit Git lineage onto the immutable pre-Git source manifests for builds 1 through 7."}
   ],
-  "claim_boundary": "Exact build 16 is bound to signed source merge b993fd8533381e01557d9ee9da22322b4f4c8ecb, inspected archive/IPA hashes, Apple VALID build 1356a2e4-1515-4b5b-833a-b4ecdb2f7754, Internal Testing linkage, corrected bilingual metadata, 24 checksum-matched screenshots, and the one non-consumable Garden entitlement. All 84 narration hashes are owner-approved, promoted, objectively validated, and packaged byte-identically. Apple reports the app version, two-item submission, and product WAITING_FOR_REVIEW. Physical build-16 interaction remains unverified because the host UI runner lacks its own development profile; Apple approval, automatic release, storefront availability, and storefront installation remain external."
+  "claim_boundary": "Public version 1.0 remains bound to exact build 16, signed source merge b993fd8533381e01557d9ee9da22322b4f4c8ecb, inspected archive/IPA hashes, 84 owner-approved narrated tracks, corrected bilingual metadata, 24 checksum-matched screenshots, and the approved non-consumable. Apple reports READY_FOR_SALE, READY_FOR_DISTRIBUTION, and review COMPLETE, and the public storefront resolves. The current post-1.0 candidate is exact 1.0.1 (18), Apple build dccf3c83-99c9-4671-aad6-9cd2f7fbfa9f, source commit 28d5d75a5ed9d515898c779627c98dae61f608aa and tree c333250dd5f30452e574f22aba8bb00d0dce8fd9; it is VALID, APP_STORE_ELIGIBLE, and physically verified on an authorized iPhone for compact Dynamic Island running, pause/resume, recovery, and end lifecycle. Lock Screen, expanded Dynamic Island, disabled authorization, Dynamic Type, VoiceOver, energy, App Review, and public 1.0.1 release remain unverified and no release mutation was performed."
 }

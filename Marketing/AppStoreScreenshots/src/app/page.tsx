@@ -46,14 +46,19 @@ function DeviceCapture({
   device,
   locale,
   className = "",
+  productProof = false,
 }: {
   captureId: string;
   device: DeviceId;
   locale: LocaleId;
   className?: string;
+  productProof?: boolean;
 }) {
   return (
-    <div className={`device-frame ${device === "ipad-13" ? "tablet" : "phone"} ${className}`}>
+    <div
+      className={`device-frame ${device === "ipad-13" ? "tablet" : "phone"} ${className}`}
+      data-product-proof={productProof ? "" : undefined}
+    >
       <div className="device-screen">
         <img
           alt=""
@@ -85,15 +90,14 @@ function SlideComposition({
 }) {
   const singleCapture = singleCaptureByComposition[composition];
   if (singleCapture) {
-    return <DeviceCapture captureId={singleCapture} device={device} locale={locale} />;
+    return <DeviceCapture captureId={singleCapture} device={device} locale={locale} productProof />;
   }
   if (composition === "garden-growth") {
     return (
-      <>
+      <div className="product-proof" data-product-proof>
         <DeviceCapture captureId="garden-seed" className="before" device={device} locale={locale} />
-        <div className="growth-line" aria-hidden="true"><span /></div>
         <DeviceCapture captureId="garden-hero" className="after" device={device} locale={locale} />
-      </>
+      </div>
     );
   }
   throw new Error(`Unsupported screenshot composition: ${composition}`);
@@ -141,7 +145,7 @@ export default async function ScreenshotStudio({
           style={{ height: spec.height, width: spec.width }}
         >
           <header>
-            <h1>
+            <h1 data-headline>
               {slide.headline[locale].map((line) => (
                 <span key={line}>{line}</span>
               ))}
