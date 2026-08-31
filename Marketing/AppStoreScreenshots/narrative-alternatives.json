@@ -15,13 +15,13 @@
       "slides": [
         {
           "index": 1,
-          "id": "growth-arrive",
-          "idea": "Arrive in the present through the living Garden",
-          "headline": {"en-US": ["Arrive in", "the moment"], "de-DE": ["Komm ganz", "hier an"]},
-          "supporting_copy": {"en-US": "A quiet place that changes when you show up.", "de-DE": "Ein stiller Ort, der mit deiner Praxis wächst."},
-          "runtime_surface": "Selected mature Garden composition",
-          "composition": "garden-single",
-          "capture_ids": ["garden-hero"]
+          "id": "growth-rhythm",
+          "idea": "Browse a private monthly practice rhythm without pressure",
+          "headline": {"en-US": ["See your", "practice rhythm"], "de-DE": ["Dein Rhythmus", "im Blick"]},
+          "supporting_copy": {"en-US": "Browse qualifying, shorter, and empty days without judgment.", "de-DE": "Sieh volle, kürzere und freie Praxistage ohne Bewertung."},
+          "runtime_surface": "Journey monthly practice calendar in light mode",
+          "composition": "journey-calendar",
+          "capture_ids": ["journey-calendar"]
         },
         {
           "index": 2,
@@ -35,13 +35,13 @@
         },
         {
           "index": 3,
-          "id": "growth-rhythm",
-          "idea": "Browse a private monthly practice rhythm without pressure",
-          "headline": {"en-US": ["See your", "practice rhythm"], "de-DE": ["Dein Rhythmus", "im Blick"]},
-          "supporting_copy": {"en-US": "Browse qualifying, shorter, and empty days without judgment.", "de-DE": "Sieh volle, kürzere und freie Praxistage ohne Bewertung."},
-          "runtime_surface": "Journey monthly practice calendar",
-          "composition": "journey-calendar",
-          "capture_ids": ["journey-calendar"]
+          "id": "growth-arrive",
+          "idea": "Arrive in the present through the living Garden",
+          "headline": {"en-US": ["Arrive in", "the moment"], "de-DE": ["Komm ganz", "hier an"]},
+          "supporting_copy": {"en-US": "A quiet place that changes when you show up.", "de-DE": "Ein stiller Ort, der mit deiner Praxis wächst."},
+          "runtime_surface": "Selected mature Garden composition",
+          "composition": "garden-single",
+          "capture_ids": ["garden-hero"]
         },
         {
           "index": 4,

@@ -9,6 +9,7 @@
     "passing per-set JSON and text validation",
     "contact-sheet SHA-256 readback",
     "deterministic ZIP contents and byte readback",
+    "4-7% headline-to-proof gap, at least 60% proof height, and 94-104% proof lower edge on every rendered slide",
     "current app-source revision binding",
     "external network request count is zero"
   ],

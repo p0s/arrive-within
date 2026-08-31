@@ -9,9 +9,9 @@
   "source_manifest_path": "capture-source-manifest.json",
   "human_visual_review": {
     "state": "approved",
-    "reviewer": "release-implementation-review",
-    "reviewed_on": "2026-08-24",
-    "notes": "English and German iPhone and iPad contact sheets plus representative full-resolution exports were inspected against the current-source recapture. All 24 slides retain one unclipped headline block, tight headline-to-product spacing, legible localized real app UI, purposeful paired-device overlap where used, and no substituted or invented product imagery."
+    "reviewer": "app-store-screenshot-style-review",
+    "reviewed_on": "2026-08-30",
+    "notes": "English and German iPhone and iPad contact sheets plus representative full-resolution exports were inspected against the current-source recapture. The selected Tonal Wash pilot retains one unclipped left-aligned headline block, tight headline-to-product spacing, large straight device frames, legible localized real app UI, and no substituted or invented product imagery."
   },
   "post_capture_change": {
     "classification": "iphone-live-activity-nonvisual-capture-retention",

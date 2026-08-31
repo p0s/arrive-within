@@ -43,7 +43,17 @@ type OutputItem = {
   runtimeSurface: string;
   width: number;
   height: number;
+  geometry: Geometry;
   validation: ImageValidation;
+};
+
+type Geometry = {
+  headlineToProofGap: number;
+  headlineToProofGapRatio: number;
+  proofHeight: number;
+  proofHeightRatio: number;
+  proofLowerEdge: number;
+  proofLowerEdgeRatio: number;
 };
 
 function parseOptions(argv: string[]): Options {
@@ -262,28 +272,56 @@ async function main() {
       if (narrative && JSON.stringify(renderedCaptureIDs) !== JSON.stringify(expectedCaptureIDs)) {
         throw new Error(`${planned.id}: rendered source captures do not match the narrative contract`);
       }
+      const headline = slide.locator("[data-headline]");
+      const proof = slide.locator("[data-product-proof]");
       if (
         await slide.locator(":scope > header > *").count() !== 1
-        || await slide.locator(":scope > header > h1").count() !== 1
+        || await headline.count() !== 1
+        || await proof.count() !== 1
         || await slide.locator(".product-name, .supporting-copy").count() !== 0
       ) {
-        throw new Error(`${planned.id}: slide must contain exactly one headline block and no subtitle layers`);
+        throw new Error(`${planned.id}: slide must contain one tight headline, one tight product proof, and no subtitle layers`);
       }
       const bounds = await slide.boundingBox();
       if (!bounds || Math.round(bounds.width) !== options.width || Math.round(bounds.height) !== options.height) {
         throw new Error(`${planned.id}: slide bounds do not match ${options.width}x${options.height}`);
       }
-      const headlineBounds = await slide.locator(":scope > header > h1").boundingBox();
-      const proofBounds = await slide.locator(":scope > .composition .device-frame").first().boundingBox();
+      const headlineBounds = await headline.boundingBox();
+      const proofBounds = await proof.boundingBox();
       if (!headlineBounds || !proofBounds) throw new Error(`${planned.id}: missing headline or product proof bounds`);
       const headlineToProofGap = proofBounds.y - (headlineBounds.y + headlineBounds.height);
-      if (headlineToProofGap < -8 || headlineToProofGap > options.height * 0.06) {
-        throw new Error(`${planned.id}: headline-to-product gap ${Math.round(headlineToProofGap)}px must stay between -8 and ${Math.round(options.height * 0.06)}px`);
+      const geometry: Geometry = {
+        headlineToProofGap,
+        headlineToProofGapRatio: headlineToProofGap / options.height,
+        proofHeight: proofBounds.height,
+        proofHeightRatio: proofBounds.height / options.height,
+        proofLowerEdge: proofBounds.y + proofBounds.height - bounds.y,
+        proofLowerEdgeRatio: (proofBounds.y + proofBounds.height - bounds.y) / options.height,
+      };
+      if (
+        geometry.headlineToProofGapRatio < 0.04
+        || geometry.headlineToProofGapRatio > 0.07
+        || geometry.proofHeightRatio < 0.6
+        || geometry.proofLowerEdgeRatio < 0.94
+        || geometry.proofLowerEdgeRatio > 1.04
+      ) {
+        throw new Error(
+          `${planned.id}: geometry must be 4-7% gap, at least 60% proof height, and 94-104% lower edge; got ${(geometry.headlineToProofGapRatio * 100).toFixed(2)}%, ${(geometry.proofHeightRatio * 100).toFixed(2)}%, ${(geometry.proofLowerEdgeRatio * 100).toFixed(2)}%`,
+        );
       }
       const filename = expectedPngNames[index];
       const absolute = path.join(root, filename);
-      await slide.screenshot({ animations: "disabled", caret: "hide", omitBackground: false });
-      const rawScreenshot = await slide.screenshot({ animations: "disabled", caret: "hide", omitBackground: false });
+      // Element screenshots round fractional document offsets differently across
+      // localized font/layout metrics. An explicit integer-sized clip preserves
+      // the contract's exact App Store dimensions while keeping the slide bounds
+      // and source UI unchanged.
+      const rawScreenshot = await page.screenshot({
+        animations: "disabled",
+        caret: "hide",
+        clip: { x: bounds.x, y: bounds.y, width: options.width, height: options.height },
+        fullPage: true,
+        omitBackground: false,
+      });
       await writeFile(absolute, normalizeOpaqueRgbPng(rawScreenshot));
       const validation = await validateOpaqueRgbPng(absolute, options.width, options.height);
       const data = await readFile(absolute);
@@ -296,6 +334,7 @@ async function main() {
         runtimeSurface: planned.runtime_surface,
         width: options.width,
         height: options.height,
+        geometry,
         validation: { ...validation, file: filename },
       });
     }
@@ -313,7 +352,7 @@ async function main() {
     expectedImages: slides.length,
     actualImages: items.length,
     externalRequests: 0,
-    results: items.map((item) => item.validation),
+    results: items.map((item) => ({ ...item.validation, geometry: item.geometry })),
   };
   await writeFile(path.join(root, "_validation.txt"), `${validationText(items.map((item) => item.validation))}\n`);
   await writeFile(path.join(root, "_validation.json"), `${JSON.stringify(validation, null, 2)}\n`);

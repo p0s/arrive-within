@@ -10,7 +10,7 @@
   "height": 2752,
   "renderer": "Playwright Chromium element screenshots",
   "pixelNormalization": "Deterministic RGB PNG encoding with each RGB least-significant bit cleared",
-  "copyState": "selected-garden-growth-awaiting-final-visual-review",
+  "copyState": "selected-garden-growth-tonal-wash-approved",
   "narrative": {
     "id": "current",
     "title": "Frozen current narrative",
@@ -18,9 +18,9 @@
   },
   "humanVisualReview": {
     "state": "approved",
-    "reviewer": "release-implementation-review",
-    "reviewedAt": "2026-08-24",
-    "notes": "English and German iPhone and iPad contact sheets plus representative full-resolution exports were inspected against the current-source recapture. All 24 slides retain one unclipped headline block, tight headline-to-product spacing, legible localized real app UI, purposeful paired-device overlap where used, and no substituted or invented product imagery."
+    "reviewer": "app-store-screenshot-style-review",
+    "reviewedAt": "2026-08-30",
+    "notes": "English and German iPhone and iPad contact sheets plus representative full-resolution exports were inspected against the current-source recapture. The selected Tonal Wash pilot retains one unclipped left-aligned headline block, tight headline-to-product spacing, large straight device frames, legible localized real app UI, and no substituted or invented product imagery."
   },
   "network": {
     "policy": "Block all external requests; allow localhost only",
@@ -100,71 +100,119 @@
   },
   "contactSheet": {
     "filename": "_contact-sheet.jpg",
-    "sha256": "1e143a8dcf26c412b76d8bc40f6a6e3922ab6a682eadd24d0ac6b14252013a52",
+    "sha256": "a0a32c00b3c937be36791c83e456fea9260f6e139658b9d505b58dfbc29f6ac7",
     "width": 1440,
     "height": 1890,
     "encoding": "sharp 0.35.3 JPEG quality 92, 4:4:4 chroma subsampling, no metadata"
   },
   "items": [
     {
-      "filename": "01-growth-arrive-en-us-ipad-13-2064x2752.png",
-      "sha256": "2d3a664bd516f372287e495cacbc79afd9b632c25f851b45bab671c5da4a67f2",
+      "filename": "01-growth-rhythm-en-us-ipad-13-2064x2752.png",
+      "sha256": "fe2ea1643a12bb2741067e75757e7e36c975e8762f17f61d975ce30fef0ec973",
       "slide": 1,
-      "slideId": "growth-arrive",
-      "idea": "Arrive in the present through the living Garden",
-      "runtimeSurface": "Selected mature Garden composition",
+      "slideId": "growth-rhythm",
+      "idea": "Browse a private monthly practice rhythm without pressure",
+      "runtimeSurface": "Journey monthly practice calendar in light mode",
       "width": 2064,
-      "height": 2752
+      "height": 2752,
+      "geometry": {
+        "headlineToProofGap": 174.171875,
+        "headlineToProofGapRatio": 0.06328919876453488,
+        "proofHeight": 2308.203125,
+        "proofHeightRatio": 0.8387366006540697,
+        "proofLowerEdge": 2858.59375,
+        "proofLowerEdgeRatio": 1.0387331940406976
+      }
     },
     {
       "filename": "02-growth-take-root-en-us-ipad-13-2064x2752.png",
-      "sha256": "a57f426409bf1443d7cc0043bc742ba2430b88477b13a2b12344a578f6f083a0",
+      "sha256": "382d2b652a03c1d35cc054a3d0f23ceb21acc89e4efb84c0e3793a2b83c57199",
       "slide": 2,
       "slideId": "growth-take-root",
       "idea": "A qualifying practice becomes lasting visible growth",
       "runtimeSurface": "Deterministic Garden before and after growth",
       "width": 2064,
-      "height": 2752
+      "height": 2752,
+      "geometry": {
+        "headlineToProofGap": 174.171875,
+        "headlineToProofGapRatio": 0.06328919876453488,
+        "proofHeight": 2100.34375,
+        "proofHeightRatio": 0.763206304505814,
+        "proofLowerEdge": 2650.734375,
+        "proofLowerEdgeRatio": 0.9632028978924418
+      }
     },
     {
-      "filename": "03-growth-rhythm-en-us-ipad-13-2064x2752.png",
-      "sha256": "4cf28a988a3d439db68c81183fa54383cf1280c2bc5260deb370b3d794a97180",
+      "filename": "03-growth-arrive-en-us-ipad-13-2064x2752.png",
+      "sha256": "2dadc92f124ca2f7cdd393b66433d5348b8134dd98a2b32798f8a4d2ff1c2d13",
       "slide": 3,
-      "slideId": "growth-rhythm",
-      "idea": "Browse a private monthly practice rhythm without pressure",
-      "runtimeSurface": "Journey monthly practice calendar",
+      "slideId": "growth-arrive",
+      "idea": "Arrive in the present through the living Garden",
+      "runtimeSurface": "Selected mature Garden composition",
       "width": 2064,
-      "height": 2752
+      "height": 2752,
+      "geometry": {
+        "headlineToProofGap": 174.171875,
+        "headlineToProofGapRatio": 0.06328919876453488,
+        "proofHeight": 2308.203125,
+        "proofHeightRatio": 0.8387366006540697,
+        "proofLowerEdge": 2858.59375,
+        "proofLowerEdgeRatio": 1.0387331940406976
+      }
     },
     {
       "filename": "04-growth-stays-en-us-ipad-13-2064x2752.png",
-      "sha256": "3af2390227d4f04d6e061cf815839bd79e666808ec235f72dda039db655ce952",
+      "sha256": "88e7ec1668382fbd3f41a22b004f000bb871b0e25a7ac7969a00997b2cc6eb25",
       "slide": 4,
       "slideId": "growth-stays",
       "idea": "Milestones remain as a nonpunitive record of practice",
       "runtimeSurface": "Journey milestone history and variants",
       "width": 2064,
-      "height": 2752
+      "height": 2752,
+      "geometry": {
+        "headlineToProofGap": 174.171875,
+        "headlineToProofGapRatio": 0.06328919876453488,
+        "proofHeight": 2308.203125,
+        "proofHeightRatio": 0.8387366006540697,
+        "proofLowerEdge": 2858.59375,
+        "proofLowerEdgeRatio": 1.0387331940406976
+      }
     },
     {
       "filename": "05-growth-reflect-en-us-ipad-13-2064x2752.png",
-      "sha256": "715fd076d46406a4f509daa284e21d44a5e68532f54c1f240987ff344cb3ce71",
+      "sha256": "f179578128f5b3d66608cf3bd2846e158f0433c00f43945a1f4ff7be431233bc",
       "slide": 5,
       "slideId": "growth-reflect",
       "idea": "Private reflection gives practice personal meaning",
       "runtimeSurface": "Journal editor with safe synthetic reflection",
       "width": 2064,
-      "height": 2752
+      "height": 2752,
+      "geometry": {
+        "headlineToProofGap": 174.171875,
+        "headlineToProofGapRatio": 0.06328919876453488,
+        "proofHeight": 2308.203125,
+        "proofHeightRatio": 0.8387366006540697,
+        "proofLowerEdge": 2858.59375,
+        "proofLowerEdgeRatio": 1.0387331940406976
+      }
     },
     {
       "filename": "06-growth-refuge-en-us-ipad-13-2064x2752.png",
-      "sha256": "151e05d3833ee92a8346b5fca58788d857195bfd560500a6505c80f7a35ffbcb",
+      "sha256": "f99d40116a6e2a30fe37f71ad0e751a7b3777a3e17460454adfee27b97d2d019",
       "slide": 6,
       "slideId": "growth-refuge",
       "idea": "The mature Garden remembers consistent practice",
       "runtimeSurface": "Selected mature Garden with milestone detail",
       "width": 2064,
-      "height": 2752
+      "height": 2752,
+      "geometry": {
+        "headlineToProofGap": 174.171875,
+        "headlineToProofGapRatio": 0.06328919876453488,
+        "proofHeight": 2308.203125,
+        "proofHeightRatio": 0.8387366006540697,
+        "proofLowerEdge": 2858.59375,
+        "proofLowerEdgeRatio": 1.0387331940406976
+      }
     }
   ],
   "uploadAuthorization": "authorized-for-app-store-version-1.0-after-current-source-validation"

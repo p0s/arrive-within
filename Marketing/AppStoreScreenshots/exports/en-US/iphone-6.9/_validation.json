@@ -6,14 +6,22 @@
   "externalRequests": 0,
   "results": [
     {
-      "file": "01-growth-arrive-en-us-iphone-6.9-1320x2868.png",
+      "file": "01-growth-rhythm-en-us-iphone-6.9-1320x2868.png",
       "status": "pass",
       "width": 1320,
       "height": 2868,
       "format": "png",
       "colorType": 2,
       "opaqueRgb": true,
-      "errors": []
+      "errors": [],
+      "geometry": {
+        "headlineToProofGap": 199.09375,
+        "headlineToProofGapRatio": 0.06941902022315202,
+        "proofHeight": 2331.578125,
+        "proofHeightRatio": 0.8129630840306834,
+        "proofLowerEdge": 2885.09375,
+        "proofLowerEdgeRatio": 1.0059601638772664
+      }
     },
     {
       "file": "02-growth-take-root-en-us-iphone-6.9-1320x2868.png",
@@ -23,17 +31,33 @@
       "format": "png",
       "colorType": 2,
       "opaqueRgb": true,
-      "errors": []
+      "errors": [],
+      "geometry": {
+        "headlineToProofGap": 199.09375,
+        "headlineToProofGapRatio": 0.06941902022315202,
+        "proofHeight": 2144,
+        "proofHeightRatio": 0.7475592747559274,
+        "proofLowerEdge": 2697.515625,
+        "proofLowerEdgeRatio": 0.9405563546025104
+      }
     },
     {
-      "file": "03-growth-rhythm-en-us-iphone-6.9-1320x2868.png",
+      "file": "03-growth-arrive-en-us-iphone-6.9-1320x2868.png",
       "status": "pass",
       "width": 1320,
       "height": 2868,
       "format": "png",
       "colorType": 2,
       "opaqueRgb": true,
-      "errors": []
+      "errors": [],
+      "geometry": {
+        "headlineToProofGap": 199.09375,
+        "headlineToProofGapRatio": 0.06941902022315202,
+        "proofHeight": 2331.578125,
+        "proofHeightRatio": 0.8129630840306834,
+        "proofLowerEdge": 2885.09375,
+        "proofLowerEdgeRatio": 1.0059601638772664
+      }
     },
     {
       "file": "04-growth-stays-en-us-iphone-6.9-1320x2868.png",
@@ -43,7 +67,15 @@
       "format": "png",
       "colorType": 2,
       "opaqueRgb": true,
-      "errors": []
+      "errors": [],
+      "geometry": {
+        "headlineToProofGap": 199.09375,
+        "headlineToProofGapRatio": 0.06941902022315202,
+        "proofHeight": 2331.578125,
+        "proofHeightRatio": 0.8129630840306834,
+        "proofLowerEdge": 2885.09375,
+        "proofLowerEdgeRatio": 1.0059601638772664
+      }
     },
     {
       "file": "05-growth-reflect-en-us-iphone-6.9-1320x2868.png",
@@ -53,7 +85,15 @@
       "format": "png",
       "colorType": 2,
       "opaqueRgb": true,
-      "errors": []
+      "errors": [],
+      "geometry": {
+        "headlineToProofGap": 199.09375,
+        "headlineToProofGapRatio": 0.06941902022315202,
+        "proofHeight": 2331.578125,
+        "proofHeightRatio": 0.8129630840306834,
+        "proofLowerEdge": 2885.09375,
+        "proofLowerEdgeRatio": 1.0059601638772664
+      }
     },
     {
       "file": "06-growth-refuge-en-us-iphone-6.9-1320x2868.png",
@@ -63,7 +103,15 @@
       "format": "png",
       "colorType": 2,
       "opaqueRgb": true,
-      "errors": []
+      "errors": [],
+      "geometry": {
+        "headlineToProofGap": 199.09375,
+        "headlineToProofGapRatio": 0.06941902022315202,
+        "proofHeight": 2331.578125,
+        "proofHeightRatio": 0.8129630840306834,
+        "proofLowerEdge": 2885.09375,
+        "proofLowerEdgeRatio": 1.0059601638772664
+      }
     }
   ]
 }

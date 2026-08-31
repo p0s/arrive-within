@@ -6,14 +6,22 @@
   "externalRequests": 0,
   "results": [
     {
-      "file": "01-growth-arrive-en-us-ipad-13-2064x2752.png",
+      "file": "01-growth-rhythm-en-us-ipad-13-2064x2752.png",
       "status": "pass",
       "width": 2064,
       "height": 2752,
       "format": "png",
       "colorType": 2,
       "opaqueRgb": true,
-      "errors": []
+      "errors": [],
+      "geometry": {
+        "headlineToProofGap": 174.171875,
+        "headlineToProofGapRatio": 0.06328919876453488,
+        "proofHeight": 2308.203125,
+        "proofHeightRatio": 0.8387366006540697,
+        "proofLowerEdge": 2858.59375,
+        "proofLowerEdgeRatio": 1.0387331940406976
+      }
     },
     {
       "file": "02-growth-take-root-en-us-ipad-13-2064x2752.png",
@@ -23,17 +31,33 @@
       "format": "png",
       "colorType": 2,
       "opaqueRgb": true,
-      "errors": []
+      "errors": [],
+      "geometry": {
+        "headlineToProofGap": 174.171875,
+        "headlineToProofGapRatio": 0.06328919876453488,
+        "proofHeight": 2100.34375,
+        "proofHeightRatio": 0.763206304505814,
+        "proofLowerEdge": 2650.734375,
+        "proofLowerEdgeRatio": 0.9632028978924418
+      }
     },
     {
-      "file": "03-growth-rhythm-en-us-ipad-13-2064x2752.png",
+      "file": "03-growth-arrive-en-us-ipad-13-2064x2752.png",
       "status": "pass",
       "width": 2064,
       "height": 2752,
       "format": "png",
       "colorType": 2,
       "opaqueRgb": true,
-      "errors": []
+      "errors": [],
+      "geometry": {
+        "headlineToProofGap": 174.171875,
+        "headlineToProofGapRatio": 0.06328919876453488,
+        "proofHeight": 2308.203125,
+        "proofHeightRatio": 0.8387366006540697,
+        "proofLowerEdge": 2858.59375,
+        "proofLowerEdgeRatio": 1.0387331940406976
+      }
     },
     {
       "file": "04-growth-stays-en-us-ipad-13-2064x2752.png",
@@ -43,7 +67,15 @@
       "format": "png",
       "colorType": 2,
       "opaqueRgb": true,
-      "errors": []
+      "errors": [],
+      "geometry": {
+        "headlineToProofGap": 174.171875,
+        "headlineToProofGapRatio": 0.06328919876453488,
+        "proofHeight": 2308.203125,
+        "proofHeightRatio": 0.8387366006540697,
+        "proofLowerEdge": 2858.59375,
+        "proofLowerEdgeRatio": 1.0387331940406976
+      }
     },
     {
       "file": "05-growth-reflect-en-us-ipad-13-2064x2752.png",
@@ -53,7 +85,15 @@
       "format": "png",
       "colorType": 2,
       "opaqueRgb": true,
-      "errors": []
+      "errors": [],
+      "geometry": {
+        "headlineToProofGap": 174.171875,
+        "headlineToProofGapRatio": 0.06328919876453488,
+        "proofHeight": 2308.203125,
+        "proofHeightRatio": 0.8387366006540697,
+        "proofLowerEdge": 2858.59375,
+        "proofLowerEdgeRatio": 1.0387331940406976
+      }
     },
     {
       "file": "06-growth-refuge-en-us-ipad-13-2064x2752.png",
@@ -63,7 +103,15 @@
       "format": "png",
       "colorType": 2,
       "opaqueRgb": true,
-      "errors": []
+      "errors": [],
+      "geometry": {
+        "headlineToProofGap": 174.171875,
+        "headlineToProofGapRatio": 0.06328919876453488,
+        "proofHeight": 2308.203125,
+        "proofHeightRatio": 0.8387366006540697,
+        "proofLowerEdge": 2858.59375,
+        "proofLowerEdgeRatio": 1.0387331940406976
+      }
     }
   ]
 }

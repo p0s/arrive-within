@@ -28,6 +28,16 @@ type ManifestItem = {
   slideId: string;
   width: number;
   height: number;
+  geometry: Geometry;
+};
+
+type Geometry = {
+  headlineToProofGap: number;
+  headlineToProofGapRatio: number;
+  proofHeight: number;
+  proofHeightRatio: number;
+  proofLowerEdge: number;
+  proofLowerEdgeRatio: number;
 };
 
 type SetManifest = {
@@ -55,9 +65,35 @@ type SetResult = {
   width: number;
   height: number;
   imageCount: number;
+  geometry: GeometrySummary;
   humanVisualReview: SetManifest["humanVisualReview"];
   artifacts: Array<{ filename: string; bytes: number; sha256: string }>;
 };
+
+type GeometrySummary = {
+  headlineToProofGapPercent: { min: number; max: number };
+  proofHeightPercent: { min: number; max: number };
+  proofLowerEdgePercent: { min: number; max: number };
+};
+
+function range(values: number[]): { min: number; max: number } {
+  return { min: Math.min(...values), max: Math.max(...values) };
+}
+
+function assertGeometry(geometry: Geometry, context: string): void {
+  if (
+    !Number.isFinite(geometry.headlineToProofGap)
+    || !Number.isFinite(geometry.proofHeight)
+    || !Number.isFinite(geometry.proofLowerEdge)
+    || geometry.headlineToProofGapRatio < 0.04
+    || geometry.headlineToProofGapRatio > 0.07
+    || geometry.proofHeightRatio < 0.6
+    || geometry.proofLowerEdgeRatio < 0.94
+    || geometry.proofLowerEdgeRatio > 1.04
+  ) {
+    throw new Error(`${context}: Clean Editorial geometry contract failed`);
+  }
+}
 
 function sha256(data: Buffer): string {
   return createHash("sha256").update(data).digest("hex");
@@ -144,6 +180,7 @@ async function validateSet(
     ) {
       throw new Error(`${locale}/${device}: manifest item ${index + 1} mismatch`);
     }
+    assertGeometry(item.geometry, `${locale}/${device}/${item.filename}`);
     const absolute = path.join(root, item.filename);
     const validation = await validateOpaqueRgbPng(absolute, width, height);
     if (validation.status !== "pass") throw new Error(`${locale}/${device}/${item.filename}: ${validation.errors.join("; ")}`);
@@ -177,7 +214,7 @@ async function validateSet(
     expectedImages: number;
     actualImages: number;
     externalRequests: number;
-    results: Array<{ file: string; status: string }>;
+    results: Array<{ file: string; status: string; geometry: Geometry }>;
   };
   if (
     validation.status !== "pass" ||
@@ -185,7 +222,15 @@ async function validateSet(
     validation.actualImages !== slides.length ||
     validation.externalRequests !== 0 ||
     validation.results.length !== slides.length ||
-    validation.results.some((item, index) => item.status !== "pass" || item.file !== expectedPngNames[index])
+    validation.results.some((item, index) => {
+      if (item.status !== "pass" || item.file !== expectedPngNames[index]) return true;
+      try {
+        assertGeometry(item.geometry, `${locale}/${device}/${item.file}`);
+        return false;
+      } catch {
+        return true;
+      }
+    })
   ) {
     throw new Error(`${locale}/${device}: validation JSON mismatch`);
   }
@@ -217,6 +262,11 @@ async function validateSet(
     width,
     height,
     imageCount: manifest.items.length,
+    geometry: {
+      headlineToProofGapPercent: range(manifest.items.map((item) => item.geometry.headlineToProofGapRatio * 100)),
+      proofHeightPercent: range(manifest.items.map((item) => item.geometry.proofHeightRatio * 100)),
+      proofLowerEdgePercent: range(manifest.items.map((item) => item.geometry.proofLowerEdgeRatio * 100)),
+    },
     humanVisualReview: manifest.humanVisualReview,
     artifacts: await Promise.all(expectedFiles.map((filename) => artifact(root, filename))),
   };
@@ -265,6 +315,16 @@ async function main() {
   }
 
   const reviewStates = [...new Set(sets.map((set) => set.humanVisualReview.state))];
+  const geometry = {
+    contract: {
+      headlineToProofGapPercent: [4, 7],
+      minimumProofHeightPercent: 60,
+      proofLowerEdgePercent: [94, 104],
+    },
+    headlineToProofGapPercent: range(sets.flatMap((set) => [set.geometry.headlineToProofGapPercent.min, set.geometry.headlineToProofGapPercent.max])),
+    proofHeightPercent: range(sets.flatMap((set) => [set.geometry.proofHeightPercent.min, set.geometry.proofHeightPercent.max])),
+    proofLowerEdgePercent: range(sets.flatMap((set) => [set.geometry.proofLowerEdgePercent.min, set.geometry.proofLowerEdgePercent.max])),
+  };
   const matrix = {
     schemaVersion: 1,
     product: "Arrive Within",
@@ -278,6 +338,7 @@ async function main() {
     devices: plan.devices,
     setCount: sets.length,
     imageCount,
+    geometry,
     mechanicalValidation: "pass",
     humanVisualReview: reviewStates.length === 1 ? reviewStates[0] : "mixed",
     uploadAuthorization: expectedUploadAuthorization,
@@ -294,6 +355,7 @@ async function main() {
       "passing per-set JSON and text validation",
       "contact-sheet SHA-256 readback",
       "deterministic ZIP contents and byte readback",
+      "4-7% headline-to-proof gap, at least 60% proof height, and 94-104% proof lower edge on every rendered slide",
       "current app-source revision binding",
       "external network request count is zero",
     ],
