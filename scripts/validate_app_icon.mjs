@@ -10,11 +10,11 @@ const iconPath = path.join(root, "Apps/ArriveWithin/Resources/AppIcon.icon");
 const assetsPath = path.join(iconPath, "Assets");
 const derivedPath = path.join(root, "docs/brand/app-icon-derived");
 const productionPath = path.join(root, "docs/brand/provenance/2026-08-10/production");
-const layerFiles = ["threshold-interior.svg", "threshold-arch.svg", "living-shoot.svg"];
+const layerFiles = ["threshold-interior.png", "threshold-arch.png", "living-shoot.png"];
 const expectedGroups = [
-  ["Inner sanctuary", "Warm interior", "threshold-interior.svg"],
-  ["Quiet threshold", "Forest threshold", "threshold-arch.svg"],
-  ["Growth", "Living shoot", "living-shoot.svg"],
+  ["Growth", "Living shoot", "living-shoot.png"],
+  ["Quiet threshold", "Forest threshold", "threshold-arch.png"],
+  ["Inner sanctuary", "Warm interior", "threshold-interior.png"],
 ];
 
 function sha256(contents) {
@@ -48,13 +48,15 @@ function assert(condition, message) {
 async function main() {
   const iconBytes = await safeFile(path.join(iconPath, "icon.json"));
   const icon = JSON.parse(iconBytes.toString("utf8"));
-  assert(icon.fill?.solid === "display-p3:0.84,0.89,0.70,1.0", "canonical fill mismatch");
-  assert(JSON.stringify(icon["supported-platforms"]) === JSON.stringify({ circles: [], squares: "shared" }), "supported-platform declaration mismatch");
+  assert(icon.fill?.solid === "display-p3:0.84000,0.89000,0.70000,1.00000", "canonical fill mismatch");
+  assert(JSON.stringify(icon["supported-platforms"]) === JSON.stringify({ squares: "shared" }), "supported-platform declaration mismatch");
   assert(icon.groups?.length === 3, "expected exactly three editable icon groups");
   expectedGroups.forEach(([groupName, layerName, filename], index) => {
     const group = icon.groups[index];
     assert(group?.name === groupName && group.layers?.length === 1, `group ${index + 1} mismatch`);
     assert(group.layers[0]?.name === layerName && group.layers[0]?.["image-name"] === filename, `layer ${index + 1} mismatch`);
+    assert(group.layers[0].glass === false && group.specular === false && group.translucency?.enabled === false,
+      `${groupName}: matte artwork must not be washed out by default glass effects`);
   });
 
   const actualLayerFiles = (await readdir(assetsPath)).sort();
@@ -62,10 +64,7 @@ async function main() {
   const layerBytes = [];
   for (const filename of layerFiles) {
     const bytes = await safeFile(path.join(assetsPath, filename));
-    const source = bytes.toString("utf8");
-    assert(source.includes('viewBox="0 0 1024 1024"'), `${filename}: missing canonical viewBox`);
-    assert(!/<text\b/i.test(source), `${filename}: text elements are forbidden`);
-    assert(!/\/Users\/|\/private\/|file:\/\//i.test(source), `${filename}: local path leaked`);
+    inspectPng(filename, bytes, 1024, 1024, 6);
     layerBytes.push(bytes);
   }
 
@@ -101,6 +100,14 @@ async function main() {
   assert(manifest.contactSheet.sha256 === sha256(sheetBytes), "contact-sheet hash mismatch");
 
   const production = JSON.parse((await safeFile(path.join(productionPath, "provenance.json"))).toString("utf8"));
+  const layers = JSON.parse((await safeFile(path.join(root, "docs/brand/provenance/2026-09-15/layers/provenance.json"))).toString("utf8"));
+  assert(layers.layers?.length === 3, "three material-layer provenance records required");
+  assert(layers.reference?.sha256 === sha256(await safeFile(path.join(root, layers.reference.path))), "selected composition reference drift");
+  for (const record of layers.layers) {
+    for (const [file, digest] of [[record.rawPath, record.rawSha256], [record.promptPath, record.promptSha256], [record.output, record.outputSha256]]) {
+      assert(sha256(await safeFile(path.join(root, file))) === digest, `${file}: layer provenance drift`);
+    }
+  }
   const promptBytes = await safeFile(path.join(productionPath, production.generation.prompt));
   const rawBytes = await safeFile(path.join(productionPath, production.generation.output));
   inspectPng(production.generation.output, rawBytes, 1254, 1254, 2);
@@ -116,18 +123,28 @@ async function main() {
   const qa = JSON.parse((await safeFile(path.join(root, "docs/brand/icon-qa.json"))).toString("utf8"));
   assert(Object.values(qa.sizes ?? {}).every((value) => value === "pass"), "size QA incomplete");
   for (const mode of ["default", "dark", "tinted-light", "tinted-dark"]) assert(qa.platforms?.iOS?.[mode] === "pass", `${mode} QA incomplete`);
-  for (const mode of ["clear-light", "clear-dark"]) assert(qa.platforms?.iOS?.[mode] === "blocked-owner-eula", `${mode} must preserve the owner EULA boundary`);
+  for (const mode of ["clear-light", "clear-dark"]) assert(qa.platforms?.iOS?.[mode] === "pending-runtime-review", `${mode}: runtime review remains pending`);
   assert(qa.ownerProductionReview === "pending", "owner production review must remain pending");
 
   const build = JSON.parse((await safeFile(path.join(root, "docs/brand/icon-build-validation.json"))).toString("utf8"));
-  assert(build.result === "pass" && build.configuration === "Release" && build.codeSigning === "disabled", "compiled icon validation mismatch");
+  assert(build.result === "pass" && build.validationLevel === "asset-compilation" && build.codeSigning === "not-applicable", "compiled icon validation mismatch");
+  assert(build.canonicalSourceSha256 === manifest.canonicalSourceSha256, "compiled icon evidence is stale for this source");
   assert(JSON.stringify(build.targetFamilies) === JSON.stringify(["phone", "pad"]), "compiled target families mismatch");
   assert(JSON.stringify(build.compiledStacks) === JSON.stringify(["light", "dark", "tintable"]), "compiled appearance stacks mismatch");
-  assert(build.compatibilityOutputs?.every((item) => item.colorSpace === "RGB" && item.alpha === false && /^[a-f0-9]{64}$/.test(item.sha256)), "compiled compatibility output mismatch");
+  assert(build.compatibilityOutputs?.every((item) => item.colorSpace === "RGB" && typeof item.alpha === "boolean" && /^[a-f0-9]{64}$/.test(item.sha256)), "compiled compatibility output mismatch");
+  if (!process.argv.includes("--local-preview")) {
+    assert(build.compatibilityOutputs.every((item) => item.alpha === false),
+      "Release gate remains open: Xcode 27 emitted masked RGBA compatibility PNGs. Rebuild with the release toolchain or resolve the archive format before release. --local-preview validates artwork only.");
+  }
+  assert(build.marketingIcons?.length > 0 && build.marketingIcons.every((item) => item.opaque === true && item.colorModel === "RGB"), "compiled marketing icons must be opaque RGB");
+  for (const item of build.compatibilityOutputs) {
+    assert(sha256(await safeFile(path.join(root, item.path))) === item.sha256, "compiled preview evidence drift");
+    assert(item.sproutGreenPixelFraction > 0.2, "compiled sprout is hidden or washed out");
+  }
 
   const project = (await safeFile(path.join(root, "project.yml"))).toString("utf8");
   assert(project.includes("ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon"), "target is not bound to AppIcon.icon");
-  process.stdout.write("App icon validation passed: selected B provenance, 3 editable layers, 12 deterministic opaque artifacts, size/appearance QA, and local phone/pad Release compilation; GUI clear-mode review remains owner-EULA blocked.\n");
+  process.stdout.write("App icon validation passed: selected B provenance, 3 transparent material layers, front-to-back stack, 12 deterministic opaque artifacts, and source-bound phone/pad asset compilation. Runtime and owner visual review remain separate.\n");
 }
 
 main().catch((error) => {

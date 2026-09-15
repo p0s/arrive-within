@@ -76,6 +76,7 @@ pnpm --dir Renderer verify
 
 print "== Product identity and release-source contracts =="
 node scripts/validate_icon_concepts.mjs
+node scripts/prepare_app_icon_layers.mjs --check
 node scripts/generate_app_icon_assets.mjs --check
 node scripts/validate_app_icon.mjs
 node scripts/validate_release_sources.mjs

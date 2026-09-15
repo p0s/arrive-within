@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "product": "Arrive Within",
-  "direction": "B — Quiet Threshold",
+  "direction": "B \u2014 Quiet Threshold",
   "selectedByOwnerAt": "2026-08-10",
   "generation": {
     "mode": "OpenAI built-in image generation",
@@ -34,7 +34,8 @@
     "path": "Apps/ArriveWithin/Resources/AppIcon.icon",
     "layerPlan": "docs/brand/APP_ICON_LAYER_PLAN.md",
     "derivedManifest": "docs/brand/app-icon-derived/_manifest.json",
-    "transformationScript": "scripts/generate_app_icon_assets.mjs"
+    "transformationScript": "scripts/generate_app_icon_assets.mjs",
+    "layerMaterialProvenance": "docs/brand/provenance/2026-09-15/layers/provenance.json"
   },
   "rights": {
     "outputTermsChecked": "2026-08-10",
@@ -45,7 +46,7 @@
     "trademarkSimilarityReview": "pending"
   },
   "qa": {
-    "currentState": "local production source compiled; owner production visual review pending",
+    "currentState": "Corrected selected composition with three transparent material layers; current Apple asset compilation recorded separately; release and owner review pending",
     "contactSheet": "docs/brand/app-icon-qa-contact-sheet.png",
     "buildRecord": "docs/brand/icon-build-validation.json"
   }

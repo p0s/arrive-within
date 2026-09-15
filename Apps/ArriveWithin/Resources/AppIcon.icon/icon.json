@@ -1,38 +1,67 @@
 {
   "fill": {
-    "solid": "display-p3:0.84,0.89,0.70,1.0"
+    "solid": "display-p3:0.84000,0.89000,0.70000,1.00000"
   },
   "groups": [
     {
       "layers": [
         {
-          "image-name": "threshold-interior.svg",
-          "name": "Warm interior"
-        }
-      ],
-      "name": "Inner sanctuary"
-    },
-    {
-      "layers": [
-        {
-          "image-name": "threshold-arch.svg",
-          "name": "Forest threshold"
-        }
-      ],
-      "name": "Quiet threshold"
-    },
-    {
-      "layers": [
-        {
-          "image-name": "living-shoot.svg",
+          "glass": false,
+          "image-name": "living-shoot.png",
           "name": "Living shoot"
         }
       ],
-      "name": "Growth"
+      "name": "Growth",
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.25
+      },
+      "translucency": {
+        "enabled": false,
+        "value": 0
+      },
+      "specular": false
+    },
+    {
+      "layers": [
+        {
+          "image-name": "threshold-arch.png",
+          "name": "Forest threshold",
+          "glass": false
+        }
+      ],
+      "name": "Quiet threshold",
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.25
+      },
+      "specular": false,
+      "translucency": {
+        "enabled": false,
+        "value": 0
+      }
+    },
+    {
+      "layers": [
+        {
+          "image-name": "threshold-interior.png",
+          "name": "Warm interior",
+          "glass": false
+        }
+      ],
+      "name": "Inner sanctuary",
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.25
+      },
+      "translucency": {
+        "enabled": false,
+        "value": 0
+      },
+      "specular": false
     }
   ],
   "supported-platforms": {
-    "circles": [],
     "squares": "shared"
   }
 }

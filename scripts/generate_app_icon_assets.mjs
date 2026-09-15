@@ -13,37 +13,28 @@ const layerRoot = path.join(iconRoot, "Assets");
 const outputRoot = path.join(repositoryRoot, "docs/brand/app-icon-derived");
 const targetPath = path.join(
   repositoryRoot,
-  "docs/brand/provenance/2026-08-10/production/quiet-threshold-production-raw.png",
+  "docs/brand/provenance/2026-08-10/concept-board/direction-b.png",
 );
 
-const layerNames = ["threshold-interior.svg", "threshold-arch.svg", "living-shoot.svg"];
+const iconDocument = await readFile(path.join(iconRoot, "icon.json"));
+// Icon Composer stores frontmost first; Sharp composites backmost first.
+// Read the actual package order so the preview cannot hide an inverted stack.
+const layerNames = JSON.parse(iconDocument).groups.toReversed()
+  .flatMap((group) => group.layers.toReversed().map((layer) => layer["image-name"]));
 const sizes = [1024, 180, 60, 40];
 const checkMode = process.argv.includes("--check");
 
 const variants = {
   Default: {
     background: "#D6E3B2",
-    replacements: {},
     grayscale: false,
   },
   Dark: {
     background: "#173127",
-    replacements: {
-      "#F5D98D": "#C98B32",
-      "#F8E8B8": "#E1B75B",
-      "#E9A943": "#F1BD59",
-      "#123F30": "#071D16",
-      "#1A503D": "#0E3328",
-      "#557B5E": "#5C8C6B",
-      "#4F7E58": "#6E9C6A",
-      "#5D8E63": "#7EAD75",
-      "#86AA78": "#B2C99A",
-    },
     grayscale: false,
   },
   Tinted: {
     background: "#D6E3B2",
-    replacements: {},
     grayscale: true,
   },
 };
@@ -67,20 +58,11 @@ function escaped(value) {
   return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 }
 
-function specializeSVG(source, replacements) {
-  let specialized = source;
-  for (const [from, to] of Object.entries(replacements)) {
-    specialized = specialized.replaceAll(from, to);
-  }
-  return Buffer.from(specialized);
-}
-
 async function renderVariant(name, configuration, layerSources) {
-  const composite = layerSources.map((source) => ({
-    input: specializeSVG(source, configuration.replacements),
-    top: 0,
-    left: 0,
-  }));
+  const composite = await Promise.all(layerSources.map(async (source) => ({
+    input: name === "Dark" ? await sharp(source).modulate({ brightness: 0.82 }).png().toBuffer() : source,
+    top: 0, left: 0,
+  })));
 
   let pipeline = sharp({
     create: {
@@ -189,8 +171,7 @@ async function buildContactSheet(target, rendered) {
 }
 
 await mkdir(outputRoot, { recursive: true });
-const layerSources = await Promise.all(layerNames.map((name) => readFile(path.join(layerRoot, name), "utf8")));
-const iconDocument = await readFile(path.join(iconRoot, "icon.json"));
+const layerSources = await Promise.all(layerNames.map((name) => readFile(path.join(layerRoot, name))));
 const target = await readFile(targetPath);
 
 const rendered = {};
@@ -220,7 +201,7 @@ const manifest = {
   productionTarget: {
     path: path.relative(repositoryRoot, targetPath),
     sha256: sha256(target),
-    role: "image-generation visual target; canonical output is authored from named vector layers",
+    role: "owner-selected composition target; canonical output uses three separately generated transparent material layers",
   },
   transformations: {
     renderer: "Sharp 0.35.3",
