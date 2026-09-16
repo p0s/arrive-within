@@ -39,7 +39,7 @@
         "scenario_id": "SCN-011",
         "family": "iPhone",
         "target": "ArriveWithinUITests",
-        "test": "ArriveWithinVerificationUITests/testIsolatedReminderDenialRetainsScheduleAndAuthorizationRecovers",
+        "test": "ArriveWithinVerificationUITests/testIsolatedPreviouslyDeniedReminderPersistsAndAuthorizationRecovers",
         "required": true,
         "smoke": false,
         "covered_by_offline": false

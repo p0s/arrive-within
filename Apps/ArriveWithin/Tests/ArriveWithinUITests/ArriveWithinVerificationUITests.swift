@@ -38,7 +38,7 @@ final class ArriveWithinVerificationUITests: XCTestCase {
     attach(app, name: "Isolated persisted practice — native garden fallback")
   }
 
-  func testIsolatedReminderDenialRetainsScheduleAndAuthorizationRecovers() throws {
+  func testIsolatedPreviouslyDeniedReminderPersistsAndAuthorizationRecovers() throws {
     let app = XCUIApplication()
     let isolated = namespaceArguments()
     app.launchArguments = isolated + ["-ui-test-reminders-denied"]
