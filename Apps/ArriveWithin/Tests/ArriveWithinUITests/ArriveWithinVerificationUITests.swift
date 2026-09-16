@@ -50,9 +50,10 @@ final class ArriveWithinVerificationUITests: XCTestCase {
     app.buttons["reminders.add.action"].tap()
     XCTAssertTrue(app.navigationBars["New reminder"].waitForExistence(timeout: 5))
     app.buttons["reminders.save.action"].tap()
-    let denied = app.alerts["Notifications remain off"]
-    XCTAssertTrue(denied.waitForExistence(timeout: 5))
-    denied.buttons["OK"].tap()
+    // Previously denied permission uses persistent recovery UI; no new request is made.
+    XCTAssertTrue(app.buttons["reminders.permission.openSettings"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.buttons["reminders.permission.openSettings"].isHittable)
+    XCTAssertEqual(app.alerts.count, 0)
     XCTAssertEqual(app.staticTexts["reminders.status"].label, "Notifications are off")
     let rows = app.buttons.matching(
       NSPredicate(format: "identifier BEGINSWITH %@", "reminders.edit."))
