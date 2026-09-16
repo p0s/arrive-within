@@ -41,6 +41,15 @@ for (const nearMatch of [
   assert.equal(detectPublicPrivacySignatures(nearMatch, "README.md").includes("owner-handle"), true);
 }
 
+const blueprintVariable = `${repositoryOwnerHandle.toUpperCase()}_IOS_BLUEPRINT_ROOT`;
+for (const surface of ["scripts/verify", "docs/qa/VERIFICATION.md"]) {
+  assert.deepEqual(detectPublicPrivacySignatures(blueprintVariable, surface), []);
+  for (const forbidden of [repositoryOwnerHandle, `${blueprintVariable}_OTHER`, blueprintVariable.toLowerCase()]) {
+    assert.equal(detectPublicPrivacySignatures(forbidden, surface).includes("owner-handle"), true);
+  }
+}
+assert.equal(detectPublicPrivacySignatures(blueprintVariable, "Apps/ArriveWithin/Sources/App.swift").includes("owner-handle"), true);
+
 for (const [forbiddenControl, expectedSignature] of [
   [repositoryOwnerHandle, "owner-handle"],
   [["", "Users", "example", "private.txt"].join("/"), "personal-home"],

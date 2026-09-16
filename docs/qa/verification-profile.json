@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "app": {
+    "project": "ArriveWithin.xcodeproj",
+    "scheme": "ArriveWithin",
+    "configuration": "Debug",
+    "bundle_id": "com.philipps.arrivewithin.ios",
+    "contract_path": "docs/qa/VERIFICATION.md"
+  },
+  "checks": {
+    "offline": {
+      "required": true,
+      "script": "scripts/verify-offline",
+      "covers_simulator": false
+    },
+    "simulator": [
+      {
+        "id": "practice-iphone",
+        "scenario_id": "SCN-001",
+        "family": "iPhone",
+        "target": "ArriveWithinUITests",
+        "test": "ArriveWithinVerificationUITests/testIsolatedPracticePersistsAndNativeFallbackRemainsOperable",
+        "required": true,
+        "smoke": true,
+        "covered_by_offline": false
+      },
+      {
+        "id": "practice-ipad",
+        "scenario_id": "SCN-001",
+        "family": "iPad",
+        "target": "ArriveWithinUITests",
+        "test": "ArriveWithinVerificationUITests/testIsolatedPracticePersistsAndNativeFallbackRemainsOperable",
+        "required": true,
+        "smoke": false,
+        "covered_by_offline": false
+      },
+      {
+        "id": "reminder-recovery",
+        "scenario_id": "SCN-011",
+        "family": "iPhone",
+        "target": "ArriveWithinUITests",
+        "test": "ArriveWithinVerificationUITests/testIsolatedReminderDenialRetainsScheduleAndAuthorizationRecovers",
+        "required": true,
+        "smoke": false,
+        "covered_by_offline": false
+      },
+      {
+        "id": "app-integration",
+        "family": "iPhone",
+        "target": "ArriveWithinTests",
+        "test": "AppModelVerticalSliceTests",
+        "required": true,
+        "smoke": false,
+        "covered_by_offline": false
+      },
+      {
+        "id": "fixture-isolation",
+        "family": "iPhone",
+        "target": "ArriveWithinTests",
+        "test": "AppDataDirectoryPreparerTests",
+        "required": true,
+        "smoke": false,
+        "covered_by_offline": false
+      }
+    ],
+    "physical": []
+  }
+}

@@ -58,7 +58,12 @@ function privacyPatterns() {
 }
 
 export function detectPublicPrivacySignatures(source, displayPath) {
-  const maskedSource = maskIntentionalPublicRepositoryURLs(source, displayPath);
+  let maskedSource = maskIntentionalPublicRepositoryURLs(source, displayPath);
+  // The shared runner's public environment-variable name is tooling API, not an account value.
+  if (["scripts/verify", "docs/qa/VERIFICATION.md"].includes(displayPath)) {
+    const blueprintVariable = `${repositoryOwnerHandle.toUpperCase()}_IOS_BLUEPRINT_ROOT`;
+    maskedSource = maskedSource.replace(new RegExp(`\\b${blueprintVariable}\\b`, "g"), "");
+  }
   return privacyPatterns()
     .filter(({ pattern }) => pattern.test(maskedSource) || pattern.test(displayPath))
     .map(({ id }) => id);

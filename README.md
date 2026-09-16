@@ -61,6 +61,10 @@ node scripts/validate_localizations.mjs
 
 Open `ArriveWithin.xcodeproj`, select the shared `ArriveWithin` scheme, and run an iPhone or iPad simulator. Version 1.0 is local-only and does not need private credentials.
 
+For the shared iPhone smoke journey, run `./scripts/verify` after project
+generation. See [verification commands and acceptance states](docs/qa/VERIFICATION.md)
+for offline checks, iPad coverage, reminder recovery, and evidence limits.
+
 The complete local gate is:
 
 ```sh
