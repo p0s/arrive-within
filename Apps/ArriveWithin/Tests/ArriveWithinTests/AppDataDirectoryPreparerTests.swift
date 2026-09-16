@@ -1,3 +1,4 @@
+import ArriveWithinPersistence
 import Foundation
 import XCTest
 
@@ -25,6 +26,10 @@ final class AppDataDirectoryPreparerTests: XCTestCase {
           in: support, arguments: ["-ui-test-namespace", UUID().uuidString]
         ))
       try AppDataDirectoryPreparer.prepare(root)
+      let store = try CoreDataProductStore(
+        configuration: ProductStoreConfiguration(storeURL: root.appending(path: "product-v1.sqlite"))
+      )
+      XCTAssertNoThrow(try ProductDataController(store: store, dataDirectory: root))
       XCTAssertEqual(try Data(contentsOf: sentinel), Data("preserve".utf8))
       XCTAssertNil(try AppDataDirectoryPreparer.verificationDirectory(in: support, arguments: []))
     }

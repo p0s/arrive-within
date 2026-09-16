@@ -29,6 +29,7 @@ enum AppDataDirectoryPreparer {
       }
       return support.appending(path: "ArriveWithinVerification", directoryHint: .isDirectory)
         .appending(path: identifier.uuidString, directoryHint: .isDirectory)
+        .appending(path: "ArriveWithin", directoryHint: .isDirectory)
     }
   #endif
 
