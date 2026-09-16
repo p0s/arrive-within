@@ -1,6 +1,6 @@
 # Arrive Within app icon brief
 
-Status: B — Quiet Threshold selected by the owner on 2026-08-10; canonical local production source compiled
+Status: B — Quiet Threshold selected by the owner on 2026-08-10; corrected layered material source compiled locally on 2026-09-15; release packaging and owner review pending
 
 ## Meaning
 
@@ -56,13 +56,14 @@ All three were generated in separate built-in `image_gen` calls using a first-pa
 
 The owner verified “image 2” as **B — Quiet Threshold** and selected it on 2026-08-10. A and C remain preserved rejected-direction provenance. Run the pinned Node command documented by the root gate to verify the board and production records.
 
-## Production result
+## Current production source
 
-1. The image-generation refinement is preserved as a visual target with its prompt, input roles, timestamp, rights state, and hashes.
-2. `Apps/ArriveWithin/Resources/AppIcon.icon/` is the canonical three-layer source: warm interior, forest threshold, and living shoot.
-3. `scripts/generate_app_icon_assets.mjs` deterministically derives opaque Default/Dark RGB and Tinted grayscale artifacts at 1024, 180, 60, and 40 px.
-4. The contact sheet passed agent visual inspection for semantic fidelity, safe margin, color-independent recognition, and small-size legibility after two pre-freeze corrections.
-5. An unsigned generic iOS Release build compiled the Icon Composer source for both phone and pad and emitted Any, Dark, and Tintable icon stacks plus opaque phone and iPad compatibility PNGs.
-6. The exact baseline 1.0 (1) and selected 1.0 (7) archives contain `AppIcon60x60@2x` at 120×120 and `AppIcon76x76@2x~ipad` at 152×152. Both inspect as RGB with no alpha. Their SHA-256 values and each archive's compiled `Assets.car` hash are recorded in `icon-status.json`; build 7 preserves the compatibility-icon hashes and has asset-catalog SHA-256 `8092fd3e0dfef7008fc80263079faec3694985abcf8d815d783528a26863cf7f`. This closes selected-candidate archive packaging, not visual Home Screen/TestFlight/App Store, publication, or trademark readback.
+Three transparent material layers reproduce the selected B proportions and tactile surface. Their prompts, raw outputs, deterministic crop/placement transforms and checksums are in `provenance/2026-09-15/layers/`. The previous SVG package and exports remain byte-preserved in `legacy/2026-09-15/`.
 
-The first Icon Composer GUI launch presented an Apple EULA. Accepting it is an owner-only legal action, so GUI-only Clear Light/Clear Dark inspection remains blocked on that acceptance. The package itself compiles without a fallback. Selected-final archive, simulator-home-screen, physical, TestFlight icon-display, and App Store evidence remain distinct and unclaimed.
+The canonical package stores the sprout in front of the arch and warm inset. The preview generator reads the package's actual group order. Glass/specular/translucency settings are disabled for the matte artwork; see `APP_ICON_LAYER_PLAN.md` and ADR 0008.
+
+`icon-build-validation.json` records current Apple asset compilation for phone and pad, including visible-sprout checks and opaque 1024 marketing renditions. `icon-status.json` separately retains historical build-1/build-7 archive facts; those do not certify this corrected source.
+
+Current derived 1024/180/60/40 Default/Dark/Tinted previews have been visually inspected. Owner production review, complete app/archive, physical Home Screen, TestFlight and App Store readback remain pending. The installed Xcode 27 small compatibility PNGs include a platform mask with alpha, so the existing no-alpha release gate remains open. Local artwork verification does not waive it.
+
+The current Icon Composer GUI opened without presenting an agreement. No agreement was accepted by the agent. Clear-mode runtime inspection remains pending.

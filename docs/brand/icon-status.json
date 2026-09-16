@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "source": "Apps/ArriveWithin/Resources/AppIcon.icon",
   "sourceType": "icon-composer",
-  "selection": "B — Quiet Threshold",
+  "selection": "B \u2014 Quiet Threshold",
   "selectionDate": "2026-08-10",
   "qa": "docs/brand/icon-qa.json",
-  "status": "selected-build-7-archive-verified-external-visual-readback-pending",
+  "status": "corrected-local-artwork-and-apple-asset-compilation-release-gate-pending",
   "baselineArchiveEvidence": {
     "marketingVersion": "1.0",
     "buildNumber": "1",
@@ -44,11 +44,13 @@
     "claimBoundary": "Exact selected build-7 archive packaging; not visual Home Screen, TestFlight icon-display, App Store storefront, publication, or trademark proof."
   },
   "externalBoundaries": [
-    "owner acceptance of the installed Icon Composer EULA before GUI-only clear-mode preview",
-    "owner review of the refined production contact sheet",
-    "physical Home Screen inspection",
-    "TestFlight readback",
-    "App Store readback",
-    "publication and trademark/similarity review"
-  ]
+    "owner review of corrected production contact sheet",
+    "release toolchain/opaque compatibility PNG gate",
+    "current-source full app build and archive",
+    "Home Screen appearance review",
+    "TestFlight and App Store readback",
+    "trademark/similarity review"
+  ],
+  "currentSourceEvidence": "docs/brand/icon-build-validation.json",
+  "historicalArchiveEvidenceNote": "The baseline and build-7 archive records below describe the previous SVG icon, preserved under docs/brand/legacy/2026-09-15. They do not certify the corrected source."
 }

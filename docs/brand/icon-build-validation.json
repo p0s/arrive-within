@@ -1,11 +1,12 @@
 {
-  "schemaVersion": 1,
-  "validatedAt": "2026-08-10",
-  "configuration": "Release",
-  "destination": "generic iOS device",
-  "codeSigning": "disabled",
+  "schemaVersion": 2,
+  "validatedAt": "2026-09-15",
+  "validationLevel": "asset-compilation",
+  "compiler": "Xcode 27.0 (27A266a) via AssetCatalogAgent-AssetRuntime",
   "result": "pass",
+  "codeSigning": "not-applicable",
   "sourceName": "AppIcon",
+  "canonicalSourceSha256": "096c86fe517af53d6f6ac97345afa9b56d1ddede352acf7cc45a6f60410d5271",
   "targetFamilies": [
     "phone",
     "pad"
@@ -17,22 +18,65 @@
   ],
   "compatibilityOutputs": [
     {
+      "path": "docs/brand/compiled/2026-09-15/phone-120.png",
       "role": "phone 60-point at 2x",
       "width": 120,
       "height": 120,
       "colorSpace": "RGB",
-      "alpha": false,
-      "sha256": "143359110c0462f005218c2fee2cf3c9d711421b3f714d3c9c64b9035ec05cfd"
+      "alpha": true,
+      "sha256": "d3649db96b22c6fd3bc606ff38d1f20582fefe5379845deefdf479c55a2bc3b9",
+      "sproutGreenPixelFraction": 0.4531
     },
     {
+      "path": "docs/brand/compiled/2026-09-15/ipad-152.png",
       "role": "pad 76-point at 2x",
       "width": 152,
       "height": 152,
       "colorSpace": "RGB",
-      "alpha": false,
-      "sha256": "cad8023d9b7d458eb1d69d3a2ee01debdd0254a76368833644e15254f3a4b174"
+      "alpha": true,
+      "sha256": "abf0ef18f62e94bc751a826f93ef9e1e41c335db9476f1b145385563a3e6251b",
+      "sproutGreenPixelFraction": 0.457
     }
   ],
-  "assetsCarSha256": "dd3443cbbd66e8d3240eb029ae396759c1693eb849faafcc9caacd5aabac8906",
-  "claimBoundary": "Local unsigned generic-device compilation only; no archive, simulator Home Screen, physical-device, TestFlight, App Store, or publication proof."
+  "assetsCarSha256": "e2d8646fa15e992bee23c9d9bdeb2ac306103e958cc43b4b8b7f80b7156a4e28",
+  "marketingIcons": [
+    {
+      "idiom": "phone",
+      "appearance": "Any",
+      "opaque": true,
+      "colorModel": "RGB"
+    },
+    {
+      "idiom": "pad",
+      "appearance": "Any",
+      "opaque": true,
+      "colorModel": "RGB"
+    },
+    {
+      "idiom": "phone",
+      "appearance": "UIAppearanceDark",
+      "opaque": true,
+      "colorModel": "RGB"
+    },
+    {
+      "idiom": "pad",
+      "appearance": "UIAppearanceDark",
+      "opaque": true,
+      "colorModel": "RGB"
+    },
+    {
+      "idiom": "phone",
+      "appearance": "ISAppearanceTintable",
+      "opaque": true,
+      "colorModel": "RGB"
+    },
+    {
+      "idiom": "pad",
+      "appearance": "ISAppearanceTintable",
+      "opaque": true,
+      "colorModel": "RGB"
+    }
+  ],
+  "compatibilityFormatNote": "Xcode 27 emits masked RGBA small compatibility PNGs. Their alpha is reported without alteration. Compiled 1024 marketing renditions and all derived marketing masters are opaque RGB; archive acceptance remains a separate release gate.",
+  "claimBoundary": "Current-source Apple asset-compiler output only. Both compatibility icons inspected; no complete app build, archive, Home Screen, physical device, TestFlight, or App Store claim."
 }

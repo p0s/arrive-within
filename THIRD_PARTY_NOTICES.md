@@ -179,6 +179,8 @@ Chatterbox source/package/model revisions are used only for private local auditi
 
 App-icon concepts record the exact generation prompts, output hashes, input-role boundary, and output-rights source in `docs/brand/provenance/2026-08-10/concept-board/`. The generation service/model is not shipped. Concept presence does not imply selection, trademark permission, or production approval.
 
+The selected Quiet Threshold icon uses three original transparent material layers generated from the selected composition. Exact prompts, unmodified outputs, normalization parameters, hashes, and the CC BY 4.0 media designation are recorded in `docs/brand/provenance/2026-09-15/layers/provenance.json`. No generation model or service is included in the app.
+
 ## Apple platform software
 
 SwiftUI, Foundation, Core Data, CloudKit, WebKit, AVFoundation, Speech, UserNotifications, and other Apple SDK frameworks are platform components governed by Apple’s terms and are not relicensed by this repository.
