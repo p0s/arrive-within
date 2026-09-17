@@ -3,6 +3,7 @@ import ArriveWithinDomain
 import ArriveWithinMeditation
 import ArriveWithinPersistence
 import Foundation
+
 #if canImport(Darwin)
   import Darwin
 #endif
@@ -10,9 +11,28 @@ import Foundation
 enum AppDataDirectoryPreparationError: Error, Equatable, Sendable {
   case unsafeDirectory
   case backupExclusionFailed
+  #if DEBUG
+    case invalidVerificationNamespace
+  #endif
 }
 
 enum AppDataDirectoryPreparer {
+  #if DEBUG
+    static func verificationDirectory(in support: URL, arguments: [String]) throws -> URL? {
+      let indices = arguments.indices.filter { arguments[$0] == "-ui-test-namespace" }
+      guard !indices.isEmpty else { return nil }
+      guard indices.count == 1, let index = indices.first,
+        arguments.indices.contains(index + 1),
+        let identifier = UUID(uuidString: arguments[index + 1])
+      else {
+        throw AppDataDirectoryPreparationError.invalidVerificationNamespace
+      }
+      return support.appending(path: "ArriveWithinVerification", directoryHint: .isDirectory)
+        .appending(path: identifier.uuidString, directoryHint: .isDirectory)
+        .appending(path: "ArriveWithin", directoryHint: .isDirectory)
+    }
+  #endif
+
   static func prepare(_ directory: URL, fileManager: FileManager = .default) throws {
     let normalized = directory.standardizedFileURL
     guard normalized.isFileURL, normalized.path != "/" else {
@@ -53,9 +73,11 @@ enum AppDataDirectoryPreparer {
     var mutableDirectory = normalized
     try mutableDirectory.setResourceValues(backupValues)
     mutableDirectory.removeAllCachedResourceValues()
-    guard try mutableDirectory.resourceValues(
-      forKeys: [.isExcludedFromBackupKey]
-    ).isExcludedFromBackup == true else {
+    guard
+      try mutableDirectory.resourceValues(
+        forKeys: [.isExcludedFromBackupKey]
+      ).isExcludedFromBackup == true
+    else {
       throw AppDataDirectoryPreparationError.backupExclusionFailed
     }
   }
@@ -95,11 +117,14 @@ struct AppDependencies {
     sessionRepository: any MeditationSessionRepository,
     preferencesRepository: any MeditationPreferencesRepository,
     appSettingsRepository: any AppSettingsRepository = EphemeralAppSettingsRepository(),
-    premiumGardenPurchaseClient: any PremiumGardenPurchaseClient = FixedPremiumGardenPurchaseClient(),
+    premiumGardenPurchaseClient: any PremiumGardenPurchaseClient =
+      FixedPremiumGardenPurchaseClient(),
     guidedFavoritesRepository: any GuidedFavoritesRepository = EphemeralGuidedFavoritesRepository(),
-    gardenCustomizationRepository: any GardenCustomizationRepository = EphemeralGardenCustomizationRepository(),
+    gardenCustomizationRepository: any GardenCustomizationRepository =
+      EphemeralGardenCustomizationRepository(),
     journalRepository: any JournalEntryRepository = EphemeralJournalEntryRepository(),
-    weeklyReminderRepository: any WeeklyReminderScheduleRepository = EphemeralWeeklyReminderScheduleRepository(),
+    weeklyReminderRepository: any WeeklyReminderScheduleRepository =
+      EphemeralWeeklyReminderScheduleRepository(),
     productStore: CoreDataProductStore? = nil,
     productDataController: ProductDataController? = nil,
     guidedCatalog: GuidedCatalogDocument? = nil,
@@ -108,8 +133,10 @@ struct AppDependencies {
     dataDirectory: URL,
     audioController: any MeditationAudioControlling,
     timerEndAlertController: any TimerEndAlertControlling,
-    liveActivityController: any MeditationLiveActivityControlling = NoOpMeditationLiveActivityController(),
-    weeklyReminderNotificationController: any WeeklyReminderNotificationControlling = NoOpWeeklyReminderNotificationController(),
+    liveActivityController: any MeditationLiveActivityControlling =
+      NoOpMeditationLiveActivityController(),
+    weeklyReminderNotificationController: any WeeklyReminderNotificationControlling =
+      NoOpWeeklyReminderNotificationController(),
     hapticController: any MeditationHapticControlling,
     journalAudioRecorder: any JournalAudioRecordingControlling = UnavailableJournalAudioRecorder(),
     journalTranscriber: any JournalTranscribing = UnavailableJournalTranscriber()
@@ -130,7 +157,8 @@ struct AppDependencies {
     self.completionCoordinator = completionCoordinator
     self.clock = clock
     self.dataDirectory = dataDirectory
-    self.journalAudioDirectory = dataDirectory.appending(path: "journal-audio", directoryHint: .isDirectory)
+    self.journalAudioDirectory = dataDirectory.appending(
+      path: "journal-audio", directoryHint: .isDirectory)
     do {
       self.exportStagingManager = try ExportStagingManager(
         root: dataDirectory.appending(path: "exports", directoryHint: .isDirectory)
@@ -148,14 +176,26 @@ struct AppDependencies {
   }
 
   static func live(arguments: [String] = ProcessInfo.processInfo.arguments) -> Self {
-    let root = FileManager.default.urls(
+    let support = FileManager.default.urls(
       for: .applicationSupportDirectory,
       in: .userDomainMask
-    )[0].appending(path: "ArriveWithin", directoryHint: .isDirectory)
+    )[0]
     #if DEBUG
-      if arguments.contains("-ui-test-reset") {
+      let verificationRoot: URL?
+      do {
+        verificationRoot = try AppDataDirectoryPreparer.verificationDirectory(
+          in: support, arguments: arguments
+        )
+      } catch {
+        preconditionFailure("Invalid isolated verification namespace.")
+      }
+      let root =
+        verificationRoot ?? support.appending(path: "ArriveWithin", directoryHint: .isDirectory)
+      if verificationRoot == nil && arguments.contains("-ui-test-reset") {
         try? FileManager.default.removeItem(at: root)
       }
+    #else
+      let root = support.appending(path: "ArriveWithin", directoryHint: .isDirectory)
     #endif
     do {
       try AppDataDirectoryPreparer.prepare(root)
@@ -205,6 +245,11 @@ struct AppDependencies {
 
     #if DEBUG
       let clock: any SessionClock = testClock(arguments: arguments) ?? SystemSessionClock()
+      let timerEndAlertController: any TimerEndAlertControlling =
+        verificationRoot == nil ? NativeTimerEndAlertController() : NoOpTimerEndAlertController()
+      let liveActivityController: any MeditationLiveActivityControlling =
+        verificationRoot == nil
+        ? SystemMeditationLiveActivityController() : NoOpMeditationLiveActivityController()
       let journalAudioRecorder: any JournalAudioRecordingControlling =
         if arguments.contains("-ui-test-journal-recorder-unavailable") {
           UnavailableJournalAudioRecorder()
@@ -215,6 +260,9 @@ struct AppDependencies {
         }
     #else
       let clock: any SessionClock = SystemSessionClock()
+      let timerEndAlertController: any TimerEndAlertControlling = NativeTimerEndAlertController()
+      let liveActivityController: any MeditationLiveActivityControlling =
+        SystemMeditationLiveActivityController()
       let journalAudioRecorder: any JournalAudioRecordingControlling =
         NativeJournalAudioRecorder()
     #endif
@@ -246,8 +294,8 @@ struct AppDependencies {
       clock: clock,
       dataDirectory: root,
       audioController: audioController,
-      timerEndAlertController: NativeTimerEndAlertController(),
-      liveActivityController: SystemMeditationLiveActivityController(),
+      timerEndAlertController: timerEndAlertController,
+      liveActivityController: liveActivityController,
       weeklyReminderNotificationController: weeklyReminderController(arguments: arguments),
       hapticController: NativeMeditationHapticController(),
       journalAudioRecorder: journalAudioRecorder,
@@ -295,6 +343,9 @@ struct AppDependencies {
       }
       if arguments.contains("-ui-test-reminders-denied") {
         return NoOpWeeklyReminderNotificationController(authorization: .denied)
+      }
+      if arguments.contains("-ui-test-namespace") {
+        return NoOpWeeklyReminderNotificationController(authorization: .notDetermined)
       }
     #endif
     return NativeWeeklyReminderNotificationController()

@@ -1,12 +1,60 @@
+import ArriveWithinPersistence
 import Foundation
 import XCTest
 
 @testable import ArriveWithin
 
 final class AppDataDirectoryPreparerTests: XCTestCase {
+  #if DEBUG
+    func testVerificationNamespaceIsStableDistinctAndNeverUsesProductDirectory() throws {
+      let support = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
+      defer { try? FileManager.default.removeItem(at: support) }
+      let product = support.appending(path: "ArriveWithin")
+      try FileManager.default.createDirectory(at: product, withIntermediateDirectories: true)
+      let sentinel = product.appending(path: "existing-data")
+      try Data("preserve".utf8).write(to: sentinel)
+      let namespace = UUID().uuidString
+      let args = ["-ui-test-namespace", namespace]
+      let root = try XCTUnwrap(
+        AppDataDirectoryPreparer.verificationDirectory(in: support, arguments: args))
+      XCTAssertEqual(
+        root, try AppDataDirectoryPreparer.verificationDirectory(in: support, arguments: args))
+      XCTAssertNotEqual(root, product)
+      XCTAssertNotEqual(
+        root,
+        try AppDataDirectoryPreparer.verificationDirectory(
+          in: support, arguments: ["-ui-test-namespace", UUID().uuidString]
+        ))
+      try AppDataDirectoryPreparer.prepare(root)
+      let store = try CoreDataProductStore(
+        configuration: ProductStoreConfiguration(storeURL: root.appending(path: "product-v1.sqlite"))
+      )
+      XCTAssertNoThrow(try ProductDataController(store: store, dataDirectory: root))
+      XCTAssertEqual(try Data(contentsOf: sentinel), Data("preserve".utf8))
+      XCTAssertNil(try AppDataDirectoryPreparer.verificationDirectory(in: support, arguments: []))
+    }
+
+    func testVerificationNamespaceRejectsMissingMalformedTraversalAndDuplicateValues() {
+      let support = FileManager.default.temporaryDirectory
+      for args in [
+        ["-ui-test-namespace"],
+        ["-ui-test-namespace", ""],
+        ["-ui-test-namespace", "../ArriveWithin"],
+        ["-ui-test-namespace", UUID().uuidString, "-ui-test-namespace", UUID().uuidString],
+      ] {
+        XCTAssertThrowsError(
+          try AppDataDirectoryPreparer.verificationDirectory(in: support, arguments: args)
+        ) {
+          XCTAssertEqual($0 as? AppDataDirectoryPreparationError, .invalidVerificationNamespace)
+        }
+      }
+    }
+  #endif
+
   func testPrepareCreatesMissingDirectoryAndIsIdempotent() throws {
     let root = FileManager.default.temporaryDirectory
-      .appending(path: "arrive-within-data-directory-test-\(UUID().uuidString)", directoryHint: .isDirectory)
+      .appending(
+        path: "arrive-within-data-directory-test-\(UUID().uuidString)", directoryHint: .isDirectory)
     defer { try? FileManager.default.removeItem(at: root) }
 
     XCTAssertFalse(FileManager.default.fileExists(atPath: root.path))
@@ -24,7 +72,8 @@ final class AppDataDirectoryPreparerTests: XCTestCase {
 
   func testPrepareRepairsBackupExclusionOnExistingDirectory() throws {
     let root = FileManager.default.temporaryDirectory
-      .appending(path: "arrive-within-data-directory-test-\(UUID().uuidString)", directoryHint: .isDirectory)
+      .appending(
+        path: "arrive-within-data-directory-test-\(UUID().uuidString)", directoryHint: .isDirectory)
     defer { try? FileManager.default.removeItem(at: root) }
 
     try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
@@ -47,7 +96,8 @@ final class AppDataDirectoryPreparerTests: XCTestCase {
 
   func testPrepareRejectsSymbolicLinkRoot() throws {
     let parent = FileManager.default.temporaryDirectory
-      .appending(path: "arrive-within-data-directory-test-\(UUID().uuidString)", directoryHint: .isDirectory)
+      .appending(
+        path: "arrive-within-data-directory-test-\(UUID().uuidString)", directoryHint: .isDirectory)
     let target = parent.appending(path: "target", directoryHint: .isDirectory)
     let root = parent.appending(path: "root", directoryHint: .isDirectory)
     defer { try? FileManager.default.removeItem(at: parent) }
