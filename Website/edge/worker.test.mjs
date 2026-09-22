@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 
-import worker, { handleRequest } from "./worker.mjs";
+import worker, { canonicalRedirect, handleRequest } from "./worker.mjs";
 
 const baseEnv = {
   ANALYTICS_SITE_HOSTNAME: "arrivewithin.com",
@@ -120,6 +120,28 @@ try {
     {},
   );
   assert.equal(wrongMethod.status, 403);
+
+  const wwwPage = new Request("https://www.arrivewithin.com/de/privacy?utm_source=example");
+  const wwwRedirect = await handleRequest(wwwPage, {
+    ANALYTICS_SITE_HOSTNAME: "arrivewithin.com",
+    ASSETS: { fetch: async () => assetsResponse() },
+  }, {});
+  assert.equal(wwwRedirect.status, 301);
+  assert.equal(wwwRedirect.headers.get("location"), "https://arrivewithin.com/de/privacy?utm_source=example");
+  assert.equal(wwwRedirect.headers.get("referrer-policy"), "no-referrer");
+  assert.equal(canonicalRedirect(wwwPage).status, 301);
+
+  const wwwPost = new Request("https://www.arrivewithin.com/analytics/opt-out?return=%2Fde%2Fprivacy", { method: "POST" });
+  const wwwPostRedirect = await handleRequest(wwwPost, {}, {});
+  assert.equal(wwwPostRedirect.status, 308);
+  assert.equal(wwwPostRedirect.headers.get("location"), "https://arrivewithin.com/analytics/opt-out?return=%2Fde%2Fprivacy");
+
+  const alternateHost = await handleRequest(new Request("https://alternate.example/privacy"), {
+    ...baseEnv,
+    ASSETS: { fetch: async () => assetsResponse() },
+  }, {});
+  assert.equal(alternateHost.status, 404);
+  assert.equal(alternateHost.headers.get("cache-control"), "no-store");
 
   assert.equal(worker.fetch, handleRequest);
 } finally {

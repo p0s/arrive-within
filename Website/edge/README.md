@@ -9,7 +9,10 @@ tracker and does not proxy Vercel.
 
 The committed configuration targets account `0317b000520a8e6b237de500c592d67a`,
 sets `workers_dev = false` and `preview_urls = false`, and contains no
-`routes` or custom-domain binding. `ANALYTICS_SITE_HOSTNAME` is the only
+`routes` or custom-domain binding. The Worker serves only the exact apex
+`arrivewithin.com`; requests for `www.arrivewithin.com` redirect to the HTTPS
+apex while preserving path and query, and other hosts return 404.
+`ANALYTICS_SITE_HOSTNAME` is the only
 analytics variable present. Add `ANALYTICS_INGEST_URL` and
 `ANALYTICS_INGEST_TOKEN` only after the backend recovery gate, as Worker
 secrets; absent secrets intentionally make collection fail closed.
@@ -31,8 +34,10 @@ wrangler versions upload --config edge/wrangler.toml
 
 Record the returned version ID. The DNS owner must first have an active
 Cloudflare zone for `arrivewithin.com`; a Worker Custom Domain for the exact
-apex hostname then creates the necessary DNS record and certificate. The
-`www` hostname requires its own explicit redirect or Custom Domain decision.
+apex hostname then creates the necessary DNS record and certificate. At
+cutover, make `www.arrivewithin.com` reach this Worker through its own explicit
+Custom Domain binding or an upstream redirect to the apex; the Worker then
+applies the same canonical redirect if it receives the request.
 Keep the current Vercel deployment serving until the Cloudflare custom-domain
 route has passed canonical, media, 404, security-header, and native-form
 probes. If cutover fails, remove or disable the Cloudflare Custom Domain and

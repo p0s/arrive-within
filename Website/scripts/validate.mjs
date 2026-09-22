@@ -156,6 +156,17 @@ async function main() {
   }
 
   const outputFiles = await listFiles(DIST);
+  const sitemap = await readFile(path.join(DIST, "sitemap.xml"), "utf8");
+  if (sitemap.includes("www.arrivewithin.com") || !sitemap.includes(`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`)) {
+    throw new Error("sitemap must use the apex origin and the expected XML namespace");
+  }
+  for (const route of expectedRoutes) {
+    if (!sitemap.includes(`<loc>${publicBaseURL}${route}</loc>`)) throw new Error(`sitemap missing canonical URL for ${route}`);
+  }
+  const robots = await readFile(path.join(DIST, "robots.txt"), "utf8");
+  if (robots !== `User-agent: *\nAllow: /\nSitemap: ${publicBaseURL}/sitemap.xml\n`) {
+    throw new Error("robots.txt must point to the canonical apex sitemap");
+  }
   for (const [route, file] of Object.entries(routeFiles)) {
     if (!outputFiles.includes(file)) throw new Error(`missing output for ${route}`);
     const html = await readFile(path.join(DIST, file), "utf8");
@@ -164,6 +175,7 @@ async function main() {
       throw new Error(`${route}: missing language or accessibility landmarks`);
     }
     if (!html.includes(`rel="canonical" href="${publicBaseURL}${route}"`)) throw new Error(`${route}: incorrect canonical URL`);
+    if (html.includes("https://www.arrivewithin.com")) throw new Error(`${route}: canonical HTML must not point to www`);
     if (!html.includes(`property="og:image" content="${publicBaseURL}/assets/social-preview.png"`)) throw new Error(`${route}: missing canonical social preview`);
     if (!html.includes(`href="${repositoryURL}"`)) throw new Error(`${route}: missing canonical public repository link`);
     if (!html.includes('property="og:site_name" content="Arrive Within"') || !html.includes('property="og:image:alt"')) throw new Error(`${route}: incomplete social metadata`);
@@ -243,11 +255,15 @@ async function main() {
   }
   const privacyEnglish = await readFile(path.join(DIST, routeFiles["/privacy"]), "utf8");
   const privacyGerman = await readFile(path.join(DIST, routeFiles["/de/privacy"]), "utf8");
-  for (const phrase of ["No third-party analytics", "Cloudflare edge", "HTTP 200", "no account, backend, or cloud sync", "Microphone access", "excluded from backup"]) {
+  for (const phrase of ["No third-party analytics", "Cloudflare edge", "HTTP 200", "no account, backend, or cloud sync", "Microphone access", "excluded from backup", "13-month policy", "30 days after live removal"]) {
     if (!privacyEnglish.includes(phrase)) throw new Error(`English privacy page missing: ${phrase}`);
   }
-  for (const phrase of ["Keine Drittanbieter-Analyse", "Cloudflare-Edge", "HTTP 200", "weder Konto, Backend noch Cloud-Synchronisierung", "Mikrofonzugriff", "von Backups ausgeschlossen"]) {
+  for (const phrase of ["Keine Drittanbieter-Analyse", "Cloudflare-Edge", "HTTP 200", "weder Konto, Backend noch Cloud-Synchronisierung", "Mikrofonzugriff", "von Backups ausgeschlossen", "13 Monaten", "30 Tagen nach der Entfernung"]) {
     if (!privacyGerman.includes(phrase)) throw new Error(`German privacy page missing: ${phrase}`);
+  }
+  const generatedHeaders = await readFile(path.join(DIST, "_headers"), "utf8");
+  if (!generatedHeaders.includes("/privacy\n  Referrer-Policy: same-origin") || !generatedHeaders.includes("/de/privacy\n  Referrer-Policy: same-origin")) {
+    throw new Error("privacy routes must retain the same-origin referrer policy in generated headers");
   }
   const css = await readFile(path.join(DIST, "assets", "site.css"), "utf8");
   if (/@import|url\s*\(\s*["']?https?:/i.test(css)) throw new Error("website CSS may not import external resources");
