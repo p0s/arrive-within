@@ -93,6 +93,12 @@ export const siteContent = {
         { title: "Export, reset, and deletion", paragraphs: ["You can create a readable export and explicitly reset or delete local data. App-owned export archives are protected, excluded from backup, limited to one, removed after sharing closes, and purged during reset or delete-all.", "Before sharing an export, review it for content you consider private. The app cannot remove copies that you deliberately share elsewhere."] },
         { title: "Questions and policy updates", paragraphs: ["The canonical support route is /support.", "This policy is kept aligned with the exact app binary, PrivacyInfo.xcprivacy, App Privacy answers, permission strings, and public support channel."] },
       ],
+      analyticsChoice: {
+        title: "Website request counts",
+        paragraphs: ["This public website counts successful public HTML page requests at its Vercel edge, including cached documents. It uses no browser tracker, advertising identifier, cookie banner, or cross-site identity.", "The server sends the public path, referring origin, country from hosting metadata, and transient IP/User-Agent data to estimate aggregate sessions. The ingestion service discards the raw IP and User-Agent after processing; retained website data follows a 13-month policy, with encrypted operational backup copies expiring within 30 days after live removal. This is scoped to this website and separate from the Arrive Within app, which remains local-first and has no analytics.", "Use either control below at any time. The preference cookie is host-only, Secure, HttpOnly, and used only to honor this choice. DNT and Global Privacy Control are always honored."],
+        optOutLabel: "Exclude this browser",
+        optInLabel: "Include this browser again",
+      },
     },
     openSourcePage: {
       metaTitle: "Open source — Arrive Within",
@@ -202,6 +208,12 @@ export const siteContent = {
         { title: "Export, Zurücksetzen und Löschen", paragraphs: ["Du kannst ein lesbares Archiv erstellen und lokale Daten ausdrücklich zurücksetzen oder löschen. App-eigene Exportarchive sind geschützt, von Backups ausgeschlossen, auf eines begrenzt, werden nach dem Schließen der Teilen-Funktion entfernt und beim Zurücksetzen oder vollständigen Löschen bereinigt.", "Prüfe ein Archiv vor dem Teilen auf private Inhalte. Die App kann Kopien, die du ausdrücklich anderswo teilst, nicht entfernen."] },
         { title: "Fragen und Aktualisierungen", paragraphs: ["Die kanonische Hilfeseite ist /de/support.", "Diese Richtlinie wird mit dem exakten App-Binary, PrivacyInfo.xcprivacy, den App-Privacy-Angaben, Berechtigungstexten und dem öffentlichen Hilfeweg im Einklang gehalten."] },
       ],
+      analyticsChoice: {
+        title: "Website-Anfragezählung",
+        paragraphs: ["Diese öffentliche Website zählt erfolgreiche öffentliche HTML-Seitenanfragen am Vercel-Edge, auch wenn das Dokument aus dem Cache kommt. Es gibt keinen Browser-Tracker, keine Werbekennung, kein Cookie-Banner und keine websiteübergreifende Identität.", "Der Server sendet den öffentlichen Pfad, die Herkunft der verweisenden Seite, das Land aus Hosting-Metadaten sowie vorübergehend IP- und User-Agent-Daten, um Sitzungen aggregiert zu schätzen. Der Empfangsdienst verwirft die rohe IP und den User-Agent nach der Verarbeitung; Website-Daten werden nach einer Richtlinie von 13 Monaten aufbewahrt, verschlüsselte betriebliche Sicherungskopien laufen innerhalb von 30 Tagen nach der Entfernung aus dem Live-System ab. Die Verarbeitung ist auf diese Website begrenzt und von der Arrive Within App getrennt, die lokal ausgerichtet bleibt und keine Analysen enthält.", "Du kannst unten jederzeit eine Auswahl treffen. Das Präferenz-Cookie ist nur für diese Domain gültig, sicher, HttpOnly und dient ausschließlich der Umsetzung deiner Wahl. DNT und Global Privacy Control werden immer beachtet."],
+        optOutLabel: "Diesen Browser ausschließen",
+        optInLabel: "Diesen Browser wieder einschließen",
+      },
     },
     openSourcePage: {
       metaTitle: "Open Source — Arrive Within",

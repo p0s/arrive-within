@@ -170,7 +170,19 @@ async function main() {
     if (!html.includes('rel="icon" type="image/png" sizes="40x40" href="/assets/brand-icon-40.png"')) throw new Error(`${route}: missing browser icon`);
     if (!html.includes('rel="apple-touch-icon" sizes="180x180" href="/assets/brand-icon-180.png"')) throw new Error(`${route}: missing Apple touch icon`);
     if ((html.match(/class="brand-mark"/g) ?? []).length !== 2) throw new Error(`${route}: header and footer must use the selected visible brand mark`);
-    if (/<script\b|<form\b|<iframe\b|<object\b|<embed\b/i.test(html)) throw new Error(`${route}: active or form content is forbidden`);
+    if (/<script\b|<iframe\b|<object\b|<embed\b/i.test(html)) throw new Error(`${route}: active content is forbidden`);
+    const forms = [...html.matchAll(/<form\b[^>]*>[\s\S]*?<\/form>/gi)].map((match) => match[0]);
+    if (forms.length && !["/privacy", "/de/privacy"].includes(route)) throw new Error(`${route}: forms are limited to the privacy preference controls`);
+    if (["/privacy", "/de/privacy"].includes(route)) {
+      if (forms.length !== 2) throw new Error(`${route}: privacy page must expose exactly two preference forms`);
+      const actions = forms.map((form) => form.match(/\baction="([^"]+)"/i)?.[1]).sort();
+      if (JSON.stringify(actions) !== JSON.stringify(["/analytics/opt-in", "/analytics/opt-out"])) throw new Error(`${route}: privacy preference form actions are not exact`);
+      for (const form of forms) {
+        if (!/\bmethod="post"/i.test(form) || !/<button\b[^>]*type="submit"/i.test(form) || /\bon[a-z]+=/i.test(form)) {
+          throw new Error(`${route}: privacy preference forms must be no-JS POST controls`);
+        }
+      }
+    }
     if (/google-analytics|googletagmanager|gtag\s*\(|posthog|mixpanel|segment\.io|facebook\.net|doubleclick/i.test(html)) {
       throw new Error(`${route}: analytics or tracking marker found`);
     }

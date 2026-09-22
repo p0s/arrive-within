@@ -12,6 +12,7 @@
     "sync:brand": "node scripts/sync-brand-assets.mjs",
     "test:browser": "node scripts/validate-browser.mjs",
     "test": "node scripts/validate.mjs",
-    "verify": "node scripts/build.mjs && node scripts/validate.mjs"
+    "test:analytics": "node scripts/test-analytics.mjs",
+    "verify": "node scripts/build.mjs && node scripts/validate.mjs && node scripts/test-analytics.mjs"
   }
 }
