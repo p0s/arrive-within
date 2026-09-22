@@ -265,10 +265,10 @@ async function main() {
   record(
     "website-artifact-boundary",
     websiteBuild.includes("default-src 'none'")
-      && websiteBuild.includes("form-action 'none'")
+      && websiteBuild.includes("form-action 'self'")
       && websiteLib.includes("symbolic links are forbidden")
       && websiteLib.includes("expected a regular file"),
-    "The static website denies active/network behavior and its artifact pipeline rejects links and nonregular files.",
+    "The static website denies external active/network behavior, limits native forms to same-origin actions, and its artifact pipeline rejects links and nonregular files.",
   );
 
   const findings = [
