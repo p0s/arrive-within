@@ -56,6 +56,7 @@ section[id] { scroll-margin-top: 24px; }
 .lede { max-width: 680px; font-size: clamp(1.14rem, 1.8vw, 1.5rem); line-height: 1.48; opacity: .86; }
 .actions { margin-top: 42px; display: flex; flex-wrap: wrap; align-items: center; gap: 24px; }
 .primary-action { min-height: 48px; padding: 13px 22px; display: inline-flex; align-items: center; justify-content: center; border: 2px solid var(--forest-900); background: var(--forest-900); color: var(--cream-100); font-weight: 760; text-decoration: none; }
+.primary-action[type="submit"] { font: inherit; cursor: pointer; }
 .primary-action:hover, .primary-action:focus-visible { background: var(--moss-600); border-color: var(--moss-600); }
 .primary-action.light { border-color: var(--cream-100); background: var(--cream-100); color: var(--forest-950); }
 .text-action { min-height: 44px; display: inline-flex; align-items: center; font-weight: 720; }

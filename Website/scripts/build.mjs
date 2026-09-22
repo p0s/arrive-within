@@ -110,7 +110,7 @@ function shell(locale, page, metaTitle, metaDescription, body) {
   <meta name="twitter:image" content="${BASE_URL}/assets/social-preview.png">
   <meta name="twitter:image:alt" content="${escapeHtml(socialImageAlt)}">
   <meta name="robots" content="index,follow">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; media-src 'self'; style-src 'self'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; media-src 'self'; style-src 'self'; base-uri 'none'; form-action 'self'">
   <link rel="canonical" href="${BASE_URL}${route}">
   <link rel="alternate" hreflang="${locale}" href="${BASE_URL}${route}">
   <link rel="alternate" hreflang="${counterpart}" href="${BASE_URL}${alternateRoute}">
@@ -211,7 +211,9 @@ function supportPage(locale) {
 function privacyPage(locale) {
   const page = siteContent[locale].privacyPage;
   const sections = page.sections.map((section) => `<section><h2>${escapeHtml(section.title)}</h2>${section.paragraphs.map((text) => `<p>${escapeHtml(text)}</p>`).join("")}</section>`).join("");
-  const body = `<main id="main" class="article-shell"><header class="article-hero"><p class="eyebrow">${escapeHtml(page.eyebrow)}</p><h1>${escapeHtml(page.title)}</h1><p class="lede">${escapeHtml(page.intro)}</p></header><article class="article-content">${sections}</article></main>`;
+  const choice = page.analyticsChoice;
+  const controls = `<section class="privacy-controls"><h2>${escapeHtml(choice.title)}</h2>${choice.paragraphs.map((text) => `<p>${escapeHtml(text)}</p>`).join("")}<div class="actions"><form method="post" action="/analytics/opt-out"><button class="primary-action" type="submit">${escapeHtml(choice.optOutLabel)}</button></form><form method="post" action="/analytics/opt-in"><button class="primary-action" type="submit">${escapeHtml(choice.optInLabel)}</button></form></div></section>`;
+  const body = `<main id="main" class="article-shell"><header class="article-hero"><p class="eyebrow">${escapeHtml(page.eyebrow)}</p><h1>${escapeHtml(page.title)}</h1><p class="lede">${escapeHtml(page.intro)}</p></header><article class="article-content">${sections}${controls}</article></main>`;
   return shell(locale, "privacy", page.metaTitle, page.metaDescription, body);
 }
 
