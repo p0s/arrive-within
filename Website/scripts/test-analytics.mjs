@@ -68,6 +68,7 @@ const optOut = await preferenceResponse(
   config,
 );
 assert.equal(optOut.status, 200);
+assert.equal(optOut.headers.get("referrer-policy"), "same-origin");
 assert.match(optOut.headers.get("set-cookie"), /p0s_analytics_optout=1/);
 assert.match(optOut.headers.get("set-cookie"), /Secure; HttpOnly; SameSite=Lax/);
 assert.doesNotMatch(optOut.headers.get("set-cookie"), /Domain=/i);

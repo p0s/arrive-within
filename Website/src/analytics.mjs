@@ -69,7 +69,7 @@ export function preferenceResponse(request, action, config) {
   }
   const isOptOut = action === "out";
   const returnPath = returnPrivacyPath(request.headers.get("referer"));
-  const headers = responseHeaders();
+  const headers = responseHeaders("same-origin");
   headers.set(
     "Set-Cookie",
     isOptOut
@@ -183,12 +183,12 @@ function returnPrivacyPath(value) {
   }
 }
 
-function responseHeaders() {
+function responseHeaders(referrerPolicy = "no-referrer") {
   return new Headers({
     "Cache-Control": "no-store",
     "Content-Security-Policy": "default-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
     "Content-Type": "text/html; charset=utf-8",
-    "Referrer-Policy": "no-referrer",
+    "Referrer-Policy": referrerPolicy,
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY",
   });
