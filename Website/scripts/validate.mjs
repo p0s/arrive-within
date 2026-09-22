@@ -83,12 +83,12 @@ async function main() {
     manifest.source_sha256 !== currentSource.sha256 ||
     manifest.content_sha256 !== currentContent.sha256 ||
     JSON.stringify(manifest.routes) !== JSON.stringify(expectedRoutes) ||
-    manifest.deployment_authorization !== "authorized-verified-hobby-project-and-owner-domain" ||
+    manifest.deployment_authorization !== "authorized-cloudflare-account-and-owner-domain" ||
     manifest.deployment_performed !== false ||
-    manifest.host?.provider !== "Vercel" ||
-    manifest.host?.plan !== "Hobby" ||
-    manifest.host?.intended_project !== "arrive-within" ||
-    manifest.host?.project_binding !== "verified-external-readback-2026-08-12" ||
+    manifest.host?.provider !== "Cloudflare Workers Static Assets" ||
+    manifest.host?.plan !== "existing-account-plan" ||
+    manifest.host?.intended_project !== "arrivewithin-web" ||
+    manifest.host?.project_binding !== "authorized-account-0317b000520a8e6b237de500c592d67a-staging-worker-unbound" ||
     manifest.host?.custom_domain !== "arrivewithin.com" ||
     manifest.host?.public_base_url !== publicBaseURL ||
     manifest.host?.public_base_url_state !== (publicBaseURL === UNBOUND_PUBLIC_BASE_URL ? "unbound-local-placeholder" : "deployment-bound") ||
@@ -243,10 +243,10 @@ async function main() {
   }
   const privacyEnglish = await readFile(path.join(DIST, routeFiles["/privacy"]), "utf8");
   const privacyGerman = await readFile(path.join(DIST, routeFiles["/de/privacy"]), "utf8");
-  for (const phrase of ["No third-party analytics", "no account, backend, or cloud sync", "Microphone access", "excluded from backup"]) {
+  for (const phrase of ["No third-party analytics", "Cloudflare edge", "HTTP 200", "no account, backend, or cloud sync", "Microphone access", "excluded from backup"]) {
     if (!privacyEnglish.includes(phrase)) throw new Error(`English privacy page missing: ${phrase}`);
   }
-  for (const phrase of ["Keine Drittanbieter-Analyse", "weder Konto, Backend noch Cloud-Synchronisierung", "Mikrofonzugriff", "von Backups ausgeschlossen"]) {
+  for (const phrase of ["Keine Drittanbieter-Analyse", "Cloudflare-Edge", "HTTP 200", "weder Konto, Backend noch Cloud-Synchronisierung", "Mikrofonzugriff", "von Backups ausgeschlossen"]) {
     if (!privacyGerman.includes(phrase)) throw new Error(`German privacy page missing: ${phrase}`);
   }
   const css = await readFile(path.join(DIST, "assets", "site.css"), "utf8");
@@ -261,8 +261,28 @@ async function main() {
   }
   if (!headers.includes("media-src 'self'")) throw new Error("vercel.json must allow only same-origin website media");
 
+  const cloudflareConfig = await readFile(path.join(ROOT, "edge", "wrangler.toml"), "utf8");
+  for (const required of [
+    'name = "arrivewithin-web"',
+    'account_id = "0317b000520a8e6b237de500c592d67a"',
+    "workers_dev = false",
+    "preview_urls = false",
+    'directory = "../dist"',
+    'binding = "ASSETS"',
+    'not_found_handling = "404-page"',
+    'html_handling = "drop-trailing-slash"',
+    'ANALYTICS_SITE_HOSTNAME = "arrivewithin.com"',
+  ]) {
+    if (!cloudflareConfig.includes(required)) throw new Error(`edge/wrangler.toml missing required staging setting: ${required}`);
+  }
+  if (/^\s*(?:route|routes)\s*=/m.test(cloudflareConfig)) throw new Error("edge/wrangler.toml must remain unbound until DNS cutover");
+  const workerSource = await readFile(path.join(ROOT, "edge", "worker.mjs"), "utf8");
+  for (const required of ["ASSETS.fetch", "queueIngest(request, context, config, response)", "OPT_OUT_PATH", "OPT_IN_PATH"]) {
+    if (!workerSource.includes(required)) throw new Error(`edge/worker.mjs missing required behavior: ${required}`);
+  }
+
   const fullHash = await hashTree(DIST);
-  process.stdout.write(`Website validation passed: ${expectedRoutes.length} bilingual routes, 8 provenance-bound UI images, 3 provenance-bound public-media assets, 2 provenance-bound brand icons, ${fullHash.files.length} output files; build SHA-256 ${fullHash.sha256}. Host/domain binding is externally verified; this local build is not deployment proof.\n`);
+  process.stdout.write(`Website validation passed: ${expectedRoutes.length} bilingual routes, 8 provenance-bound UI images, 3 provenance-bound public-media assets, 2 provenance-bound brand icons, ${fullHash.files.length} output files; build SHA-256 ${fullHash.sha256}. Cloudflare worker binding is staged but the custom domain remains externally unbound; this local build is not deployment proof.\n`);
 }
 
 main().catch((error) => {
