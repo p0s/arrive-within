@@ -5,8 +5,15 @@ account_id = "0317b000520a8e6b237de500c592d67a"
 workers_dev = false
 preview_urls = false
 
-# The custom domain is intentionally absent until the DNS owner coordinates the
-# cutover. Ingest URL/token secrets are added only after the backend recovery gate.
+[[routes]]
+pattern = "arrivewithin.com"
+custom_domain = true
+
+[[routes]]
+pattern = "www.arrivewithin.com"
+custom_domain = true
+
+# Ingest URL/token are private Worker secrets, never source variables.
 [vars]
 ANALYTICS_SITE_HOSTNAME = "arrivewithin.com"
 
@@ -15,16 +22,11 @@ directory = "../dist"
 binding = "ASSETS"
 not_found_handling = "404-page"
 html_handling = "drop-trailing-slash"
-# Run the Worker only for document routes and preference controls. Other static
-# assets remain asset-first and avoid unnecessary Worker invocations.
+# Route documents, unknown paths, and preference controls through the Worker so
+# www redirects before static 404 handling. Media and crawler files stay asset-first.
 run_worker_first = [
-  "/",
-  "/de",
-  "/support",
-  "/de/support",
-  "/privacy",
-  "/de/privacy",
-  "/open-source",
-  "/de/open-source",
-  "/analytics/*",
+  "/*",
+  "!/assets/*",
+  "!/robots.txt",
+  "!/sitemap.xml",
 ]
