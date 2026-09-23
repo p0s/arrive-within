@@ -300,7 +300,7 @@ async function main() {
       provider: "Cloudflare Workers Static Assets",
       plan: "existing-account-plan",
       intended_project: "arrivewithin-web",
-      project_binding: "authorized-account-0317b000520a8e6b237de500c592d67a-staging-worker-unbound",
+      project_binding: "authorized-account-0317b000520a8e6b237de500c592d67a-production-custom-domains",
       custom_domain: "arrivewithin.com",
       public_base_url: BASE_URL,
       public_base_url_state: BASE_URL === UNBOUND_PUBLIC_BASE_URL ? "unbound-local-placeholder" : "deployment-bound",

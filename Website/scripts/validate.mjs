@@ -88,7 +88,7 @@ async function main() {
     manifest.host?.provider !== "Cloudflare Workers Static Assets" ||
     manifest.host?.plan !== "existing-account-plan" ||
     manifest.host?.intended_project !== "arrivewithin-web" ||
-    manifest.host?.project_binding !== "authorized-account-0317b000520a8e6b237de500c592d67a-staging-worker-unbound" ||
+    manifest.host?.project_binding !== "authorized-account-0317b000520a8e6b237de500c592d67a-production-custom-domains" ||
     manifest.host?.custom_domain !== "arrivewithin.com" ||
     manifest.host?.public_base_url !== publicBaseURL ||
     manifest.host?.public_base_url_state !== (publicBaseURL === UNBOUND_PUBLIC_BASE_URL ? "unbound-local-placeholder" : "deployment-bound") ||
@@ -289,16 +289,22 @@ async function main() {
     'html_handling = "drop-trailing-slash"',
     'ANALYTICS_SITE_HOSTNAME = "arrivewithin.com"',
   ]) {
-    if (!cloudflareConfig.includes(required)) throw new Error(`edge/wrangler.toml missing required staging setting: ${required}`);
+    if (!cloudflareConfig.includes(required)) throw new Error(`edge/wrangler.toml missing required setting: ${required}`);
   }
-  if (/^\s*(?:route|routes)\s*=/m.test(cloudflareConfig)) throw new Error("edge/wrangler.toml must remain unbound until DNS cutover");
+  const domains = [...cloudflareConfig.matchAll(/\[\[routes\]\]\s*\npattern = "([^"]+)"\s*\ncustom_domain = true/g)].map((match) => match[1]);
+  if (JSON.stringify(domains) !== JSON.stringify(["arrivewithin.com", "www.arrivewithin.com"])) {
+    throw new Error("edge/wrangler.toml must bind exactly the production apex and www custom domains");
+  }
+  if (!cloudflareConfig.includes('"/*"') || !cloudflareConfig.includes('"!/assets/*"')) {
+    throw new Error("edge/wrangler.toml must route document and unknown paths before static assets");
+  }
   const workerSource = await readFile(path.join(ROOT, "edge", "worker.mjs"), "utf8");
   for (const required of ["ASSETS.fetch", "queueIngest(request, context, config, response)", "OPT_OUT_PATH", "OPT_IN_PATH"]) {
     if (!workerSource.includes(required)) throw new Error(`edge/worker.mjs missing required behavior: ${required}`);
   }
 
   const fullHash = await hashTree(DIST);
-  process.stdout.write(`Website validation passed: ${expectedRoutes.length} bilingual routes, 8 provenance-bound UI images, 3 provenance-bound public-media assets, 2 provenance-bound brand icons, ${fullHash.files.length} output files; build SHA-256 ${fullHash.sha256}. Cloudflare worker binding is staged but the custom domain remains externally unbound; this local build is not deployment proof.\n`);
+  process.stdout.write(`Website validation passed: ${expectedRoutes.length} bilingual routes, 8 provenance-bound UI images, 3 provenance-bound public-media assets, 2 provenance-bound brand icons, ${fullHash.files.length} output files; build SHA-256 ${fullHash.sha256}. Production custom-domain configuration is present; this local build is not deployment proof.\n`);
 }
 
 main().catch((error) => {
