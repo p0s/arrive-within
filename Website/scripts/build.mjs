@@ -265,6 +265,22 @@ async function main() {
   await writeFile(path.join(DIST, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapUrls}\n</urlset>\n`);
   await writeFile(path.join(DIST, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${BASE_URL}/sitemap.xml\n`);
   await writeFile(path.join(DIST, "404.html"), shell("en", "home", "Not found — Arrive Within", "The requested Arrive Within page was not found.", `<main id="main" class="article-shell"><header class="article-hero"><p class="eyebrow">404</p><h1>That path has not taken root.</h1><p class="lede">Return to the quiet place we know.</p><a class="primary-action" href="/">Return home</a></header></main>`));
+  await writeFile(path.join(DIST, "_headers"), `/*
+  Content-Security-Policy: default-src 'none'; img-src 'self'; media-src 'self'; style-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), interest-cohort=()
+  Referrer-Policy: no-referrer
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+
+/privacy
+  Referrer-Policy: same-origin
+
+/de/privacy
+  Referrer-Policy: same-origin
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+`);
 
   const contentHash = await hashTree(DIST, new Set(["_build-manifest.json"]));
   const assetProvenance = JSON.parse(await readFile(path.join(ROOT, "src", "assets", "provenance.json"), "utf8"));
@@ -281,16 +297,16 @@ async function main() {
     capture_source_revision: assetProvenance.source_revision,
     routes: ROUTES.map(({ route }) => route),
     host: {
-      provider: "Vercel",
-      plan: "Hobby",
-      intended_project: "arrive-within",
-      project_binding: "verified-external-readback-2026-08-12",
+      provider: "Cloudflare Workers Static Assets",
+      plan: "existing-account-plan",
+      intended_project: "arrivewithin-web",
+      project_binding: "authorized-account-0317b000520a8e6b237de500c592d67a-production-custom-domains",
       custom_domain: "arrivewithin.com",
       public_base_url: BASE_URL,
       public_base_url_state: BASE_URL === UNBOUND_PUBLIC_BASE_URL ? "unbound-local-placeholder" : "deployment-bound",
     },
     external_network_dependencies: [],
-    deployment_authorization: "authorized-verified-hobby-project-and-owner-domain",
+    deployment_authorization: "authorized-cloudflare-account-and-owner-domain",
     deployment_performed: false,
   };
   await writeFile(path.join(DIST, "_build-manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);

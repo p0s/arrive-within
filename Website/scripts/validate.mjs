@@ -83,12 +83,12 @@ async function main() {
     manifest.source_sha256 !== currentSource.sha256 ||
     manifest.content_sha256 !== currentContent.sha256 ||
     JSON.stringify(manifest.routes) !== JSON.stringify(expectedRoutes) ||
-    manifest.deployment_authorization !== "authorized-verified-hobby-project-and-owner-domain" ||
+    manifest.deployment_authorization !== "authorized-cloudflare-account-and-owner-domain" ||
     manifest.deployment_performed !== false ||
-    manifest.host?.provider !== "Vercel" ||
-    manifest.host?.plan !== "Hobby" ||
-    manifest.host?.intended_project !== "arrive-within" ||
-    manifest.host?.project_binding !== "verified-external-readback-2026-08-12" ||
+    manifest.host?.provider !== "Cloudflare Workers Static Assets" ||
+    manifest.host?.plan !== "existing-account-plan" ||
+    manifest.host?.intended_project !== "arrivewithin-web" ||
+    manifest.host?.project_binding !== "authorized-account-0317b000520a8e6b237de500c592d67a-production-custom-domains" ||
     manifest.host?.custom_domain !== "arrivewithin.com" ||
     manifest.host?.public_base_url !== publicBaseURL ||
     manifest.host?.public_base_url_state !== (publicBaseURL === UNBOUND_PUBLIC_BASE_URL ? "unbound-local-placeholder" : "deployment-bound") ||
@@ -156,6 +156,17 @@ async function main() {
   }
 
   const outputFiles = await listFiles(DIST);
+  const sitemap = await readFile(path.join(DIST, "sitemap.xml"), "utf8");
+  if (sitemap.includes("www.arrivewithin.com") || !sitemap.includes(`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`)) {
+    throw new Error("sitemap must use the apex origin and the expected XML namespace");
+  }
+  for (const route of expectedRoutes) {
+    if (!sitemap.includes(`<loc>${publicBaseURL}${route}</loc>`)) throw new Error(`sitemap missing canonical URL for ${route}`);
+  }
+  const robots = await readFile(path.join(DIST, "robots.txt"), "utf8");
+  if (robots !== `User-agent: *\nAllow: /\nSitemap: ${publicBaseURL}/sitemap.xml\n`) {
+    throw new Error("robots.txt must point to the canonical apex sitemap");
+  }
   for (const [route, file] of Object.entries(routeFiles)) {
     if (!outputFiles.includes(file)) throw new Error(`missing output for ${route}`);
     const html = await readFile(path.join(DIST, file), "utf8");
@@ -164,6 +175,7 @@ async function main() {
       throw new Error(`${route}: missing language or accessibility landmarks`);
     }
     if (!html.includes(`rel="canonical" href="${publicBaseURL}${route}"`)) throw new Error(`${route}: incorrect canonical URL`);
+    if (html.includes("https://www.arrivewithin.com")) throw new Error(`${route}: canonical HTML must not point to www`);
     if (!html.includes(`property="og:image" content="${publicBaseURL}/assets/social-preview.png"`)) throw new Error(`${route}: missing canonical social preview`);
     if (!html.includes(`href="${repositoryURL}"`)) throw new Error(`${route}: missing canonical public repository link`);
     if (!html.includes('property="og:site_name" content="Arrive Within"') || !html.includes('property="og:image:alt"')) throw new Error(`${route}: incomplete social metadata`);
@@ -243,11 +255,15 @@ async function main() {
   }
   const privacyEnglish = await readFile(path.join(DIST, routeFiles["/privacy"]), "utf8");
   const privacyGerman = await readFile(path.join(DIST, routeFiles["/de/privacy"]), "utf8");
-  for (const phrase of ["No third-party analytics", "no account, backend, or cloud sync", "Microphone access", "excluded from backup"]) {
+  for (const phrase of ["No third-party analytics", "Cloudflare edge", "HTTP 200", "no account, backend, or cloud sync", "Microphone access", "excluded from backup", "13-month policy", "30 days after live removal"]) {
     if (!privacyEnglish.includes(phrase)) throw new Error(`English privacy page missing: ${phrase}`);
   }
-  for (const phrase of ["Keine Drittanbieter-Analyse", "weder Konto, Backend noch Cloud-Synchronisierung", "Mikrofonzugriff", "von Backups ausgeschlossen"]) {
+  for (const phrase of ["Keine Drittanbieter-Analyse", "Cloudflare-Edge", "HTTP 200", "weder Konto, Backend noch Cloud-Synchronisierung", "Mikrofonzugriff", "von Backups ausgeschlossen", "13 Monaten", "30 Tagen nach der Entfernung"]) {
     if (!privacyGerman.includes(phrase)) throw new Error(`German privacy page missing: ${phrase}`);
+  }
+  const generatedHeaders = await readFile(path.join(DIST, "_headers"), "utf8");
+  if (!generatedHeaders.includes("/privacy\n  Referrer-Policy: same-origin") || !generatedHeaders.includes("/de/privacy\n  Referrer-Policy: same-origin")) {
+    throw new Error("privacy routes must retain the same-origin referrer policy in generated headers");
   }
   const css = await readFile(path.join(DIST, "assets", "site.css"), "utf8");
   if (/@import|url\s*\(\s*["']?https?:/i.test(css)) throw new Error("website CSS may not import external resources");
@@ -261,8 +277,34 @@ async function main() {
   }
   if (!headers.includes("media-src 'self'")) throw new Error("vercel.json must allow only same-origin website media");
 
+  const cloudflareConfig = await readFile(path.join(ROOT, "edge", "wrangler.toml"), "utf8");
+  for (const required of [
+    'name = "arrivewithin-web"',
+    'account_id = "0317b000520a8e6b237de500c592d67a"',
+    "workers_dev = false",
+    "preview_urls = false",
+    'directory = "../dist"',
+    'binding = "ASSETS"',
+    'not_found_handling = "404-page"',
+    'html_handling = "drop-trailing-slash"',
+    'ANALYTICS_SITE_HOSTNAME = "arrivewithin.com"',
+  ]) {
+    if (!cloudflareConfig.includes(required)) throw new Error(`edge/wrangler.toml missing required setting: ${required}`);
+  }
+  const domains = [...cloudflareConfig.matchAll(/\[\[routes\]\]\s*\npattern = "([^"]+)"\s*\ncustom_domain = true/g)].map((match) => match[1]);
+  if (JSON.stringify(domains) !== JSON.stringify(["arrivewithin.com", "www.arrivewithin.com"])) {
+    throw new Error("edge/wrangler.toml must bind exactly the production apex and www custom domains");
+  }
+  if (!cloudflareConfig.includes('"/*"') || !cloudflareConfig.includes('"!/assets/*"')) {
+    throw new Error("edge/wrangler.toml must route document and unknown paths before static assets");
+  }
+  const workerSource = await readFile(path.join(ROOT, "edge", "worker.mjs"), "utf8");
+  for (const required of ["ASSETS.fetch", "queueIngest(request, context, config, response)", "OPT_OUT_PATH", "OPT_IN_PATH"]) {
+    if (!workerSource.includes(required)) throw new Error(`edge/worker.mjs missing required behavior: ${required}`);
+  }
+
   const fullHash = await hashTree(DIST);
-  process.stdout.write(`Website validation passed: ${expectedRoutes.length} bilingual routes, 8 provenance-bound UI images, 3 provenance-bound public-media assets, 2 provenance-bound brand icons, ${fullHash.files.length} output files; build SHA-256 ${fullHash.sha256}. Host/domain binding is externally verified; this local build is not deployment proof.\n`);
+  process.stdout.write(`Website validation passed: ${expectedRoutes.length} bilingual routes, 8 provenance-bound UI images, 3 provenance-bound public-media assets, 2 provenance-bound brand icons, ${fullHash.files.length} output files; build SHA-256 ${fullHash.sha256}. Production custom-domain configuration is present; this local build is not deployment proof.\n`);
 }
 
 main().catch((error) => {

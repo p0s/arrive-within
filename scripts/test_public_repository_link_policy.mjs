@@ -4,6 +4,7 @@ import {
   detectPublicPrivacySignatures,
   isIntentionalPublicRepositorySurface,
   maskIntentionalPublicRepositoryURLs,
+  publicAnalyticsOptOutCookie,
   publicRepositoryURL,
   repositoryOwnerHandle,
 } from "./lib/public-repository-link-policy.mjs";
@@ -49,6 +50,21 @@ for (const surface of ["scripts/verify", "docs/qa/VERIFICATION.md"]) {
   }
 }
 assert.equal(detectPublicPrivacySignatures(blueprintVariable, "Apps/ArriveWithin/Sources/App.swift").includes("owner-handle"), true);
+
+assert.deepEqual(detectPublicPrivacySignatures(publicAnalyticsOptOutCookie, "Website/src/analytics.mjs"), []);
+assert.equal(
+  detectPublicPrivacySignatures(`${publicAnalyticsOptOutCookie}_extra`, "Website/src/analytics.mjs").includes("owner-handle"),
+  true,
+);
+assert.equal(
+  detectPublicPrivacySignatures(publicAnalyticsOptOutCookie, "docs/example.md").includes("owner-handle"),
+  true,
+);
+const githubSecretFixture = `ghp_${"A".repeat(36)}`;
+assert.equal(
+  detectPublicPrivacySignatures(`${publicAnalyticsOptOutCookie} ${githubSecretFixture}`, "Website/src/analytics.mjs").includes("github-token"),
+  true,
+);
 
 for (const [forbiddenControl, expectedSignature] of [
   [repositoryOwnerHandle, "owner-handle"],

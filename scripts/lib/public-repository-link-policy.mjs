@@ -7,6 +7,7 @@ const deviceAliases = [
 export const publicRepositoryURL = ["https://github.com", ownerHandle, "arrive-within"].join("/");
 export const repositoryOwnerFragment = [ownerHandle, "arrive-within"].join("/");
 export const repositoryOwnerHandle = ownerHandle;
+export const publicAnalyticsOptOutCookie = [repositoryOwnerHandle, "_analytics_optout"].join("");
 
 const exactSourceSurfaces = new Set([
   "README.md",
@@ -14,6 +15,11 @@ const exactSourceSurfaces = new Set([
   "Website/src/content.mjs",
   "docs/release/metadata/de-DE.json",
   "docs/release/metadata/en-US.json",
+]);
+const publicAnalyticsCookieSurfaces = new Set([
+  "Website/edge/worker.test.mjs",
+  "Website/scripts/test-analytics.mjs",
+  "Website/src/analytics.mjs",
 ]);
 
 export function isIntentionalPublicRepositorySurface(displayPath) {
@@ -59,6 +65,10 @@ function privacyPatterns() {
 
 export function detectPublicPrivacySignatures(source, displayPath) {
   let maskedSource = maskIntentionalPublicRepositoryURLs(source, displayPath);
+  if (publicAnalyticsCookieSurfaces.has(displayPath)) {
+    const publicCookiePattern = new RegExp(`(?<![A-Za-z0-9_-])${escapeRegExp(publicAnalyticsOptOutCookie)}(?![A-Za-z0-9_-])`, "g");
+    maskedSource = maskedSource.replace(publicCookiePattern, "");
+  }
   // The shared runner's public environment-variable name is tooling API, not an account value.
   if (["scripts/verify", "docs/qa/VERIFICATION.md"].includes(displayPath)) {
     const blueprintVariable = `${repositoryOwnerHandle.toUpperCase()}_IOS_BLUEPRINT_ROOT`;

@@ -25,9 +25,9 @@ export function analyticsConfig(env = globalThis.process?.env ?? {}) {
 }
 
 export function isEligiblePageRequest(request, config) {
-  // Routing Middleware runs before Vercel resolves the static response/cache and
-  // has no post-response status hook. The finite production route allowlist is
-  // therefore the no-origin-fetch guard for known HTML documents.
+  // The finite route allowlist is shared by the Vercel compatibility middleware
+  // and the Cloudflare Worker. The Cloudflare path additionally checks the
+  // response status and content type after the static asset binding resolves.
   if (!config?.hostname || !config.ingestURL || !config.ingestToken) return false;
   const url = new URL(request.url);
   const hostname = requestHostname(request);
@@ -45,6 +45,12 @@ export function isEligiblePageRequest(request, config) {
   return isHTTPSURL(config.ingestURL);
 }
 
+export function isEligibleHTMLDocumentResponse(request, response, config) {
+  if (response?.status !== 200) return false;
+  if (!/\btext\/html\b/i.test(response.headers.get("content-type") || "")) return false;
+  return isEligiblePageRequest(request, config);
+}
+
 export function payloadForRequest(request) {
   const url = new URL(request.url);
   const payload = {
@@ -54,7 +60,11 @@ export function payloadForRequest(request) {
     userAgent: request.headers.get("user-agent")?.trim() || "",
   };
   const referrer = referrerOrigin(request.headers.get("referer"));
-  const country = countryCode(request.headers.get("x-vercel-ip-country"));
+  const country = countryCode(
+    request.cf?.country
+      || request.headers.get("cf-ipcountry")
+      || request.headers.get("x-vercel-ip-country"),
+  );
   if (referrer) payload.referrer = referrer;
   if (country) payload.country = country;
   return payload;
@@ -84,8 +94,11 @@ export function preferenceResponse(request, action, config) {
   );
 }
 
-export function queueIngest(request, context, config) {
-  if (!isEligiblePageRequest(request, config)) return false;
+export function queueIngest(request, context, config, response) {
+  const eligible = response === undefined
+    ? isEligiblePageRequest(request, config)
+    : isEligibleHTMLDocumentResponse(request, response, config);
+  if (!eligible) return false;
   const promise = sendIngest(payloadForRequest(request), config);
   if (typeof context?.waitUntil === "function") {
     context.waitUntil(promise);
@@ -126,12 +139,45 @@ function isHTTPSURL(value) {
 }
 
 function trustedClientIP(request) {
-  const value = request.headers.get("x-vercel-forwarded-for")?.trim() || "";
-  if (!value || value.includes(",") || value.length > 64) return null;
-  if (/^(?:\d{1,3}\.){3}\d{1,3}$/.test(value)) {
-    return value.split(".").every((part) => Number(part) <= 255) ? value : null;
+  const value = request.headers.get("cf-connecting-ip")?.trim()
+    || request.headers.get("x-vercel-forwarded-for")?.trim()
+    || "";
+  if (!value || value.length > 64 || /[\u0000-\u001f\u007f\s,]/.test(value)) return null;
+  if (value.includes(":")) return validIPv6(value) ? value : null;
+  return validIPv4(value) ? value : null;
+}
+
+function validIPv4(value) {
+  const parts = value.split(".");
+  return parts.length === 4 && parts.every((part) => /^(?:0|[1-9]\d{0,2})$/.test(part) && Number(part) <= 255);
+}
+
+function validIPv6(value) {
+  if (!value.includes(":") || value.includes(":::")) return false;
+  const compressionIndex = value.indexOf("::");
+  const hasCompression = compressionIndex !== -1;
+  if (hasCompression && compressionIndex !== value.lastIndexOf("::")) return false;
+
+  const left = hasCompression ? value.slice(0, compressionIndex) : value;
+  const right = hasCompression ? value.slice(compressionIndex + 2) : "";
+  const leftGroups = left ? left.split(":") : [];
+  const rightGroups = right ? right.split(":") : [];
+  if (leftGroups.some((group) => !group) || rightGroups.some((group) => !group)) return false;
+
+  const groups = [...leftGroups, ...rightGroups];
+  const dottedGroups = groups.filter((group) => group.includes("."));
+  if (dottedGroups.length > 1) return false;
+  if (dottedGroups.length === 1) {
+    const dottedGroup = dottedGroups[0];
+    if (groups.at(-1) !== dottedGroup || (hasCompression && rightGroups.length === 0) || !validIPv4(dottedGroup)) return false;
   }
-  return /^[0-9a-f:.]+$/i.test(value) && value.includes(":") ? value : null;
+
+  const groupCount = groups.reduce((count, group) => {
+    if (group.includes(".")) return count + 2;
+    return /^[0-9a-f]{1,4}$/i.test(group) ? count + 1 : Number.NaN;
+  }, 0);
+  if (!Number.isFinite(groupCount)) return false;
+  return hasCompression ? groupCount < 8 : groupCount === 8;
 }
 
 function countryCode(value) {

@@ -1,0 +1,32 @@
+name = "arrivewithin-web"
+main = "worker.mjs"
+compatibility_date = "2026-09-22"
+account_id = "0317b000520a8e6b237de500c592d67a"
+workers_dev = false
+preview_urls = false
+
+[[routes]]
+pattern = "arrivewithin.com"
+custom_domain = true
+
+[[routes]]
+pattern = "www.arrivewithin.com"
+custom_domain = true
+
+# Ingest URL/token are private Worker secrets, never source variables.
+[vars]
+ANALYTICS_SITE_HOSTNAME = "arrivewithin.com"
+
+[assets]
+directory = "../dist"
+binding = "ASSETS"
+not_found_handling = "404-page"
+html_handling = "drop-trailing-slash"
+# Route documents, unknown paths, and preference controls through the Worker so
+# www redirects before static 404 handling. Media and crawler files stay asset-first.
+run_worker_first = [
+  "/*",
+  "!/assets/*",
+  "!/robots.txt",
+  "!/sitemap.xml",
+]

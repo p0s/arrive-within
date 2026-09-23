@@ -222,10 +222,10 @@ async function main() {
   record(
     "website-static-private",
     websiteBuild.includes("default-src 'none'")
-      && websiteBuild.includes("form-action 'none'")
+      && websiteBuild.includes("form-action 'self'")
       && websiteSource.includes("No third-party analytics")
       && websiteSource.includes("Version 1.0 has no in-app feedback transmission"),
-    "Website source is static, tracker-free, and explains that V1 has no feedback transmission."
+    "Website source is static, tracker-free, and limits its native privacy forms to same-origin actions while explaining that V1 has no feedback transmission."
   );
 
   const worksheet = JSON.parse(await text("docs/release/app-privacy-worksheet.json"));
