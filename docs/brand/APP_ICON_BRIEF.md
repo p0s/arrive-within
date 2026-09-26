@@ -64,6 +64,6 @@ The canonical package stores the sprout in front of the arch and warm inset. The
 
 `icon-build-validation.json` records current Apple asset compilation for phone and pad, including visible-sprout checks and opaque 1024 marketing renditions. `icon-status.json` separately retains historical build-1/build-7 archive facts; those do not certify this corrected source.
 
-Current derived 1024/180/60/40 Default/Dark/Tinted previews have been visually inspected. Owner production review, complete app/archive, physical Home Screen, TestFlight and App Store readback remain pending. The installed Xcode 27 small compatibility PNGs include a platform mask with alpha, so the existing no-alpha release gate remains open. Local artwork verification does not waive it.
+Current derived 1024/180/60/40 Default/Dark/Tinted previews have been visually inspected. Owner production review, complete app/archive, physical Home Screen, TestFlight and App Store readback remain pending. Xcode 27 small compatibility PNGs carry an alpha channel, but current pixel inspection records alpha 255 throughout and no transparent regions. The release gate now checks actual transparency rather than rejecting an opaque RGBA encoding.
 
 The current Icon Composer GUI opened without presenting an agreement. No agreement was accepted by the agent. Clear-mode runtime inspection remains pending.

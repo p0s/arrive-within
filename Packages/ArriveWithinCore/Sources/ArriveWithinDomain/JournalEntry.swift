@@ -114,6 +114,8 @@ public struct JournalTranscript: Codable, Equatable, Sendable {
 }
 
 public struct JournalEntry: Codable, Equatable, Identifiable, Sendable {
+  public static let maximumPersistedRevision = Int.max - 1
+
   public let id: UUID
   public let profileGenerationID: UUID
   public let linkedPracticeEventID: UUID?
@@ -143,7 +145,9 @@ public struct JournalEntry: Codable, Equatable, Identifiable, Sendable {
     transcriptionState: JournalTranscriptionState = .notRequested,
     deletedAt: Date? = nil
   ) throws {
-    guard revision >= 0, modifiedAt >= createdAt else {
+    guard revision >= 0, revision <= Self.maximumPersistedRevision,
+      modifiedAt >= createdAt
+    else {
       throw JournalEntryError.invalidRevision
     }
     if let textLocaleIdentifier, textLocaleIdentifier.isEmpty {
@@ -354,6 +358,9 @@ public actor EphemeralJournalEntryRepository: JournalEntryRepository {
       }
       guard expectedRevision == current.revision, entry.revision == current.revision else {
         return .conflict(current: current, attempted: entry)
+      }
+      guard current.revision < JournalEntry.maximumPersistedRevision else {
+        throw JournalEntryError.invalidRevision
       }
       let saved = try entry.persisted(revision: current.revision + 1)
       values[entry.id] = saved

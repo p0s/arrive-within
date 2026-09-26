@@ -1,4 +1,5 @@
 export const repositoryURL = "https://github.com/p0s/arrive-within";
+export const appStoreURL = "https://apps.apple.com/app/id6800192697";
 
 export const siteContent = {
   en: {
@@ -9,7 +10,7 @@ export const siteContent = {
     nav: { home: "Home", practice: "Practice", privacy: "Privacy", openSource: "Open source", support: "Support", source: "Source on GitHub" },
     footer: {
       statement: "A private meditation garden for iPhone and iPad.",
-      status: "The source is public. App Store availability has not been announced.",
+      status: "Available on the App Store for iPhone and iPad.",
       copyright: "© 2026 Arrive Within contributors",
     },
     home: {
@@ -18,8 +19,8 @@ export const siteContent = {
       eyebrow: "Meditation that grows",
       title: "A quiet place to arrive.",
       intro: "A guided practice, a dependable timer, or an open-ended sit. Every qualifying practice becomes permanent, visible growth—without streak pressure, accounts, ads, or subscriptions.",
-      primaryAction: "See how it grows",
-      secondaryAction: "Read the privacy promise",
+      primaryAction: "Download on the App Store",
+      secondaryAction: "See how it grows",
       media: {
         kicker: "One garden, faithfully grown",
         title: "See practice become a living world.",
@@ -66,15 +67,15 @@ export const siteContent = {
       metaDescription: "Support information and self-service answers for Arrive Within.",
       eyebrow: "Support",
       title: "Help without asking for your private data.",
-      intro: "These answers describe version 1.0. The app links here from Settings and does not send a support report or product data.",
+      intro: "These answers describe the 1.0.2 release candidate. Version 1.0.1 remains the current App Store release.",
       feedbackLabel: "Open Settings, then choose Support",
-      feedbackNote: "Version 1.0 has no in-app feedback transmission. The Support link opens this public page without attaching practice, journal, recording, transcript, screenshot, log, or device data.",
+      feedbackNote: "Neither the live 1.0.1 app nor the 1.0.2 candidate transmits in-app feedback. The Support link opens this page without attaching practice, journal, recording, transcript, screenshot, log, or device data.",
       faqs: [
         { q: "Does Arrive Within need an account?", a: "No. Practice, Garden progress, Journal, Journey, and reminders are stored locally and work without an account, backend, or cloud sync." },
-        { q: "Does this version include guided narration?", a: "Yes. Version 1.0 includes 42 original guided practices with approved English and German narration and bound transcripts, all packaged for offline playback. Timer and Stopwatch remain available." },
-        { q: "How do I move or back up my data?", a: "Data & Storage creates a readable archive that you can deliberately share through Apple's system share sheet. The app keeps no cloud copy." },
+        { q: "Does this version include guided narration?", a: "Yes. The live 1.0.1 app and 1.0.2 candidate include 42 original guided practices with approved English and German narration and bound transcripts, all packaged for offline playback. Timer and Stopwatch remain available." },
+        { q: "How do I move or back up my data?", a: "Data & Storage creates a readable archive of saved data that you can deliberately share through Apple's system share sheet. Choose a complete archive in Files to restore it; restore replaces saved garden, practice, journal, voice, and favorite data, and removes unfinished text drafts. Language, timer preferences, reminders, and permissions stay on this device. Save a draft as an entry before exporting if you want it in the archive. The app keeps no cloud copy." },
         { q: "Can I delete everything?", a: "Yes. Local reset and delete-all are explicit. They remove local progress, journal content and audio, settings, and app-owned export archives." },
-        { q: "Does the app send support or usage data?", a: "No. Version 1.0 links to this support page but has no analytics, advertising, tracking, backend, cloud sync, or in-app feedback transmission." },
+        { q: "Does the app send support or usage data?", a: "No. Version 1.0.1 links to this support page but has no analytics, advertising, tracking, backend, cloud sync, or in-app feedback transmission." },
         { q: "Is this medical treatment?", a: "No. Arrive Within is a secular meditation and reflection tool, not medical care, diagnosis, therapy, or crisis support." },
       ],
     },
@@ -83,14 +84,14 @@ export const siteContent = {
       metaDescription: "The Arrive Within privacy promise: local device storage, no collection, and no tracking.",
       eyebrow: "Privacy",
       title: "Your practice stays yours.",
-      intro: "Effective 12 August 2026. This policy describes Arrive Within 1.0 and is kept aligned with the app and its public support channel.",
+      intro: "Effective 25 September 2026. This policy covers the 1.0.2 release candidate; 1.0.1 remains the current App Store release until a new version is approved and published.",
       sections: [
-        { title: "What the app stores", paragraphs: ["Practice sessions, Garden progress, preferences, favorites, reminder schedules, and optional journal text or voice reflections are stored on your device.", "Journal voice recordings are app data. On-device transcription is optional; Arrive Within does not send recordings to a custom AI service or browser speech service."] },
-        { title: "Where it stays", paragraphs: ["Version 1.0 stores app data on this device. It has no account, backend, or cloud sync.", "Data leaves the app only when you deliberately create an export and share it through Apple's system share sheet. Copies you share are then controlled by the destination you choose."] },
-        { title: "What we do not do", paragraphs: ["No third-party analytics, advertising SDK, tracking, ATT prompt, social graph, newsletter, data broker, or cross-app profiling is part of 1.0.", "The renderer has no network authority. Your journal is not analyzed for recommendations, scoring, or advertising."] },
-        { title: "Support", paragraphs: ["Settings links to the public Support and Privacy pages. Version 1.0 does not prepare or transmit an in-app feedback report.", "No practice or journal content, recording, transcript, screenshot, clipboard content, renderer state, log, credential, analytics, or identifier is attached to those links."] },
+        { title: "What the app stores", paragraphs: ["Practice sessions, Garden progress, preferences, favorites, reminder schedules, saved journal entries, and unfinished journal text drafts in the 1.0.2 candidate are stored on your device.", "Journal voice recordings are app data. On-device transcription is optional; Arrive Within does not send recordings to a custom AI service or browser speech service."] },
+        { title: "Where it stays", paragraphs: ["The 1.0.2 candidate stores app data on this device. It has no account, backend, or cloud sync. Version 1.0.1 remains the current published release.", "You can choose a complete archive in Files and restore it locally. The app reads that selected file without uploading it. Data leaves the app only when you deliberately create an export and share it through Apple's system share sheet. Unfinished drafts are not included until saved as entries. Copies you share are then controlled by the destination you choose."] },
+        { title: "What we do not do", paragraphs: ["No third-party analytics, advertising SDK, tracking, ATT prompt, social graph, newsletter, data broker, or cross-app profiling is part of 1.0.1.", "The renderer has no network authority. Your journal is not analyzed for recommendations, scoring, or advertising."] },
+        { title: "Support", paragraphs: ["Settings links to the public Support and Privacy pages. Neither version 1.0.1 nor the 1.0.2 candidate prepares or transmits an in-app feedback report.", "No practice or journal content, recording, transcript, screenshot, clipboard content, renderer state, log, credential, analytics, or identifier is attached to those links."] },
         { title: "Permissions", paragraphs: ["Microphone access is requested only when you choose to record a voice reflection. Speech-recognition access is requested only when you choose on-device transcription. Notification permission is requested only when you create reminders.", "Permission denial keeps the rest of the app usable and preserves any text you already entered."] },
-        { title: "Export, reset, and deletion", paragraphs: ["You can create a readable export and explicitly reset or delete local data. App-owned export archives are protected, excluded from backup, limited to one, removed after sharing closes, and purged during reset or delete-all.", "Before sharing an export, review it for content you consider private. The app cannot remove copies that you deliberately share elsewhere."] },
+        { title: "Export, restore, reset, and deletion", paragraphs: ["You can create a readable export, restore a complete archive selected from Files, and explicitly reset or delete local data. Restore replaces saved Garden, practice, journal, voice, and favorite data, and removes unfinished drafts. Language, timer preferences, reminders, and permissions stay on this device. App-owned export archives are protected, excluded from backup, limited to one, removed after sharing closes, and purged during reset or delete-all.", "Before sharing an export, review it for content you consider private. The app cannot remove copies that you deliberately share elsewhere."] },
         { title: "Questions and policy updates", paragraphs: ["The canonical support route is /support.", "This policy is kept aligned with the exact app binary, PrivacyInfo.xcprivacy, App Privacy answers, permission strings, and public support channel."] },
       ],
       analyticsChoice: {
@@ -124,7 +125,7 @@ export const siteContent = {
     nav: { home: "Start", practice: "Meditieren", privacy: "Datenschutz", openSource: "Open Source", support: "Hilfe", source: "Quellcode auf GitHub" },
     footer: {
       statement: "Ein privater Meditationsgarten für iPhone und iPad.",
-      status: "Der Quellcode ist öffentlich. Eine Verfügbarkeit im App Store wurde noch nicht angekündigt.",
+      status: "Im App Store für iPhone und iPad verfügbar.",
       copyright: "© 2026 Mitwirkende von Arrive Within",
     },
     home: {
@@ -133,8 +134,8 @@ export const siteContent = {
       eyebrow: "Meditation, die wächst",
       title: "Ein stiller Ort zum Ankommen.",
       intro: "Eine geführte Meditation, ein verlässlicher Timer oder eine offene Stoppuhr. Jede qualifizierende Praxis wird zu dauerhaftem, sichtbarem Wachstum – ohne Streak-Druck, Konto, Werbung oder Abo.",
-      primaryAction: "Sieh, wie der Garten wächst",
-      secondaryAction: "Lies unser Datenschutzversprechen",
+      primaryAction: "Im App Store laden",
+      secondaryAction: "Wachstum ansehen",
       media: {
         kicker: "Ein Garten, verlässlich gewachsen",
         title: "Sieh, wie Praxis zu einer lebendigen Welt wird.",
@@ -181,15 +182,15 @@ export const siteContent = {
       metaDescription: "Hilfe und Antworten zur Selbsthilfe für Arrive Within.",
       eyebrow: "Hilfe",
       title: "Unterstützung, ohne nach deinen privaten Daten zu fragen.",
-      intro: "Diese Antworten beschreiben Version 1.0. Die App verlinkt aus den Einstellungen hierher und sendet keinen Supportbericht oder Produktdaten.",
+      intro: "Diese Antworten beschreiben die Release-Kandidatin 1.0.2. Version 1.0.1 ist weiterhin die aktuelle App-Store-Version.",
       feedbackLabel: "Öffne Einstellungen und wähle Hilfe",
-      feedbackNote: "Version 1.0 überträgt keine Rückmeldung aus der App. Der Hilfe-Link öffnet diese öffentliche Seite, ohne Praxis-, Journal-, Aufnahme-, Transkript-, Bildschirmfoto-, Protokoll- oder Gerätedaten anzuhängen.",
+      feedbackNote: "Weder die veröffentlichte Version 1.0.1 noch die Kandidatin 1.0.2 überträgt Rückmeldungen aus der App. Der Hilfe-Link öffnet diese Seite, ohne Praxis-, Journal-, Aufnahme-, Transkript-, Bildschirmfoto-, Protokoll- oder Gerätedaten anzuhängen.",
       faqs: [
         { q: "Braucht Arrive Within ein Konto?", a: "Nein. Praxis, Garten, Journal, Weg und Erinnerungen werden lokal gespeichert und funktionieren ohne Konto, Backend oder Cloud-Synchronisierung." },
-        { q: "Enthält diese Version geführte Meditationen?", a: "Ja. Version 1.0 enthält 42 originale geführte Meditationen mit freigegebenen englischen und deutschen Audios sowie gebundenen Transkripten, vollständig für die Offline-Wiedergabe verpackt. Timer und Stoppuhr bleiben verfügbar." },
-        { q: "Wie sichere oder übertrage ich meine Daten?", a: "Daten & Speicher erstellt ein lesbares Archiv, das du ausdrücklich über Apples Teilen-Funktion weitergeben kannst. Die App bewahrt keine Cloud-Kopie auf." },
-        { q: "Kann ich alles löschen?", a: "Ja. Lokales Zurücksetzen und vollständiges Löschen sind ausdrücklich bestätigt. Sie entfernen Fortschritt, Journalinhalt und -audio, Einstellungen und app-eigene Exportarchive." },
-        { q: "Sendet die App Hilfe- oder Nutzungsdaten?", a: "Nein. Version 1.0 verlinkt auf diese Hilfeseite, enthält aber weder Analyse, Werbung, Nachverfolgung, Backend, Cloud-Synchronisierung noch eine Rückmeldungsübertragung aus der App." },
+        { q: "Enthält diese Version geführte Meditationen?", a: "Ja. Die veröffentlichte Version 1.0.1 und die Kandidatin 1.0.2 enthalten 42 originale geführte Meditationen mit freigegebenen englischen und deutschen Audios sowie gebundenen Transkripten, vollständig für die Offline-Wiedergabe verpackt. Timer und Stoppuhr bleiben verfügbar." },
+        { q: "Wie sichere oder übertrage ich meine Daten?", a: "Daten & Speicher erstellt ein lesbares Archiv gespeicherter Daten, das du ausdrücklich über Apples Teilen-Funktion weitergeben kannst. Wähle in Dateien ein vollständiges Archiv zur Wiederherstellung aus; dabei werden Garten, Praxis, Journal, Sprachdateien und Favoriten ersetzt und ungespeicherte Textentwürfe entfernt. Sprache, Timer-Einstellungen, Erinnerungen und Berechtigungen bleiben auf diesem Gerät. Speichere einen Entwurf als Eintrag, wenn du ihn exportieren möchtest. Die App bewahrt keine Cloud-Kopie auf." },
+        { q: "Kann ich alles löschen?", a: "Ja. Lokales Zurücksetzen und vollständiges Löschen sind ausdrücklich bestätigt. Sie entfernen Fortschritt, Journalinhalt und -audio, ungespeicherte Textentwürfe, Einstellungen und app-eigene Exportarchive." },
+        { q: "Sendet die App Hilfe- oder Nutzungsdaten?", a: "Nein. Version 1.0.1 verlinkt auf diese Hilfeseite, enthält aber weder Analyse, Werbung, Nachverfolgung, Backend, Cloud-Synchronisierung noch eine Rückmeldungsübertragung aus der App." },
         { q: "Ist die App eine medizinische Behandlung?", a: "Nein. Arrive Within ist ein weltliches Werkzeug für Meditation und Reflexion, keine medizinische Versorgung, Diagnose, Therapie oder Krisenhilfe." },
       ],
     },
@@ -198,14 +199,14 @@ export const siteContent = {
       metaDescription: "Das Datenschutzversprechen von Arrive Within: lokale Gerätespeicherung, keine Datenerfassung und keine Nachverfolgung.",
       eyebrow: "Datenschutz",
       title: "Deine Praxis bleibt deine.",
-      intro: "Gültig ab 12. August 2026. Diese Richtlinie beschreibt Arrive Within 1.0 und wird mit der App und dem öffentlichen Hilfeweg im Einklang gehalten.",
+      intro: "Gültig ab 25. September 2026. Diese Richtlinie gilt für die Release-Kandidatin Arrive Within 1.0.2; bis zu ihrer Veröffentlichung bleibt Version 1.0.1 im App Store aktuell.",
       sections: [
-        { title: "Was die App speichert", paragraphs: ["Praxissitzungen, Gartenfortschritt, Einstellungen, Favoriten, Erinnerungspläne und optionale Journaltexte oder Sprachreflexionen werden auf deinem Gerät gespeichert.", "Sprachaufnahmen sind App-Daten. Die Transkription auf dem Gerät ist optional; Arrive Within sendet Aufnahmen nicht an einen eigenen KI-Dienst oder einen Browser-Sprachdienst."] },
-        { title: "Wo die Daten bleiben", paragraphs: ["Version 1.0 speichert App-Daten auf diesem Gerät. Es gibt weder Konto, Backend noch Cloud-Synchronisierung.", "Daten verlassen die App nur, wenn du ausdrücklich ein Archiv erstellst und es über Apples Teilen-Funktion weitergibst. Geteilte Kopien werden anschließend vom gewählten Ziel verwaltet."] },
-        { title: "Was wir nicht tun", paragraphs: ["Keine Drittanbieter-Analyse, Werbe-SDKs, Nachverfolgung, ATT-Abfrage, Social Graph, Newsletter, Datenhändler oder App-übergreifende Profile gehören zu 1.0.", "Der Renderer hat keine Netzwerkbefugnis. Dein Journal wird nicht für Empfehlungen, Bewertungen oder Werbung analysiert."] },
-        { title: "Hilfe", paragraphs: ["Einstellungen verlinkt auf die öffentlichen Hilfe- und Datenschutzseiten. Version 1.0 erstellt oder überträgt keinen Rückmeldungsbericht in der App.", "Praxis- oder Journalinhalte, Aufnahmen, Transkripte, Bildschirmfotos, Zwischenablage, Darstellungszustand, Protokolle, Zugangsdaten, Analysen und Kennungen werden diesen Links nicht angehängt."] },
+        { title: "Was die App speichert", paragraphs: ["Praxissitzungen, Gartenfortschritt, Einstellungen, Favoriten, Erinnerungspläne, gespeicherte Journaleinträge und nicht abgeschlossene Journaltextentwürfe der Kandidatin 1.0.2 bleiben auf deinem Gerät.", "Sprachaufnahmen sind App-Daten. Die Transkription auf dem Gerät ist optional; Arrive Within sendet Aufnahmen nicht an einen eigenen KI-Dienst oder einen Browser-Sprachdienst."] },
+        { title: "Wo die Daten bleiben", paragraphs: ["Die Kandidatin 1.0.2 speichert App-Daten auf diesem Gerät. Es gibt weder Konto, Backend noch Cloud-Synchronisierung. Version 1.0.1 bleibt die veröffentlichte Version.", "Du kannst in Dateien ein vollständiges Archiv auswählen und lokal wiederherstellen. Die App liest diese Datei, ohne sie hochzuladen. Daten verlassen die App nur, wenn du ausdrücklich ein Archiv erstellst und es über Apples Teilen-Funktion weitergibst. Ungespeicherte Entwürfe werden erst nach dem Speichern als Journaleintrag eingeschlossen. Geteilte Kopien werden anschließend vom gewählten Ziel verwaltet."] },
+        { title: "Was wir nicht tun", paragraphs: ["Keine Drittanbieter-Analyse, Werbe-SDKs, Nachverfolgung, ATT-Abfrage, Social Graph, Newsletter, Datenhändler oder App-übergreifende Profile gehören zu 1.0.1.", "Der Renderer hat keine Netzwerkbefugnis. Dein Journal wird nicht für Empfehlungen, Bewertungen oder Werbung analysiert."] },
+        { title: "Hilfe", paragraphs: ["Einstellungen verlinkt auf die öffentlichen Hilfe- und Datenschutzseiten. Weder Version 1.0.1 noch die Kandidatin 1.0.2 erstellt oder überträgt einen Rückmeldungsbericht in der App.", "Praxis- oder Journalinhalte, Aufnahmen, Transkripte, Bildschirmfotos, Zwischenablage, Darstellungszustand, Protokolle, Zugangsdaten, Analysen und Kennungen werden diesen Links nicht angehängt."] },
         { title: "Berechtigungen", paragraphs: ["Mikrofonzugriff wird nur angefragt, wenn du eine Sprachreflexion aufnimmst. Spracherkennung nur bei gewählter Transkription auf dem Gerät. Mitteilungen nur beim Erstellen von Erinnerungen.", "Eine Ablehnung lässt den Rest der App nutzbar und bewahrt bereits eingegebenen Text."] },
-        { title: "Export, Zurücksetzen und Löschen", paragraphs: ["Du kannst ein lesbares Archiv erstellen und lokale Daten ausdrücklich zurücksetzen oder löschen. App-eigene Exportarchive sind geschützt, von Backups ausgeschlossen, auf eines begrenzt, werden nach dem Schließen der Teilen-Funktion entfernt und beim Zurücksetzen oder vollständigen Löschen bereinigt.", "Prüfe ein Archiv vor dem Teilen auf private Inhalte. Die App kann Kopien, die du ausdrücklich anderswo teilst, nicht entfernen."] },
+        { title: "Export, Wiederherstellung, Zurücksetzen und Löschen", paragraphs: ["Du kannst ein lesbares Archiv erstellen, ein vollständiges ausgewähltes Archiv lokal wiederherstellen und lokale Daten ausdrücklich zurücksetzen oder löschen. Eine Wiederherstellung ersetzt Garten, Praxisverlauf, Journal, Sprachdaten und Favoriten; ungespeicherte Entwürfe werden entfernt. Sprache, Timer-Einstellungen, Erinnerungen und Berechtigungen bleiben auf diesem Gerät. App-eigene Exportarchive sind geschützt, von Backups ausgeschlossen, auf eines begrenzt, werden nach dem Schließen der Teilen-Funktion entfernt und beim Zurücksetzen oder vollständigen Löschen bereinigt.", "Prüfe ein Archiv vor dem Teilen auf private Inhalte. Die App kann Kopien, die du ausdrücklich anderswo teilst, nicht entfernen."] },
         { title: "Fragen und Aktualisierungen", paragraphs: ["Die kanonische Hilfeseite ist /de/support.", "Diese Richtlinie wird mit dem exakten App-Binary, PrivacyInfo.xcprivacy, den App-Privacy-Angaben, Berechtigungstexten und dem öffentlichen Hilfeweg im Einklang gehalten."] },
       ],
       analyticsChoice: {

@@ -1,0 +1,1005 @@
+{
+  "schemaVersion": 1,
+  "status": "candidate-complete-human-review-pending",
+  "sourceRevision": "27192a1de32b40c6ee66494a45f81bc28b87e7cbc680f3d11b904f00baa2a810",
+  "expectedMatrix": {
+    "setCount": 4,
+    "imageCount": 24,
+    "locales": [
+      "en-US",
+      "de-DE"
+    ],
+    "devices": [
+      {
+        "id": "iphone-6.9",
+        "orientation": "portrait",
+        "width": 1320,
+        "height": 2868
+      },
+      {
+        "id": "ipad-11",
+        "orientation": "portrait",
+        "width": 1488,
+        "height": 2266,
+        "apple_display": "11-inch iPad screenshot accepted and eligible for 13-inch fallback scaling",
+        "apple_screenshot_specification": "https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications",
+        "apple_13_inch_fallback": "When accepted screenshots for the 13-inch display are not provided, App Store Connect uses scaled screenshots for 13-inch displays."
+      }
+    ]
+  },
+  "completedCandidate": {
+    "setCount": 4,
+    "imageCount": 24,
+    "sets": [
+      {
+        "locale": "en-US",
+        "device": "iphone-6.9",
+        "width": 1320,
+        "height": 2868,
+        "imageCount": 6,
+        "geometry": {
+          "headlineToProofGapPercent": {
+            "min": 6.941902022315202,
+            "max": 6.941902022315202
+          },
+          "proofHeightPercent": {
+            "min": 74.75592747559274,
+            "max": 81.29630840306834
+          },
+          "proofLowerEdgePercent": {
+            "min": 94.05563546025104,
+            "max": 100.59601638772664
+          }
+        },
+        "humanVisualReview": {
+          "state": "pending",
+          "reviewer": null,
+          "reviewedAt": null,
+          "notes": "Fresh source captures require inspection of every locale/device contact sheet before approval."
+        },
+        "artifacts": [
+          {
+            "filename": "01-growth-rhythm-en-us-iphone-6.9-1320x2868.png",
+            "bytes": 355455,
+            "sha256": "e25965ecfb7f5fad9a895aae1cef45f45ec00cb08e150409d0d28fc673920460"
+          },
+          {
+            "filename": "02-growth-take-root-en-us-iphone-6.9-1320x2868.png",
+            "bytes": 470270,
+            "sha256": "10f7c97742cbdac7fefa8f917ada28fbc6a28892b59c833435b10f13972fb231"
+          },
+          {
+            "filename": "03-growth-arrive-en-us-iphone-6.9-1320x2868.png",
+            "bytes": 461578,
+            "sha256": "9719364a498fffb13d66960e7c275a8b4057c1d8d186ad8ec06441456f3c4060"
+          },
+          {
+            "filename": "04-growth-stays-en-us-iphone-6.9-1320x2868.png",
+            "bytes": 367647,
+            "sha256": "1f8f7da9625e6d807bbe274bcbfe0a597e4678b1089f8394bc56c5ac9e9e37bd"
+          },
+          {
+            "filename": "05-growth-reflect-en-us-iphone-6.9-1320x2868.png",
+            "bytes": 281734,
+            "sha256": "e2ecef2ceda69c15f8b61cb1aa9315b3759ec2df60117b669722671eaf4fd9e1"
+          },
+          {
+            "filename": "06-growth-refuge-en-us-iphone-6.9-1320x2868.png",
+            "bytes": 469997,
+            "sha256": "382a8007706325c05c458999703f14baff2108975db2f823a924e58dda75ec47"
+          },
+          {
+            "filename": "_contact-sheet.jpg",
+            "bytes": 410781,
+            "sha256": "9fcf31898985f3cc33ebef5c3bdeb1041b89f3c1bc004c8eb7fbed3fa9f60297"
+          },
+          {
+            "filename": "_manifest.json",
+            "bytes": 14192,
+            "sha256": "67ff1255a96d25d9692b28ae4ad21f4bb43b17b136f5d5f7e77ab50dab48715c"
+          },
+          {
+            "filename": "_validation.json",
+            "bytes": 5135,
+            "sha256": "7c57f23bb65deec46853762693cc7255041dba3d4a61e4c7afe19b20c67ba9fd"
+          },
+          {
+            "filename": "_validation.txt",
+            "bytes": 447,
+            "sha256": "be8fba5b7a6fb8b0f22b6e7dd14618dca5a04e71f8528c1ec42cd46603c1c0f4"
+          },
+          {
+            "filename": "arrive-within-app-store-en-us-iphone-6.9.zip",
+            "bytes": 2716767,
+            "sha256": "74591b1089cbbac34bba303940c2f6741ae2d8f0856741216562bbf45e9789f0"
+          }
+        ]
+      },
+      {
+        "locale": "en-US",
+        "device": "ipad-11",
+        "width": 1488,
+        "height": 2266,
+        "imageCount": 6,
+        "geometry": {
+          "headlineToProofGapPercent": {
+            "min": 6.733368270079435,
+            "max": 6.733368270079435
+          },
+          "proofHeightPercent": {
+            "min": 75.10205207413946,
+            "max": 79.40754633715798
+          },
+          "proofLowerEdgePercent": {
+            "min": 95.10150044130626,
+            "max": 99.4069947043248
+          }
+        },
+        "humanVisualReview": {
+          "state": "pending",
+          "reviewer": null,
+          "reviewedAt": null,
+          "notes": "Fresh source captures require inspection of every locale/device contact sheet before approval."
+        },
+        "artifacts": [
+          {
+            "filename": "01-growth-rhythm-en-us-ipad-11-1488x2266.png",
+            "bytes": 292294,
+            "sha256": "67bd881b37f6cd86966db5d2c20fa696fbe137f403be8305c4fea21c0189ea1a"
+          },
+          {
+            "filename": "02-growth-take-root-en-us-ipad-11-1488x2266.png",
+            "bytes": 458030,
+            "sha256": "42c1a407abc29ff91b435654b44c5b2458697bc194750b109082a2c3b7e2b18a"
+          },
+          {
+            "filename": "03-growth-arrive-en-us-ipad-11-1488x2266.png",
+            "bytes": 465488,
+            "sha256": "05844c7a5d836e7406de8dc473fc61095c5a87d5cf03a7a598fc730b395e9268"
+          },
+          {
+            "filename": "04-growth-stays-en-us-ipad-11-1488x2266.png",
+            "bytes": 307023,
+            "sha256": "5007c9168fa872970179b08997b364d232b16b1a89cac2d8d0558daf87f6fa8c"
+          },
+          {
+            "filename": "05-growth-reflect-en-us-ipad-11-1488x2266.png",
+            "bytes": 257868,
+            "sha256": "9a45b63da03ec2c13cd36f622cd9bfde0ceb54022c88d9d46615e7fde826e5f4"
+          },
+          {
+            "filename": "06-growth-refuge-en-us-ipad-11-1488x2266.png",
+            "bytes": 473157,
+            "sha256": "5138f0a1b9442569bca40b7c144e632e0a4631b3a8369577c89ecd5d99b8b900"
+          },
+          {
+            "filename": "_contact-sheet.jpg",
+            "bytes": 321371,
+            "sha256": "1c3e7cb08f8492ecffda5b016989796113789752dba1d6d3c89b6f55cb4efd82"
+          },
+          {
+            "filename": "_manifest.json",
+            "bytes": 14101,
+            "sha256": "4de7e826890c098294367a3192457ad1d5fba7713399c3679d5f5be6f94c218d"
+          },
+          {
+            "filename": "_validation.json",
+            "bytes": 5055,
+            "sha256": "aea43b4bc5445d0fb14194f86da4ccce53377198059f13e5114300228b695b70"
+          },
+          {
+            "filename": "_validation.txt",
+            "bytes": 429,
+            "sha256": "28fcaf197fcbaedeb88a4f387608279bfabbc8312900d1a9e11a385036b8461a"
+          },
+          {
+            "filename": "arrive-within-app-store-en-us-ipad-11.zip",
+            "bytes": 2479313,
+            "sha256": "be0195101c7c03f5ff6e870381993027b9a0b90947ca887940156fa1c08b13e5"
+          }
+        ]
+      },
+      {
+        "locale": "de-DE",
+        "device": "iphone-6.9",
+        "width": 1320,
+        "height": 2868,
+        "imageCount": 6,
+        "geometry": {
+          "headlineToProofGapPercent": {
+            "min": 4.008673291492329,
+            "max": 6.941902022315202
+          },
+          "proofHeightPercent": {
+            "min": 74.75592747559274,
+            "max": 81.29630840306834
+          },
+          "proofLowerEdgePercent": {
+            "min": 94.05563546025104,
+            "max": 102.34592921896792
+          }
+        },
+        "humanVisualReview": {
+          "state": "pending",
+          "reviewer": null,
+          "reviewedAt": null,
+          "notes": "Fresh source captures require inspection of every locale/device contact sheet before approval."
+        },
+        "artifacts": [
+          {
+            "filename": "01-growth-rhythm-de-de-iphone-6.9-1320x2868.png",
+            "bytes": 366053,
+            "sha256": "1cd92af232fe4697698ca3378557a51d2cf45302e79d621ba2691fb973448ef7"
+          },
+          {
+            "filename": "02-growth-take-root-de-de-iphone-6.9-1320x2868.png",
+            "bytes": 493974,
+            "sha256": "8a3417fee501a8e88e704ad59f08c099bd0875cdd394312c992f1470b2fe3509"
+          },
+          {
+            "filename": "03-growth-arrive-de-de-iphone-6.9-1320x2868.png",
+            "bytes": 469776,
+            "sha256": "e23613a0e29fb88def7cdb041e1668abd44ea1284a8365c52b7faf564ac952e1"
+          },
+          {
+            "filename": "04-growth-stays-de-de-iphone-6.9-1320x2868.png",
+            "bytes": 387878,
+            "sha256": "d8a0f39d3dec0f596c5cb3b352fb3d37fa3be4ca2a7fd29da1b3950e39ba4314"
+          },
+          {
+            "filename": "05-growth-reflect-de-de-iphone-6.9-1320x2868.png",
+            "bytes": 324156,
+            "sha256": "9143956992eeed5c01e2259ce83a7c67144904714f64d851a273310d85465e31"
+          },
+          {
+            "filename": "06-growth-refuge-de-de-iphone-6.9-1320x2868.png",
+            "bytes": 475368,
+            "sha256": "e8e19d04c6f9ce8dfafbb863c21a75df6ae136242d599d4110381de3137964b1"
+          },
+          {
+            "filename": "_contact-sheet.jpg",
+            "bytes": 433002,
+            "sha256": "d25acf77a7f56ca2b311116205c114bdf18e181acada6fe40dadbd2b401ce7ff"
+          },
+          {
+            "filename": "_manifest.json",
+            "bytes": 14184,
+            "sha256": "8a5ecd83e620bdbda67116f6433ab1a7be91987b9a96dad719fdd974520d0495"
+          },
+          {
+            "filename": "_validation.json",
+            "bytes": 5136,
+            "sha256": "5a3ac7dbcc42e992ed1b3a345132c494be24b7a81c76690f0b41a14fd4654082"
+          },
+          {
+            "filename": "_validation.txt",
+            "bytes": 447,
+            "sha256": "6eaeb9ba75f6ba6eaaefbc2062866ec21f165e7cac754cbbfa4aa3e52c9c0096"
+          },
+          {
+            "filename": "arrive-within-app-store-de-de-iphone-6.9.zip",
+            "bytes": 2849676,
+            "sha256": "98be2b64c59719ded9cde06abceb91a34e58ad9c7c38885882e35ecba4a2be00"
+          }
+        ]
+      },
+      {
+        "locale": "de-DE",
+        "device": "ipad-11",
+        "width": 1488,
+        "height": 2266,
+        "imageCount": 6,
+        "geometry": {
+          "headlineToProofGapPercent": {
+            "min": 6.733368270079435,
+            "max": 6.733368270079435
+          },
+          "proofHeightPercent": {
+            "min": 75.10205207413946,
+            "max": 79.40754633715798
+          },
+          "proofLowerEdgePercent": {
+            "min": 95.10150044130626,
+            "max": 99.4069947043248
+          }
+        },
+        "humanVisualReview": {
+          "state": "pending",
+          "reviewer": null,
+          "reviewedAt": null,
+          "notes": "Fresh source captures require inspection of every locale/device contact sheet before approval."
+        },
+        "artifacts": [
+          {
+            "filename": "01-growth-rhythm-de-de-ipad-11-1488x2266.png",
+            "bytes": 284732,
+            "sha256": "eec79ee8708b1a6e57688cc0fa8109590aa57e9c32160f6d514e0f05306629c1"
+          },
+          {
+            "filename": "02-growth-take-root-de-de-ipad-11-1488x2266.png",
+            "bytes": 474258,
+            "sha256": "905cfed5746d327cbc84499634e8ca63a7718a4937281e68d7b4cb9e3ab410d8"
+          },
+          {
+            "filename": "03-growth-arrive-de-de-ipad-11-1488x2266.png",
+            "bytes": 467642,
+            "sha256": "61c59d8b9e456c2a530935a08adf9c9262154a788fff14dcc4ba4f3365f92466"
+          },
+          {
+            "filename": "04-growth-stays-de-de-ipad-11-1488x2266.png",
+            "bytes": 308483,
+            "sha256": "9aaac2d2bde2e20e1a7c5874fa8e0ec0497c752698ec2e6b1830038647d4b927"
+          },
+          {
+            "filename": "05-growth-reflect-de-de-ipad-11-1488x2266.png",
+            "bytes": 279306,
+            "sha256": "e78b1b0da16fd6c6e3b2e47b2a91bf190ed56ac0a3729402748e56d799888ae9"
+          },
+          {
+            "filename": "06-growth-refuge-de-de-ipad-11-1488x2266.png",
+            "bytes": 471466,
+            "sha256": "f03c9f19ca3d041ed4cf2592fbd122ba69fac517fcd7fc9fe97403cec0f22108"
+          },
+          {
+            "filename": "_contact-sheet.jpg",
+            "bytes": 332442,
+            "sha256": "717f5691273b8a581be4d07993e78d1b4fbdad17074feecdfe19bbbac8510f4b"
+          },
+          {
+            "filename": "_manifest.json",
+            "bytes": 14092,
+            "sha256": "2c2ef4a8f4cfe2352afcaebad6fb28a911808a29841e6ec35418d1e46f942261"
+          },
+          {
+            "filename": "_validation.json",
+            "bytes": 5055,
+            "sha256": "e352cf38cb824b26a72a61895299749daab8372b6ccf07af14bf8f3b1f9514cc"
+          },
+          {
+            "filename": "_validation.txt",
+            "bytes": 429,
+            "sha256": "685efda7d798f65dc8d2907cb766e00d0ede14ebf0cd0f521e689162dbb6659f"
+          },
+          {
+            "filename": "arrive-within-app-store-de-de-ipad-11.zip",
+            "bytes": 2523650,
+            "sha256": "19d8f313dd946e1e5ef6a5071af8a6388221951821f506d39b44c29094ad74b9"
+          }
+        ]
+      }
+    ]
+  },
+  "slideGeometryResults": [
+    {
+      "locale": "en-US",
+      "device": "iphone-6.9",
+      "slide": 1,
+      "slideId": "growth-rhythm",
+      "filename": "01-growth-rhythm-en-us-iphone-6.9-1320x2868.png",
+      "sha256": "e25965ecfb7f5fad9a895aae1cef45f45ec00cb08e150409d0d28fc673920460",
+      "headlineBounds": {
+        "x": 118.796875,
+        "y": 85.796875,
+        "width": 1082.390625,
+        "height": 268.625
+      },
+      "proofBounds": {
+        "x": 107.578125,
+        "y": 553.515625,
+        "width": 1104.828125,
+        "height": 2331.578125
+      },
+      "headlineToProofGapRatio": 0.06941902022315202,
+      "proofHeightRatio": 0.8129630840306834,
+      "proofLowerEdgeRatio": 1.0059601638772664
+    },
+    {
+      "locale": "en-US",
+      "device": "iphone-6.9",
+      "slide": 2,
+      "slideId": "growth-take-root",
+      "filename": "02-growth-take-root-en-us-iphone-6.9-1320x2868.png",
+      "sha256": "10f7c97742cbdac7fefa8f917ada28fbc6a28892b59c833435b10f13972fb231",
+      "headlineBounds": {
+        "x": 118.796875,
+        "y": 85.796875,
+        "width": 1082.390625,
+        "height": 268.625
+      },
+      "proofBounds": {
+        "x": 0,
+        "y": 553.515625,
+        "width": 1320,
+        "height": 2144
+      },
+      "headlineToProofGapRatio": 0.06941902022315202,
+      "proofHeightRatio": 0.7475592747559274,
+      "proofLowerEdgeRatio": 0.9405563546025104
+    },
+    {
+      "locale": "en-US",
+      "device": "iphone-6.9",
+      "slide": 3,
+      "slideId": "growth-arrive",
+      "filename": "03-growth-arrive-en-us-iphone-6.9-1320x2868.png",
+      "sha256": "9719364a498fffb13d66960e7c275a8b4057c1d8d186ad8ec06441456f3c4060",
+      "headlineBounds": {
+        "x": 118.796875,
+        "y": 85.796875,
+        "width": 1082.390625,
+        "height": 268.625
+      },
+      "proofBounds": {
+        "x": 107.578125,
+        "y": 553.515625,
+        "width": 1104.828125,
+        "height": 2331.578125
+      },
+      "headlineToProofGapRatio": 0.06941902022315202,
+      "proofHeightRatio": 0.8129630840306834,
+      "proofLowerEdgeRatio": 1.0059601638772664
+    },
+    {
+      "locale": "en-US",
+      "device": "iphone-6.9",
+      "slide": 4,
+      "slideId": "growth-stays",
+      "filename": "04-growth-stays-en-us-iphone-6.9-1320x2868.png",
+      "sha256": "1f8f7da9625e6d807bbe274bcbfe0a597e4678b1089f8394bc56c5ac9e9e37bd",
+      "headlineBounds": {
+        "x": 118.796875,
+        "y": 85.796875,
+        "width": 1082.390625,
+        "height": 268.625
+      },
+      "proofBounds": {
+        "x": 107.578125,
+        "y": 553.515625,
+        "width": 1104.828125,
+        "height": 2331.578125
+      },
+      "headlineToProofGapRatio": 0.06941902022315202,
+      "proofHeightRatio": 0.8129630840306834,
+      "proofLowerEdgeRatio": 1.0059601638772664
+    },
+    {
+      "locale": "en-US",
+      "device": "iphone-6.9",
+      "slide": 5,
+      "slideId": "growth-reflect",
+      "filename": "05-growth-reflect-en-us-iphone-6.9-1320x2868.png",
+      "sha256": "e2ecef2ceda69c15f8b61cb1aa9315b3759ec2df60117b669722671eaf4fd9e1",
+      "headlineBounds": {
+        "x": 118.796875,
+        "y": 85.796875,
+        "width": 1082.390625,
+        "height": 268.625
+      },
+      "proofBounds": {
+        "x": 107.578125,
+        "y": 553.515625,
+        "width": 1104.828125,
+        "height": 2331.578125
+      },
+      "headlineToProofGapRatio": 0.06941902022315202,
+      "proofHeightRatio": 0.8129630840306834,
+      "proofLowerEdgeRatio": 1.0059601638772664
+    },
+    {
+      "locale": "en-US",
+      "device": "iphone-6.9",
+      "slide": 6,
+      "slideId": "growth-refuge",
+      "filename": "06-growth-refuge-en-us-iphone-6.9-1320x2868.png",
+      "sha256": "382a8007706325c05c458999703f14baff2108975db2f823a924e58dda75ec47",
+      "headlineBounds": {
+        "x": 118.796875,
+        "y": 85.796875,
+        "width": 1082.390625,
+        "height": 268.625
+      },
+      "proofBounds": {
+        "x": 107.578125,
+        "y": 553.515625,
+        "width": 1104.828125,
+        "height": 2331.578125
+      },
+      "headlineToProofGapRatio": 0.06941902022315202,
+      "proofHeightRatio": 0.8129630840306834,
+      "proofLowerEdgeRatio": 1.0059601638772664
+    },
+    {
+      "locale": "en-US",
+      "device": "ipad-11",
+      "slide": 1,
+      "slideId": "growth-rhythm",
+      "filename": "01-growth-rhythm-en-us-ipad-11-1488x2266.png",
+      "sha256": "67bd881b37f6cd86966db5d2c20fa696fbe137f403be8305c4fea21c0189ea1a",
+      "headlineBounds": {
+        "x": 133.921875,
+        "y": 66.953125,
+        "width": 1220.15625,
+        "height": 233.65625
+      },
+      "proofBounds": {
+        "x": 114.5625,
+        "y": 453.1875,
+        "width": 1258.875,
+        "height": 1799.375
+      },
+      "headlineToProofGapRatio": 0.06733368270079435,
+      "proofHeightRatio": 0.7940754633715799,
+      "proofLowerEdgeRatio": 0.994069947043248
+    },
+    {
+      "locale": "en-US",
+      "device": "ipad-11",
+      "slide": 2,
+      "slideId": "growth-take-root",
+      "filename": "02-growth-take-root-en-us-ipad-11-1488x2266.png",
+      "sha256": "42c1a407abc29ff91b435654b44c5b2458697bc194750b109082a2c3b7e2b18a",
+      "headlineBounds": {
+        "x": 133.921875,
+        "y": 66.953125,
+        "width": 1220.15625,
+        "height": 233.65625
+      },
+      "proofBounds": {
+        "x": 0,
+        "y": 453.1875,
+        "width": 1488,
+        "height": 1701.8125
+      },
+      "headlineToProofGapRatio": 0.06733368270079435,
+      "proofHeightRatio": 0.7510205207413946,
+      "proofLowerEdgeRatio": 0.9510150044130626
+    },
+    {
+      "locale": "en-US",
+      "device": "ipad-11",
+      "slide": 3,
+      "slideId": "growth-arrive",
+      "filename": "03-growth-arrive-en-us-ipad-11-1488x2266.png",
+      "sha256": "05844c7a5d836e7406de8dc473fc61095c5a87d5cf03a7a598fc730b395e9268",
+      "headlineBounds": {
+        "x": 133.921875,
+        "y": 66.953125,
+        "width": 1220.15625,
+        "height": 233.65625
+      },
+      "proofBounds": {
+        "x": 114.5625,
+        "y": 453.1875,
+        "width": 1258.875,
+        "height": 1799.375
+      },
+      "headlineToProofGapRatio": 0.06733368270079435,
+      "proofHeightRatio": 0.7940754633715799,
+      "proofLowerEdgeRatio": 0.994069947043248
+    },
+    {
+      "locale": "en-US",
+      "device": "ipad-11",
+      "slide": 4,
+      "slideId": "growth-stays",
+      "filename": "04-growth-stays-en-us-ipad-11-1488x2266.png",
+      "sha256": "5007c9168fa872970179b08997b364d232b16b1a89cac2d8d0558daf87f6fa8c",
+      "headlineBounds": {
+        "x": 133.921875,
+        "y": 66.953125,
+        "width": 1220.15625,
+        "height": 233.65625
+      },
+      "proofBounds": {
+        "x": 114.5625,
+        "y": 453.1875,
+        "width": 1258.875,
+        "height": 1799.375
+      },
+      "headlineToProofGapRatio": 0.06733368270079435,
+      "proofHeightRatio": 0.7940754633715799,
+      "proofLowerEdgeRatio": 0.994069947043248
+    },
+    {
+      "locale": "en-US",
+      "device": "ipad-11",
+      "slide": 5,
+      "slideId": "growth-reflect",
+      "filename": "05-growth-reflect-en-us-ipad-11-1488x2266.png",
+      "sha256": "9a45b63da03ec2c13cd36f622cd9bfde0ceb54022c88d9d46615e7fde826e5f4",
+      "headlineBounds": {
+        "x": 133.921875,
+        "y": 66.953125,
+        "width": 1220.15625,
+        "height": 233.65625
+      },
+      "proofBounds": {
+        "x": 114.5625,
+        "y": 453.1875,
+        "width": 1258.875,
+        "height": 1799.375
+      },
+      "headlineToProofGapRatio": 0.06733368270079435,
+      "proofHeightRatio": 0.7940754633715799,
+      "proofLowerEdgeRatio": 0.994069947043248
+    },
+    {
+      "locale": "en-US",
+      "device": "ipad-11",
+      "slide": 6,
+      "slideId": "growth-refuge",
+      "filename": "06-growth-refuge-en-us-ipad-11-1488x2266.png",
+      "sha256": "5138f0a1b9442569bca40b7c144e632e0a4631b3a8369577c89ecd5d99b8b900",
+      "headlineBounds": {
+        "x": 133.921875,
+        "y": 66.953125,
+        "width": 1220.15625,
+        "height": 233.65625
+      },
+      "proofBounds": {
+        "x": 114.5625,
+        "y": 453.1875,
+        "width": 1258.875,
+        "height": 1799.375
+      },
+      "headlineToProofGapRatio": 0.06733368270079435,
+      "proofHeightRatio": 0.7940754633715799,
+      "proofLowerEdgeRatio": 0.994069947043248
+    },
+    {
+      "locale": "de-DE",
+      "device": "iphone-6.9",
+      "slide": 1,
+      "slideId": "growth-rhythm",
+      "filename": "01-growth-rhythm-de-de-iphone-6.9-1320x2868.png",
+      "sha256": "1cd92af232fe4697698ca3378557a51d2cf45302e79d621ba2691fb973448ef7",
+      "headlineBounds": {
+        "x": 118.796875,
+        "y": 85.796875,
+        "width": 1082.390625,
+        "height": 268.625
+      },
+      "proofBounds": {
+        "x": 107.578125,
+        "y": 553.515625,
+        "width": 1104.828125,
+        "height": 2331.578125
+      },
+      "headlineToProofGapRatio": 0.06941902022315202,
+      "proofHeightRatio": 0.8129630840306834,
+      "proofLowerEdgeRatio": 1.0059601638772664
+    },
+    {
+      "locale": "de-DE",
+      "device": "iphone-6.9",
+      "slide": 2,
+      "slideId": "growth-take-root",
+      "filename": "02-growth-take-root-de-de-iphone-6.9-1320x2868.png",
+      "sha256": "8a3417fee501a8e88e704ad59f08c099bd0875cdd394312c992f1470b2fe3509",
+      "headlineBounds": {
+        "x": 118.796875,
+        "y": 85.796875,
+        "width": 1082.390625,
+        "height": 268.625
+      },
+      "proofBounds": {
+        "x": 0,
+        "y": 553.515625,
+        "width": 1320,
+        "height": 2144
+      },
+      "headlineToProofGapRatio": 0.06941902022315202,
+      "proofHeightRatio": 0.7475592747559274,
+      "proofLowerEdgeRatio": 0.9405563546025104
+    },
+    {
+      "locale": "de-DE",
+      "device": "iphone-6.9",
+      "slide": 3,
+      "slideId": "growth-arrive",
+      "filename": "03-growth-arrive-de-de-iphone-6.9-1320x2868.png",
+      "sha256": "e23613a0e29fb88def7cdb041e1668abd44ea1284a8365c52b7faf564ac952e1",
+      "headlineBounds": {
+        "x": 118.796875,
+        "y": 85.796875,
+        "width": 1082.390625,
+        "height": 268.625
+      },
+      "proofBounds": {
+        "x": 107.578125,
+        "y": 553.515625,
+        "width": 1104.828125,
+        "height": 2331.578125
+      },
+      "headlineToProofGapRatio": 0.06941902022315202,
+      "proofHeightRatio": 0.8129630840306834,
+      "proofLowerEdgeRatio": 1.0059601638772664
+    },
+    {
+      "locale": "de-DE",
+      "device": "iphone-6.9",
+      "slide": 4,
+      "slideId": "growth-stays",
+      "filename": "04-growth-stays-de-de-iphone-6.9-1320x2868.png",
+      "sha256": "d8a0f39d3dec0f596c5cb3b352fb3d37fa3be4ca2a7fd29da1b3950e39ba4314",
+      "headlineBounds": {
+        "x": 118.796875,
+        "y": 85.796875,
+        "width": 1082.390625,
+        "height": 268.625
+      },
+      "proofBounds": {
+        "x": 107.578125,
+        "y": 553.515625,
+        "width": 1104.828125,
+        "height": 2331.578125
+      },
+      "headlineToProofGapRatio": 0.06941902022315202,
+      "proofHeightRatio": 0.8129630840306834,
+      "proofLowerEdgeRatio": 1.0059601638772664
+    },
+    {
+      "locale": "de-DE",
+      "device": "iphone-6.9",
+      "slide": 5,
+      "slideId": "growth-reflect",
+      "filename": "05-growth-reflect-de-de-iphone-6.9-1320x2868.png",
+      "sha256": "9143956992eeed5c01e2259ce83a7c67144904714f64d851a273310d85465e31",
+      "headlineBounds": {
+        "x": 118.796875,
+        "y": 85.796875,
+        "width": 1082.390625,
+        "height": 402.9375
+      },
+      "proofBounds": {
+        "x": 107.578125,
+        "y": 603.703125,
+        "width": 1104.828125,
+        "height": 2331.578125
+      },
+      "headlineToProofGapRatio": 0.04008673291492329,
+      "proofHeightRatio": 0.8129630840306834,
+      "proofLowerEdgeRatio": 1.0234592921896792
+    },
+    {
+      "locale": "de-DE",
+      "device": "iphone-6.9",
+      "slide": 6,
+      "slideId": "growth-refuge",
+      "filename": "06-growth-refuge-de-de-iphone-6.9-1320x2868.png",
+      "sha256": "e8e19d04c6f9ce8dfafbb863c21a75df6ae136242d599d4110381de3137964b1",
+      "headlineBounds": {
+        "x": 118.796875,
+        "y": 85.796875,
+        "width": 1082.390625,
+        "height": 268.625
+      },
+      "proofBounds": {
+        "x": 107.578125,
+        "y": 553.515625,
+        "width": 1104.828125,
+        "height": 2331.578125
+      },
+      "headlineToProofGapRatio": 0.06941902022315202,
+      "proofHeightRatio": 0.8129630840306834,
+      "proofLowerEdgeRatio": 1.0059601638772664
+    },
+    {
+      "locale": "de-DE",
+      "device": "ipad-11",
+      "slide": 1,
+      "slideId": "growth-rhythm",
+      "filename": "01-growth-rhythm-de-de-ipad-11-1488x2266.png",
+      "sha256": "eec79ee8708b1a6e57688cc0fa8109590aa57e9c32160f6d514e0f05306629c1",
+      "headlineBounds": {
+        "x": 133.921875,
+        "y": 66.953125,
+        "width": 1220.15625,
+        "height": 233.65625
+      },
+      "proofBounds": {
+        "x": 114.5625,
+        "y": 453.1875,
+        "width": 1258.875,
+        "height": 1799.375
+      },
+      "headlineToProofGapRatio": 0.06733368270079435,
+      "proofHeightRatio": 0.7940754633715799,
+      "proofLowerEdgeRatio": 0.994069947043248
+    },
+    {
+      "locale": "de-DE",
+      "device": "ipad-11",
+      "slide": 2,
+      "slideId": "growth-take-root",
+      "filename": "02-growth-take-root-de-de-ipad-11-1488x2266.png",
+      "sha256": "905cfed5746d327cbc84499634e8ca63a7718a4937281e68d7b4cb9e3ab410d8",
+      "headlineBounds": {
+        "x": 133.921875,
+        "y": 66.953125,
+        "width": 1220.15625,
+        "height": 233.65625
+      },
+      "proofBounds": {
+        "x": 0,
+        "y": 453.1875,
+        "width": 1488,
+        "height": 1701.8125
+      },
+      "headlineToProofGapRatio": 0.06733368270079435,
+      "proofHeightRatio": 0.7510205207413946,
+      "proofLowerEdgeRatio": 0.9510150044130626
+    },
+    {
+      "locale": "de-DE",
+      "device": "ipad-11",
+      "slide": 3,
+      "slideId": "growth-arrive",
+      "filename": "03-growth-arrive-de-de-ipad-11-1488x2266.png",
+      "sha256": "61c59d8b9e456c2a530935a08adf9c9262154a788fff14dcc4ba4f3365f92466",
+      "headlineBounds": {
+        "x": 133.921875,
+        "y": 66.953125,
+        "width": 1220.15625,
+        "height": 233.65625
+      },
+      "proofBounds": {
+        "x": 114.5625,
+        "y": 453.1875,
+        "width": 1258.875,
+        "height": 1799.375
+      },
+      "headlineToProofGapRatio": 0.06733368270079435,
+      "proofHeightRatio": 0.7940754633715799,
+      "proofLowerEdgeRatio": 0.994069947043248
+    },
+    {
+      "locale": "de-DE",
+      "device": "ipad-11",
+      "slide": 4,
+      "slideId": "growth-stays",
+      "filename": "04-growth-stays-de-de-ipad-11-1488x2266.png",
+      "sha256": "9aaac2d2bde2e20e1a7c5874fa8e0ec0497c752698ec2e6b1830038647d4b927",
+      "headlineBounds": {
+        "x": 133.921875,
+        "y": 66.953125,
+        "width": 1220.15625,
+        "height": 233.65625
+      },
+      "proofBounds": {
+        "x": 114.5625,
+        "y": 453.1875,
+        "width": 1258.875,
+        "height": 1799.375
+      },
+      "headlineToProofGapRatio": 0.06733368270079435,
+      "proofHeightRatio": 0.7940754633715799,
+      "proofLowerEdgeRatio": 0.994069947043248
+    },
+    {
+      "locale": "de-DE",
+      "device": "ipad-11",
+      "slide": 5,
+      "slideId": "growth-reflect",
+      "filename": "05-growth-reflect-de-de-ipad-11-1488x2266.png",
+      "sha256": "e78b1b0da16fd6c6e3b2e47b2a91bf190ed56ac0a3729402748e56d799888ae9",
+      "headlineBounds": {
+        "x": 133.921875,
+        "y": 66.953125,
+        "width": 1220.15625,
+        "height": 233.65625
+      },
+      "proofBounds": {
+        "x": 114.5625,
+        "y": 453.1875,
+        "width": 1258.875,
+        "height": 1799.375
+      },
+      "headlineToProofGapRatio": 0.06733368270079435,
+      "proofHeightRatio": 0.7940754633715799,
+      "proofLowerEdgeRatio": 0.994069947043248
+    },
+    {
+      "locale": "de-DE",
+      "device": "ipad-11",
+      "slide": 6,
+      "slideId": "growth-refuge",
+      "filename": "06-growth-refuge-de-de-ipad-11-1488x2266.png",
+      "sha256": "f03c9f19ca3d041ed4cf2592fbd122ba69fac517fcd7fc9fe97403cec0f22108",
+      "headlineBounds": {
+        "x": 133.921875,
+        "y": 66.953125,
+        "width": 1220.15625,
+        "height": 233.65625
+      },
+      "proofBounds": {
+        "x": 114.5625,
+        "y": 453.1875,
+        "width": 1258.875,
+        "height": 1799.375
+      },
+      "headlineToProofGapRatio": 0.06733368270079435,
+      "proofHeightRatio": 0.7940754633715799,
+      "proofLowerEdgeRatio": 0.994069947043248
+    }
+  ],
+  "fullMatrixStatus": "complete-human-review-pending",
+  "retainedHistoricalSources": {
+    "device": "ipad-13",
+    "state": "stale-incomplete-excluded-from-selected-outputs",
+    "appleFallback": "When accepted screenshots for the 13-inch display are not provided, App Store Connect uses scaled screenshots for 13-inch displays.",
+    "sets": [
+      {
+        "locale": "en-US",
+        "sourceState": "stale-incomplete",
+        "sourceRevision": "aed3e83d30d6290cb99731be79675fcfbeb7941168ec960479e08148b1293925",
+        "sourceManifestPath": "capture-source-manifest.json",
+        "sourceManifestSha256": "c90363bb8dcbaf39840a749134f6bc0a70078128a78ace6ea742bdb777b3bb3b",
+        "missingCaptureIds": [
+          "garden-day"
+        ],
+        "sourceCaptureHashes": {
+          "garden-hero": "07a71d2a31be7c34a47e945df6fe49cb95e88c9eee764fde063cb70b37b88e0c",
+          "garden-seed": "45d36e1fadcb004866c985dab8f058fcecacb7e5d9fcff70ae7b4d292b9c2e1d",
+          "guided-library": "9c0be5f0cfebcce83dc4d4d20ed6a4f7947f40dff2554a90c71b6060c3428c30",
+          "practice-chooser": "15452b3d6f32d3131f23afdb53d1fea4d1d3ec157b97bbd907e127c2c897d1d0",
+          "journal": "f0e76fa0bb0cb8a5bf85f715540a24c8a4ab2004c711e1db3e28fca6d45be4f2",
+          "data-sync": "e758e0bfd433549539a6d339d3485ef351b4e598e9897b40620986283fe70138",
+          "journey-calendar": "3c3ca19ccf03e27983019b841cf20a0bda5d01691efafda621b224f301246c9b",
+          "journey-milestones": "3c3ca19ccf03e27983019b841cf20a0bda5d01691efafda621b224f301246c9b"
+        }
+      },
+      {
+        "locale": "de-DE",
+        "sourceState": "stale-incomplete",
+        "sourceRevision": "aed3e83d30d6290cb99731be79675fcfbeb7941168ec960479e08148b1293925",
+        "sourceManifestPath": "capture-source-manifest.json",
+        "sourceManifestSha256": "c90363bb8dcbaf39840a749134f6bc0a70078128a78ace6ea742bdb777b3bb3b",
+        "missingCaptureIds": [
+          "garden-day"
+        ],
+        "sourceCaptureHashes": {
+          "garden-hero": "7b6e2cd43960c73e6c8cfd990a2f2b05516521746fea5d0e68700b4b1e8734d9",
+          "garden-seed": "51fe33f11adf130138f526d00603b428c0cce10bf15e9de7d8b6fe58312ac94f",
+          "guided-library": "faae6c9861c299ec3fc9054a8720d70e6a76460289b962fa4453ba7bdcdda222",
+          "practice-chooser": "363f21b9f31738f81da68d34865a71df348e0892361820ee9ea78789343a58cb",
+          "journal": "f4444b2e80ad5f9fd6f29b978729a7221388e82463b6227691e3aa32a58245d4",
+          "data-sync": "720b8e0be2b244491416b4f0b4d04b03b56d9c1fa3b51677a61db3d4ccfe1a61",
+          "journey-calendar": "6995f2f900b023c2343b746dd7ca6f77f97b0b92fdf8f8a76d921f6d06a917a3",
+          "journey-milestones": "6995f2f900b023c2343b746dd7ca6f77f97b0b92fdf8f8a76d921f6d06a917a3"
+        }
+      }
+    ]
+  },
+  "runtimeWarningProvenance": [
+    {
+      "device": "iphone-6.9",
+      "warningsByTest": {
+        "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()": [
+          "Invalid frame dimension (negative or non-finite)."
+        ],
+        "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()": [
+          "Invalid frame dimension (negative or non-finite)."
+        ],
+        "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayEnglish()": [],
+        "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()": []
+      }
+    },
+    {
+      "device": "ipad-11",
+      "warningsByTest": {
+        "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()": [
+          "Invalid frame dimension (negative or non-finite)."
+        ],
+        "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()": [
+          "Invalid frame dimension (negative or non-finite)."
+        ],
+        "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayEnglish()": [],
+        "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()": []
+      }
+    }
+  ],
+  "humanVisualReview": "pending",
+  "uploadAuthorization": "candidate-only-human-review-pending-not-upload-authorized",
+  "externalRequests": 0
+}

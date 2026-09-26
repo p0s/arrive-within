@@ -5,6 +5,7 @@ import {
   WebGLContextRecoveryState,
 } from "../src/resilience";
 import {
+  configureAnimatedWildlifeMesh,
   disposeObjectResources,
   resolveBirdPresentation,
   resolveBirdSettledPresentation,
@@ -64,18 +65,38 @@ describe("renderer resilience", () => {
     const geometryDisposed = vi.fn();
     const materialDisposed = vi.fn();
     const textureDisposed = vi.fn();
+    const instancesDisposed = vi.fn();
     geometry.addEventListener("dispose", geometryDisposed);
     material.addEventListener("dispose", materialDisposed);
     texture.addEventListener("dispose", textureDisposed);
+    const instances = new THREE.InstancedMesh(geometry, material, 2);
+    instances.addEventListener("dispose", instancesDisposed);
     const root = new THREE.Group();
     root.add(new THREE.Mesh(geometry, material));
     root.add(new THREE.Mesh(geometry, material));
+    root.add(instances);
 
     disposeObjectResources(root);
 
     expect(geometryDisposed).toHaveBeenCalledTimes(1);
     expect(materialDisposed).toHaveBeenCalledTimes(1);
     expect(textureDisposed).toHaveBeenCalledTimes(1);
+    expect(instancesDisposed).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps animated wildlife instances visible through orbit and reduced-motion pose changes", () => {
+    const mesh = configureAnimatedWildlifeMesh(
+      new THREE.InstancedMesh(new THREE.BoxGeometry(), new THREE.MeshBasicMaterial(), 1),
+    );
+    const farPose = new THREE.Matrix4().makeTranslation(80, 12, -40);
+    mesh.setMatrixAt(0, farPose);
+    mesh.instanceMatrix.needsUpdate = true;
+    expect(mesh.frustumCulled).toBe(false);
+
+    const settledPose = new THREE.Matrix4().makeTranslation(-4, 2, 3);
+    mesh.setMatrixAt(0, settledPose);
+    mesh.instanceMatrix.needsUpdate = true;
+    expect(mesh.frustumCulled).toBe(false);
   });
 
   it("settles an active growth reveal when Reduce Motion becomes enabled", () => {

@@ -922,7 +922,7 @@ final class ArriveWithinUITests: XCTestCase {
     let explore = app.buttons["onboarding.explore"]
     XCTAssertTrue(explore.waitForExistence(timeout: 8))
     explore.tap()
-    let journalTab = app.tabBars.buttons["navigation.tab.journal"]
+    let journalTab = app.tabBars.buttons["Journal"]
     XCTAssertTrue(journalTab.waitForExistence(timeout: 5))
     journalTab.tap()
 
@@ -939,7 +939,7 @@ final class ArriveWithinUITests: XCTestCase {
     app.terminate()
     app.launchArguments = []
     app.launch()
-    let restoredJournalTab = app.tabBars.buttons["navigation.tab.journal"]
+    let restoredJournalTab = app.tabBars.buttons["Journal"]
     XCTAssertTrue(restoredJournalTab.waitForExistence(timeout: 8))
     restoredJournalTab.tap()
     let restoredText = app.staticTexts["Breathing felt steady near the old tree."]
@@ -1011,11 +1011,289 @@ final class ArriveWithinUITests: XCTestCase {
     app.terminate()
     app.launchArguments = []
     app.launch()
-    let journalTab = app.tabBars.buttons["navigation.tab.journal"]
+    let journalTab = app.tabBars.buttons["Journal"]
     XCTAssertTrue(journalTab.waitForExistence(timeout: 8))
     journalTab.tap()
     XCTAssertTrue(app.staticTexts["A quiet ending after practice."].waitForExistence(timeout: 5))
     XCTAssertTrue(app.staticTexts["Practice"].exists)
+  }
+
+  func testUnfinishedJournalTextRestoresAfterAppRelaunch() throws {
+    let namespace = UUID().uuidString
+    let app = XCUIApplication()
+    let arguments = [
+      "-ui-test-namespace", namespace,
+      "-ui-test-language", "en",
+      "-AppleLanguages", "(en)",
+      "-AppleLocale", "en_US",
+    ]
+    app.launchArguments = arguments
+    app.launch()
+
+    XCTAssertTrue(app.buttons["onboarding.explore"].waitForExistence(timeout: 8))
+    app.buttons["onboarding.explore"].tap()
+    let journalTab = app.tabBars.buttons["Journal"]
+    XCTAssertTrue(journalTab.waitForExistence(timeout: 5))
+    journalTab.tap()
+    XCTAssertTrue(app.buttons["journal.empty.new"].waitForExistence(timeout: 5))
+    app.buttons["journal.empty.new"].tap()
+
+    let editor = app.textViews["journal.editor.text"]
+    XCTAssertTrue(editor.waitForExistence(timeout: 5))
+    editor.tap()
+    editor.typeText("A reflection that survives interruption.")
+    XCTAssertTrue(app.descendants(matching: .any)["journal.draft.saved"].waitForExistence(timeout: 5))
+
+    app.terminate()
+    app.launchArguments = arguments
+    app.launch()
+    let restoredJournalTab = app.tabBars.buttons["Journal"]
+    XCTAssertTrue(restoredJournalTab.waitForExistence(timeout: 8))
+    restoredJournalTab.tap()
+    app.buttons["journal.empty.new"].tap()
+    XCTAssertTrue(app.descendants(matching: .any)["journal.draft.restored"].waitForExistence(timeout: 5))
+    let restoredEditor = app.textViews["journal.editor.text"]
+    XCTAssertTrue(restoredEditor.waitForExistence(timeout: 5))
+    XCTAssertTrue((restoredEditor.value as? String)?.contains("A reflection that survives interruption.") == true)
+  }
+
+  func testTypingDuringDraftLoadIsNotOverwrittenBySavedDraft() throws {
+    let namespace = UUID().uuidString
+    let baseArguments = [
+      "-ui-test-namespace", namespace,
+      "-ui-test-language", "en",
+      "-AppleLanguages", "(en)",
+      "-AppleLocale", "en_US",
+    ]
+    let app = XCUIApplication()
+    app.launchArguments = baseArguments
+    app.launch()
+
+    XCTAssertTrue(app.buttons["onboarding.explore"].waitForExistence(timeout: 8))
+    app.buttons["onboarding.explore"].tap()
+    let journalTab = app.tabBars.buttons["Journal"]
+    XCTAssertTrue(journalTab.waitForExistence(timeout: 5))
+    journalTab.tap()
+    XCTAssertTrue(app.buttons["journal.empty.new"].waitForExistence(timeout: 5))
+    app.buttons["journal.empty.new"].tap()
+    let firstEditor = app.textViews["journal.editor.text"]
+    XCTAssertTrue(firstEditor.waitForExistence(timeout: 5))
+    firstEditor.typeText("The saved version of this reflection.")
+    XCTAssertTrue(app.descendants(matching: .any)["journal.draft.saved"].waitForExistence(timeout: 5))
+    app.terminate()
+
+    let restoredApp = XCUIApplication()
+    restoredApp.launchArguments = baseArguments + ["-ui-test-delay-journal-draft-load"]
+    restoredApp.launch()
+    XCTAssertTrue(restoredApp.tabBars.buttons["Journal"].waitForExistence(timeout: 8))
+    restoredApp.tabBars.buttons["Journal"].tap()
+    XCTAssertTrue(restoredApp.buttons["journal.empty.new"].waitForExistence(timeout: 5))
+    restoredApp.buttons["journal.empty.new"].tap()
+    let editor = restoredApp.textViews["journal.editor.text"]
+    XCTAssertTrue(editor.waitForExistence(timeout: 5))
+    editor.typeText("New text typed while the saved version loads.")
+
+    XCTAssertTrue(restoredApp.descendants(matching: .any)["journal.draft.saved"].waitForExistence(timeout: 12))
+    let editorValue = editor.value as? String ?? ""
+    XCTAssertTrue(editorValue.contains("New text typed while the saved version loads."))
+    XCTAssertFalse(editorValue.contains("The saved version of this reflection."))
+  }
+
+  func testSavedReflectionDoesNotRepeatWhenDraftCleanupFails() throws {
+    let namespace = UUID().uuidString
+    let app = XCUIApplication()
+    app.launchArguments = [
+      "-ui-test-reset",
+      "-ui-test-namespace", namespace,
+      "-ui-test-journal-draft-delete-fails-once",
+      "-ui-test-disable-autocorrection",
+    ]
+    app.launch()
+
+    let explore = app.buttons["onboarding.explore"]
+    XCTAssertTrue(explore.waitForExistence(timeout: 8))
+    explore.tap()
+    let journal = app.tabBars.buttons["navigation.tab.journal"]
+    XCTAssertTrue(journal.waitForExistence(timeout: 5))
+    journal.tap()
+    let create = app.buttons["journal.empty.new"]
+    XCTAssertTrue(create.waitForExistence(timeout: 5))
+    create.tap()
+    let editor = app.textViews["journal.editor.text"]
+    XCTAssertTrue(editor.waitForExistence(timeout: 5))
+    editor.tap()
+    editor.typeText("This reflection is saved exactly once.")
+    app.buttons["journal.editor.keyboard.done"].tap()
+    app.buttons["journal.editor.save"].tap()
+
+    let cleanupError = app.staticTexts["journal.draft.cleanupFailed"]
+    XCTAssertTrue(cleanupError.waitForExistence(timeout: 8))
+    XCTAssertTrue(cleanupError.label.contains("reflection is saved"))
+    XCTAssertFalse(app.buttons["journal.editor.save"].isEnabled)
+    let retryCleanup = app.buttons["journal.draft.retryCleanup"]
+    XCTAssertTrue(retryCleanup.isEnabled)
+    retryCleanup.tap()
+
+    let savedEntry = app.buttons.matching(
+      NSPredicate(format: "identifier BEGINSWITH %@", "journal.entry.")
+    ).firstMatch
+    XCTAssertTrue(savedEntry.waitForExistence(timeout: 8))
+    XCTAssertEqual(
+      app.buttons.matching(
+        NSPredicate(format: "identifier BEGINSWITH %@", "journal.entry.")
+      ).count,
+      1
+    )
+    XCTAssertTrue(savedEntry.label.contains("This reflection is saved exactly once."))
+  }
+
+  func testStaleDraftCleanupFailureThenEditRetryPersistsCurrentText() throws {
+    let namespace = UUID().uuidString
+    let baseArguments = [
+      "-ui-test-namespace", namespace,
+      "-ui-test-language", "en",
+      "-AppleLanguages", "(en)",
+      "-AppleLocale", "en_US",
+      "-ui-test-disable-autocorrection",
+    ]
+
+    let firstRun = XCUIApplication()
+    firstRun.launchArguments = ["-ui-test-reset"] + baseArguments
+    firstRun.launch()
+    XCTAssertTrue(firstRun.buttons["onboarding.explore"].waitForExistence(timeout: 8))
+    firstRun.buttons["onboarding.explore"].tap()
+    XCTAssertTrue(firstRun.tabBars.buttons["navigation.tab.journal"].waitForExistence(timeout: 5))
+    firstRun.tabBars.buttons["navigation.tab.journal"].tap()
+    firstRun.buttons["journal.empty.new"].tap()
+    let newEditor = firstRun.textViews["journal.editor.text"]
+    XCTAssertTrue(newEditor.waitForExistence(timeout: 5))
+    newEditor.typeText("The saved version before editing.")
+    XCTAssertTrue(
+      firstRun.descendants(matching: .any)["journal.draft.saved"].waitForExistence(timeout: 8)
+    )
+    firstRun.buttons["journal.editor.save"].tap()
+    let initialEntry = firstRun.buttons.matching(
+      NSPredicate(format: "identifier BEGINSWITH %@", "journal.entry.")
+    ).firstMatch
+    XCTAssertTrue(initialEntry.waitForExistence(timeout: 8))
+    XCTAssertTrue(initialEntry.label.contains("The saved version before editing."))
+    firstRun.terminate()
+
+    let cleanupSeedRun = XCUIApplication()
+    cleanupSeedRun.launchArguments = baseArguments + [
+      "-ui-test-journal-draft-delete-fails-once"
+    ]
+    cleanupSeedRun.launch()
+    XCTAssertTrue(
+      cleanupSeedRun.tabBars.buttons["navigation.tab.journal"].waitForExistence(timeout: 8)
+    )
+    cleanupSeedRun.tabBars.buttons["navigation.tab.journal"].tap()
+    let seedEntry = cleanupSeedRun.buttons.matching(
+      NSPredicate(format: "identifier BEGINSWITH %@", "journal.entry.")
+    ).firstMatch
+    XCTAssertTrue(seedEntry.waitForExistence(timeout: 8))
+    seedEntry.tap()
+    let seedEditor = cleanupSeedRun.textViews["journal.editor.text"]
+    XCTAssertTrue(seedEditor.waitForExistence(timeout: 5))
+    seedEditor.tap()
+    seedEditor.typeText(" Persisted edit before cleanup interruption.")
+    XCTAssertTrue(
+      cleanupSeedRun.descendants(matching: .any)["journal.draft.saved"].waitForExistence(
+        timeout: 8
+      )
+    )
+    cleanupSeedRun.buttons["journal.editor.save"].tap()
+    XCTAssertTrue(
+      cleanupSeedRun.staticTexts["journal.draft.cleanupFailed"].waitForExistence(timeout: 8)
+    )
+    cleanupSeedRun.buttons["journal.editor.close"].tap()
+    cleanupSeedRun.terminate()
+
+    let editRun = XCUIApplication()
+    editRun.launchArguments = baseArguments + [
+      "-ui-test-journal-draft-delete-fails-once",
+      "-ui-test-journal-draft-save-fails-once",
+    ]
+    editRun.launch()
+    XCTAssertTrue(editRun.tabBars.buttons["navigation.tab.journal"].waitForExistence(timeout: 8))
+    editRun.tabBars.buttons["navigation.tab.journal"].tap()
+    let savedEntry = editRun.buttons.matching(
+      NSPredicate(format: "identifier BEGINSWITH %@", "journal.entry.")
+    ).firstMatch
+    XCTAssertTrue(savedEntry.waitForExistence(timeout: 8))
+    savedEntry.tap()
+    XCTAssertTrue(editRun.staticTexts["journal.draft.cleanupFailed"].waitForExistence(timeout: 8))
+
+    let edit = editRun.textViews["journal.editor.text"]
+    edit.tap()
+    edit.typeText(" Second edit after cleanup failed.")
+    XCTAssertTrue(editRun.staticTexts["journal.draft.saveFailed"].waitForExistence(timeout: 8))
+    let retrySave = editRun.buttons["journal.draft.retry"]
+    XCTAssertTrue(retrySave.waitForExistence(timeout: 5))
+    XCTAssertFalse(editRun.buttons["journal.draft.retryCleanup"].exists)
+    retrySave.tap()
+    XCTAssertTrue(
+      editRun.descendants(matching: .any)["journal.draft.saved"].waitForExistence(timeout: 8)
+    )
+    editRun.terminate()
+
+    let verifyRun = XCUIApplication()
+    verifyRun.launchArguments = baseArguments
+    verifyRun.launch()
+    XCTAssertTrue(verifyRun.tabBars.buttons["navigation.tab.journal"].waitForExistence(timeout: 8))
+    verifyRun.tabBars.buttons["navigation.tab.journal"].tap()
+    let verifiedEntry = verifyRun.buttons.matching(
+      NSPredicate(format: "identifier BEGINSWITH %@", "journal.entry.")
+    ).firstMatch
+    XCTAssertTrue(verifiedEntry.waitForExistence(timeout: 8))
+    verifiedEntry.tap()
+    let restoredEdit = verifyRun.textViews["journal.editor.text"]
+    XCTAssertTrue(restoredEdit.waitForExistence(timeout: 5))
+    XCTAssertTrue(
+      (restoredEdit.value as? String)?.contains("Second edit after cleanup failed.") == true
+    )
+  }
+
+  func testSaveTransactionDisablesEditorCloseUntilCommitFinishes() throws {
+    let app = XCUIApplication()
+    app.launchArguments = [
+      "-ui-test-reset",
+      "-ui-test-namespace", UUID().uuidString,
+      "-ui-test-language", "en",
+      "-AppleLanguages", "(en)",
+      "-AppleLocale", "en_US",
+      "-ui-test-disable-autocorrection",
+      "-ui-test-delay-journal-entry-save",
+    ]
+    app.launch()
+    XCTAssertTrue(app.buttons["onboarding.explore"].waitForExistence(timeout: 8))
+    app.buttons["onboarding.explore"].tap()
+    XCTAssertTrue(app.tabBars.buttons["navigation.tab.journal"].waitForExistence(timeout: 5))
+    app.tabBars.buttons["navigation.tab.journal"].tap()
+    app.buttons["journal.empty.new"].tap()
+    let editor = app.textViews["journal.editor.text"]
+    XCTAssertTrue(editor.waitForExistence(timeout: 5))
+    editor.typeText("This save must finish before the editor closes.")
+    let save = app.buttons["journal.editor.save"]
+    XCTAssertTrue(save.waitForExistence(timeout: 5))
+    save.tap()
+
+    let close = app.buttons["journal.editor.close"]
+    XCTAssertTrue(close.waitForExistence(timeout: 5))
+    XCTAssertFalse(close.isEnabled)
+    XCTAssertFalse(save.isEnabled)
+
+    let savedEntry = app.buttons.matching(
+      NSPredicate(format: "identifier BEGINSWITH %@", "journal.entry.")
+    ).firstMatch
+    XCTAssertTrue(savedEntry.waitForExistence(timeout: 10))
+    XCTAssertTrue(savedEntry.label.contains("This save must finish before the editor closes."))
+    XCTAssertEqual(
+      app.buttons.matching(
+        NSPredicate(format: "identifier BEGINSWITH %@", "journal.entry.")
+      ).count,
+      1
+    )
   }
 
   func testDeniedVoiceRecordingNeverLosesAnInProgressTextReflection() throws {
@@ -1191,10 +1469,30 @@ final class ArriveWithinUITests: XCTestCase {
     ]
     app.launch()
 
-    let begin = app.buttons["onboarding.begin"]
-    XCTAssertTrue(begin.waitForExistence(timeout: 8))
+    let explore = app.buttons["onboarding.explore"]
+    XCTAssertTrue(explore.waitForExistence(timeout: 8))
+    explore.tap()
+    let practiceSidebar = app.staticTexts["navigation.sidebar.practice"]
+    let practiceTab = app.tabBars.buttons["navigation.tab.practice"]
+    if practiceSidebar.waitForExistence(timeout: 2) {
+      practiceSidebar.tap()
+    } else {
+      XCTAssertTrue(practiceTab.waitForExistence(timeout: 5))
+      practiceTab.tap()
+    }
+    let modePicker = app.descendants(matching: .any)["practice.mode"]
+    XCTAssertTrue(modePicker.waitForExistence(timeout: 5))
+    let timerMode = modePicker.buttons["Timer"]
+    XCTAssertTrue(timerMode.waitForExistence(timeout: 5))
+    timerMode.tap()
+    let duration = reveal({ app.buttons["practice.duration.3"] }, in: app)
+    duration.tap()
+    let start = app.buttons["practice.start"]
+    XCTAssertTrue(start.waitForExistence(timeout: 5))
     let startedAt = Date()
-    begin.tap()
+    start.tap()
+    XCTAssertTrue(app.staticTexts["session.mode"].waitForExistence(timeout: 8))
+    XCTAssertEqual(app.staticTexts["session.mode"].label, "Timer")
     XCTAssertTrue(app.staticTexts["session.timer"].waitForExistence(timeout: 8))
 
     Thread.sleep(forTimeInterval: 5)

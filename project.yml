@@ -76,8 +76,8 @@ targets:
         INFOPLIST_FILE: Apps/ArriveWithin/Resources/Info.plist
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
-        MARKETING_VERSION: "1.0.1"
-        CURRENT_PROJECT_VERSION: 18
+        MARKETING_VERSION: "1.0.2"
+        CURRENT_PROJECT_VERSION: 19
         VERSIONING_SYSTEM: apple-generic
         TARGETED_DEVICE_FAMILY: "1,2"
         SUPPORTED_PLATFORMS: iphoneos iphonesimulator
@@ -161,10 +161,31 @@ targets:
       Release: Config/Base.xcconfig
     sources:
       - path: Apps/ArriveWithin/Tests/ArriveWithinUITests
+        excludes:
+          - ArriveWithinMarketingCaptureUITests.swift
     settings:
       base:
         PRODUCT_NAME: $(TARGET_NAME)
         PRODUCT_BUNDLE_IDENTIFIER: com.philipps.arrivewithin.ios.uitests
+        CODE_SIGN_STYLE: Automatic
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: ArriveWithin
+    dependencies:
+      - target: ArriveWithin
+
+  ArriveWithinMarketingCaptureUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "18.0"
+    configFiles:
+      Debug: Config/Base.xcconfig
+      Release: Config/Base.xcconfig
+    sources:
+      - path: Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinMarketingCaptureUITests.swift
+    settings:
+      base:
+        PRODUCT_NAME: $(TARGET_NAME)
+        PRODUCT_BUNDLE_IDENTIFIER: com.philipps.arrivewithin.ios.marketingcaptures.uitests
         CODE_SIGN_STYLE: Automatic
         GENERATE_INFOPLIST_FILE: YES
         TEST_TARGET_NAME: ArriveWithin
@@ -190,3 +211,12 @@ schemes:
       config: Release
     archive:
       config: Release
+  ArriveWithinMarketingCaptures:
+    build:
+      targets:
+        ArriveWithin: all
+        ArriveWithinMarketingCaptureUITests: [test]
+    test:
+      gatherCoverageData: false
+      targets:
+        - name: ArriveWithinMarketingCaptureUITests

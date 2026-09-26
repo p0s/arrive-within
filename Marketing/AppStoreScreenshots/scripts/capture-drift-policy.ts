@@ -29,6 +29,30 @@ export type LiveActivityCaptureRetention = {
 
 export type CaptureDriftAttestation = HistoricalCaptureRetention | LiveActivityCaptureRetention;
 
+export type GardenDayRealClockCaptureRefresh = {
+  classification: "garden-day-real-clock-capture-test-added";
+  captured_source_revision: string;
+  current_source_revision: string;
+  changed_path_count: number;
+  changed_paths: string[];
+  new_capture_id: "garden-day";
+  new_capture_device: "iphone-6.9";
+  garden_day_clock: "unmodified-simulator-system-clock-in-local-day-range";
+  existing_garden_seed_and_dusk_hero_retained: true;
+  human_visual_review: "pending";
+  app_store_listing_mutation: "none";
+  rationale: string;
+};
+
+export type AnyCaptureDriftAttestation = CaptureDriftAttestation | GardenDayRealClockCaptureRefresh;
+
+export const GARDEN_DAY_CAPTURED_SOURCE_REVISION =
+  "aed3e83d30d6290cb99731be79675fcfbeb7941168ec960479e08148b1293925";
+export const GARDEN_DAY_CURRENT_SOURCE_REVISION =
+  "13477bc33d33ec130b1525c3e15e0b1d408da5509d6950a0828901e771c0a42c";
+export const GARDEN_DAY_CAPTURE_TEST_PATH =
+  "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinMarketingCaptureUITests.swift";
+
 export const RETAINED_CAPTURE_SOURCE_REVISION =
   "970cbd8250bbb522a5b09570f349fd6967b8f7fcc5d863216c3c7c45a0e94a49";
 
@@ -50,6 +74,20 @@ export const LIVE_ACTIVITY_CHANGED_PATHS = [
   "Config/Base.xcconfig",
   "project.yml",
 ] as const;
+
+export const GARDEN_DAY_CHANGED_PATHS = [
+  ...LIVE_ACTIVITY_CHANGED_PATHS,
+  GARDEN_DAY_CAPTURE_TEST_PATH,
+  "Apps/ArriveWithin/Resources/.DS_Store",
+  "Apps/ArriveWithin/Resources/AppIcon.icon/Assets/living-shoot.png",
+  "Apps/ArriveWithin/Resources/AppIcon.icon/Assets/living-shoot.svg",
+  "Apps/ArriveWithin/Resources/AppIcon.icon/Assets/threshold-arch.png",
+  "Apps/ArriveWithin/Resources/AppIcon.icon/Assets/threshold-arch.svg",
+  "Apps/ArriveWithin/Resources/AppIcon.icon/Assets/threshold-interior.png",
+  "Apps/ArriveWithin/Resources/AppIcon.icon/Assets/threshold-interior.svg",
+  "Apps/ArriveWithin/Resources/AppIcon.icon/icon.json",
+  "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinVerificationUITests.swift",
+].sort();
 
 const PRIOR_REVIEWED_UI_CHANGED_PATHS = [
   "Apps/ArriveWithin/Resources/de.lproj/Localizable.strings",
@@ -108,7 +146,7 @@ const LIVE_ACTIVITY_RATIONALE_FRAGMENTS = [
 ] as const;
 
 export function isExactHistoricalCaptureRetention(
-  attestation: CaptureDriftAttestation | undefined,
+  attestation: AnyCaptureDriftAttestation | undefined,
   currentSourceRevision: string,
   changedPaths: string[],
 ): boolean {
@@ -132,7 +170,7 @@ export function isExactHistoricalCaptureRetention(
 }
 
 export function isExactLiveActivityCaptureRetention(
-  attestation: CaptureDriftAttestation | undefined,
+  attestation: AnyCaptureDriftAttestation | undefined,
   capturedSourceRevision: string,
   currentSourceRevision: string,
   changedPaths: string[],
@@ -151,5 +189,33 @@ export function isExactLiveActivityCaptureRetention(
       attestation.live_activity_physical_proof === "exact-build-18-compact-dynamic-island-core-verified-lock-screen-expanded-pending" &&
       attestation.app_store_listing_mutation === "none" &&
       LIVE_ACTIVITY_RATIONALE_FRAGMENTS.every((fragment) => attestation.rationale.includes(fragment)),
+  );
+}
+
+export function isExactGardenDayRealClockCaptureRefresh(
+  attestation: AnyCaptureDriftAttestation | undefined,
+  capturedSourceRevision: string,
+  currentSourceRevision: string,
+  changedPaths: string[],
+): boolean {
+  if (attestation?.classification !== "garden-day-real-clock-capture-test-added") return false;
+  return Boolean(
+    capturedSourceRevision === GARDEN_DAY_CAPTURED_SOURCE_REVISION
+      && attestation.captured_source_revision === GARDEN_DAY_CAPTURED_SOURCE_REVISION
+      && currentSourceRevision === GARDEN_DAY_CURRENT_SOURCE_REVISION
+      && attestation.current_source_revision === GARDEN_DAY_CURRENT_SOURCE_REVISION
+      && attestation.changed_path_count === GARDEN_DAY_CHANGED_PATHS.length
+      && JSON.stringify(changedPaths) === JSON.stringify(GARDEN_DAY_CHANGED_PATHS)
+      && JSON.stringify(attestation.changed_paths) === JSON.stringify(GARDEN_DAY_CHANGED_PATHS)
+      && attestation.new_capture_id === "garden-day"
+      && attestation.new_capture_device === "iphone-6.9"
+      && attestation.garden_day_clock === "unmodified-simulator-system-clock-in-local-day-range"
+      && attestation.existing_garden_seed_and_dusk_hero_retained === true
+      && attestation.human_visual_review === "pending"
+      && attestation.app_store_listing_mutation === "none"
+      && attestation.rationale.includes("unmodified simulator local clock")
+      && attestation.rationale.includes("Garden seed and dusk hero source pixels were retained")
+      && attestation.rationale.includes("iPad 13-inch capture remains unavailable")
+      && attestation.rationale.includes("No App Store Connect mutation was performed")
   );
 }

@@ -56,7 +56,7 @@ function DeviceCapture({
 }) {
   return (
     <div
-      className={`device-frame ${device === "ipad-13" ? "tablet" : "phone"} ${className}`}
+      className={`device-frame ${device.startsWith("ipad-") ? "tablet" : "phone"} ${className}`}
       data-product-proof={productProof ? "" : undefined}
     >
       <div className="device-screen">
@@ -92,11 +92,12 @@ function SlideComposition({
   if (singleCapture) {
     return <DeviceCapture captureId={singleCapture} device={device} locale={locale} productProof />;
   }
-  if (composition === "garden-growth") {
+  if (composition === "garden-growth" || composition === "garden-growth-day") {
+    const matureCapture = composition === "garden-growth-day" ? "garden-day" : "garden-hero";
     return (
       <div className="product-proof" data-product-proof>
         <DeviceCapture captureId="garden-seed" className="before" device={device} locale={locale} />
-        <DeviceCapture captureId="garden-hero" className="after" device={device} locale={locale} />
+        <DeviceCapture captureId={matureCapture} className="after" device={device} locale={locale} />
       </div>
     );
   }
@@ -109,23 +110,13 @@ export default async function ScreenshotStudio({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const query = await searchParams;
-  const device: DeviceId = queryValue(query.device) === "ipad-13" ? "ipad-13" : "iphone-6.9";
+  const requestedDevice = queryValue(query.device);
+  const device: DeviceId = requestedDevice === "ipad-13" ? requestedDevice : "iphone-6.9";
   const locale: LocaleId = queryValue(query.locale) === "de-DE" ? "de-DE" : "en-US";
   const spec = devices[device];
   const requestedNarrative = queryValue(query.narrative);
   const narrative = alternatives.narratives.find((candidate) => candidate.id === requestedNarrative);
-  const slides: RenderSlide[] = narrative?.slides ?? plan.slides.map((slide) => ({
-    ...slide,
-    composition: ({
-      "growth-arrive": "garden-single",
-      "growth-take-root": "garden-growth",
-      "growth-rhythm": "journey-calendar",
-      "growth-stays": "journey-milestones",
-      "growth-reflect": "journal",
-      "growth-refuge": "garden-single",
-    } as Record<string, string>)[slide.id],
-    capture_ids: [],
-  }));
+  const slides: RenderSlide[] = narrative?.slides ?? plan.slides;
 
   return (
     <main
@@ -137,7 +128,7 @@ export default async function ScreenshotStudio({
     >
       {slides.map((slide) => (
         <section
-          className={`slide slide-${slide.index} ${device}`}
+          className={`slide slide-${slide.index} ${device} ${device.startsWith("ipad-") ? "ipad-layout" : ""}`}
           data-export-slide={slide.id}
           data-runtime-surface={slide.runtime_surface}
           key={slide.id}

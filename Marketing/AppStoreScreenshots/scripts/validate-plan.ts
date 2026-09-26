@@ -8,6 +8,18 @@ import {
 async function main() {
   const plan = await loadPlan();
   assertPlan(plan);
+  const darkPairRegression = structuredClone(plan);
+  darkPairRegression.slides[1].composition = "garden-growth";
+  darkPairRegression.slides[1].capture_ids = ["garden-seed", "garden-hero"];
+  try {
+    assertPlan(darkPairRegression);
+    throw new Error("slide 2 accepted a dark seed beside a dark hero instead of the light Garden-day source");
+  } catch (error) {
+    if (
+      error instanceof Error
+      && error.message === "slide 2 accepted a dark seed beside a dark hero instead of the light Garden-day source"
+    ) throw error;
+  }
   const origin = "http://127.0.0.1:3000";
   const credentialSeparator = String.fromCharCode(64);
   if (
@@ -31,7 +43,7 @@ async function main() {
     }
   }
   process.stdout.write(
-    `Screenshot plan passed: ${plan.slides.length} slides × ${plan.locales.length} locales × ${plan.devices.length} devices = ${plan.expected_final_images} final images.\n`,
+    `Screenshot plan passed: ${plan.slides.length} slides × ${plan.locales.length} locales × ${plan.devices.length} devices = ${plan.expected_final_images} final images; slide 2 rejects a dark/dark pair.\n`,
   );
 }
 

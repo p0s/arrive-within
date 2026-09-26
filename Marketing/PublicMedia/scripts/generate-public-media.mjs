@@ -21,7 +21,7 @@ const outputRoot = join(mediaRoot, "output");
 const framesRoot = join(outputRoot, "frames");
 const port = 4177;
 const origin = `http://127.0.0.1:${port}`;
-const nodeBinary = "/opt/homebrew/Cellar/node/26.7.0/bin/node";
+const nodeBinary = process.execPath;
 const ffmpegBinary = "/opt/homebrew/bin/ffmpeg";
 const ffprobeBinary = "/opt/homebrew/bin/ffprobe";
 

@@ -20,7 +20,7 @@
     { "id": 10, "practice_day": 20, "title": "Air I", "variant_a": "Meadow breeze", "variant_b": "Canopy breeze" },
     { "id": 11, "practice_day": 22, "title": "Air II", "variant_a": "Swift pair", "variant_b": "Drifting leaves" },
     { "id": 12, "practice_day": 24, "title": "Air III", "variant_a": "Open sky", "variant_b": "Cloud veil" },
-    { "id": 13, "practice_day": 26, "title": "Space I", "variant_a": "Blue twilight", "variant_b": "Violet twilight" },
+    { "id": 13, "practice_day": 26, "title": "Space I", "variant_a": "Blue twilight", "variant_b": "Violet twilight", "local_day_phase": "dusk" },
     { "id": 14, "practice_day": 28, "title": "Space II", "variant_a": "Pearl moon", "variant_b": "Crescent moon" },
     { "id": 15, "practice_day": 30, "title": "Space III", "variant_a": "Sanctuary bloom", "variant_b": "Sanctuary fruit" }
   ]

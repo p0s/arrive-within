@@ -5,7 +5,7 @@ import { readFileSync, statSync } from "node:fs";
 import { dirname, join, normalize, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { isExactPostPublicationGardenLabFreeze } from "./garden-lab-drift-policy.mjs";
+import { isCurrentGardenDesignLab } from "./garden-lab-drift-policy.mjs";
 
 const scriptRoot = dirname(fileURLToPath(import.meta.url));
 const labRoot = resolve(scriptRoot, "..");
@@ -28,10 +28,7 @@ assert(manifest.review.owner_selection === "pending", "Garden owner selection mu
 const currentSourceSha256 = Object.fromEntries(
   manifest.source.files.map((source) => [source.path, sha256(join(projectRoot, source.path))]),
 );
-const sourceMatches = manifest.source.files.every((source) => currentSourceSha256[source.path] === source.sha256);
-const exactPostPublicationFreeze = isExactPostPublicationGardenLabFreeze(manifest, currentSourceSha256);
-assert(sourceMatches || exactPostPublicationFreeze, "Garden lab source drift is not the one exact historical selection-lab boundary");
-assert(sourceMatches ? manifest.post_generation_change === undefined : exactPostPublicationFreeze, "Garden lab drift boundary is stale or incomplete");
+assert(isCurrentGardenDesignLab(manifest, currentSourceSha256), "Garden lab must bind every current source file and contain no historical-freeze exception");
 assert(
   sha256(join(projectRoot, manifest.source.generator)) === manifest.source.generator_sha256,
   "stale Garden lab generator hash",
@@ -53,7 +50,7 @@ assert(Math.max(...diagnostics.map((item) => item.drawCalls)) <= 40, "Garden dra
 assert(Math.max(...diagnostics.map((item) => item.textures)) <= 8, "Garden texture budget regressed above 8");
 assert(Math.max(...diagnostics.map((item) => item.geometries)) <= 40, "Garden geometry budget regressed above 40");
 const validationText = readFileSync(join(labRoot, "output/validation.txt"), "utf8");
-assert(!exactPostPublicationFreeze || (validationText.includes("current_source_state: historical-selection-lab-preserved") && validationText.includes("current_garden_proof: separate-60-render-matrix-passed")), "Garden lab validation text must preserve the historical/current proof boundary");
+assert(!validationText.includes("historical-selection-lab-preserved"), "Garden lab validation text must not retain a stale-source claim");
 
 process.stdout.write("Garden design-lab validation passed: 3 directions, 15 milestones each, 6 clips, bounded renderer inventory.\n");
 

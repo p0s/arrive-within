@@ -38,10 +38,19 @@ public enum ProductDataExportError: Error, Equatable, Sendable {
   case audioMissing
   case audioIntegrityMismatch
   case unsafeAudioPath
+  case duplicateAudioFileName
+  case archiveTooLarge
   case archiveFailed
 }
 
 public enum WholeProductExporter {
+  private struct PendingAudioFile {
+    let name: String
+    let url: URL
+    let attachment: JournalAudioAttachment
+    let byteCount: Int
+  }
+
   private struct Manifest: Codable {
     struct Counts: Codable {
       let practices: Int
@@ -73,27 +82,100 @@ public enum WholeProductExporter {
     outputURL: URL,
     fileManager: FileManager = .default
   ) throws {
+    guard snapshot.events.count <= WholeProductImporter.maximumPractices,
+      snapshot.journalEntries.count <= WholeProductImporter.maximumJournalEntries,
+      snapshot.favoritePracticeIDs.count <= 42
+    else {
+      throw ProductDataExportError.archiveTooLarge
+    }
+    let voiceFileCount = snapshot.journalEntries.reduce(into: 0) { count, entry in
+      if entry.audioAttachment != nil { count += 1 }
+    }
+    let (journalFileCount, journalOverflow) = snapshot.journalEntries.count
+      .multipliedReportingOverflow(by: 2)
+    let (journalAndRootCount, entryOverflow) = 7.addingReportingOverflow(journalFileCount)
+    let (entryCount, voiceOverflow) = journalAndRootCount.addingReportingOverflow(voiceFileCount)
+    guard !journalOverflow, !entryOverflow, !voiceOverflow,
+      entryCount <= WholeProductImporter.maximumArchiveEntryCount
+    else {
+      throw ProductDataExportError.archiveTooLarge
+    }
+
     var files: [(name: String, data: Data)] = []
+    var pendingAudioFiles: [PendingAudioFile] = []
+    var estimatedArchiveBytes = 22
+    var estimatedEntryCount = 0
     let encoder = makeEncoder()
-    files.append(("profile/profile.json", try encoder.encode(snapshot.profile)))
-    files.append(("journey/summary.json", try encoder.encode(snapshot.journey)))
-    files.append(("practices/events.json", try encoder.encode(snapshot.events)))
-    files.append(("practices/events.csv", Data(eventsCSV(snapshot.events).utf8)))
-    files.append(("garden/customization.json", try encoder.encode(snapshot.customization)))
-    files.append(
-      (
-        "favorites/practices.json",
-        try encoder.encode(snapshot.favoritePracticeIDs.sorted())
-      )
+    func reserveArchiveEntry(name: String, byteCount: Int) throws {
+      guard let nameByteCount = name.data(using: .utf8)?.count,
+        nameByteCount <= Int(UInt16.max),
+        byteCount >= 0, byteCount <= Int(UInt32.max)
+      else {
+        throw ProductDataExportError.archiveTooLarge
+      }
+      let (nextCount, countOverflow) = estimatedEntryCount.addingReportingOverflow(1)
+      let (nameHeadersByteCount, nameHeadersOverflow) =
+        nameByteCount.multipliedReportingOverflow(by: 2)
+      let (overhead, overheadOverflow) = 76.addingReportingOverflow(nameHeadersByteCount)
+      let (entryBytes, entryOverflow) = byteCount.addingReportingOverflow(overhead)
+      let (nextBytes, bytesOverflow) = estimatedArchiveBytes.addingReportingOverflow(entryBytes)
+      guard !countOverflow, !nameHeadersOverflow, !overheadOverflow,
+        !entryOverflow, !bytesOverflow,
+        nextCount <= WholeProductImporter.maximumArchiveEntryCount,
+        nextBytes <= WholeProductImporter.maximumArchiveBytes,
+        nextBytes <= Int(UInt32.max)
+      else {
+        throw ProductDataExportError.archiveTooLarge
+      }
+      estimatedEntryCount = nextCount
+      estimatedArchiveBytes = nextBytes
+    }
+    func appendAdmittedFile(name: String, data: Data) throws {
+      try reserveArchiveEntry(name: name, byteCount: data.count)
+      files.append((name, data))
+    }
+
+    try appendAdmittedFile(
+      name: "profile/profile.json",
+      data: encoder.encode(snapshot.profile)
+    )
+    try appendAdmittedFile(
+      name: "journey/summary.json",
+      data: encoder.encode(snapshot.journey)
+    )
+    try appendAdmittedFile(
+      name: "practices/events.json",
+      data: encoder.encode(snapshot.events)
+    )
+    try appendAdmittedFile(
+      name: "practices/events.csv",
+      data: Data(PracticeEventCSV.encode(snapshot.events).utf8)
+    )
+    try appendAdmittedFile(
+      name: "garden/customization.json",
+      data: encoder.encode(snapshot.customization)
+    )
+    try appendAdmittedFile(
+      name: "favorites/practices.json",
+      data: encoder.encode(snapshot.favoritePracticeIDs.sorted())
     )
 
-    var voiceFileCount = 0
+    var usedAudioFileNames: Set<String> = []
     for entry in snapshot.journalEntries.sorted(by: { $0.id.uuidString < $1.id.uuidString }) {
       guard !entry.isDeleted else { throw ProductDataExportError.deletedJournalEntry }
       let prefix = "journal/\(entry.id.uuidString.lowercased())"
-      files.append(("\(prefix)/entry.json", try encoder.encode(entry)))
-      files.append(("\(prefix)/entry.md", Data(markdown(for: entry).utf8)))
+      try appendAdmittedFile(
+        name: "\(prefix)/entry.json",
+        data: encoder.encode(entry)
+      )
+      try appendAdmittedFile(
+        name: "\(prefix)/entry.md",
+        data: Data(markdown(for: entry).utf8)
+      )
       if let attachment = entry.audioAttachment {
+        guard usedAudioFileNames.insert(attachment.relativeFileName).inserted else {
+          throw ProductDataExportError.duplicateAudioFileName
+        }
         let audioURL = audioDirectory.appending(path: attachment.relativeFileName)
         let root = audioDirectory.standardizedFileURL
         let candidate = audioURL.standardizedFileURL
@@ -116,21 +198,35 @@ public enum WholeProductExporter {
         else {
           throw ProductDataExportError.unsafeAudioPath
         }
-        let audio = try Data(contentsOf: candidate)
-        guard
-          Int64(audio.count) == attachment.byteCount,
-          sha256(audio) == attachment.checksumSHA256
-        else {
+        guard let byteCount = Int(exactly: attachment.byteCount), byteCount >= 0 else {
           throw ProductDataExportError.audioIntegrityMismatch
         }
-        files.append(("\(prefix)/audio/\(attachment.relativeFileName)", audio))
-        voiceFileCount += 1
+        let audioName = "\(prefix)/audio/\(attachment.relativeFileName)"
+        // Admit the metadata-declared size and ZIP overhead before reading the audio bytes.
+        try reserveArchiveEntry(name: audioName, byteCount: byteCount)
+        pendingAudioFiles.append(
+          PendingAudioFile(
+            name: audioName,
+            url: candidate,
+            attachment: attachment,
+            byteCount: byteCount
+          )
+        )
       }
     }
 
-    let fileRecords = files.sorted(by: { $0.name < $1.name }).map {
-      Manifest.FileRecord(path: $0.name, bytes: $0.data.count, sha256: sha256($0.data))
-    }
+    let fileRecords = (
+      files.map {
+        Manifest.FileRecord(path: $0.name, bytes: $0.data.count, sha256: sha256($0.data))
+      }
+        + pendingAudioFiles.map {
+          Manifest.FileRecord(
+            path: $0.name,
+            bytes: $0.byteCount,
+            sha256: $0.attachment.checksumSHA256
+          )
+        }
+    ).sorted(by: { $0.path < $1.path })
     let manifest = Manifest(
       schemaVersion: 1,
       product: "Arrive Within",
@@ -142,16 +238,46 @@ public enum WholeProductExporter {
       counts: Manifest.Counts(
         practices: snapshot.events.count,
         journalEntries: snapshot.journalEntries.count,
-        voiceFiles: voiceFileCount,
+        voiceFiles: pendingAudioFiles.count,
         favoritePractices: snapshot.favoritePracticeIDs.count
       ),
       files: fileRecords
     )
-    files.append(("manifest.json", try encoder.encode(manifest)))
+    let manifestData = try encoder.encode(manifest)
+    try reserveArchiveEntry(name: "manifest.json", byteCount: manifestData.count)
+    files.append(("manifest.json", manifestData))
+
+    for audioFile in pendingAudioFiles {
+      let values = try audioFile.url.resourceValues(
+        forKeys: [.isRegularFileKey, .isSymbolicLinkKey, .fileSizeKey]
+      )
+      guard values.isRegularFile == true, values.isSymbolicLink != true,
+        audioFile.url.resolvingSymlinksInPath().standardizedFileURL.path
+          == audioFile.url.standardizedFileURL.path
+      else {
+        throw ProductDataExportError.unsafeAudioPath
+      }
+      guard values.fileSize == audioFile.byteCount else {
+        throw ProductDataExportError.audioIntegrityMismatch
+      }
+      let audio = try Data(contentsOf: audioFile.url)
+      guard audio.count == audioFile.byteCount,
+        Int64(audio.count) == audioFile.attachment.byteCount,
+        sha256(audio) == audioFile.attachment.checksumSHA256
+      else {
+        throw ProductDataExportError.audioIntegrityMismatch
+      }
+      files.append((audioFile.name, audio))
+    }
 
     let archive: Data
     do {
-      archive = try StoredZipArchive(files: files).data()
+      archive = try StoredZipArchive(files: files).data(
+        maximumArchiveBytes: WholeProductImporter.maximumArchiveBytes,
+        maximumEntryCount: WholeProductImporter.maximumArchiveEntryCount
+      )
+    } catch JournalExportError.tooManyFiles, JournalExportError.fileTooLarge {
+      throw ProductDataExportError.archiveTooLarge
     } catch {
       throw ProductDataExportError.archiveFailed
     }
@@ -173,39 +299,6 @@ public enum WholeProductExporter {
     encoder.dateEncodingStrategy = .iso8601
     encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
     return encoder
-  }
-
-  private static func eventsCSV(_ events: [PracticeEvent]) -> String {
-    let header = [
-      "event_id", "session_id", "profile_generation_id", "mode", "guided_content_id",
-      "guided_content_version", "started_at_utc", "ended_at_utc", "active_milliseconds",
-      "qualifies_for_growth", "practice_local_date", "calendar_id", "time_zone_id",
-      "source_installation_id", "created_at_utc",
-    ]
-    let rows = events.map { event in
-      [
-        event.id.uuidString,
-        event.sessionID.uuidString,
-        event.profileGenerationID.uuidString,
-        event.mode.rawValue,
-        event.guidedContentID ?? "",
-        event.guidedContentVersion.map(String.init) ?? "",
-        event.startedAt.ISO8601Format(),
-        event.endedAt.ISO8601Format(),
-        String(event.activeMilliseconds),
-        event.qualifiesForGrowth ? "true" : "false",
-        event.practiceDay.localDate,
-        event.practiceDay.calendarIdentifier,
-        event.practiceDay.timeZoneIdentifier,
-        event.sourceInstallationID.uuidString,
-        event.createdAt.ISO8601Format(),
-      ].map(csvField).joined(separator: ",")
-    }
-    return ([header.map(csvField).joined(separator: ",")] + rows).joined(separator: "\n") + "\n"
-  }
-
-  private static func csvField(_ value: String) -> String {
-    "\"\(value.replacingOccurrences(of: "\"", with: "\"\""))\""
   }
 
   private static func markdown(for entry: JournalEntry) -> String {

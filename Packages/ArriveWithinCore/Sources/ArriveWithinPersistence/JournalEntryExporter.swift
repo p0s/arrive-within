@@ -164,8 +164,41 @@ struct StoredZipArchive {
 
   let files: [(name: String, data: Data)]
 
-  func data() throws -> Data {
-    guard files.count <= Int(UInt16.max) else { throw JournalExportError.tooManyFiles }
+  func data(
+    maximumArchiveBytes: Int = Int(UInt32.max),
+    maximumEntryCount: Int = Int(UInt16.max)
+  ) throws -> Data {
+    guard maximumArchiveBytes >= 0, maximumEntryCount >= 0,
+      files.count <= Int(UInt16.max), files.count <= maximumEntryCount
+    else {
+      throw JournalExportError.tooManyFiles
+    }
+
+    var estimatedArchiveBytes = 22
+    for file in files {
+      guard
+        !file.name.isEmpty,
+        !file.name.hasPrefix("/"),
+        !file.name.contains(".."),
+        let name = file.name.data(using: .utf8),
+        name.count <= Int(UInt16.max),
+        file.data.count <= Int(UInt32.max)
+      else {
+        throw JournalExportError.invalidFileName
+      }
+      let (localSize, localOverflow) = file.data.count.addingReportingOverflow(30 + name.count)
+      let (centralSize, centralOverflow) = 46.addingReportingOverflow(name.count)
+      let (withLocal, archiveOverflow) = estimatedArchiveBytes.addingReportingOverflow(localSize)
+      let (completeEstimate, centralArchiveOverflow) = withLocal.addingReportingOverflow(centralSize)
+      guard !localOverflow, !centralOverflow, !archiveOverflow, !centralArchiveOverflow,
+        completeEstimate <= maximumArchiveBytes,
+        completeEstimate <= Int(UInt32.max)
+      else {
+        throw JournalExportError.fileTooLarge
+      }
+      estimatedArchiveBytes = completeEstimate
+    }
+
     var archive = Data()
     var records: [Record] = []
     for file in files.sorted(by: { $0.name < $1.name }) {

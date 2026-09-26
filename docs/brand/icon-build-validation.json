@@ -24,6 +24,9 @@
       "height": 120,
       "colorSpace": "RGB",
       "alpha": true,
+      "minimumAlpha": 255,
+      "transparentPixelCount": 0,
+      "fullyOpaque": true,
       "sha256": "d3649db96b22c6fd3bc606ff38d1f20582fefe5379845deefdf479c55a2bc3b9",
       "sproutGreenPixelFraction": 0.4531
     },
@@ -34,11 +37,14 @@
       "height": 152,
       "colorSpace": "RGB",
       "alpha": true,
+      "minimumAlpha": 255,
+      "transparentPixelCount": 0,
+      "fullyOpaque": true,
       "sha256": "abf0ef18f62e94bc751a826f93ef9e1e41c335db9476f1b145385563a3e6251b",
       "sproutGreenPixelFraction": 0.457
     }
   ],
-  "assetsCarSha256": "e2d8646fa15e992bee23c9d9bdeb2ac306103e958cc43b4b8b7f80b7156a4e28",
+  "assetsCarSha256": "e8331106da139add0a63798925b5ff3403bb221b768613f69282f69c5670d841",
   "marketingIcons": [
     {
       "idiom": "phone",
@@ -77,6 +83,6 @@
       "colorModel": "RGB"
     }
   ],
-  "compatibilityFormatNote": "Xcode 27 emits masked RGBA small compatibility PNGs. Their alpha is reported without alteration. Compiled 1024 marketing renditions and all derived marketing masters are opaque RGB; archive acceptance remains a separate release gate.",
+  "compatibilityFormatNote": "Xcode 27 emits RGBA small compatibility PNGs with every alpha sample at 255 and zero transparent pixels. Apple permits an alpha channel when the icon contains no transparent regions. Compiled 1024 marketing renditions and all derived marketing masters are opaque RGB; archive acceptance remains a separate release gate.",
   "claimBoundary": "Current-source Apple asset-compiler output only. Both compatibility icons inspected; no complete app build, archive, Home Screen, physical device, TestFlight, or App Store claim."
 }

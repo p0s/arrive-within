@@ -129,7 +129,17 @@ struct JournalView: View {
     } message: { _ in
       Text("journal.delete.body")
     }
-    .onAppear { presentPendingReflectionIfNeeded() }
+    .onAppear {
+      #if DEBUG
+        if model.shouldPresentMarketingCaptureJournal {
+          editor = .new(linkedPracticeEventID: nil)
+        } else {
+          presentPendingReflectionIfNeeded()
+        }
+      #else
+        presentPendingReflectionIfNeeded()
+      #endif
+    }
     .onChange(of: model.pendingReflectionEventID) { _, _ in
       presentPendingReflectionIfNeeded()
     }
@@ -299,6 +309,7 @@ private struct JournalNoticeView: View {
     case .recordingFailed: "journal.notice.recording"
     case .recordingInterrupted: "journal.notice.interrupted"
     case .transcriptionUnavailable: "journal.notice.transcription"
+    case .draftSaveFailed: "journal.notice.draft"
     }
   }
 }
@@ -315,6 +326,14 @@ private struct JournalEditorContext: Identifiable {
   static func existing(_ entry: JournalEntry) -> Self {
     Self(id: entry.id, entry: entry, linkedPracticeEventID: entry.linkedPracticeEventID)
   }
+
+  var draftKey: String {
+    if let entry { return "entry:\(entry.id.uuidString.lowercased())" }
+    if let linkedPracticeEventID {
+      return "practice:\(linkedPracticeEventID.uuidString.lowercased())"
+    }
+    return "new:unlinked"
+  }
 }
 
 private struct JournalEditorView: View {
@@ -322,6 +341,7 @@ private struct JournalEditorView: View {
   let context: JournalEditorContext
   @Environment(\.dismiss) private var dismiss
   @Environment(\.locale) private var locale
+  @Environment(\.colorScheme) private var colorScheme
   @State private var text: String
   @State private var isSaving = false
   @State private var audioAttachment: JournalAudioAttachment?
@@ -329,7 +349,18 @@ private struct JournalEditorView: View {
   @State private var transcriptionState: JournalTranscriptionState
   @State private var isTranscribing = false
   @State private var didSave = false
+  @State private var savedEntry: JournalEntry?
   @State private var showsDiscardConfirmation = false
+  @State private var draftWasRestored = false
+  @State private var draftIsSaved = false
+  @State private var draftIsSaving = false
+  @State private var draftSaveFailed = false
+  @State private var journalEntryNeedsDraftCleanup = false
+  @State private var didFlushCurrentDraftBeforeDismiss = false
+  @State private var draftLoaded = false
+  @State private var textChangedBeforeDraftLoaded = false
+  @State private var isDiscarding = false
+  @State private var draftSaveTask: Task<Void, Never>?
   @State private var previewPlayer = JournalVoicePreviewPlayer()
   @FocusState private var textIsFocused: Bool
 
@@ -345,16 +376,18 @@ private struct JournalEditorView: View {
     self.model = model
     self.context = context
     _text = State(initialValue: context.entry?.text ?? "")
+    _savedEntry = State(initialValue: context.entry)
     _audioAttachment = State(initialValue: context.entry?.audioAttachment)
     _transcript = State(initialValue: context.entry?.transcript)
     _transcriptionState = State(initialValue: context.entry?.transcriptionState ?? .notRequested)
   }
 
   private var hasUnsavedChanges: Bool {
-    text != (context.entry?.text ?? "")
-      || displayedAttachment != context.entry?.audioAttachment
-      || transcript != context.entry?.transcript
-      || resolvedTranscriptionState != (context.entry?.transcriptionState ?? .notRequested)
+    guard !didSave else { return false }
+    return text != (savedEntry?.text ?? "")
+      || displayedAttachment != savedEntry?.audioAttachment
+      || transcript != savedEntry?.transcript
+      || resolvedTranscriptionState != (savedEntry?.transcriptionState ?? .notRequested)
   }
 
   var body: some View {
@@ -368,8 +401,50 @@ private struct JournalEditorView: View {
             .focused($textIsFocused)
             .autocorrectionDisabled(disablesAutocorrectionForUITest)
             .accessibilityIdentifier("journal.editor.text")
+            .disabled(isSaving || didSave)
         } footer: {
-          Text("journal.editor.private")
+          VStack(alignment: .leading, spacing: 4) {
+            Text("journal.editor.private")
+            if draftSaveFailed {
+              VStack(alignment: .leading, spacing: 8) {
+                Label(
+                  journalEntryNeedsDraftCleanup
+                    ? "journal.draft.cleanupFailed"
+                    : "journal.draft.saveFailed",
+                  systemImage: "exclamationmark.triangle"
+                )
+                  .foregroundStyle(.orange)
+                  .accessibilityIdentifier(
+                    journalEntryNeedsDraftCleanup
+                      ? "journal.draft.cleanupFailed"
+                      : "journal.draft.saveFailed"
+                  )
+                Button(
+                  journalEntryNeedsDraftCleanup
+                    ? "journal.draft.retryCleanup"
+                    : "journal.draft.retry"
+                ) {
+                  retryDraftPersistence()
+                }
+                .disabled(draftIsSaving)
+                .accessibilityIdentifier(
+                  journalEntryNeedsDraftCleanup
+                    ? "journal.draft.retryCleanup"
+                    : "journal.draft.retry"
+                )
+              }
+            } else if draftIsSaving {
+              Label("journal.draft.saving", systemImage: "arrow.triangle.2.circlepath")
+                .foregroundStyle(.secondary)
+                .accessibilityIdentifier("journal.draft.saving")
+            } else if draftWasRestored {
+              Label("journal.draft.restored", systemImage: "arrow.uturn.backward")
+                .accessibilityIdentifier("journal.draft.restored")
+            } else if draftIsSaved {
+              Label("journal.draft.saved", systemImage: "checkmark.circle")
+                .accessibilityIdentifier("journal.draft.saved")
+            }
+          }
         }
 
         if context.linkedPracticeEventID != nil {
@@ -381,6 +456,7 @@ private struct JournalEditorView: View {
 
         Section {
           voiceControls
+            .disabled(isSaving || didSave)
         } header: {
           Text("journal.voice.section")
         } footer: {
@@ -400,41 +476,71 @@ private struct JournalEditorView: View {
           }
         }
       }
-      .navigationTitle(context.entry == nil ? "journal.new.title" : "journal.edit.title")
+      .navigationTitle(savedEntry == nil ? "journal.new.title" : "journal.edit.title")
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
         ToolbarItem(placement: .cancellationAction) {
-          Button("common.cancel") {
-            if hasUnsavedChanges {
+          Button(didSave ? "common.done" : "common.cancel") {
+            guard !isSaving, !isDiscarding else { return }
+            if didSave {
+              dismiss()
+            } else if hasUnsavedChanges {
               textIsFocused = false
               showsDiscardConfirmation = true
             } else {
-              dismiss()
+              flushDraftThenDismiss()
             }
           }
+          .disabled(isSaving || isDiscarding)
+          .accessibilityIdentifier("journal.editor.close")
         }
         ToolbarItem(placement: .confirmationAction) {
           Button("common.save") {
+            guard !isSaving, !isDiscarding else { return }
             isSaving = true
             Task {
+              draftSaveTask?.cancel()
+              let pendingDraftSave = draftSaveTask
+              draftSaveTask = nil
+              await pendingDraftSave?.value
+              draftIsSaving = false
+              #if DEBUG
+                if ProcessInfo.processInfo.arguments.contains("-ui-test-delay-journal-entry-save") {
+                  try? await Task.sleep(for: .seconds(2))
+                }
+              #endif
+              guard !Task.isCancelled else { return }
               let saved = await model.saveJournalEntry(
-                existing: context.entry,
+                existing: savedEntry,
                 linkedPracticeEventID: context.linkedPracticeEventID,
                 text: text,
                 audioAttachment: displayedAttachment,
                 transcript: transcript,
                 transcriptionState: resolvedTranscriptionState
               )
-              isSaving = false
-              if saved != nil {
+              if let saved {
+                savedEntry = saved
                 didSave = true
                 model.commitPendingJournalRecording()
-                dismiss()
+                journalEntryNeedsDraftCleanup = true
+                draftIsSaving = true
+                let draftDeleted = await model.deleteJournalTextDraft(editorKey: context.draftKey)
+                draftIsSaving = false
+                isSaving = false
+                if draftDeleted {
+                  journalEntryNeedsDraftCleanup = false
+                  draftSaveFailed = false
+                  dismiss()
+                } else {
+                  draftSaveFailed = true
+                }
+              } else {
+                isSaving = false
               }
             }
           }
           .disabled(
-            isSaving || isTranscribing
+            isSaving || isDiscarding || didSave || isTranscribing
               || (text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
                 && displayedAttachment == nil)
           )
@@ -446,21 +552,106 @@ private struct JournalEditorView: View {
             .accessibilityIdentifier("journal.editor.keyboard.done")
         }
       }
-      .onAppear { textIsFocused = context.entry == nil }
-      .interactiveDismissDisabled(hasUnsavedChanges && !didSave)
+      .task {
+        guard !draftLoaded else { return }
+        #if DEBUG
+          textIsFocused = !model.suppressesMarketingCaptureKeyboard && context.entry == nil
+        #else
+          textIsFocused = context.entry == nil
+        #endif
+        let draft = await model.loadJournalTextDraft(editorKey: context.draftKey)
+        guard !Task.isCancelled, !isDiscarding else { return }
+        draftSaveFailed = model.journalNotice == .draftSaveFailed
+        if let draft,
+          !textChangedBeforeDraftLoaded
+        {
+          if let entry = context.entry, draft.modifiedAt <= entry.modifiedAt {
+            journalEntryNeedsDraftCleanup = true
+            let deleted = await model.deleteJournalTextDraft(editorKey: context.draftKey)
+            guard !Task.isCancelled else { return }
+            if deleted {
+              journalEntryNeedsDraftCleanup = false
+              draftSaveFailed = false
+            } else {
+              draftSaveFailed = true
+            }
+          } else if draft.text != (context.entry?.text ?? "") {
+            text = draft.text
+            draftWasRestored = true
+          } else {
+            journalEntryNeedsDraftCleanup = true
+            let deleted = await model.deleteJournalTextDraft(editorKey: context.draftKey)
+            guard !Task.isCancelled else { return }
+            if deleted {
+              journalEntryNeedsDraftCleanup = false
+              draftSaveFailed = false
+            } else {
+              draftSaveFailed = true
+            }
+          }
+        }
+        guard !Task.isCancelled else { return }
+        draftLoaded = true
+        #if DEBUG
+          model.reportMarketingCaptureJournalEditorLoaded(
+            prefilled: text == (model.marketingCaptureJournalText ?? ""),
+            actualAppearance: colorScheme == .dark ? "dark" : "light"
+          )
+        #endif
+        if hasUnsavedText { scheduleDraftSave() }
+      }
+      .interactiveDismissDisabled(
+        isSaving || isDiscarding || ((hasUnsavedChanges || draftIsSaving) && !didSave)
+      )
       .confirmationDialog(
         "journal.discard.title",
         isPresented: $showsDiscardConfirmation,
         titleVisibility: .visible
       ) {
-        Button("journal.discard.action", role: .destructive) { dismiss() }
+        Button("journal.discard.action", role: .destructive) {
+          guard !isSaving, !isDiscarding else { return }
+          isDiscarding = true
+          draftSaveTask?.cancel()
+          let pendingDraftSave = draftSaveTask
+          draftSaveTask = nil
+          draftIsSaving = false
+          Task {
+            await pendingDraftSave?.value
+            draftIsSaving = true
+            if await model.deleteJournalTextDraft(editorKey: context.draftKey) {
+              draftIsSaving = false
+              draftSaveFailed = false
+              dismiss()
+            } else {
+              draftIsSaving = false
+              isDiscarding = false
+              draftSaveFailed = true
+            }
+          }
+        }
         Button("common.cancel", role: .cancel) {}
       } message: {
         Text("journal.discard.body")
       }
       .onDisappear {
+        draftSaveTask?.cancel()
+        if !didSave && !isSaving && !isDiscarding && !didFlushCurrentDraftBeforeDismiss && draftLoaded {
+          let textToPersist = hasUnsavedText ? text : ""
+          Task {
+            await model.saveJournalTextDraft(
+              editorKey: context.draftKey,
+              linkedPracticeEventID: context.linkedPracticeEventID,
+              text: textToPersist
+            )
+          }
+        }
         previewPlayer.stop()
         if !didSave { model.discardPendingJournalRecording() }
+      }
+      .onChange(of: text) { _, _ in
+        if !draftLoaded { textChangedBeforeDraftLoaded = true }
+        if !didSave { journalEntryNeedsDraftCleanup = false }
+        scheduleDraftSave()
       }
       .onChange(of: model.journalRecordingPhase) { _, phase in
         switch phase {
@@ -471,6 +662,93 @@ private struct JournalEditorView: View {
         default:
           break
         }
+      }
+    }
+  }
+
+  private var hasUnsavedText: Bool {
+    !didSave
+      && text != (savedEntry?.text ?? "")
+      && !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+  }
+
+  private func scheduleDraftSave() {
+    guard draftLoaded, !didSave, !isDiscarding else { return }
+    draftIsSaved = false
+    draftSaveFailed = false
+    draftIsSaving = true
+    draftSaveTask?.cancel()
+    let textToPersist = hasUnsavedText ? text : ""
+    draftSaveTask = Task {
+      do {
+        try await Task.sleep(for: .milliseconds(400))
+      } catch {
+        return
+      }
+      guard !Task.isCancelled else { return }
+      let saved = await model.saveJournalTextDraft(
+        editorKey: context.draftKey,
+        linkedPracticeEventID: context.linkedPracticeEventID,
+        text: textToPersist
+      )
+      guard !Task.isCancelled else { return }
+      draftIsSaved = saved && !textToPersist.isEmpty
+      draftSaveFailed = !saved
+      if saved { journalEntryNeedsDraftCleanup = false }
+      draftIsSaving = false
+    }
+  }
+
+  private func flushDraftThenDismiss() {
+    guard !isSaving, !isDiscarding else { return }
+    draftSaveTask?.cancel()
+    let pendingDraftSave = draftSaveTask
+    draftSaveTask = nil
+    guard draftLoaded else {
+      dismiss()
+      return
+    }
+    didFlushCurrentDraftBeforeDismiss = false
+    draftIsSaving = true
+    Task {
+      await pendingDraftSave?.value
+      let saved = await model.saveJournalTextDraft(
+        editorKey: context.draftKey,
+        linkedPracticeEventID: context.linkedPracticeEventID,
+        text: hasUnsavedText ? text : ""
+      )
+      draftIsSaving = false
+      draftIsSaved = saved && hasUnsavedText
+      draftSaveFailed = !saved
+      if saved {
+        didFlushCurrentDraftBeforeDismiss = true
+        dismiss()
+      }
+    }
+  }
+
+  private func retryDraftPersistence() {
+    guard !draftIsSaving else { return }
+    draftIsSaving = true
+    draftSaveFailed = false
+    Task {
+      if journalEntryNeedsDraftCleanup {
+        let deleted = await model.deleteJournalTextDraft(editorKey: context.draftKey)
+        draftIsSaving = false
+        draftSaveFailed = !deleted
+        if deleted {
+          journalEntryNeedsDraftCleanup = false
+          if didSave { dismiss() }
+        }
+      } else {
+        let saved = await model.saveJournalTextDraft(
+          editorKey: context.draftKey,
+          linkedPracticeEventID: context.linkedPracticeEventID,
+          text: hasUnsavedText ? text : ""
+        )
+        draftIsSaving = false
+        draftIsSaved = saved && hasUnsavedText
+        draftSaveFailed = !saved
       }
     }
   }

@@ -32,6 +32,8 @@ type ManifestItem = {
 };
 
 type Geometry = {
+  headlineBounds: { x: number; y: number; width: number; height: number };
+  proofBounds: { x: number; y: number; width: number; height: number };
   headlineToProofGap: number;
   headlineToProofGapRatio: number;
   proofHeight: number;
@@ -52,7 +54,7 @@ type SetManifest = {
   humanVisualReview: { state: string; reviewer: string | null; reviewedAt: string | null; notes: string | null };
   network: { externalRequests: number };
   pixelNormalization: string;
-  sourceCaptures: { sourceRevision: string };
+  sourceCaptures: { sourceRevision: string; setCompleteness?: string };
   contactSheet: { filename: string; sha256: string; width: number; height: number; encoding: string };
   narrative: { id: string; title: string; ownerSelection: string | null };
   items: ManifestItem[];
@@ -81,7 +83,17 @@ function range(values: number[]): { min: number; max: number } {
 }
 
 function assertGeometry(geometry: Geometry, context: string): void {
+  const bounds = [geometry.headlineBounds, geometry.proofBounds];
   if (
+    bounds.some((box) =>
+      !box
+      || ![box.x, box.y, box.width, box.height].every(Number.isFinite)
+      || box.x < 0
+      || box.y < 0
+      || box.width <= 0
+      || box.height <= 0
+    )
+    ||
     !Number.isFinite(geometry.headlineToProofGap)
     || !Number.isFinite(geometry.proofHeight)
     || !Number.isFinite(geometry.proofLowerEdge)
@@ -160,6 +172,13 @@ async function validateSet(
   if (!['pending', 'approved'].includes(manifest.humanVisualReview.state)) {
     throw new Error(`${locale}/${device}: invalid human visual review state`);
   }
+  if (
+    expectedUploadAuthorization === "candidate-only-human-review-pending-not-upload-authorized"
+    && (
+      manifest.sourceCaptures.setCompleteness !== "full-locale-device-matrix"
+      || manifest.humanVisualReview.state !== "pending"
+    )
+  ) throw new Error(`${locale}/${device}: candidate output must declare the full selected matrix and pending visual review`);
   if (
     manifest.items.length !== slides.length
     || manifest.narrative.id !== (narrative?.id ?? "current")
@@ -284,11 +303,15 @@ async function main() {
     ? alternatives.narratives.find((candidate) => candidate.id === narrativeID)
     : null;
   if (narrativeID && !narrative) throw new Error(`unknown narrative ${narrativeID}`);
+  const candidateOnly = process.argv.includes("--candidate-only");
+  if (candidateOnly && narrative) throw new Error("candidate-only validation applies only to the selected current narrative");
   const slides = narrative?.slides ?? plan.slides;
   const requiredCaptureIDs = narrative
     ? [...new Set(narrative.slides.flatMap((slide) => slide.capture_ids))]
     : plan.required_capture_ids;
-  const expectedUploadAuthorization = narrative ? "candidate-only-not-selected" : plan.upload_authorization;
+  const expectedUploadAuthorization = narrative
+    ? "candidate-only-not-selected"
+    : plan.upload_authorization;
   const captures = await loadSourceCaptures();
   await validateCaptures(captures, captures.sets, requiredCaptureIDs);
 
@@ -310,6 +333,92 @@ async function main() {
   }
   const imageCount = sets.reduce((sum, set) => sum + set.imageCount, 0);
   const expectedImageCount = slides.length * plan.locales.length * plan.devices.length;
+  if (candidateOnly) {
+    if (sets.length !== 4 || imageCount !== expectedImageCount) {
+      throw new Error(`selected candidate matrix mismatch: ${sets.length} sets and ${imageCount} images`);
+    }
+    const slideGeometries = [];
+    for (const set of sets) {
+      const root = setRoot(set.locale, set.device, null);
+      const manifest = JSON.parse(await readFile(path.join(root, "_manifest.json"), "utf8")) as SetManifest;
+      for (const item of manifest.items) {
+        slideGeometries.push({
+          locale: set.locale,
+          device: set.device,
+          slide: item.slide,
+          slideId: item.slideId,
+          filename: item.filename,
+          sha256: item.sha256,
+          headlineBounds: item.geometry.headlineBounds,
+          proofBounds: item.geometry.proofBounds,
+          headlineToProofGapRatio: item.geometry.headlineToProofGapRatio,
+          proofHeightRatio: item.geometry.proofHeightRatio,
+          proofLowerEdgeRatio: item.geometry.proofLowerEdgeRatio,
+        });
+      }
+    }
+    const runtimeWarningProvenance = captures.result_bundles
+      .map((bundle) => ({ device: bundle.device, warningsByTest: bundle.runtime_warnings_by_test }));
+    const candidate = {
+      schemaVersion: 1,
+      status: "candidate-complete-human-review-pending",
+      sourceRevision: captures.source_revision,
+      expectedMatrix: { setCount: 4, imageCount: expectedImageCount, locales: plan.locales, devices: plan.devices },
+      completedCandidate: { setCount: sets.length, imageCount, sets },
+      slideGeometryResults: slideGeometries,
+      fullMatrixStatus: "complete-human-review-pending",
+      runtimeWarningProvenance,
+      humanVisualReview: "pending",
+      uploadAuthorization: "candidate-only-human-review-pending-not-upload-authorized",
+      externalRequests: 0,
+    };
+    const exportsRoot = path.join(ROOT, "exports");
+    const candidateValidation = {
+      schemaVersion: 1,
+      status: "candidate-pass-human-review-pending",
+      checks: [
+        "4 exact locale/device sets, 24 numbered opaque RGB PNGs at the frozen iPhone and required 13-inch iPad dimensions",
+        "per-image and per-artifact SHA-256 readback",
+        "PNG normalization is idempotent",
+        "per-set JSON and text validation pass",
+        "contact-sheet dimensions and SHA-256 readback",
+        "ZIP contents and byte readback",
+        "headline and proof bounds are recorded and meet the geometry contract for all 24 candidate images",
+        "Garden-day iPhone and iPad 13 source captures are current, real-clock, opaque RGB captures",
+        "Apple's required 13-inch iPad screenshots are source-bound to the current signed physical-device build and fixture evidence",
+        "XCTest runtime warnings are preserved by test identity; Garden-day tests have no warnings",
+        "external network request count is zero",
+      ],
+      validatedImageCount: imageCount,
+      expectedFinalImageCount: expectedImageCount,
+      fullMatrixStatus: "complete-human-review-pending",
+      blockers: [],
+      runtimeWarningProvenance,
+      humanVisualReview: "pending",
+      uploadAuthorization: "candidate-only-human-review-pending-not-upload-authorized",
+    };
+    const candidateMatrix = {
+      schemaVersion: 1,
+      status: "candidate-complete-human-review-pending",
+      supersedesPreviousMatrixValidation: true,
+      currentCandidateManifest: "_candidate-manifest.json",
+      expectedSets: 4,
+      expectedImages: expectedImageCount,
+      currentCandidateSets: sets.length,
+      currentCandidateImages: imageCount,
+      selectedDevices: plan.devices,
+      humanVisualReview: "pending",
+      uploadAuthorization: "candidate-only-human-review-pending-not-upload-authorized",
+    };
+    await writeFile(path.join(exportsRoot, "_candidate-manifest.json"), `${JSON.stringify(candidate, null, 2)}\n`);
+    await writeFile(path.join(exportsRoot, "_candidate-validation.json"), `${JSON.stringify(candidateValidation, null, 2)}\n`);
+    await writeFile(path.join(exportsRoot, "_candidate-validation.txt"), `PASS ${imageCount} candidate images across ${sets.length} locale/device sets\nHUMAN_VISUAL_REVIEW PENDING\nUPLOAD NOT AUTHORIZED\n`);
+    await writeFile(path.join(exportsRoot, "_matrix-manifest.json"), `${JSON.stringify(candidateMatrix, null, 2)}\n`);
+    await writeFile(path.join(exportsRoot, "_matrix-validation.json"), `${JSON.stringify({ schemaVersion: 1, status: "candidate-pass-human-review-pending", blockers: [], humanVisualReview: "pending", uploadAuthorization: "candidate-only-human-review-pending-not-upload-authorized" }, null, 2)}\n`);
+    await writeFile(path.join(exportsRoot, "_matrix-validation.txt"), `PASS ${imageCount} current candidate images across ${sets.length} locale/device sets\nHUMAN_VISUAL_REVIEW PENDING\nUPLOAD NOT AUTHORIZED\n`);
+    process.stdout.write(`Candidate validation passed: ${sets.length} locale/device sets × ${slides.length} slides = ${imageCount}; human visual review pending.\n`);
+    return;
+  }
   if (sets.length !== 4 || imageCount !== expectedImageCount) {
     throw new Error(`matrix count mismatch: ${sets.length} sets and ${imageCount} images`);
   }

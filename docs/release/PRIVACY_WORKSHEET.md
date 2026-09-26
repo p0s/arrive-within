@@ -10,17 +10,18 @@ Current result: version 1.0 is local-only, contains no in-app feedback transmiss
 
 | Data | Local purpose | Private CloudKit | Third party/operator | User control |
 |---|---|---|---|---|
-| Practice events and garden seed | history/progression | disabled in 1.0 | none | export, reset, delete |
-| Garden customization/favorites | presentation/preferences | disabled in 1.0 | none | edit, export, delete |
-| Journal text | private reflection/search | disabled in 1.0 | none | edit, export, delete |
-| Journal voice AAC | private reflection | disabled in 1.0 | none | play, export, delete |
-| On-device transcript | user-requested transcription | disabled in 1.0 | none | edit, export, delete |
+| Practice events and garden seed | history/progression | disabled in 1.0 | none | export, restore from a selected local archive, reset, delete |
+| Garden customization/favorites | presentation/preferences | disabled in 1.0 | none | edit, export, restore, delete |
+| Journal text | private reflection/search | disabled in 1.0 | none | edit, export, restore, delete |
+| Journal voice AAC | private reflection | disabled in 1.0 | none | play, export, restore, delete |
+| On-device transcript | user-requested transcription | disabled in 1.0 | none | edit, export, restore, delete |
 | Reminder schedules | local notifications | no | none | edit/delete in app and Settings |
 | Redacted diagnostics | user-initiated support | no automatic transmission | only if user explicitly shares | preview/export/delete |
 
 ## Executable App Privacy positions
 
 - Local-only mode sends no product or journal data off device. Under Apple's current guidance, on-device-only processing is not collected.
+- Archive restore reads only a user-selected local file. It adds no collection, upload, or cloud copy; invalid archives are rejected before saved data is replaced.
 - CloudKit runtime activation is disabled in 1.0 until deletion completion and stale-device convergence have operation-specific two-device proof.
 - Version 1.0 has no support composer, feedback endpoint, or feedback transport dependency. Settings provides ordinary web links to Privacy and Support without attaching app data.
 - ATT prompt, advertising, attribution, analytics SDKs, product-data backend, and automatic support upload are absent by contract and source check.
@@ -48,6 +49,7 @@ Current result: version 1.0 is local-only, contains no in-app feedback transmiss
 - Reconcile App Privacy answers with the exact local-only binary.
 - Reconcile encryption/export-compliance answers with Apple platform encryption and the exact binary.
 - Verify file protection, local database/audio backup policy, redacted logs, short-lived export staging, reset generation, settings removal, and local delete-all.
+- Verify bilingual validation-first archive restore, replacement confirmation, full-transaction failure handling, preserved device settings, and local file-import behavior in the exact candidate.
 - Re-run `validate_release_sources.mjs` against the frozen prospective-public source manifest and bind its report hash into the candidate manifest.
 - Inspect the exact archive and exported IPA; source inclusion does not prove packaged `PrivacyInfo.xcprivacy`, built values, frameworks, endpoints, or signing entitlements.
 

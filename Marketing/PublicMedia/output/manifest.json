@@ -3,7 +3,7 @@
   "state": "locally-generated-objectively-validated-human-review-pending",
   "source": {
     "generator": "Marketing/PublicMedia/scripts/generate-public-media.mjs",
-    "generator_sha256": "33a3b90ff9f4486b62f348adeae2882da4e504840166c3322e1eea6560e1ddf6",
+    "generator_sha256": "5375eab74d77fe0545d409a17867300b4e79a53f1fd92b933226d506eaa2e6ff",
     "plan": "Marketing/PublicMedia/growth-states.json",
     "plan_sha256": "a80879580949d7c35d3160a3e80da25b65bc363aba18dd1b6bca01f1f97141af",
     "renderer_source_files": [
@@ -17,13 +17,14 @@
       "Renderer/src/seeded.ts",
       "Renderer/src/shipping-html.ts",
       "Renderer/src/shipping-visual.ts",
+      "Renderer/src/style-material.ts",
       "Renderer/src/types.ts",
       "Renderer/src/validation.ts",
       "Renderer/src/visual-design.ts",
       "Renderer/src/world-model.ts",
       "Shared/GardenState.schema.json"
     ],
-    "renderer_source_sha256": "ceb4332aecd2c734563b94486e8a877ee10fd5cdb22692bc93c21345b3f8ef27",
+    "renderer_source_sha256": "08823839ccb8c331da03d1140d20debb5bbc5c79124120b86ac1a03073b59be8",
     "garden_state_schema_sha256": "a73eb83fd1326b3c113663db54005a93024862fa630d8f92a4f3cf1fecc08fee",
     "product_state": "safe synthetic GardenState values accepted by the shipping typed bridge and rendered by the real bundled Three.js renderer"
   },
@@ -47,7 +48,7 @@
         "id": "00-seed",
         "label": "Before the first practice",
         "path": "output/frames/01-00-seed.png",
-        "sha256": "ef6c01ec8a917727dd4e38a1d80adf414b5ba532bf2cd16e469e1f0a6bd0940d",
+        "sha256": "7f4f9178ba42dfb093910c932a8e85b7b3f6a275d3f397371831ad28948c9cd1",
         "state_sha256": "cc05c4ab40d068396493f6a746b0f137f7b8ce4e4353d550e01090bac0d2fb2f",
         "journey_day": 0,
         "highest_milestone": 0
@@ -56,7 +57,7 @@
         "id": "01-roots",
         "label": "Practice day 1 · first permanent growth",
         "path": "output/frames/02-01-roots.png",
-        "sha256": "cee4555714be09df36345d1dc19cbd2acebe9159bc09c98e6496cab207f3dba3",
+        "sha256": "620269ce60bd9c1f4c29b0c29838eb0d0aaaf5fe485b75cd67fb043a891e7696",
         "state_sha256": "d8d09d5960fdefc4979affec6296b10be20b583318b6b5a14997832e9d138efd",
         "journey_day": 1,
         "highest_milestone": 0
@@ -65,7 +66,7 @@
         "id": "05-water",
         "label": "Practice day 5 · Earth II",
         "path": "output/frames/03-05-water.png",
-        "sha256": "aa47d8a5f73b9bd1ccbf268a5f8229f1d326d5e2207dc0afcf693df81bba35a2",
+        "sha256": "bb97d071552690477bfd54a2cc928b53a541042dd6235a5bf387eb9b8f2a3d04",
         "state_sha256": "c86bccecbaf6e82f17b07fda2ceeaa255bb76eebd03ccfb7785a2b1bd18dddf4",
         "journey_day": 5,
         "highest_milestone": 2
@@ -74,7 +75,7 @@
         "id": "09-warmth",
         "label": "Practice day 9 · Water I",
         "path": "output/frames/04-09-warmth.png",
-        "sha256": "98461f6abbb28606898932b2758679b19fc8ed0bc376077015f163575af78742",
+        "sha256": "59e00e8123a064617e7e284a1ed52b81c64ea0c6d13177c260203d3badcc4c63",
         "state_sha256": "e2829345f1b102ae2d9a1e8edca09bc78bebb61b3fdb191026366ca5bb7d7727",
         "journey_day": 9,
         "highest_milestone": 4
@@ -83,7 +84,7 @@
         "id": "15-sanctuary",
         "label": "Practice day 15 · Fire I",
         "path": "output/frames/05-15-sanctuary.png",
-        "sha256": "91b2ac70aeacfb866ce9512a73966a07551e050985f767d8282120feb545a2e1",
+        "sha256": "6c2b78441915b6b2f308bbaa7dbda55bb1e63ddc47f90f466ad35b5b9c0f9592",
         "state_sha256": "c5cec1c8ae690adaacde73a2e63508a02cef518f1412664fb53cf0bf34f47a78",
         "journey_day": 15,
         "highest_milestone": 7
@@ -92,7 +93,7 @@
         "id": "30-living-world",
         "label": "Practice day 30",
         "path": "output/frames/06-30-living-world.png",
-        "sha256": "45aefeff0ec7a39cd21989147a96021a568fdda2e5ee0f81ef5f17ca3be5469c",
+        "sha256": "0f4438642fea4424a295ab72acbe540285614b2f64df21a6378943873baa38db",
         "state_sha256": "4e3eb9407b34e676f6b4b040ae77837308e7f6641f9dc848c0164c8ce55186b4",
         "journey_day": 30,
         "highest_milestone": 15
@@ -114,25 +115,25 @@
     "node": "v26.7.0",
     "playwright": "1.61.1",
     "sharp": "0.35.3",
-    "ffmpeg": "ffmpeg version 9.0.1 Copyright (c) 2000-2026 the FFmpeg developers",
-    "ffprobe": "ffprobe version 9.0.1 Copyright (c) 2007-2026 the FFmpeg developers"
+    "ffmpeg": "ffmpeg version 9.0.2 Copyright (c) 2000-2026 the FFmpeg developers",
+    "ffprobe": "ffprobe version 9.0.2 Copyright (c) 2007-2026 the FFmpeg developers"
   },
   "output": {
     "output/garden-growth-v1.mp4": {
-      "bytes": 923354,
-      "sha256": "86d124074309b067d939e70aec077c324efe801d37a42f7f22b0d8fcb17c7edd"
+      "bytes": 961797,
+      "sha256": "46e0f4c6ca925f363e33f935b7b1bd07c9a6c111c909154d1b6e284fdd3efdc0"
     },
     "output/garden-growth-poster.png": {
-      "bytes": 173997,
-      "sha256": "6f6b87dbd6a2d25c04a14b99bb2e019807f01c1ada60a4d3ae37fba2fa5f8b49"
+      "bytes": 199506,
+      "sha256": "455d238b89e1554b078e7db84b0f666139a23b9a735f8c593604b11e9488b50b"
     },
     "output/social-preview.png": {
-      "bytes": 187416,
-      "sha256": "4de29448720a226dcaa73baf572c331c4158a53298f7a73be19c4759a83ae005"
+      "bytes": 207630,
+      "sha256": "fa4571f16e4b15483cd0547720b06828ae60bd31fc7eae93355f4d0b8f643495"
     },
     "output/growth-contact-sheet.jpg": {
-      "bytes": 65389,
-      "sha256": "000f806077ca062c784308fe2d12e413602c3d8f8c618b85ab00af6d5be97a2b"
+      "bytes": 71472,
+      "sha256": "8ef2bfec42b3af61412fa32a4006325e4ae6b9ecf5a9cd9658f6a6713fd460aa"
     }
   },
   "rights": {
@@ -150,19 +151,6 @@
       "motion comfort",
       "README/website/social crop"
     ]
-  },
-  "post_generation_change": {
-    "classification": "post-publication-garden-media-regeneration-deferred",
-    "current_renderer_source_sha256": "d6b5378ad941495d902439e374ba1404f628b3598f5194e2090666fe5e4bc1df",
-    "current_garden_state_schema_sha256": "a73eb83fd1326b3c113663db54005a93024862fa630d8f92a4f3cf1fecc08fee",
-    "changed_paths": [
-      "Renderer/src/scene.ts",
-      "Renderer/src/visual-design.ts"
-    ],
-    "fresh_browser_matrix": "skipped-host-denial-not-passed",
-    "current_garden_proof": "separate-provenance-bound-rendered-artifacts-and-deterministic-orbit-diagnostics",
-    "valid_until": "next-successful-current-source-public-media-regeneration",
-    "rationale": "The retained pre-enhancement renderer media is not current Garden proof. The fresh browser matrix was skipped after host denial and was not relabeled as passed. Regenerate, visually review, and hash-bind the media at the next successful current-source public-media regeneration."
   },
   "claim_boundary": "This media proves local deterministic renderer output only. It is not physical-device performance, official CloudKit, signed-candidate, App Store, deployment, or public readback evidence."
 }

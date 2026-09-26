@@ -1,0 +1,3 @@
+PASS 24 candidate images across 4 locale/device sets
+HUMAN_VISUAL_REVIEW PENDING
+UPLOAD NOT AUTHORIZED

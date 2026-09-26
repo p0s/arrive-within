@@ -25,6 +25,10 @@
   <string>$(MARKETING_VERSION)</string>
   <key>CFBundleVersion</key>
   <string>$(CURRENT_PROJECT_VERSION)</string>
+  <key>V2N_BUILD_SOURCE_COMMIT</key>
+  <string>$(V2N_BUILD_SOURCE_COMMIT)</string>
+  <key>V2N_CAPTURE_SOURCE_REVISION</key>
+  <string>$(V2N_CAPTURE_SOURCE_REVISION)</string>
   <key>ITSAppUsesNonExemptEncryption</key>
   <false/>
   <key>LSApplicationCategoryType</key>

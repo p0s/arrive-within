@@ -6,22 +6,7 @@ import { ROOT } from "./contracts";
 
 const PROJECT_ROOT = path.resolve(ROOT, "../..");
 
-export const CAPTURE_SOURCE_INPUTS = [
-  "project.yml",
-  "Config/Base.xcconfig",
-  "Config/Local.example.xcconfig",
-  "ArriveWithin.xcodeproj/project.pbxproj",
-  "ArriveWithin.xcodeproj/xcshareddata/xcschemes/ArriveWithin.xcscheme",
-  "Apps/ArriveWithin/Sources",
-  "Apps/ArriveWithin/Resources",
-  "Apps/ArriveWithin/Tests/ArriveWithinUITests",
-  "Packages/ArriveWithinCore/Package.swift",
-  "Packages/ArriveWithinCore/Sources",
-  "Content/guided",
-  "Renderer/dist",
-  "scripts/run_guarded_xcode_tests.sh",
-  "scripts/xcodebuild_runtime_test_preflight.zsh",
-] as const;
+export const CAPTURE_SOURCE_INPUTS_PATH = "Marketing/AppStoreScreenshots/capture-source-inputs.json";
 
 export type CaptureSourceManifest = {
   schema_version: 1;
@@ -36,6 +21,24 @@ export type CaptureSourceManifest = {
 
 function sha256(data: Buffer | string): string {
   return createHash("sha256").update(data).digest("hex");
+}
+
+export async function loadCaptureSourceInputs(): Promise<string[]> {
+  const contractPath = path.join(PROJECT_ROOT, CAPTURE_SOURCE_INPUTS_PATH);
+  const contract = JSON.parse(await readFile(contractPath, "utf8")) as {
+    schema_version?: unknown;
+    inputs?: unknown;
+  };
+  if (contract.schema_version !== 1 || !Array.isArray(contract.inputs) || !contract.inputs.every((item) => typeof item === "string")) {
+    throw new Error("capture source input contract is invalid");
+  }
+  const inputs = contract.inputs as string[];
+  if (
+    !inputs.includes(CAPTURE_SOURCE_INPUTS_PATH) ||
+    new Set(inputs).size !== inputs.length ||
+    inputs.some((item) => item.length === 0 || item.startsWith("/") || item.split("/").includes("..") || item.includes("\\"))
+  ) throw new Error("capture source inputs must be unique safe repository-relative paths and include their contract");
+  return inputs;
 }
 
 async function collect(relative: string): Promise<string[]> {
@@ -58,7 +61,8 @@ async function collect(relative: string): Promise<string[]> {
 }
 
 export async function computeCaptureSourceManifest(): Promise<CaptureSourceManifest> {
-  const relativePaths = (await Promise.all(CAPTURE_SOURCE_INPUTS.map(collect))).flat().sort();
+  const inputs = await loadCaptureSourceInputs();
+  const relativePaths = (await Promise.all(inputs.map(collect))).flat().sort();
   if (relativePaths.length === 0) throw new Error("capture source manifest cannot be empty");
 
   const files = [];
@@ -80,7 +84,7 @@ export async function computeCaptureSourceManifest(): Promise<CaptureSourceManif
     generated_at: null,
     generation_time_policy: "omitted-for-byte-reproducibility",
     project_root: ".",
-    inputs: [...CAPTURE_SOURCE_INPUTS],
+    inputs,
     source_revision: revision.digest("hex"),
     files,
   };

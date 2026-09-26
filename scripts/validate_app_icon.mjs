@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import { lstat, readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import sharp from "../Marketing/AppStoreScreenshots/node_modules/sharp/dist/index.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const iconPath = path.join(root, "Apps/ArriveWithin/Resources/AppIcon.icon");
@@ -131,14 +132,25 @@ async function main() {
   assert(build.canonicalSourceSha256 === manifest.canonicalSourceSha256, "compiled icon evidence is stale for this source");
   assert(JSON.stringify(build.targetFamilies) === JSON.stringify(["phone", "pad"]), "compiled target families mismatch");
   assert(JSON.stringify(build.compiledStacks) === JSON.stringify(["light", "dark", "tintable"]), "compiled appearance stacks mismatch");
-  assert(build.compatibilityOutputs?.every((item) => item.colorSpace === "RGB" && typeof item.alpha === "boolean" && /^[a-f0-9]{64}$/.test(item.sha256)), "compiled compatibility output mismatch");
+  assert(build.compatibilityOutputs?.every((item) => item.colorSpace === "RGB" && typeof item.alpha === "boolean" && item.minimumAlpha === 255 && item.transparentPixelCount === 0 && item.fullyOpaque === true && /^[a-f0-9]{64}$/.test(item.sha256)), "compiled compatibility output mismatch");
   if (!process.argv.includes("--local-preview")) {
-    assert(build.compatibilityOutputs.every((item) => item.alpha === false),
-      "Release gate remains open: Xcode 27 emitted masked RGBA compatibility PNGs. Rebuild with the release toolchain or resolve the archive format before release. --local-preview validates artwork only.");
+    assert(build.compatibilityOutputs.every((item) => item.fullyOpaque === true),
+      "Release gate remains open: a compiled compatibility icon contains transparent pixels. Apple accepts an alpha channel only when every icon pixel is opaque.");
   }
   assert(build.marketingIcons?.length > 0 && build.marketingIcons.every((item) => item.opaque === true && item.colorModel === "RGB"), "compiled marketing icons must be opaque RGB");
   for (const item of build.compatibilityOutputs) {
-    assert(sha256(await safeFile(path.join(root, item.path))) === item.sha256, "compiled preview evidence drift");
+    const bytes = await safeFile(path.join(root, item.path));
+    assert(sha256(bytes) === item.sha256, "compiled preview evidence drift");
+    const decoded = await sharp(bytes).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    let minimumAlpha = 255;
+    let transparentPixelCount = 0;
+    for (let offset = 3; offset < decoded.data.length; offset += decoded.info.channels) {
+      const alpha = decoded.data[offset];
+      minimumAlpha = Math.min(minimumAlpha, alpha);
+      if (alpha < 255) transparentPixelCount++;
+    }
+    assert(minimumAlpha === item.minimumAlpha && transparentPixelCount === item.transparentPixelCount && transparentPixelCount === 0,
+      "compiled compatibility PNG contains transparent pixels or its alpha evidence drifted");
     assert(item.sproutGreenPixelFraction > 0.2, "compiled sprout is hidden or washed out");
   }
 

@@ -17,14 +17,15 @@ After intentionally changing the selected canonical app icon outputs, run `pnpm 
 
 After intentionally regenerating the canonical public renderer media, run `node Marketing/PublicMedia/scripts/sync-website-media.mjs` from the repository root. The synchronizer copies only the three declared public-media files and rewrites their exact SHA-256 provenance; website validation then rejects any source/copy drift.
 
-The video, poster, and social preview are first-party current-source renderer media. They were regenerated with external requests blocked and visually reviewed for the pavilion, mature tree silhouette, sparse wildlife, water, and sky balance. This is local product-media evidence, not physical-device, signed-candidate, App Store, or deployment proof.
+The video, poster, and social preview are first-party current-source renderer media, regenerated with external requests blocked. Owner visual review is pending; do not deploy these refreshed media until that review is complete. This is local product-media evidence, not physical-device, signed-candidate, App Store, or deployment proof.
 
 After intentionally recapturing the canonical App Store UI source, run `node Marketing/AppStoreScreenshots/scripts/sync-website-ui.mjs` from the repository root. The synchronizer copies only the eight declared first-party UI images and rewrites their exact capture revision and SHA-256 provenance.
 
+The current local site images are bound to App Store candidate 1.0.2 (build 19). Their owner visual review is pending; do not upload or deploy them until review is complete.
+
 ## Boundaries
 
-- The site makes no App Store availability claim and includes no badge until an exact released candidate and storefront readback exist.
-- After approval and successful storefront readback, add the canonical country-neutral `https://apps.apple.com/app/id6800192697` CTA to the root README and the website in one reviewed source change.
-- The current local source matches the repository-recorded build-16 Guided, Timer, Stopwatch, and local-only data scope. Its Guided correction is not deployment proof; the older deployed artifact remains bound to its own exact readback evidence, and future CloudKit work retains a separate external boundary.
+- The site links to the verified public 1.0.1 listing at `https://apps.apple.com/app/id6800192697`. New app-version claims remain tied to their own exact storefront readback.
+- The current local source includes the guided-first entry flow, recoverable local journal text drafts, and validation-first local restore from a user-selected complete archive. Restore keeps language, timer preferences, reminders, and permission choices on the device; journal data is uploaded only if the user deliberately exports and shares it.
 - Deployment may target only the verified `arrive-within` Vercel Hobby project and owner-controlled `arrivewithin.com` domain. Unrelated domain, DNS, project, or account mutation remains unauthorized.
-- The exact public source link is `https://github.com/p0s/arrive-within`; validation permits no other external website link.
+- The exact external links are the public source at `https://github.com/p0s/arrive-within` and live App Store listing at `https://apps.apple.com/app/id6800192697`; validation permits no other external website link.

@@ -142,8 +142,11 @@ export class GardenStyleMaterialFactory {
     if (this.direction.id === "twilight-refuge") return false;
     if (variant === "cel-bands") return this.profile.surfacePattern === "paper-hatch";
     if (this.profile.materialRoles[role].textureOpacity <= 0) return false;
+    // Keep the authored surface pattern on the hero tree and ground; smaller
+    // props retain their palette and lighting without unique GPU textures.
+    if (role !== "canopy" && role !== "trunk" && role !== "ground") return false;
     if (this.qualityHint !== "low") return true;
-    return role === "canopy" || role === "trunk" || role === "ground";
+    return true;
   }
 }
 

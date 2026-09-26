@@ -101,12 +101,15 @@ h1 span { display: block; }
   user-select: none;
 }
 
-.composition-garden-growth { top: 19.3%; right: 0; bottom: auto; left: 0; height: auto; }
-.composition-garden-growth .product-proof {
+.composition-garden-growth,
+.composition-garden-growth-day { top: 19.3%; right: 0; bottom: auto; left: 0; height: auto; }
+.composition-garden-growth .product-proof,
+.composition-garden-growth-day .product-proof {
   position: relative;
   width: 100%;
 }
-.composition-garden-growth .device-frame {
+.composition-garden-growth .device-frame,
+.composition-garden-growth-day .device-frame {
   width: 77%;
   padding: 14px;
   border: 14px solid #050a08;
@@ -114,8 +117,10 @@ h1 span { display: block; }
   background: #050a08;
   box-shadow: 0 30px 60px rgb(7 27 20 / 18%);
 }
-.composition-garden-growth .device-screen { border-radius: 76px; }
-.composition-garden-growth .device-frame::after {
+.composition-garden-growth .device-screen,
+.composition-garden-growth-day .device-screen { border-radius: 76px; }
+.composition-garden-growth .device-frame::after,
+.composition-garden-growth-day .device-frame::after {
   position: absolute;
   top: 28px;
   left: 50%;
@@ -126,8 +131,10 @@ h1 span { display: block; }
   content: "";
   transform: translateX(-50%);
 }
-.composition-garden-growth .before { z-index: 2; margin-left: -8%; }
-.composition-garden-growth .after { position: absolute; z-index: 3; top: 0; right: -8%; }
+.composition-garden-growth .before,
+.composition-garden-growth-day .before { z-index: 2; margin-left: -8%; }
+.composition-garden-growth .after,
+.composition-garden-growth-day .after { position: absolute; z-index: 3; top: 0; right: -8%; }
 .composition-data-sync-pair { align-items: center; bottom: -2%; height: 60%; }
 .composition-data-sync-pair .primary-device { position: absolute; z-index: 2; left: 2%; width: 66%; }
 .composition-data-sync-pair .companion-device { position: absolute; z-index: 3; right: 0; bottom: 4%; width: 42%; border-radius: 58px; }
@@ -144,16 +151,21 @@ h1 span { display: block; }
 .composition-accessibility-large-text .device-frame,
 .composition-journal .device-frame { width: 93%; }
 .slide-5[lang="de"] .composition { top: 21.05%; }
-.ipad-13 header { margin-top: 4.5%; }
-.ipad-13 h1 { font-size: 154px; }
-.ipad-13 .composition { top: 20%; right: 3%; bottom: auto; left: 3%; height: 80%; }
-.slide.ipad-13.slide-5[lang="de"] .composition { top: 20%; }
-.ipad-13 .device-frame.tablet { width: 90%; }
-.slide.ipad-13 .composition.composition-garden-growth { top: 20%; right: 0; bottom: auto; left: 0; height: auto; }
-.ipad-13 .composition-garden-growth .device-frame { width: 77%; border-radius: 86px; }
-.ipad-13 .composition-garden-growth .device-screen { border-radius: 60px; }
-.ipad-13 .composition-garden-growth .before { margin-left: -8%; }
-.ipad-13 .composition-garden-growth .after { top: 0; right: -8%; }
-.ipad-13 .composition-data-sync-pair { bottom: -8%; height: 65%; }
-.ipad-13 .composition-data-sync-pair .primary-device { width: 65%; }
-.ipad-13 .composition-data-sync-pair .companion-device { width: 31%; }
+.ipad-layout header { margin-top: 4.5%; }
+.ipad-layout h1 { font-size: 154px; }
+.ipad-layout .composition { top: 20%; right: 3%; bottom: auto; left: 3%; height: 80%; }
+.ipad-layout.slide-5[lang="de"] .composition { top: 20%; }
+.ipad-layout .device-frame.tablet { width: 90%; }
+.slide.ipad-layout .composition.composition-garden-growth,
+.slide.ipad-layout .composition.composition-garden-growth-day { top: 20%; right: 0; bottom: auto; left: 0; height: auto; }
+.ipad-layout .composition-garden-growth .device-frame,
+.ipad-layout .composition-garden-growth-day .device-frame { width: 77%; border-radius: 86px; }
+.ipad-layout .composition-garden-growth .device-screen,
+.ipad-layout .composition-garden-growth-day .device-screen { border-radius: 60px; }
+.ipad-layout .composition-garden-growth .before,
+.ipad-layout .composition-garden-growth-day .before { margin-left: -8%; }
+.ipad-layout .composition-garden-growth .after,
+.ipad-layout .composition-garden-growth-day .after { top: 0; right: -8%; }
+.ipad-layout .composition-data-sync-pair { bottom: -8%; height: 65%; }
+.ipad-layout .composition-data-sync-pair .primary-device { width: 65%; }
+.ipad-layout .composition-data-sync-pair .companion-device { width: 31%; }

@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "status": "candidate-pass-human-review-pending",
+  "checks": [
+    "4 exact locale/device sets, 24 numbered opaque RGB PNGs at the frozen iPhone and accepted 11-inch iPad dimensions",
+    "per-image and per-artifact SHA-256 readback",
+    "PNG normalization is idempotent",
+    "per-set JSON and text validation pass",
+    "contact-sheet dimensions and SHA-256 readback",
+    "ZIP contents and byte readback",
+    "headline and proof bounds are recorded and meet the geometry contract for all 24 candidate images",
+    "Garden-day iPhone and iPad 11 source captures are current, real-clock, opaque RGB captures",
+    "retained iPad 13 source captures are explicitly stale/incomplete and retain their pinned source hashes",
+    "Apple 11-inch accepted screenshots are eligible for 13-inch display scaling when 13-inch screenshots are omitted",
+    "XCTest runtime warnings are preserved by test identity; Garden-day tests have no warnings",
+    "external network request count is zero"
+  ],
+  "validatedImageCount": 24,
+  "expectedFinalImageCount": 24,
+  "fullMatrixStatus": "complete-human-review-pending",
+  "blockers": [],
+  "runtimeWarningProvenance": [
+    {
+      "device": "iphone-6.9",
+      "warningsByTest": {
+        "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()": [
+          "Invalid frame dimension (negative or non-finite)."
+        ],
+        "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()": [
+          "Invalid frame dimension (negative or non-finite)."
+        ],
+        "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayEnglish()": [],
+        "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()": []
+      }
+    },
+    {
+      "device": "ipad-11",
+      "warningsByTest": {
+        "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()": [
+          "Invalid frame dimension (negative or non-finite)."
+        ],
+        "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()": [
+          "Invalid frame dimension (negative or non-finite)."
+        ],
+        "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayEnglish()": [],
+        "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()": []
+      }
+    }
+  ],
+  "humanVisualReview": "pending",
+  "uploadAuthorization": "candidate-only-human-review-pending-not-upload-authorized"
+}

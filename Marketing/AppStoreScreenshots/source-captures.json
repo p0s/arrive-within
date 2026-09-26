@@ -1,38 +1,61 @@
 {
-  "schema_version": 2,
-  "state": "human-reviewed",
-  "capture_method": "Guarded XCUITest using a pooled iPhone 17 Pro simulator and an iPad Pro 13-inch (M5) simulator on iOS 26.5, with deterministic safe synthetic product state",
-  "capture_test": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish and testCaptureAllRequiredMarketingStatesGerman — selected Garden/growth shipping states only",
-  "status_bar_profile": "Actual visible system status from each exact passed capture run; no synthetic status-bar overlay.",
-  "source_revision": "aed3e83d30d6290cb99731be79675fcfbeb7941168ec960479e08148b1293925",
+  "schema_version": 3,
+  "state": "candidate-ready",
+  "capture_method": "Guarded XCUITest run serially on the exact configured iPhone 17 Pro and iPad Pro 11-inch (M5) simulator pool routes; captures retain original runtime pixels.",
+  "capture_test": "ArriveWithinMarketingCaptureUITests: selected source states plus real-clock Garden-day locale tests in one four-test result per device.",
+  "status_bar_profile": "Actual visible system status from each exact passed simulator capture run; real-clock Garden-day status agrees with its local capture time; no synthetic status-bar overlay.",
+  "source_revision": "27192a1de32b40c6ee66494a45f81bc28b87e7cbc680f3d11b904f00baa2a810",
   "source_revision_kind": "sha256-capture-source-manifest",
-  "source_manifest_path": "capture-source-manifest.json",
-  "human_visual_review": {
-    "state": "approved",
-    "reviewer": "app-store-screenshot-style-review",
-    "reviewed_on": "2026-08-30",
-    "notes": "English and German iPhone and iPad contact sheets plus representative full-resolution exports were inspected against the current-source recapture. The selected Tonal Wash pilot retains one unclipped left-aligned headline block, tight headline-to-product spacing, large straight device frames, legible localized real app UI, and no substituted or invented product imagery."
-  },
-  "post_capture_change": {
-    "classification": "iphone-live-activity-nonvisual-capture-retention",
-    "captured_source_revision": "aed3e83d30d6290cb99731be79675fcfbeb7941168ec960479e08148b1293925",
-    "current_source_revision": "ddee3520ef906537530f88c9a68f296dfdf6a62cfd208cddb3f31972162bae09",
-    "changed_path_count": 10,
-    "change_scope": "iphone-live-activity-only-no-required-capture-pixel-delta",
-    "required_capture_ids_unchanged": true,
-    "prior_human_visual_review_retained": true,
-    "live_activity_physical_proof": "exact-build-18-compact-dynamic-island-core-verified-lock-screen-expanded-pending",
-    "app_store_listing_mutation": "none",
-    "rationale": "The iPhone Live Activity adds a read-only system surface while the required Garden, Journey, and Journal capture IDs are unchanged. New localization keys were appended and no existing localized value changed, so no required App Store screenshot pixel changed. The build-18 Config/Base.xcconfig and project.yml edits change version metadata only. The prior human review remains scoped to the retained 24 images; exact build-18 compact Dynamic Island core lifecycle is verified while Lock Screen and expanded Dynamic Island proof remains pending. No App Store Connect mutation was performed."
-  },
+  "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+  "source_manifest_sha256": "5dd09760f9d7b2961688e51b20af293b6be402be3780098779a203bafbbd84c4",
   "result_bundles": [
     {
       "device": "iphone-6.9",
-      "name": "arrive-within-b17-iphone.xcresult",
-      "xcresult_tree_sha256": "f4cbde73d587e1ed53679ee8389afa51e9def2cfbd40005fdbf04d1a5fc48603",
-      "passed_tests": 2,
+      "name": "20260925T083050Z-46593-4a2aa42019.xcresult",
+      "xcresult_tree_sha256": "f24ef6aaff491155620033fad5e4b05bf3b30e83fb7caa137d33bf45f4cfee1c",
+      "passed_tests": 4,
       "failed_tests": 0,
-      "skipped_tests": 0
+      "skipped_tests": 0,
+      "runtime_warnings_by_test": {
+        "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()": [
+          "Invalid frame dimension (negative or non-finite)."
+        ],
+        "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()": [
+          "Invalid frame dimension (negative or non-finite)."
+        ],
+        "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayEnglish()": [],
+        "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()": []
+      },
+      "simulator": {
+        "device_name": "Codex Pool iPhone 1",
+        "model_name": "iPhone 17 Pro",
+        "os_version": "26.5",
+        "platform": "iOS Simulator"
+      }
+    },
+    {
+      "device": "ipad-11",
+      "name": "20260925T083444Z-46593-1a35914f88.xcresult",
+      "xcresult_tree_sha256": "6d9cb48ed29ed542054476793677729ca9bd58d8f7848fecf219c6ea4ee44a31",
+      "passed_tests": 4,
+      "failed_tests": 0,
+      "skipped_tests": 0,
+      "runtime_warnings_by_test": {
+        "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()": [
+          "Invalid frame dimension (negative or non-finite)."
+        ],
+        "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()": [
+          "Invalid frame dimension (negative or non-finite)."
+        ],
+        "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayEnglish()": [],
+        "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()": []
+      },
+      "simulator": {
+        "device_name": "iPad Pro 11-inch (M5)",
+        "model_name": "iPad Pro 11-inch (M5)",
+        "os_version": "26.5",
+        "platform": "iOS Simulator"
+      }
     },
     {
       "device": "ipad-13",
@@ -44,6 +67,98 @@
     }
   ],
   "safe_synthetic_data": true,
+  "garden_day_captures": [
+    {
+      "device": "iphone-6.9",
+      "source_revision": "27192a1de32b40c6ee66494a45f81bc28b87e7cbc680f3d11b904f00baa2a810",
+      "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+      "source_manifest_sha256": "5dd09760f9d7b2961688e51b20af293b6be402be3780098779a203bafbbd84c4",
+      "result_bundle": {
+        "name": "20260925T083050Z-46593-4a2aa42019.xcresult",
+        "xcresult_tree_sha256": "f24ef6aaff491155620033fad5e4b05bf3b30e83fb7caa137d33bf45f4cfee1c",
+        "passed_tests": 4,
+        "failed_tests": 0,
+        "skipped_tests": 0,
+        "runtime_warnings_by_test": {
+          "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()": [
+            "Invalid frame dimension (negative or non-finite)."
+          ],
+          "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()": [
+            "Invalid frame dimension (negative or non-finite)."
+          ],
+          "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayEnglish()": [],
+          "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()": []
+        },
+        "simulator": {
+          "device_name": "Codex Pool iPhone 1",
+          "model_name": "iPhone 17 Pro",
+          "os_version": "26.5",
+          "platform": "iOS Simulator"
+        }
+      },
+      "test_identifiers": {
+        "en-US": "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayEnglish()",
+        "de-DE": "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()"
+      },
+      "clock_mode": "unmodified-simulator-system-clock",
+      "capture_local_date": "2026-09-25",
+      "capture_local_times": {
+        "en-US": "16:33",
+        "de-DE": "16:33"
+      },
+      "visible_status_times": {
+        "en-US": "16:33",
+        "de-DE": "16:33"
+      },
+      "timezone": "Asia/Singapore",
+      "phase": "day"
+    },
+    {
+      "device": "ipad-11",
+      "source_revision": "27192a1de32b40c6ee66494a45f81bc28b87e7cbc680f3d11b904f00baa2a810",
+      "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+      "source_manifest_sha256": "5dd09760f9d7b2961688e51b20af293b6be402be3780098779a203bafbbd84c4",
+      "result_bundle": {
+        "name": "20260925T083444Z-46593-1a35914f88.xcresult",
+        "xcresult_tree_sha256": "6d9cb48ed29ed542054476793677729ca9bd58d8f7848fecf219c6ea4ee44a31",
+        "passed_tests": 4,
+        "failed_tests": 0,
+        "skipped_tests": 0,
+        "runtime_warnings_by_test": {
+          "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()": [
+            "Invalid frame dimension (negative or non-finite)."
+          ],
+          "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()": [
+            "Invalid frame dimension (negative or non-finite)."
+          ],
+          "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayEnglish()": [],
+          "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()": []
+        },
+        "simulator": {
+          "device_name": "iPad Pro 11-inch (M5)",
+          "model_name": "iPad Pro 11-inch (M5)",
+          "os_version": "26.5",
+          "platform": "iOS Simulator"
+        }
+      },
+      "test_identifiers": {
+        "en-US": "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayEnglish()",
+        "de-DE": "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()"
+      },
+      "clock_mode": "unmodified-simulator-system-clock",
+      "capture_local_date": "2026-09-25",
+      "capture_local_times": {
+        "en-US": "16:37",
+        "de-DE": "16:37"
+      },
+      "visible_status_times": {
+        "en-US": "16:37",
+        "de-DE": "16:37"
+      },
+      "timezone": "Asia/Singapore",
+      "phase": "day"
+    }
+  ],
   "sets": [
     {
       "locale": "en-US",
@@ -53,42 +168,60 @@
       "width": 1206,
       "height": 2622,
       "result_bundle": {
-        "name": "arrive-within-b17-iphone.xcresult",
-        "xcresult_tree_sha256": "f4cbde73d587e1ed53679ee8389afa51e9def2cfbd40005fdbf04d1a5fc48603",
-        "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()"
+        "name": "20260925T083050Z-46593-4a2aa42019.xcresult",
+        "xcresult_tree_sha256": "f24ef6aaff491155620033fad5e4b05bf3b30e83fb7caa137d33bf45f4cfee1c",
+        "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()",
+        "runtime_warnings": [
+          "Invalid frame dimension (negative or non-finite)."
+        ]
+      },
+      "capture_source": {
+        "state": "current",
+        "source_revision": "27192a1de32b40c6ee66494a45f81bc28b87e7cbc680f3d11b904f00baa2a810",
+        "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+        "source_manifest_sha256": "5dd09760f9d7b2961688e51b20af293b6be402be3780098779a203bafbbd84c4",
+        "app_version": "1.0.2",
+        "build_number": "19",
+        "bound_capture_ids": [
+          "garden-hero",
+          "garden-day",
+          "garden-seed",
+          "journey-calendar",
+          "journey-milestones",
+          "journal"
+        ],
+        "missing_capture_ids": []
       },
       "captures": {
         "garden-hero": {
           "path": "public/runtime-ui/en-US/iphone-6.9/garden-hero.png",
-          "sha256": "ee58d89056b981597e59f584d6b0f5490ed249359247eb38a60b5c2a6a433b56"
+          "sha256": "d2cbe68762f9fedc4c3d4a036e82e840a5aab8597709d09fcac437adcd0ce071",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()"
+        },
+        "garden-day": {
+          "path": "public/runtime-ui/en-US/iphone-6.9/garden-day.png",
+          "sha256": "a08b79e29c80861ccf0be29a72e9e34a960e520fd34c24f8592c1763fe2a0c7a",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayEnglish()"
         },
         "garden-seed": {
           "path": "public/runtime-ui/en-US/iphone-6.9/garden-seed.png",
-          "sha256": "3ed2670c159e6a9bff18ce42c88009c73558a2466be7c7cd016e18d564b6c855"
-        },
-        "guided-library": {
-          "path": "public/runtime-ui/en-US/iphone-6.9/guided-library.png",
-          "sha256": "b6d3e0be447d38de763840ea3274b8d2f1cb82f0febf684595dbd70c248de047"
-        },
-        "practice-chooser": {
-          "path": "public/runtime-ui/en-US/iphone-6.9/practice-chooser.png",
-          "sha256": "9622991317f62a5ec493e576c27cf5d953a430549d84b934689d575cbb2d93d8"
-        },
-        "journal": {
-          "path": "public/runtime-ui/en-US/iphone-6.9/journal.png",
-          "sha256": "9aa7ae38a2ba062491611cc31bc3f46c4e0a95c3bbd563e56514cbbe13ef24a5"
-        },
-        "data-sync": {
-          "path": "public/runtime-ui/en-US/iphone-6.9/data-sync.png",
-          "sha256": "87b274314f4a3790a1df671ef46b7c8aabe6dcf06228d77b83e9bf8cd1c7cd18"
+          "sha256": "5879fe5b40dc1c5253f23de834b27fb10f31f6b351e43fd8a929a249804da9a0",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()"
         },
         "journey-calendar": {
           "path": "public/runtime-ui/en-US/iphone-6.9/journey-calendar.png",
-          "sha256": "7f122413b447b168b901e3ca1c3924b411c2ddfb7498b8ed5f28c43f954ae973"
+          "sha256": "68390e13f46d0fdd5f1387cead5638ce92a5a5bedaad02e2855e7b0d2cdfc72b",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()"
         },
         "journey-milestones": {
           "path": "public/runtime-ui/en-US/iphone-6.9/journey-milestones.png",
-          "sha256": "c5146889f3e6fdef7e4c936e0486f89eb0c5fa3d8126da7eee79b1fed859dcda"
+          "sha256": "185b7c3f8ce6e4eb9e8b89dd3776cd9553b1533c90788bdc08529cb245104bdb",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()"
+        },
+        "journal": {
+          "path": "public/runtime-ui/en-US/iphone-6.9/journal.png",
+          "sha256": "1b25e7d01c088a13ee0e81ececedf3ca325f4cf467bc489a88f3204f1212e65a",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()"
         }
       }
     },
@@ -100,42 +233,190 @@
       "width": 1206,
       "height": 2622,
       "result_bundle": {
-        "name": "arrive-within-b17-iphone.xcresult",
-        "xcresult_tree_sha256": "f4cbde73d587e1ed53679ee8389afa51e9def2cfbd40005fdbf04d1a5fc48603",
-        "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
+        "name": "20260925T083050Z-46593-4a2aa42019.xcresult",
+        "xcresult_tree_sha256": "f24ef6aaff491155620033fad5e4b05bf3b30e83fb7caa137d33bf45f4cfee1c",
+        "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()",
+        "runtime_warnings": [
+          "Invalid frame dimension (negative or non-finite)."
+        ]
+      },
+      "capture_source": {
+        "state": "current",
+        "source_revision": "27192a1de32b40c6ee66494a45f81bc28b87e7cbc680f3d11b904f00baa2a810",
+        "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+        "source_manifest_sha256": "5dd09760f9d7b2961688e51b20af293b6be402be3780098779a203bafbbd84c4",
+        "app_version": "1.0.2",
+        "build_number": "19",
+        "bound_capture_ids": [
+          "garden-hero",
+          "garden-day",
+          "garden-seed",
+          "journey-calendar",
+          "journey-milestones",
+          "journal"
+        ],
+        "missing_capture_ids": []
       },
       "captures": {
         "garden-hero": {
           "path": "public/runtime-ui/de-DE/iphone-6.9/garden-hero.png",
-          "sha256": "7d93eb7225e4e149892f15a962a8bf36a3ac67f8bcb28416c4a2f8877389e235"
+          "sha256": "537510c1bf9cc921ed94467dc99daa04360be85d87930737823eb1d84499b22b",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
+        },
+        "garden-day": {
+          "path": "public/runtime-ui/de-DE/iphone-6.9/garden-day.png",
+          "sha256": "cbf5c2730eb71fab97f1f2c009d7da8ed47a5e7b97dfca9509dab0bf65e7c673",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()"
         },
         "garden-seed": {
           "path": "public/runtime-ui/de-DE/iphone-6.9/garden-seed.png",
-          "sha256": "66050ace4884b4c2dc41f854b7864f75a573a6075cf3e220fabfb2202c7e2689"
-        },
-        "guided-library": {
-          "path": "public/runtime-ui/de-DE/iphone-6.9/guided-library.png",
-          "sha256": "2313b9653ddc7fab09a23499608d0380ccffa2b90413358b8f0d9a81a1267f42"
-        },
-        "practice-chooser": {
-          "path": "public/runtime-ui/de-DE/iphone-6.9/practice-chooser.png",
-          "sha256": "6aa93ba5571ae5c0016b26ba64306a7b6906633489b6890ef483be2000708329"
-        },
-        "journal": {
-          "path": "public/runtime-ui/de-DE/iphone-6.9/journal.png",
-          "sha256": "9f829aa32a1b2331d20c721e1bd5ec6613c08b824e68e186b4bc2f1afec12a2b"
-        },
-        "data-sync": {
-          "path": "public/runtime-ui/de-DE/iphone-6.9/data-sync.png",
-          "sha256": "df98ba8ff87dde53e7306741ad331066afba0325ff4c0ef6bc3cab7a71a6a0ff"
+          "sha256": "fc3613700e00316110f55d4de18075608788b3202e01652fa39617f6949d2c1e",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
         },
         "journey-calendar": {
           "path": "public/runtime-ui/de-DE/iphone-6.9/journey-calendar.png",
-          "sha256": "28ccd4a2d0cd3d345e4f0d3acfaf70e100c625c7b35faa4760241f32366116f4"
+          "sha256": "c1831a047929ba5f0928a50690fcaee08008909302fcc6b35216a4fc53b2f537",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
         },
         "journey-milestones": {
           "path": "public/runtime-ui/de-DE/iphone-6.9/journey-milestones.png",
-          "sha256": "d77e47d5d46b57974393c5c28c3e5c322d36c0f1a01826e44f87a860f50bd562"
+          "sha256": "a0805b1bc565867f86e4f6fb2d68c0cfc1dfbc2e362fbbf94da7a3b8184adfbc",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
+        },
+        "journal": {
+          "path": "public/runtime-ui/de-DE/iphone-6.9/journal.png",
+          "sha256": "298cb1abab5ceb7641f961053af8360fe4e0a9fe76843aecdd848e484bf63e02",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
+        }
+      }
+    },
+    {
+      "locale": "en-US",
+      "device": "ipad-11",
+      "model": "iPad Pro 11-inch (M5)",
+      "os": "iOS 26.5 Simulator",
+      "width": 1668,
+      "height": 2420,
+      "result_bundle": {
+        "name": "20260925T083444Z-46593-1a35914f88.xcresult",
+        "xcresult_tree_sha256": "6d9cb48ed29ed542054476793677729ca9bd58d8f7848fecf219c6ea4ee44a31",
+        "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()",
+        "runtime_warnings": [
+          "Invalid frame dimension (negative or non-finite)."
+        ]
+      },
+      "capture_source": {
+        "state": "current",
+        "source_revision": "27192a1de32b40c6ee66494a45f81bc28b87e7cbc680f3d11b904f00baa2a810",
+        "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+        "source_manifest_sha256": "5dd09760f9d7b2961688e51b20af293b6be402be3780098779a203bafbbd84c4",
+        "app_version": "1.0.2",
+        "build_number": "19",
+        "bound_capture_ids": [
+          "garden-hero",
+          "garden-day",
+          "garden-seed",
+          "journey-calendar",
+          "journey-milestones",
+          "journal"
+        ],
+        "missing_capture_ids": []
+      },
+      "captures": {
+        "garden-hero": {
+          "path": "public/runtime-ui/en-US/ipad-11/garden-hero.png",
+          "sha256": "3ae830b3069f6e2df7eb1aee4d20c6b8eb5de4fb7f7e0124784ead0a835ea956",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()"
+        },
+        "garden-day": {
+          "path": "public/runtime-ui/en-US/ipad-11/garden-day.png",
+          "sha256": "c291fa9fb55113bf5887a0abb418b625b892bf55fe886c5935d4aef5f8627b2f",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayEnglish()"
+        },
+        "garden-seed": {
+          "path": "public/runtime-ui/en-US/ipad-11/garden-seed.png",
+          "sha256": "4bbf4999c181802df8766de28f449343cf5a50782946265734a8a55f1ff00195",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()"
+        },
+        "journey-calendar": {
+          "path": "public/runtime-ui/en-US/ipad-11/journey-calendar.png",
+          "sha256": "abaae40c59f7f15211d8eb4724afd7a1ede8655983098e28904332bc18383002",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()"
+        },
+        "journey-milestones": {
+          "path": "public/runtime-ui/en-US/ipad-11/journey-milestones.png",
+          "sha256": "da850b5fabd08161457e3bd716cf7c414a9fcd0c2a8ce97c925b801e24893d37",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()"
+        },
+        "journal": {
+          "path": "public/runtime-ui/en-US/ipad-11/journal.png",
+          "sha256": "0281249e35a8884b54b1dbfa544ebf838081d601d9cb071756ca16fa824f9629",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()"
+        }
+      }
+    },
+    {
+      "locale": "de-DE",
+      "device": "ipad-11",
+      "model": "iPad Pro 11-inch (M5)",
+      "os": "iOS 26.5 Simulator",
+      "width": 1668,
+      "height": 2420,
+      "result_bundle": {
+        "name": "20260925T083444Z-46593-1a35914f88.xcresult",
+        "xcresult_tree_sha256": "6d9cb48ed29ed542054476793677729ca9bd58d8f7848fecf219c6ea4ee44a31",
+        "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()",
+        "runtime_warnings": [
+          "Invalid frame dimension (negative or non-finite)."
+        ]
+      },
+      "capture_source": {
+        "state": "current",
+        "source_revision": "27192a1de32b40c6ee66494a45f81bc28b87e7cbc680f3d11b904f00baa2a810",
+        "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+        "source_manifest_sha256": "5dd09760f9d7b2961688e51b20af293b6be402be3780098779a203bafbbd84c4",
+        "app_version": "1.0.2",
+        "build_number": "19",
+        "bound_capture_ids": [
+          "garden-hero",
+          "garden-day",
+          "garden-seed",
+          "journey-calendar",
+          "journey-milestones",
+          "journal"
+        ],
+        "missing_capture_ids": []
+      },
+      "captures": {
+        "garden-hero": {
+          "path": "public/runtime-ui/de-DE/ipad-11/garden-hero.png",
+          "sha256": "6df9f357dfa6005705c78b322603a0b877eaa417377352606cb09ba1e2ad1649",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
+        },
+        "garden-day": {
+          "path": "public/runtime-ui/de-DE/ipad-11/garden-day.png",
+          "sha256": "e99bca14a795669764ca630f19f4d5b0ba6f27029ba2dad4e81845136a89a4c1",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()"
+        },
+        "garden-seed": {
+          "path": "public/runtime-ui/de-DE/ipad-11/garden-seed.png",
+          "sha256": "4636ca3266a1c3c4632abf90a21585a91750706522b84c015e34f17f13b4ff30",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
+        },
+        "journey-calendar": {
+          "path": "public/runtime-ui/de-DE/ipad-11/journey-calendar.png",
+          "sha256": "462fc2af13fac5adecbe7dc3bf0b131dc336097300c98e49c7ca525f6ee4d4be",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
+        },
+        "journey-milestones": {
+          "path": "public/runtime-ui/de-DE/ipad-11/journey-milestones.png",
+          "sha256": "42b894c5cd7385f04aeeebdf3792142e25cb0bda802e5ca8760f53416fc60e08",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
+        },
+        "journal": {
+          "path": "public/runtime-ui/de-DE/ipad-11/journal.png",
+          "sha256": "393262148680a1c3ff7a1d563c4467ec34dc858b6363c4cbc26d705376bb2513",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
         }
       }
     },
@@ -184,6 +465,24 @@
           "path": "public/runtime-ui/en-US/ipad-13/journey-milestones.png",
           "sha256": "3c3ca19ccf03e27983019b841cf20a0bda5d01691efafda621b224f301246c9b"
         }
+      },
+      "capture_source": {
+        "state": "stale-incomplete",
+        "source_revision": "aed3e83d30d6290cb99731be79675fcfbeb7941168ec960479e08148b1293925",
+        "source_manifest_path": "capture-source-manifest.json",
+        "source_manifest_sha256": "c90363bb8dcbaf39840a749134f6bc0a70078128a78ace6ea742bdb777b3bb3b",
+        "app_version": null,
+        "build_number": null,
+        "bound_capture_ids": [
+          "garden-hero",
+          "garden-seed",
+          "journey-calendar",
+          "journey-milestones",
+          "journal"
+        ],
+        "missing_capture_ids": [
+          "garden-day"
+        ]
       }
     },
     {
@@ -231,6 +530,24 @@
           "path": "public/runtime-ui/de-DE/ipad-13/journey-milestones.png",
           "sha256": "6995f2f900b023c2343b746dd7ca6f77f97b0b92fdf8f8a76d921f6d06a917a3"
         }
+      },
+      "capture_source": {
+        "state": "stale-incomplete",
+        "source_revision": "aed3e83d30d6290cb99731be79675fcfbeb7941168ec960479e08148b1293925",
+        "source_manifest_path": "capture-source-manifest.json",
+        "source_manifest_sha256": "c90363bb8dcbaf39840a749134f6bc0a70078128a78ace6ea742bdb777b3bb3b",
+        "app_version": null,
+        "build_number": null,
+        "bound_capture_ids": [
+          "garden-hero",
+          "garden-seed",
+          "journey-calendar",
+          "journey-milestones",
+          "journal"
+        ],
+        "missing_capture_ids": [
+          "garden-day"
+        ]
       }
     }
   ]

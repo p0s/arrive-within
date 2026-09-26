@@ -166,6 +166,7 @@ export interface ResolvedVisualModel {
   starOpacity: number;
   moonOpacity: number;
   groundColor: string;
+  trunkColor: string;
   accentColor: string;
   foliageColors: string[];
   hemisphereSkyColor: string;
@@ -193,6 +194,8 @@ interface GardenPhasePalette {
   groundBlend: number;
   foliageTarget: string;
   foliageBlend: number;
+  trunkTarget: string;
+  trunkBlend: number;
 }
 
 const gardenPhasePalettes: Record<GardenDayPhase, GardenPhasePalette> = {
@@ -211,22 +214,26 @@ const gardenPhasePalettes: Record<GardenDayPhase, GardenPhasePalette> = {
     groundBlend: 0.18,
     foliageTarget: "#6f8268",
     foliageBlend: 0.12,
+    trunkTarget: "#69523e",
+    trunkBlend: 0.2,
   },
   day: {
-    skyTop: "#91bbc5",
-    skyHorizon: "#b3c8c0",
-    skyLower: "#829d93",
-    fog: "#98aaa5",
-    glow: "#ead19a",
-    illuminationScale: 1.34,
-    ambientScale: 1.28,
-    fillScale: 0.24,
-    exposureScale: 1.14,
+    skyTop: "#b8dfe8",
+    skyHorizon: "#dce9d5",
+    skyLower: "#b7cdb2",
+    fog: "#d4e1d3",
+    glow: "#f4dca8",
+    illuminationScale: 1.52,
+    ambientScale: 1.52,
+    fillScale: 0.5,
+    exposureScale: 1.22,
     celestialOpacity: 0,
-    groundTarget: "#748a72",
-    groundBlend: 0.34,
-    foliageTarget: "#7b997b",
-    foliageBlend: 0.26,
+    groundTarget: "#b4c99a",
+    groundBlend: 0.72,
+    foliageTarget: "#c0dfa0",
+    foliageBlend: 0.9,
+    trunkTarget: "#a98258",
+    trunkBlend: 0.88,
   },
   dusk: {
     skyTop: "#26335b",
@@ -243,6 +250,8 @@ const gardenPhasePalettes: Record<GardenDayPhase, GardenPhasePalette> = {
     groundBlend: 0.14,
     foliageTarget: "#5b6d59",
     foliageBlend: 0.1,
+    trunkTarget: "#594338",
+    trunkBlend: 0.12,
   },
   night: {
     skyTop: "#111936",
@@ -259,6 +268,8 @@ const gardenPhasePalettes: Record<GardenDayPhase, GardenPhasePalette> = {
     groundBlend: 0.24,
     foliageTarget: "#4b6351",
     foliageBlend: 0.2,
+    trunkTarget: "#443b3b",
+    trunkBlend: 0,
   },
 };
 
@@ -274,7 +285,7 @@ export function resolveVisualModel(
     direction.palette.skyTint,
     clamp(direction.palette.skyInfluence ?? influence, 0, 1),
   );
-  const phaseInfluence = model.dayPhase === "day" ? 0.86 : 0.88;
+  const phaseInfluence = model.dayPhase === "day" ? 0.92 : 0.88;
   const baseSunColor = mixHex(model.sunColor, direction.lighting.sunTint, influence);
   const baseGroundColor = mixHex(
     model.groundColor,
@@ -302,6 +313,7 @@ export function resolveVisualModel(
     starOpacity: phase.celestialOpacity,
     moonOpacity: Math.max(model.dayPhase === "day" ? 0.025 : 0.18, phase.celestialOpacity),
     groundColor: mixHex(baseGroundColor, phase.groundTarget, phase.groundBlend),
+    trunkColor: mixHex(direction.palette.trunk, phase.trunkTarget, phase.trunkBlend),
     accentColor: mixHex(
       model.accentColor,
       direction.palette.accentTint,

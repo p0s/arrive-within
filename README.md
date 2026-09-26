@@ -1,6 +1,6 @@
 # Arrive Within
 
-Arrive Within is a free, bilingual meditation app for iPhone and iPad. A configurable timer, an open-ended stopwatch, private reflections, and a deterministic living garden all work without an account. Every qualifying practice becomes one immutable event; the same event history always grows the same garden. The repository contains the complete original English/German guided-practice source and release evidence for the approved narrated update in version 1.0 build 16.
+Arrive Within is a free, bilingual meditation app for iPhone and iPad. A configurable timer, an open-ended stopwatch, private reflections, and a deterministic living garden all work without an account. Every qualifying practice becomes one immutable event; the same event history always grows the same garden. The repository contains the complete original English/German guided-practice source. Version 1.0.1 build 18 is live on the [App Store](https://apps.apple.com/app/id6800192697).
 
 <p align="center">
   <img src="Marketing/AppStoreScreenshots/exports/en-US/iphone-6.9/01-growth-rhythm-en-us-iphone-6.9-1320x2868.png" width="31%" alt="Arrive Within's private practice rhythm on iPhone">
@@ -12,24 +12,24 @@ Arrive Within is a free, bilingual meditation app for iPhone and iPad. A configu
 
 ## Project status
 
-The repository-recorded App Store Connect snapshot places Arrive Within 1.0 build 16 in `WAITING_FOR_REVIEW` with automatic release selected after approval; this repository therefore does **not** claim App Store availability yet. The submitted package contains the approved 84-track English/German narrated library (42 concepts × 2 languages), bound transcripts, provenance, and the searchable 42-practice list directly in the Guided tab. The listing uses the approved bilingual 24-image screenshot set and includes one optional non-consumable purchase for four Garden material styles. Earlier builds 7, 13, 14, and 15 remain historical or superseded candidates. English F2 and German C2 are the selected narration directions, Quiet Threshold B is the packaged icon, and C — Twilight Refuge is the only shipping garden; A/B remain non-shipping source references.
+The live 1.0.1 listing includes 42 English and 42 German guided meditations, bound transcripts, and one optional non-consumable purchase for four Garden material styles. Its second App Store image still shows two dark Gardens. The current English and German iPhone exports now show a dark Garden behind a light Garden; iPad source capture, the complete 24-image matrix, and human review remain open before any new attachment. The corrected Quiet Threshold B icon is in the current repository; its inclusion in a new distributed build still needs exact archive and storefront proof. C — Twilight Refuge is the only shipping garden; A/B remain non-shipping source references.
 
-There is no App Store download link until an exact reviewed candidate is actually available. The country-neutral URL is reserved as `https://apps.apple.com/app/id6800192697`; add it to this README and the website only after Apple approval and a successful storefront readback.
+Version 1.0.1 is currently available at the country-neutral URL above. Any follow-up version remains a separate candidate until Apple approves it and a storefront readback confirms availability.
 
 ## What is here
 
-- Timer and stopwatch remain complete offline practice modes; submitted build 16 includes the inline, offline bilingual Guided library.
+- Timer, stopwatch, and the inline offline bilingual Guided library are available in the released app.
 - Exactly 42 original guided concepts with approved English and German narration, transcripts, and provenance in `Content/guided`.
 - A monotonic, persisted session state machine with exact-once completion.
 - Permanent deterministic garden progression, a typed Swift/TypeScript bridge, bounded Three.js rendering, recovery, and a native fallback.
-- Private text and voice journal paths with on-device transcription, search, edit, export, and deletion.
+- Private text and voice journal paths with recoverable local drafts, on-device transcription, search, edit, complete archive export/restore, and deletion.
 - Journey, history, statistics, milestones, selectable variants, reminders, app-local language selection, and adaptive iPad navigation.
 - Local-only protected storage in 1.0 and one public-safe, fail-closed adapter for future private CloudKit work.
 - Reproducible website, public-media, app-icon-concept, and 24-image App Store screenshot workstreams.
 
 ## Privacy in one paragraph
 
-The app has no account, ads, analytics, attribution, tracking, custom backend, cloud sync, or runtime AI. Product data remains on the device unless the user deliberately exports it through Apple's system share sheet. Journal transcription is on device. Read the [published privacy policy](https://psapps.xyz/arrive-within/#privacy).
+The app has no account, ads, analytics, attribution, tracking, custom backend, cloud sync, or runtime AI. Product data stays on the device unless the user deliberately shares an export through Apple's system share sheet; a selected restore archive is read locally and is not uploaded. Journal transcription is on device. Read the [published privacy policy](https://psapps.xyz/arrive-within/#privacy).
 
 ## Build locally
 

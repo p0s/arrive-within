@@ -189,6 +189,9 @@ function validatePlan(value) {
     if (milestone.id !== expectedID || milestone.practice_day !== expectedID * 2 || !milestone.title || !milestone.variant_a || !milestone.variant_b) {
       throw new Error(`Invalid milestone plan entry ${expectedID}.`);
     }
+    if (milestone.local_day_phase !== undefined && !["dawn", "day", "dusk", "night"].includes(milestone.local_day_phase)) {
+      throw new Error(`Invalid local day phase for milestone ${expectedID}.`);
+    }
   }
 }
 
@@ -214,6 +217,7 @@ function makeGardenState(value, milestone, variant) {
     activeCustomization,
     microGrowthOrdinal: ordinal,
     localTimePresentation: null,
+    localDayPhase: milestone.local_day_phase ?? "day",
     latestGrowthEvent: {
       practiceEventID: `31000000-0000-4000-8000-${String(milestone.id).padStart(12, "0")}`,
       sessionID: `21000000-0000-4000-8000-${String(milestone.id).padStart(12, "0")}`,

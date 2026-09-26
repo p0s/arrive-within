@@ -17,29 +17,80 @@
     "ownerSelection": null
   },
   "humanVisualReview": {
-    "state": "approved",
-    "reviewer": "app-store-screenshot-style-review",
-    "reviewedAt": "2026-08-30",
-    "notes": "English and German iPhone and iPad contact sheets plus representative full-resolution exports were inspected against the current-source recapture. The selected Tonal Wash pilot retains one unclipped left-aligned headline block, tight headline-to-product spacing, large straight device frames, legible localized real app UI, and no substituted or invented product imagery."
+    "state": "pending",
+    "reviewer": null,
+    "reviewedAt": null,
+    "notes": "Fresh source captures require inspection of every locale/device contact sheet before approval."
   },
   "network": {
     "policy": "Block all external requests; allow localhost only",
     "externalRequests": 0
   },
   "sourceCaptures": {
-    "state": "human-reviewed",
-    "method": "Guarded XCUITest using a pooled iPhone 17 Pro simulator and an iPad Pro 13-inch (M5) simulator on iOS 26.5, with deterministic safe synthetic product state",
-    "test": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish and testCaptureAllRequiredMarketingStatesGerman — selected Garden/growth shipping states only",
-    "statusBarProfile": "Actual visible system status from each exact passed capture run; no synthetic status-bar overlay.",
-    "sourceRevision": "aed3e83d30d6290cb99731be79675fcfbeb7941168ec960479e08148b1293925",
+    "state": "candidate-ready",
+    "method": "Guarded XCUITest run serially on the exact configured iPhone 17 Pro and iPad Pro 11-inch (M5) simulator pool routes; captures retain original runtime pixels.",
+    "test": "ArriveWithinMarketingCaptureUITests: selected source states plus real-clock Garden-day locale tests in one four-test result per device.",
+    "statusBarProfile": "Actual visible system status from each exact passed simulator capture run; real-clock Garden-day status agrees with its local capture time; no synthetic status-bar overlay.",
+    "sourceRevision": "27192a1de32b40c6ee66494a45f81bc28b87e7cbc680f3d11b904f00baa2a810",
     "sourceRevisionKind": "sha256-capture-source-manifest",
-    "sourceManifestPath": "capture-source-manifest.json",
+    "sourceManifestPath": "capture-source-manifest-v1.0.2-build-19.json",
     "resultBundle": {
-      "name": "arrive-within-b17-iphone.xcresult",
-      "xcresult_tree_sha256": "f4cbde73d587e1ed53679ee8389afa51e9def2cfbd40005fdbf04d1a5fc48603",
-      "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
+      "name": "20260925T083050Z-46593-4a2aa42019.xcresult",
+      "xcresult_tree_sha256": "f24ef6aaff491155620033fad5e4b05bf3b30e83fb7caa137d33bf45f4cfee1c",
+      "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()",
+      "runtime_warnings": [
+        "Invalid frame dimension (negative or non-finite)."
+      ]
     },
     "safeSyntheticData": true,
+    "setCompleteness": "full-locale-device-matrix",
+    "gardenDayCaptures": [
+      {
+        "device": "iphone-6.9",
+        "source_revision": "27192a1de32b40c6ee66494a45f81bc28b87e7cbc680f3d11b904f00baa2a810",
+        "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+        "source_manifest_sha256": "5dd09760f9d7b2961688e51b20af293b6be402be3780098779a203bafbbd84c4",
+        "result_bundle": {
+          "name": "20260925T083050Z-46593-4a2aa42019.xcresult",
+          "xcresult_tree_sha256": "f24ef6aaff491155620033fad5e4b05bf3b30e83fb7caa137d33bf45f4cfee1c",
+          "passed_tests": 4,
+          "failed_tests": 0,
+          "skipped_tests": 0,
+          "runtime_warnings_by_test": {
+            "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()": [
+              "Invalid frame dimension (negative or non-finite)."
+            ],
+            "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()": [
+              "Invalid frame dimension (negative or non-finite)."
+            ],
+            "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayEnglish()": [],
+            "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()": []
+          },
+          "simulator": {
+            "device_name": "Codex Pool iPhone 1",
+            "model_name": "iPhone 17 Pro",
+            "os_version": "26.5",
+            "platform": "iOS Simulator"
+          }
+        },
+        "test_identifiers": {
+          "en-US": "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayEnglish()",
+          "de-DE": "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()"
+        },
+        "clock_mode": "unmodified-simulator-system-clock",
+        "capture_local_date": "2026-09-25",
+        "capture_local_times": {
+          "en-US": "16:33",
+          "de-DE": "16:33"
+        },
+        "visible_status_times": {
+          "en-US": "16:33",
+          "de-DE": "16:33"
+        },
+        "timezone": "Asia/Singapore",
+        "phase": "day"
+      }
+    ],
     "currentSet": {
       "locale": "de-DE",
       "device": "iphone-6.9",
@@ -48,59 +99,78 @@
       "width": 1206,
       "height": 2622,
       "result_bundle": {
-        "name": "arrive-within-b17-iphone.xcresult",
-        "xcresult_tree_sha256": "f4cbde73d587e1ed53679ee8389afa51e9def2cfbd40005fdbf04d1a5fc48603",
-        "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
+        "name": "20260925T083050Z-46593-4a2aa42019.xcresult",
+        "xcresult_tree_sha256": "f24ef6aaff491155620033fad5e4b05bf3b30e83fb7caa137d33bf45f4cfee1c",
+        "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()",
+        "runtime_warnings": [
+          "Invalid frame dimension (negative or non-finite)."
+        ]
+      },
+      "capture_source": {
+        "state": "current",
+        "source_revision": "27192a1de32b40c6ee66494a45f81bc28b87e7cbc680f3d11b904f00baa2a810",
+        "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+        "source_manifest_sha256": "5dd09760f9d7b2961688e51b20af293b6be402be3780098779a203bafbbd84c4",
+        "app_version": "1.0.2",
+        "build_number": "19",
+        "bound_capture_ids": [
+          "garden-hero",
+          "garden-day",
+          "garden-seed",
+          "journey-calendar",
+          "journey-milestones",
+          "journal"
+        ],
+        "missing_capture_ids": []
       },
       "captures": {
         "garden-hero": {
           "path": "public/runtime-ui/de-DE/iphone-6.9/garden-hero.png",
-          "sha256": "7d93eb7225e4e149892f15a962a8bf36a3ac67f8bcb28416c4a2f8877389e235"
+          "sha256": "537510c1bf9cc921ed94467dc99daa04360be85d87930737823eb1d84499b22b",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
+        },
+        "garden-day": {
+          "path": "public/runtime-ui/de-DE/iphone-6.9/garden-day.png",
+          "sha256": "cbf5c2730eb71fab97f1f2c009d7da8ed47a5e7b97dfca9509dab0bf65e7c673",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()"
         },
         "garden-seed": {
           "path": "public/runtime-ui/de-DE/iphone-6.9/garden-seed.png",
-          "sha256": "66050ace4884b4c2dc41f854b7864f75a573a6075cf3e220fabfb2202c7e2689"
-        },
-        "guided-library": {
-          "path": "public/runtime-ui/de-DE/iphone-6.9/guided-library.png",
-          "sha256": "2313b9653ddc7fab09a23499608d0380ccffa2b90413358b8f0d9a81a1267f42"
-        },
-        "practice-chooser": {
-          "path": "public/runtime-ui/de-DE/iphone-6.9/practice-chooser.png",
-          "sha256": "6aa93ba5571ae5c0016b26ba64306a7b6906633489b6890ef483be2000708329"
-        },
-        "journal": {
-          "path": "public/runtime-ui/de-DE/iphone-6.9/journal.png",
-          "sha256": "9f829aa32a1b2331d20c721e1bd5ec6613c08b824e68e186b4bc2f1afec12a2b"
-        },
-        "data-sync": {
-          "path": "public/runtime-ui/de-DE/iphone-6.9/data-sync.png",
-          "sha256": "df98ba8ff87dde53e7306741ad331066afba0325ff4c0ef6bc3cab7a71a6a0ff"
+          "sha256": "fc3613700e00316110f55d4de18075608788b3202e01652fa39617f6949d2c1e",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
         },
         "journey-calendar": {
           "path": "public/runtime-ui/de-DE/iphone-6.9/journey-calendar.png",
-          "sha256": "28ccd4a2d0cd3d345e4f0d3acfaf70e100c625c7b35faa4760241f32366116f4"
+          "sha256": "c1831a047929ba5f0928a50690fcaee08008909302fcc6b35216a4fc53b2f537",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
         },
         "journey-milestones": {
           "path": "public/runtime-ui/de-DE/iphone-6.9/journey-milestones.png",
-          "sha256": "d77e47d5d46b57974393c5c28c3e5c322d36c0f1a01826e44f87a860f50bd562"
+          "sha256": "a0805b1bc565867f86e4f6fb2d68c0cfc1dfbc2e362fbbf94da7a3b8184adfbc",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
+        },
+        "journal": {
+          "path": "public/runtime-ui/de-DE/iphone-6.9/journal.png",
+          "sha256": "298cb1abab5ceb7641f961053af8360fe4e0a9fe76843aecdd848e484bf63e02",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
         }
       }
     },
     "companionGarden": {
       "locale": "de-DE",
-      "device": "ipad-13",
-      "model": "iPad Pro 13-inch (M5)",
+      "device": "ipad-11",
+      "model": "iPad Pro 11-inch (M5)",
       "os": "iOS 26.5 Simulator",
       "capture": {
-        "path": "public/runtime-ui/de-DE/ipad-13/garden-hero.png",
-        "sha256": "7b6e2cd43960c73e6c8cfd990a2f2b05516521746fea5d0e68700b4b1e8734d9"
+        "path": "public/runtime-ui/de-DE/ipad-11/garden-hero.png",
+        "sha256": "6df9f357dfa6005705c78b322603a0b877eaa417377352606cb09ba1e2ad1649",
+        "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
       }
     }
   },
   "contactSheet": {
     "filename": "_contact-sheet.jpg",
-    "sha256": "bda805da7ae33e31cfad4c5753250bf2c09b0d5b9e0b837c43141e748b7bf5d5",
+    "sha256": "d25acf77a7f56ca2b311116205c114bdf18e181acada6fe40dadbd2b401ce7ff",
     "width": 1440,
     "height": 1890,
     "encoding": "sharp 0.35.3 JPEG quality 92, 4:4:4 chroma subsampling, no metadata"
@@ -108,7 +178,7 @@
   "items": [
     {
       "filename": "01-growth-rhythm-de-de-iphone-6.9-1320x2868.png",
-      "sha256": "bf3b55bf9abb120e321f58d45e09c92fbcd8a2625dc312aa9c271553dc47fe60",
+      "sha256": "1cd92af232fe4697698ca3378557a51d2cf45302e79d621ba2691fb973448ef7",
       "slide": 1,
       "slideId": "growth-rhythm",
       "idea": "Browse a private monthly practice rhythm without pressure",
@@ -116,6 +186,18 @@
       "width": 1320,
       "height": 2868,
       "geometry": {
+        "headlineBounds": {
+          "x": 118.796875,
+          "y": 85.796875,
+          "width": 1082.390625,
+          "height": 268.625
+        },
+        "proofBounds": {
+          "x": 107.578125,
+          "y": 553.515625,
+          "width": 1104.828125,
+          "height": 2331.578125
+        },
         "headlineToProofGap": 199.09375,
         "headlineToProofGapRatio": 0.06941902022315202,
         "proofHeight": 2331.578125,
@@ -126,14 +208,26 @@
     },
     {
       "filename": "02-growth-take-root-de-de-iphone-6.9-1320x2868.png",
-      "sha256": "355acbc5f6d64549b5b14414088cd4f1d9866aeaf7b9d163b7aa2744f95b18ba",
+      "sha256": "8a3417fee501a8e88e704ad59f08c099bd0875cdd394312c992f1470b2fe3509",
       "slide": 2,
       "slideId": "growth-take-root",
       "idea": "A qualifying practice becomes lasting visible growth",
-      "runtimeSurface": "Deterministic Garden before and after growth",
+      "runtimeSurface": "Dark appearance for a waiting seed beside the mature Garden in light appearance and daylight",
       "width": 1320,
       "height": 2868,
       "geometry": {
+        "headlineBounds": {
+          "x": 118.796875,
+          "y": 85.796875,
+          "width": 1082.390625,
+          "height": 268.625
+        },
+        "proofBounds": {
+          "x": 0,
+          "y": 553.515625,
+          "width": 1320,
+          "height": 2144
+        },
         "headlineToProofGap": 199.09375,
         "headlineToProofGapRatio": 0.06941902022315202,
         "proofHeight": 2144,
@@ -144,7 +238,7 @@
     },
     {
       "filename": "03-growth-arrive-de-de-iphone-6.9-1320x2868.png",
-      "sha256": "8103fb5db4053251cb43de207c9440d5718f91a2c5a833e68e6d1149dbc5e904",
+      "sha256": "e23613a0e29fb88def7cdb041e1668abd44ea1284a8365c52b7faf564ac952e1",
       "slide": 3,
       "slideId": "growth-arrive",
       "idea": "Arrive in the present through the living Garden",
@@ -152,6 +246,18 @@
       "width": 1320,
       "height": 2868,
       "geometry": {
+        "headlineBounds": {
+          "x": 118.796875,
+          "y": 85.796875,
+          "width": 1082.390625,
+          "height": 268.625
+        },
+        "proofBounds": {
+          "x": 107.578125,
+          "y": 553.515625,
+          "width": 1104.828125,
+          "height": 2331.578125
+        },
         "headlineToProofGap": 199.09375,
         "headlineToProofGapRatio": 0.06941902022315202,
         "proofHeight": 2331.578125,
@@ -162,7 +268,7 @@
     },
     {
       "filename": "04-growth-stays-de-de-iphone-6.9-1320x2868.png",
-      "sha256": "9f15f1987f5471ef07808197ba3a795313cf25c32f79aa8af82844e71a9bd65f",
+      "sha256": "d8a0f39d3dec0f596c5cb3b352fb3d37fa3be4ca2a7fd29da1b3950e39ba4314",
       "slide": 4,
       "slideId": "growth-stays",
       "idea": "Milestones remain as a nonpunitive record of practice",
@@ -170,6 +276,18 @@
       "width": 1320,
       "height": 2868,
       "geometry": {
+        "headlineBounds": {
+          "x": 118.796875,
+          "y": 85.796875,
+          "width": 1082.390625,
+          "height": 268.625
+        },
+        "proofBounds": {
+          "x": 107.578125,
+          "y": 553.515625,
+          "width": 1104.828125,
+          "height": 2331.578125
+        },
         "headlineToProofGap": 199.09375,
         "headlineToProofGapRatio": 0.06941902022315202,
         "proofHeight": 2331.578125,
@@ -180,7 +298,7 @@
     },
     {
       "filename": "05-growth-reflect-de-de-iphone-6.9-1320x2868.png",
-      "sha256": "9880d85c71aa4fa09e667da197895e7d93c3658d5ca79e6bf9dd8543c2c417da",
+      "sha256": "9143956992eeed5c01e2259ce83a7c67144904714f64d851a273310d85465e31",
       "slide": 5,
       "slideId": "growth-reflect",
       "idea": "Private reflection gives practice personal meaning",
@@ -188,6 +306,18 @@
       "width": 1320,
       "height": 2868,
       "geometry": {
+        "headlineBounds": {
+          "x": 118.796875,
+          "y": 85.796875,
+          "width": 1082.390625,
+          "height": 402.9375
+        },
+        "proofBounds": {
+          "x": 107.578125,
+          "y": 603.703125,
+          "width": 1104.828125,
+          "height": 2331.578125
+        },
         "headlineToProofGap": 114.96875,
         "headlineToProofGapRatio": 0.04008673291492329,
         "proofHeight": 2331.578125,
@@ -198,7 +328,7 @@
     },
     {
       "filename": "06-growth-refuge-de-de-iphone-6.9-1320x2868.png",
-      "sha256": "7263c101a925bd1ef720744955dc7844c2eceb1301b2031b556c8dc097c035b9",
+      "sha256": "e8e19d04c6f9ce8dfafbb863c21a75df6ae136242d599d4110381de3137964b1",
       "slide": 6,
       "slideId": "growth-refuge",
       "idea": "The mature Garden remembers consistent practice",
@@ -206,6 +336,18 @@
       "width": 1320,
       "height": 2868,
       "geometry": {
+        "headlineBounds": {
+          "x": 118.796875,
+          "y": 85.796875,
+          "width": 1082.390625,
+          "height": 268.625
+        },
+        "proofBounds": {
+          "x": 107.578125,
+          "y": 553.515625,
+          "width": 1104.828125,
+          "height": 2331.578125
+        },
         "headlineToProofGap": 199.09375,
         "headlineToProofGapRatio": 0.06941902022315202,
         "proofHeight": 2331.578125,
@@ -215,5 +357,5 @@
       }
     }
   ],
-  "uploadAuthorization": "authorized-for-app-store-version-1.0-after-current-source-validation"
+  "uploadAuthorization": "candidate-only-human-review-pending-not-upload-authorized"
 }

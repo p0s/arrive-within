@@ -5,7 +5,7 @@ import SwiftUI
 
 struct PracticeView: View {
   let model: AppModel
-  @State private var selectedMode: PracticeMode = .timer
+  @State private var selectedMode: PracticeMode = .guided
   @State private var timerMinutes = 3
   @State private var preparation: PreparationDuration = .off
   @State private var intervalBellMinutes: Int?
@@ -222,45 +222,24 @@ private struct PracticeChooserView: View {
           .quietCard()
         }
 
-        if selectedMode != .guided {
+      }
+      .padding(AppTheme.Spacing.generous)
+      .frame(maxWidth: AppTheme.maximumReadableWidth)
+      .frame(maxWidth: .infinity)
+    }
+    .background(Color("LaunchBackground").ignoresSafeArea())
+    .safeAreaInset(edge: .bottom, spacing: 0) {
+      if selectedMode != .guided {
+        VStack(spacing: AppTheme.Spacing.compact) {
+          if let notice = model.practiceNotice {
+            Label(practiceNoticeTitle(notice), systemImage: "exclamationmark.triangle")
+              .font(.footnote)
+              .foregroundStyle(.secondary)
+              .frame(maxWidth: .infinity, alignment: .leading)
+              .accessibilityIdentifier("practice.start.notice")
+          }
           Button {
-            Task {
-              if selectedMode == .timer {
-                do {
-                  let audio = try MeditationAudioConfiguration(
-                    openingBellEnabled: openingBellEnabled,
-                    closingBellEnabled: closingBellEnabled,
-                    intervalBellMinutes: intervalBellMinutes,
-                    ambienceID: ambienceEnabled ? "still-air-v1" : nil,
-                    ambienceVolume: 0.3,
-                    otherAudioPolicy: mixWithOthers ? .mixWithOthers : .pauseOthers,
-                    hapticsEnabled: hapticsEnabled,
-                    backgroundEndAlertEnabled: backgroundEndAlertEnabled
-                  )
-                  let preferences = try TimerPreferences(
-                    durationMinutes: timerMinutes,
-                    preparation: preparation,
-                    audio: audio
-                  )
-                  await model.saveTimerPreferences(preferences)
-                  try await model.startPractice(
-                    mode: .timer,
-                    targetMinutes: preferences.durationMinutes,
-                    configuration: MeditationSessionConfiguration(
-                      preparation: preferences.preparation,
-                      audio: preferences.audio
-                    )
-                  )
-                } catch {
-                  return
-                }
-              } else {
-                await model.beginPractice(
-                  mode: selectedMode,
-                  targetMinutes: selectedMode == .guided ? 3 : nil
-                )
-              }
-            }
+            Task { await startSelectedPractice() }
           } label: {
             Label("practice.start", systemImage: "play.fill")
               .frame(maxWidth: .infinity)
@@ -269,12 +248,52 @@ private struct PracticeChooserView: View {
           .controlSize(.large)
           .accessibilityIdentifier("practice.start")
         }
+        .padding(.horizontal, AppTheme.Spacing.generous)
+        .padding(.top, AppTheme.Spacing.standard)
+        .padding(.bottom, AppTheme.Spacing.compact)
+        .frame(maxWidth: AppTheme.maximumReadableWidth)
+        .frame(maxWidth: .infinity)
+        .background(.regularMaterial)
       }
-      .padding(AppTheme.Spacing.generous)
-      .frame(maxWidth: AppTheme.maximumReadableWidth)
-      .frame(maxWidth: .infinity)
     }
-    .background(Color("LaunchBackground").ignoresSafeArea())
+    .onAppear {
+      if !guidedNarrationIsAvailable { selectedMode = .timer }
+    }
+  }
+
+  private func startSelectedPractice() async {
+    model.practiceNotice = nil
+    if selectedMode == .timer {
+      do {
+        let audio = try MeditationAudioConfiguration(
+          openingBellEnabled: openingBellEnabled,
+          closingBellEnabled: closingBellEnabled,
+          intervalBellMinutes: intervalBellMinutes,
+          ambienceID: ambienceEnabled ? "still-air-v1" : nil,
+          ambienceVolume: 0.3,
+          otherAudioPolicy: mixWithOthers ? .mixWithOthers : .pauseOthers,
+          hapticsEnabled: hapticsEnabled,
+          backgroundEndAlertEnabled: backgroundEndAlertEnabled
+        )
+        let preferences = try TimerPreferences(
+          durationMinutes: timerMinutes,
+          preparation: preparation,
+          audio: audio
+        )
+        await model.beginTimerPractice(with: preferences)
+      } catch {
+        model.practiceNotice = .couldNotStart
+      }
+    } else {
+      await model.beginPractice(mode: .stopwatch, targetMinutes: nil)
+    }
+  }
+
+  private func practiceNoticeTitle(_ notice: AppModel.PracticeNotice) -> LocalizedStringKey {
+    switch notice {
+    case .couldNotSavePreferences: "practice.notice.preferences"
+    case .couldNotStart: "practice.notice.start"
+    }
   }
 
   private func title(for mode: PracticeMode) -> LocalizedStringKey {
@@ -825,19 +844,19 @@ private struct PracticeCompletionView: View {
             .frame(maxWidth: 420)
         }
 
-        Button("session.reflect") {
-          model.beginReflectionFromCompletion()
-        }
-        .prominentActionButton()
-        .controlSize(.large)
-        .accessibilityIdentifier("session.reflect")
-
         Button("session.return.garden") {
           model.dismissCompletion(showGarden: true)
         }
-        .buttonStyle(.bordered)
+        .prominentActionButton()
         .controlSize(.large)
         .accessibilityIdentifier("session.return.garden")
+
+        Button("session.reflect") {
+          model.beginReflectionFromCompletion()
+        }
+        .buttonStyle(.bordered)
+        .controlSize(.large)
+        .accessibilityIdentifier("session.reflect")
 
         Button("common.done") {
           model.dismissCompletion(showGarden: false)

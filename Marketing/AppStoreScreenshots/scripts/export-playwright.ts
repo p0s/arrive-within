@@ -28,6 +28,7 @@ type Options = {
   height: number;
   locale: LocaleId;
   narrative: string | null;
+  singleSetCandidate: boolean;
   out: string;
   theme: string;
   url: string;
@@ -48,6 +49,8 @@ type OutputItem = {
 };
 
 type Geometry = {
+  headlineBounds: { x: number; y: number; width: number; height: number };
+  proofBounds: { x: number; y: number; width: number; height: number };
   headlineToProofGap: number;
   headlineToProofGapRatio: number;
   proofHeight: number;
@@ -74,6 +77,7 @@ function parseOptions(argv: string[]): Options {
     height: Number(value("--height")),
     locale,
     narrative,
+    singleSetCandidate: argv.includes("--single-set-candidate"),
     out: value("--out"),
     theme: value("--theme"),
     url: value("--url"),
@@ -182,7 +186,7 @@ async function main() {
   const currentSet = findCaptureSet(captures, options.locale, options.device);
   const companionDevice: DeviceId = options.device === "iphone-6.9" ? "ipad-13" : "iphone-6.9";
   const companionSet = findCaptureSet(captures, options.locale, companionDevice);
-  await validateCaptures(captures, [currentSet, companionSet], requiredCaptureIDs);
+  await validateCaptures(captures, options.singleSetCandidate ? [currentSet] : [currentSet, companionSet], requiredCaptureIDs);
 
   const target = new URL(options.url);
   if (
@@ -269,8 +273,8 @@ async function main() {
       const expectedCaptureIDs = plannedCaptureIDs.map(
         (captureID) => `${options.locale}/${options.device}/${captureID}`,
       );
-      if (narrative && JSON.stringify(renderedCaptureIDs) !== JSON.stringify(expectedCaptureIDs)) {
-        throw new Error(`${planned.id}: rendered source captures do not match the narrative contract`);
+      if (JSON.stringify(renderedCaptureIDs) !== JSON.stringify(expectedCaptureIDs)) {
+        throw new Error(`${planned.id}: rendered source captures do not match the screenshot plan`);
       }
       const headline = slide.locator("[data-headline]");
       const proof = slide.locator("[data-product-proof]");
@@ -291,6 +295,18 @@ async function main() {
       if (!headlineBounds || !proofBounds) throw new Error(`${planned.id}: missing headline or product proof bounds`);
       const headlineToProofGap = proofBounds.y - (headlineBounds.y + headlineBounds.height);
       const geometry: Geometry = {
+        headlineBounds: {
+          x: headlineBounds.x - bounds.x,
+          y: headlineBounds.y - bounds.y,
+          width: headlineBounds.width,
+          height: headlineBounds.height,
+        },
+        proofBounds: {
+          x: proofBounds.x - bounds.x,
+          y: proofBounds.y - bounds.y,
+          width: proofBounds.width,
+          height: proofBounds.height,
+        },
         headlineToProofGap,
         headlineToProofGapRatio: headlineToProofGap / options.height,
         proofHeight: proofBounds.height,
@@ -404,13 +420,18 @@ async function main() {
       sourceManifestPath: captures.source_manifest_path,
       resultBundle: currentSet.result_bundle,
       safeSyntheticData: captures.safe_synthetic_data,
+      setCompleteness: options.singleSetCandidate ? "single-set-candidate-matrix-incomplete" : "full-locale-device-matrix",
+      gardenDayCaptures: (captures.garden_day_captures ?? []).filter((capture) => capture.device === options.device),
+      gardenGrowthSources: {
+        back: { captureId: "garden-seed", ...currentSet.captures["garden-seed"] },
+        front: { captureId: "garden-day", ...currentSet.captures["garden-day"] },
+      },
       currentSet,
-      companionGarden: {
+      companionSet: options.singleSetCandidate ? null : {
         locale: companionSet.locale,
         device: companionSet.device,
         model: companionSet.model,
         os: companionSet.os,
-        capture: companionSet.captures["garden-hero"],
       },
     },
     contactSheet: {
@@ -421,7 +442,11 @@ async function main() {
       encoding: "sharp 0.35.3 JPEG quality 92, 4:4:4 chroma subsampling, no metadata",
     },
     items: items.map(({ validation: _validation, ...item }) => item),
-    uploadAuthorization: narrative ? "candidate-only-not-selected" : plan.upload_authorization,
+    uploadAuthorization: narrative
+      ? "candidate-only-not-selected"
+      : options.singleSetCandidate
+      ? "candidate-only-incomplete-matrix-not-upload-authorized"
+      : plan.upload_authorization,
   };
   await writeFile(path.join(root, "_manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
 
@@ -434,7 +459,7 @@ async function main() {
   ];
   const zipPath = await makeZip(root, zipInputs, options.locale, options.device, options.narrative);
   process.stdout.write(
-    `Export passed: ${items.length} opaque RGB screenshots for ${options.locale}/${options.device}; ZIP ${path.basename(zipPath)}; human visual review ${manifest.humanVisualReview.state}.\n`,
+    `Export passed: ${items.length} opaque RGB screenshots for ${options.locale}/${options.device}${options.singleSetCandidate ? " (single-set candidate; full matrix incomplete)" : ""}; ZIP ${path.basename(zipPath)}; human visual review ${manifest.humanVisualReview.state}.\n`,
   );
 }
 

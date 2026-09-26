@@ -1,65 +1,64 @@
-import { copyFile, readFile, writeFile } from "node:fs/promises";
+#!/usr/bin/env node
+
 import { createHash } from "node:crypto";
-import path from "node:path";
+import { copyFileSync, lstatSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
-const STUDIO_ROOT = path.resolve(SCRIPT_DIR, "..");
-const PROJECT_ROOT = path.resolve(STUDIO_ROOT, "..", "..");
-const WEBSITE_ASSET_ROOT = path.join(PROJECT_ROOT, "Website", "src", "assets");
-const PROVENANCE_PATH = path.join(WEBSITE_ASSET_ROOT, "provenance.json");
+const scriptDirectory = dirname(fileURLToPath(import.meta.url));
+const projectRoot = resolve(scriptDirectory, "../../..");
+const screenshotRoot = resolve(projectRoot, "Marketing/AppStoreScreenshots");
+const websiteAssetRoot = join(projectRoot, "Website/src/assets");
+const provenancePath = join(websiteAssetRoot, "provenance.json");
+const capturesPath = join(screenshotRoot, "source-captures.json");
+const candidateManifestPath = join(screenshotRoot, "exports/_candidate-manifest.json");
 
-const mappings = [
-  ["garden-en-iphone.png", "en-US", "iphone-6.9", "garden-hero"],
-  ["garden-de-iphone.png", "de-DE", "iphone-6.9", "garden-hero"],
-  ["journey-en-iphone.png", "en-US", "iphone-6.9", "journey-calendar"],
-  ["journey-de-iphone.png", "de-DE", "iphone-6.9", "journey-calendar"],
-  ["journal-en-ipad.png", "en-US", "ipad-13", "journal"],
-  ["journal-de-ipad.png", "de-DE", "ipad-13", "journal"],
-  ["garden-en-ipad.png", "en-US", "ipad-13", "garden-hero"],
-  ["garden-de-ipad.png", "de-DE", "ipad-13", "garden-hero"],
-];
+const provenance = JSON.parse(readFileSync(provenancePath, "utf8"));
+const captures = JSON.parse(readFileSync(capturesPath, "utf8"));
+const candidateManifest = JSON.parse(readFileSync(candidateManifestPath, "utf8"));
+const screenshotManifestPath = resolve(screenshotRoot, captures.source_manifest_path);
+if (!screenshotManifestPath.startsWith(`${screenshotRoot}/`)) throw new Error("Screenshot source manifest must remain inside AppStoreScreenshots.");
+const screenshotManifest = JSON.parse(readFileSync(screenshotManifestPath, "utf8"));
+const screenshotManifestSha256 = sha256File(screenshotManifestPath);
+if (
+  screenshotManifestSha256 !== captures.source_manifest_sha256
+  || screenshotManifest.source_revision !== captures.source_revision
+  || candidateManifest.sourceRevision !== captures.source_revision
+  || candidateManifest.status !== "candidate-complete-human-review-pending"
+) throw new Error("Current App Store capture and candidate provenance do not agree.");
 
-function sha256(data) {
-  return createHash("sha256").update(data).digest("hex");
+const screenshotAssets = provenance.assets.filter((asset) => asset.source.startsWith("Marketing/AppStoreScreenshots/"));
+if (screenshotAssets.length !== 8) throw new Error("Website must bind exactly eight current App Store UI images.");
+const screenshotSourcePrefix = `${screenshotRoot}/`;
+const screenshotNames = new Set();
+for (const asset of screenshotAssets) {
+  const source = resolve(projectRoot, asset.source);
+  if (
+    !source.startsWith(screenshotSourcePrefix)
+    || !asset.file
+    || asset.file !== asset.file.split(/[\\/]/).at(-1)
+    || screenshotNames.has(asset.file)
+  ) throw new Error(`${asset.file}: unsafe or duplicate App Store UI asset mapping`);
+  screenshotNames.add(asset.file);
+  const destination = join(websiteAssetRoot, asset.file);
+  const sourceStat = lstatSync(source);
+  const destinationStat = lstatSync(destination);
+  if (!sourceStat.isFile() || sourceStat.isSymbolicLink() || !destinationStat.isFile() || destinationStat.isSymbolicLink()) {
+    throw new Error(`${asset.file}: source and destination must be regular non-symbolic-link files`);
+  }
+  copyFileSync(source, destination);
+  asset.sha256 = sha256File(source);
+  if (sha256File(destination) !== asset.sha256) throw new Error(`${asset.file}: copied bytes do not match`);
 }
 
-async function main() {
-  const captures = JSON.parse(await readFile(path.join(STUDIO_ROOT, "source-captures.json"), "utf8"));
-  const provenance = JSON.parse(await readFile(PROVENANCE_PATH, "utf8"));
-  if (captures.schema_version !== 2 || !["candidate-ready", "human-reviewed"].includes(captures.state)) {
-    throw new Error("website UI sync requires candidate-ready or human-reviewed schema-2 source captures");
-  }
-  if (captures.state === "human-reviewed" && captures.human_visual_review?.state !== "approved") {
-    throw new Error("website UI sync requires an approved human visual review for human-reviewed captures");
-  }
-  if (provenance.schema_version !== 1 || provenance.assets.length !== 11) {
-    throw new Error("website provenance must contain eight UI assets and three public-media assets");
-  }
+provenance.source_revision = captures.source_revision;
+provenance.capture_source_manifest_sha256 = screenshotManifestSha256;
+provenance.capture_state = "Guarded iOS 26.5 simulator UI from app version 1.0.2 build 19 with deterministic safe synthetic product data; not physical-device, CloudKit, signed-candidate, or App Store evidence.";
+provenance.app_store_ui_review_state = "pending-owner-visual-review";
+provenance.app_store_ui_next_action = "Complete owner visual review before App Store Connect upload and website deployment.";
+writeFileSync(provenancePath, `${JSON.stringify(provenance, null, 2)}\n`);
+console.log(`Website App Store UI synchronized: ${screenshotAssets.length} images bound to candidate source ${captures.source_revision}.`);
 
-  for (const [file, locale, device, captureID] of mappings) {
-    const set = captures.sets.find((item) => item.locale === locale && item.device === device);
-    const capture = set?.captures?.[captureID];
-    if (!capture) throw new Error(`missing capture ${locale}/${device}/${captureID}`);
-    const source = path.join(STUDIO_ROOT, capture.path);
-    const destination = path.join(WEBSITE_ASSET_ROOT, file);
-    const data = await readFile(source);
-    const digest = sha256(data);
-    if (digest !== capture.sha256) throw new Error(`${capture.path}: source hash mismatch`);
-    await copyFile(source, destination);
-
-    const record = provenance.assets.find((item) => item.file === file);
-    if (!record) throw new Error(`${file}: missing website provenance record`);
-    record.source = path.relative(PROJECT_ROOT, source);
-    record.sha256 = digest;
-  }
-
-  provenance.source_revision = captures.source_revision;
-  await writeFile(PROVENANCE_PATH, `${JSON.stringify(provenance, null, 2)}\n`);
-  process.stdout.write(`Synchronized ${mappings.length} website UI assets at source revision ${captures.source_revision}.\n`);
+function sha256File(path) {
+  return createHash("sha256").update(readFileSync(path)).digest("hex");
 }
-
-main().catch((error) => {
-  console.error(error instanceof Error ? error.message : error);
-  process.exit(1);
-});

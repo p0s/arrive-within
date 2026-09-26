@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if [[ $# -lt 2 || $# -gt 3 ]]; then
-  print -u2 "Usage: $0 unit|ui|all DEVICE_IDENTIFIER [TEST_IDENTIFIER]"
+  print -u2 "Usage: $0 unit|ui|all|marketing-captures DEVICE_IDENTIFIER [TEST_IDENTIFIER]"
   exit 64
 fi
 
@@ -10,7 +10,7 @@ test_scope="$1"
 device_identifier="$2"
 test_identifier="${3:-}"
 case "$test_scope" in
-  unit|ui|all) ;;
+  unit|ui|all|marketing-captures) ;;
   *)
     print -u2 "Unknown test scope: $test_scope"
     exit 64
@@ -24,7 +24,8 @@ fi
 
 if [[ -n "$test_identifier" \
   && "$test_identifier" != ArriveWithinTests/* \
-  && "$test_identifier" != ArriveWithinUITests/* ]]; then
+  && "$test_identifier" != ArriveWithinUITests/* \
+  && "$test_identifier" != ArriveWithinMarketingCaptureUITests/* ]]; then
   print -u2 "Test identifier must stay inside an Arrive Within test target."
   exit 64
 fi
@@ -59,10 +60,15 @@ project_root="${script_directory:h}"
 derived_data_path="${ARRIVE_WITHIN_DERIVED_DATA_PATH:-${project_root}/.build/xcode-physical-tests}"
 
 only_testing=()
+scheme="ArriveWithin"
 case "$test_scope" in
   unit) only_testing=(-only-testing:ArriveWithinTests) ;;
   ui) only_testing=(-only-testing:ArriveWithinUITests) ;;
   all) ;;
+  marketing-captures)
+    scheme="ArriveWithinMarketingCaptures"
+    only_testing=(-only-testing:ArriveWithinMarketingCaptureUITests)
+    ;;
 esac
 if [[ -n "$test_identifier" ]]; then
   only_testing=(-only-testing:"$test_identifier")
@@ -89,7 +95,7 @@ fi
 xcodebuild \
   -quiet \
   -project "$project_root/ArriveWithin.xcodeproj" \
-  -scheme ArriveWithin \
+  -scheme "$scheme" \
   -configuration Debug \
   -destination "$destination" \
   -destination-timeout 60 \

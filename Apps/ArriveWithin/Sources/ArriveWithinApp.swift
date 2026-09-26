@@ -9,6 +9,7 @@ struct ArriveWithinApp: App {
   var body: some Scene {
     WindowGroup {
       AppRootView(model: model)
+        .preferredColorScheme(uiTestColorScheme)
         .task { await model.start() }
         .onChange(of: scenePhase) { _, newPhase in
           guard newPhase == .active else { return }
@@ -27,5 +28,14 @@ struct ArriveWithinApp: App {
           .keyboardShortcut("4", modifiers: .command)
       }
     }
+  }
+
+  private var uiTestColorScheme: ColorScheme? {
+    #if DEBUG
+      let arguments = ProcessInfo.processInfo.arguments
+      if arguments.contains("-ui-test-light-appearance") { return .light }
+      if arguments.contains("-ui-test-dark-appearance") { return .dark }
+    #endif
+    return nil
   }
 }

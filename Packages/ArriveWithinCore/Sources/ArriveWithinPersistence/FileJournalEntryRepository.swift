@@ -48,6 +48,9 @@ public actor FileJournalEntryRepository: JournalEntryRepository {
       guard expectedRevision == current.revision, entry.revision == current.revision else {
         return .conflict(current: current, attempted: entry)
       }
+      guard current.revision < JournalEntry.maximumPersistedRevision else {
+        throw JournalEntryError.invalidRevision
+      }
       let saved = try entry.persisted(revision: current.revision + 1)
       envelope.entries[index] = saved
       try save(envelope)

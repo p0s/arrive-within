@@ -9,83 +9,83 @@
   "comparison_metrics": [
     {
       "milestone_id": 1,
-      "changed_pixel_ratio": 0.010922309027777778,
-      "mean_absolute_channel_delta": 0.2607751012731481
+      "changed_pixel_ratio": 0.01091579861111111,
+      "mean_absolute_channel_delta": 0.6383695023148148
     },
     {
       "milestone_id": 2,
-      "changed_pixel_ratio": 0.010509982638888889,
-      "mean_absolute_channel_delta": 0.15680844907407407
+      "changed_pixel_ratio": 0.010205078125,
+      "mean_absolute_channel_delta": 0.1776880787037037
     },
     {
       "milestone_id": 3,
-      "changed_pixel_ratio": 0.03053493923611111,
-      "mean_absolute_channel_delta": 0.6056416377314815
+      "changed_pixel_ratio": 0.030542534722222223,
+      "mean_absolute_channel_delta": 1.5221875
     },
     {
       "milestone_id": 4,
-      "changed_pixel_ratio": 0.004864366319444444,
-      "mean_absolute_channel_delta": 0.026506799768518517
+      "changed_pixel_ratio": 0.004886067708333333,
+      "mean_absolute_channel_delta": 0.016650028935185184
     },
     {
       "milestone_id": 5,
-      "changed_pixel_ratio": 0.0027213541666666666,
-      "mean_absolute_channel_delta": 0.058090277777777775
+      "changed_pixel_ratio": 0.0027300347222222222,
+      "mean_absolute_channel_delta": 0.06323603877314815
     },
     {
       "milestone_id": 6,
       "changed_pixel_ratio": 0.0006325954861111111,
-      "mean_absolute_channel_delta": 0.0027958622685185187
+      "mean_absolute_channel_delta": 0.0006372974537037037
     },
     {
       "milestone_id": 7,
-      "changed_pixel_ratio": 0.0006141493055555556,
-      "mean_absolute_channel_delta": 0.0009675202546296296
+      "changed_pixel_ratio": 0.0004069010416666667,
+      "mean_absolute_channel_delta": 0.00016420717592592594
     },
     {
       "milestone_id": 8,
       "changed_pixel_ratio": 0.00006401909722222223,
-      "mean_absolute_channel_delta": 0.00015950520833333333
+      "mean_absolute_channel_delta": 0.00006221064814814815
     },
     {
       "milestone_id": 9,
-      "changed_pixel_ratio": 0.000002170138888888889,
-      "mean_absolute_channel_delta": 7.233796296296296e-7
+      "changed_pixel_ratio": 0.000004340277777777778,
+      "mean_absolute_channel_delta": 0.0000014467592592592592
     },
     {
       "milestone_id": 10,
-      "changed_pixel_ratio": 0.0007975260416666667,
-      "mean_absolute_channel_delta": 0.0036103877314814813
+      "changed_pixel_ratio": 0.0007953559027777777,
+      "mean_absolute_channel_delta": 0.0014756944444444444
     },
     {
       "milestone_id": 11,
-      "changed_pixel_ratio": 0.0003862847222222222,
-      "mean_absolute_channel_delta": 0.010055338541666667
+      "changed_pixel_ratio": 0.0003884548611111111,
+      "mean_absolute_channel_delta": 0.022700376157407408
     },
     {
       "milestone_id": 12,
-      "changed_pixel_ratio": 0.010855034722222223,
-      "mean_absolute_channel_delta": 0.07315285011574074
+      "changed_pixel_ratio": 0.009787326388888889,
+      "mean_absolute_channel_delta": 0.022204861111111113
     },
     {
       "milestone_id": 13,
-      "changed_pixel_ratio": 0.0000032552083333333335,
-      "mean_absolute_channel_delta": 0.0000010850694444444444
+      "changed_pixel_ratio": 0.00026041666666666666,
+      "mean_absolute_channel_delta": 0.005550853587962963
     },
     {
       "milestone_id": 14,
-      "changed_pixel_ratio": 0.0017447916666666666,
-      "mean_absolute_channel_delta": 0.002199435763888889
+      "changed_pixel_ratio": 0.0016786024305555556,
+      "mean_absolute_channel_delta": 0.0006260850694444444
     },
     {
       "milestone_id": 15,
-      "changed_pixel_ratio": 0.019309895833333333,
-      "mean_absolute_channel_delta": 0.29568757233796295
+      "changed_pixel_ratio": 0.019315321180555556,
+      "mean_absolute_channel_delta": 0.4498509837962963
     }
   ],
   "human_review": "pending",
   "release_ready": false,
-  "manifest_sha256": "f799d0675434c820856401ec4381c74cb20b510fd65d0a833a7b35551bfa629d",
+  "manifest_sha256": "0d9a892c0d5f1cf2643c04e2ccbbef013358235e936145afb42d8fd2bf136ee7",
   "failures": [],
   "checks": [
     {
@@ -136,17 +136,17 @@
     {
       "id": "schema-hash",
       "passed": true,
-      "detail": "GardenState schema must match or retain the one exact historical-matrix boundary"
+      "detail": "GardenState schema must match the regenerated source"
     },
     {
       "id": "renderer-source-hash",
       "passed": true,
-      "detail": "renderer source must match or retain the one exact historical-matrix boundary"
+      "detail": "renderer source must match the regenerated source"
     },
     {
       "id": "post-generation-boundary",
       "passed": true,
-      "detail": "source drift must be absent or exactly bound as a deferred historical matrix"
+      "detail": "matrix must bind the exact current Garden renderer and schema without a deferred historical exception"
     },
     {
       "id": "m1-pair",
@@ -161,7 +161,7 @@
     {
       "id": "m1-a-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m1-a-variants",
@@ -196,7 +196,7 @@
     {
       "id": "m1-b-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m1-b-variants",
@@ -241,7 +241,7 @@
     {
       "id": "m2-a-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m2-a-variants",
@@ -276,7 +276,7 @@
     {
       "id": "m2-b-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m2-b-variants",
@@ -321,7 +321,7 @@
     {
       "id": "m3-a-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m3-a-variants",
@@ -356,7 +356,7 @@
     {
       "id": "m3-b-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m3-b-variants",
@@ -401,7 +401,7 @@
     {
       "id": "m4-a-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m4-a-variants",
@@ -436,7 +436,7 @@
     {
       "id": "m4-b-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m4-b-variants",
@@ -481,7 +481,7 @@
     {
       "id": "m5-a-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m5-a-variants",
@@ -516,7 +516,7 @@
     {
       "id": "m5-b-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m5-b-variants",
@@ -561,7 +561,7 @@
     {
       "id": "m6-a-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m6-a-variants",
@@ -596,7 +596,7 @@
     {
       "id": "m6-b-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m6-b-variants",
@@ -641,7 +641,7 @@
     {
       "id": "m7-a-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m7-a-variants",
@@ -676,7 +676,7 @@
     {
       "id": "m7-b-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m7-b-variants",
@@ -721,7 +721,7 @@
     {
       "id": "m8-a-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m8-a-variants",
@@ -756,7 +756,7 @@
     {
       "id": "m8-b-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m8-b-variants",
@@ -801,7 +801,7 @@
     {
       "id": "m9-a-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m9-a-variants",
@@ -836,7 +836,7 @@
     {
       "id": "m9-b-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m9-b-variants",
@@ -881,7 +881,7 @@
     {
       "id": "m10-a-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m10-a-variants",
@@ -916,7 +916,7 @@
     {
       "id": "m10-b-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m10-b-variants",
@@ -961,7 +961,7 @@
     {
       "id": "m11-a-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m11-a-variants",
@@ -996,7 +996,7 @@
     {
       "id": "m11-b-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m11-b-variants",
@@ -1041,7 +1041,7 @@
     {
       "id": "m12-a-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m12-a-variants",
@@ -1076,7 +1076,7 @@
     {
       "id": "m12-b-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m12-b-variants",
@@ -1121,7 +1121,7 @@
     {
       "id": "m13-a-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m13-a-variants",
@@ -1156,7 +1156,7 @@
     {
       "id": "m13-b-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m13-b-variants",
@@ -1201,7 +1201,7 @@
     {
       "id": "m14-a-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m14-a-variants",
@@ -1236,7 +1236,7 @@
     {
       "id": "m14-b-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m14-b-variants",
@@ -1281,7 +1281,7 @@
     {
       "id": "m15-a-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m15-a-variants",
@@ -1316,7 +1316,7 @@
     {
       "id": "m15-b-state",
       "passed": true,
-      "detail": "state progression must match the two-day milestone contract"
+      "detail": "state progression and planned local phase must match the milestone contract"
     },
     {
       "id": "m15-b-variants",
