@@ -20,6 +20,8 @@
     "validate:captures": "tsx scripts/validate-captures.ts",
     "test:capture-set-provenance": "tsx scripts/test-capture-set-provenance.ts",
     "test:physical-profile-paths": "tsx scripts/test-physical-profile-paths.ts",
+    "test:physical-build-provenance": "tsx scripts/test-physical-build-provenance.ts",
+    "test:private-artifact-paths": "tsx scripts/test-private-artifact-paths.ts",
     "validate:exports": "tsx scripts/validate-export-matrix.ts",
     "test:reproducibility-inventory": "tsx scripts/test-reproducibility-inventory.ts",
     "export:candidate-matrix": "tsx scripts/export-candidate-matrix.ts",

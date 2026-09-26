@@ -117,6 +117,7 @@ export type PhysicalCaptureSourceEvidence = {
   source_manifest_sha256: string;
   source_commit: string;
   build_receipt_sha256: string;
+  project_binding_sha256: string;
   app_report_sha256: string;
   physical_device_model: string;
   device_os_version: string;
@@ -226,6 +227,12 @@ export type PhysicalCaptureEvidenceManifest = {
       executable_sha256: string;
       app_tree_sha256: string;
       source_provenance: { plist: "Info.plist"; key: "V2N_BUILD_SOURCE_COMMIT" };
+      project_binding: {
+        sha256: string;
+        xcodegen_version: "2.46.0";
+        project_spec_sha256: string;
+        project_tree_sha256: string;
+      };
     };
     app_report_sha256: string;
     app_report: Record<string, unknown>;

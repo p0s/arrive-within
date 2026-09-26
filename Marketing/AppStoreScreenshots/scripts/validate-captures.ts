@@ -170,6 +170,7 @@ async function validatePhysicalEvidence(
   const profile = JSON.parse(await readFile(path.join(projectRoot, "docs/qa/verification-profile.json"), "utf8")) as {
     checks?: { physical?: Array<Record<string, unknown>> };
   };
+  const projectSpecSha256 = sha256(await readFile(path.join(projectRoot, "project.yml")));
   const profileCases = new Map((profile.checks?.physical ?? []).map((item) => [String(item.id), item]));
   const expectedKeys = PHYSICAL_LOCALES.flatMap((locale) =>
     PHYSICAL_CAPTURE_IDS.map((id) => physicalCaptureKey(locale, id)),
@@ -179,6 +180,7 @@ async function validatePhysicalEvidence(
     throw new Error("physical evidence must contain exactly one current fixture for each 13-inch iPad capture and locale");
   }
   const indexed = new Map<string, PhysicalCaptureEvidenceManifest["captures"][number]>();
+  const generatedProjects = new Set<string>();
   for (const item of manifest.captures) {
     const context = physicalCaptureKey(item.locale, item.capture_id);
     const language = item.locale === "en-US" ? "en" : "de";
@@ -206,11 +208,21 @@ async function validatePhysicalEvidence(
       !/^[a-f0-9]{64}$/.test(item.build_receipt?.app_tree_sha256 ?? "") ||
       item.build_receipt?.source_provenance?.plist !== "Info.plist" ||
       item.build_receipt?.source_provenance?.key !== "V2N_BUILD_SOURCE_COMMIT" ||
+      item.build_receipt?.project_binding?.xcodegen_version !== "2.46.0" ||
+      item.build_receipt?.project_binding?.project_spec_sha256 !== projectSpecSha256 ||
+      !/^[a-f0-9]{64}$/.test(item.build_receipt?.project_binding?.sha256 ?? "") ||
+      !/^[a-f0-9]{64}$/.test(item.build_receipt?.project_binding?.project_tree_sha256 ?? "") ||
       !/^[a-f0-9]{64}$/.test(item.app_report_sha256) ||
       !/^[a-f0-9]{64}$/.test(item.fixture_manifest_sha256) ||
       item.screenshot_path !== "public/runtime-ui/" + item.locale + "/ipad-13/" + item.capture_id + ".png" ||
       !/^[a-f0-9]{64}$/.test(item.screenshot_sha256)
     ) throw new Error(context + ": physical fixture, source, receipt, report, phase, or PNG evidence is incomplete");
+
+    generatedProjects.add([
+      item.build_receipt.project_binding.xcodegen_version,
+      item.build_receipt.project_binding.project_spec_sha256,
+      item.build_receipt.project_binding.project_tree_sha256,
+    ].join(":"));
 
     const args = item.fixture_arguments;
     const argValue = (flag: string) => {
@@ -239,6 +251,7 @@ async function validatePhysicalEvidence(
     ) throw new Error(context + ": app report does not match the profile fixture or signed build evidence");
     indexed.set(physicalCaptureKey(item.locale, item.capture_id), item);
   }
+  if (generatedProjects.size !== 1) throw new Error("physical captures do not share one generated-project source binding");
   return indexed;
 }
 
@@ -258,6 +271,7 @@ function assertPhysicalCaptureSourceEvidence(
     source.source_manifest_path !== currentBinding.source_manifest_path ||
     source.source_manifest_sha256 !== currentBinding.source_manifest_sha256 ||
     source.source_commit !== proof.build_receipt.source_commit || source.build_receipt_sha256 !== proof.build_receipt.sha256 ||
+    source.project_binding_sha256 !== proof.build_receipt.project_binding.sha256 ||
     source.app_report_sha256 !== proof.app_report_sha256 || source.physical_device_model !== physicalDevice.model ||
     source.device_os_version !== physicalDevice.os_version || source.capture_local_date !== proof.capture_local_date ||
     source.visible_status_time !== proof.visible_status_time || source.timezone !== proof.timezone ||

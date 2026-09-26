@@ -10,7 +10,6 @@ import {
   writeFile,
 } from "node:fs/promises";
 import path from "node:path";
-import { tmpdir } from "node:os";
 
 import sharp from "sharp";
 
@@ -29,6 +28,12 @@ import { computeCaptureSourceManifest } from "./source-provenance";
 import { CAPTURE_STATUS_BAR_PROFILE } from "./physical-capture-provenance";
 import { resolveProjectRegularFile } from "./physical-profile-paths";
 import { validateOpaqueRgbPng } from "./image-validation";
+import {
+  parseBuildAdapterBindingSummary,
+  validateProjectBindingRecord,
+  type GeneratedProjectBinding,
+} from "./physical-build-provenance";
+import { resolvePrivateArtifactPath } from "./private-artifact-paths";
 
 const PROJECT_ROOT = path.resolve(ROOT, "../..");
 const SOURCE_MANIFEST_PATH = "capture-source-manifest-v1.0.2-build-19.json";
@@ -55,16 +60,7 @@ async function plainJson(filename: string, context: string): Promise<JsonObject>
 }
 
 async function privateArtifactPath(value: unknown, context: string): Promise<string> {
-  if (typeof value !== "string" || !path.isAbsolute(value)) throw new Error(`${context} must be an absolute path`);
-  const real = await realpath(value);
-  const temporaryRoot = await realpath(tmpdir());
-  const relative = path.relative(temporaryRoot, real);
-  if (!relative || relative === ".." || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative)) {
-    throw new Error(`${context} must stay inside the host temporary directory`);
-  }
-  const stat = await lstat(real);
-  if (!stat.isFile() || stat.isSymbolicLink()) throw new Error(`${context} must be a regular file`);
-  return real;
+  return resolvePrivateArtifactPath(value, context);
 }
 
 function requireObject(value: unknown, context: string): JsonObject {
@@ -81,6 +77,56 @@ function profileCase(profile: JsonObject, checkID: string): JsonObject {
   const check = (profile.checks?.physical ?? []).find((item: JsonObject) => item.id === checkID);
   if (!check) throw new Error(`${checkID}: current verification profile case is missing`);
   return check;
+}
+
+function currentGeneratedProjectBinding(): GeneratedProjectBinding {
+  const output = execFileSync("python3", [
+    path.join(PROJECT_ROOT, "scripts/verify_marketing_capture_project.py"), "--json",
+  ], { cwd: PROJECT_ROOT, encoding: "utf8" });
+  const value = JSON.parse(output) as JsonObject;
+  if (
+    value.xcodegen_version !== "2.46.0" ||
+    typeof value.project_spec_sha256 !== "string" || !/^[a-f0-9]{64}$/.test(value.project_spec_sha256) ||
+    typeof value.project_tree_sha256 !== "string" || !/^[a-f0-9]{64}$/.test(value.project_tree_sha256)
+  ) throw new Error("current generated-project validator returned an invalid binding");
+  return {
+    xcodegen_version: value.xcodegen_version,
+    project_spec_sha256: value.project_spec_sha256,
+    project_tree_sha256: value.project_tree_sha256,
+  };
+}
+
+async function validateProjectBinding(
+  check: JsonObject,
+  receiptPath: string,
+  receiptSummary: JsonObject,
+  verifySource: JsonObject,
+  currentSource: { source_revision: string; source_manifest_path: string; source_manifest_sha256: string },
+  currentProject: GeneratedProjectBinding,
+): Promise<PhysicalCaptureEvidenceManifest["captures"][number]["build_receipt"]["project_binding"]> {
+  const buildStep = (check.steps ?? []).find((step: JsonObject) => step.operation === "build-adapter");
+  if (typeof buildStep?.output !== "string") throw new Error(`${check.id}: build adapter did not emit project-binding evidence`);
+  let summary: ReturnType<typeof parseBuildAdapterBindingSummary>;
+  try {
+    summary = parseBuildAdapterBindingSummary(buildStep.output, String(receiptSummary.sha256));
+  } catch (error) {
+    throw new Error(`${check.id}: build adapter output is not a project-binding record: ${String(error)}`);
+  }
+  const bindingPath = await privateArtifactPath(summary.binding_path, `${check.id} project binding`);
+  const expectedPath = path.join(path.dirname(receiptPath), "capture-project-binding.json");
+  if (
+    bindingPath !== expectedPath
+  ) throw new Error(`${check.id}: build adapter project-binding summary is invalid`);
+  const bindingBytes = await readFile(bindingPath);
+  const bindingSha256 = sha256(bindingBytes);
+  if (bindingSha256 !== summary.binding_sha256) throw new Error(`${check.id}: project-binding sidecar hash mismatch`);
+  const binding = JSON.parse(bindingBytes.toString("utf8")) as JsonObject;
+  return validateProjectBindingRecord(binding, bindingSha256, String(receiptSummary.sha256), {
+    source_commit: String(verifySource.commit),
+    source_revision: currentSource.source_revision,
+    source_manifest_path: currentSource.source_manifest_path,
+    source_manifest_sha256: currentSource.source_manifest_sha256,
+  }, currentProject);
 }
 
 function languageLocale(language: string): LocaleId {
@@ -100,6 +146,7 @@ async function validatedRunnerCheck(
   expectedScenario: string,
   currentSource: { source_revision: string; source_manifest_path: string; source_manifest_sha256: string },
   profile: JsonObject,
+  currentProject: GeneratedProjectBinding,
 ): Promise<PhysicalCaptureEvidenceManifest["captures"][number]> {
   if (
     check.status !== "passed" || check.lane !== "physical" || check.required !== true ||
@@ -133,15 +180,13 @@ async function validatedRunnerCheck(
     throw new Error(`${check.id}: runner output does not bind the build receipt bytes`);
   }
   const receipt = await plainJson(receiptPath, `${check.id} build receipt`);
-  const generatedProject = receipt.source_provenance?.generated_project;
+  const projectBinding = await validateProjectBinding(check, receiptPath, receiptSummary, verifySource, currentSource, currentProject);
   if (
     receipt.schema_version !== 1 || receipt.source_dirty !== false || receipt.source_commit !== verifySource.commit ||
     receipt.bundle_id !== "com.philipps.arrivewithin.ios" || receipt.marketing_version !== "1.0.2" ||
     receipt.build_number !== "19" || receipt.executable_sha256 !== receiptSummary.executable_sha256 ||
     !/^[a-f0-9]{64}$/.test(String(receiptSummary.tree_sha256)) ||
-    generatedProject?.xcodegen_version !== "2.46.0" ||
-    generatedProject?.project_spec_sha256 !== sha256(await readFile(path.join(PROJECT_ROOT, "project.yml"))) ||
-    !/^[a-f0-9]{64}$/.test(String(generatedProject?.project_tree_sha256)) ||
+    Object.keys(receipt.source_provenance ?? {}).sort().join(",") !== "key,plist" ||
     receipt.source_provenance?.plist !== "Info.plist" || receipt.source_provenance?.key !== "V2N_BUILD_SOURCE_COMMIT"
   ) throw new Error(`${check.id}: signed build receipt is not bound to the current 1.0.2 (19) source`);
 
@@ -225,6 +270,7 @@ async function validatedRunnerCheck(
       executable_sha256: receiptSummary.executable_sha256,
       app_tree_sha256: receiptSummary.tree_sha256,
       source_provenance: receiptSummary.source_provenance,
+      project_binding: projectBinding,
     },
     app_report_sha256: reportRecord.report_sha256,
     app_report: appReport,
@@ -304,6 +350,7 @@ async function main(): Promise<void> {
     source_manifest_path: SOURCE_MANIFEST_PATH,
     source_manifest_sha256: sourceManifestSha256,
   };
+  const currentProject = currentGeneratedProjectBinding();
   const profile = JSON.parse(await readFile(path.join(PROJECT_ROOT, "docs/qa/verification-profile.json"), "utf8")) as JsonObject;
   const physicalChecks = [...nightResult.output.automation.checks, ...dayResult.output.automation.checks] as JsonObject[];
   const expectedIDs = new Set([
@@ -322,6 +369,7 @@ async function main(): Promise<void> {
       scenario,
       currentSource,
       profile,
+      currentProject,
     );
     evidenceCaptures.push(result);
   }
@@ -394,6 +442,7 @@ async function main(): Promise<void> {
         source_manifest_sha256: currentSource.source_manifest_sha256,
         source_commit: evidence.source.commit,
         build_receipt_sha256: proof.build_receipt.sha256,
+        project_binding_sha256: proof.build_receipt.project_binding.sha256,
         app_report_sha256: proof.app_report_sha256,
         physical_device_model: evidence.device.model,
         device_os_version: evidence.device.os_version,

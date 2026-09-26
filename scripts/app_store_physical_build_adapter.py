@@ -17,6 +17,9 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_INPUT_CONTRACT = Path("Marketing/AppStoreScreenshots/capture-source-inputs.json")
+SOURCE_MANIFEST_PATH = Path("Marketing/AppStoreScreenshots/capture-source-manifest-v1.0.2-build-19.json")
+SOURCE_MANIFEST_RELATIVE_PATH = SOURCE_MANIFEST_PATH.name
+PROJECT_BINDING_FILENAME = "capture-project-binding.json"
 SHA256 = re.compile(r"^[a-f0-9]{64}$")
 COMMIT = re.compile(r"^[a-f0-9]{40}$")
 TEAM = re.compile(r"^[A-Za-z0-9]{10}$")
@@ -81,7 +84,7 @@ def load_source_inputs() -> list[str]:
 
 
 def current_manifest() -> tuple[str, str]:
-    manifest_path = ROOT / "Marketing/AppStoreScreenshots/capture-source-manifest-v1.0.2-build-19.json"
+    manifest_path = ROOT / SOURCE_MANIFEST_PATH
     payload = json.loads(manifest_path.read_text(encoding="utf-8"))
     inputs = load_source_inputs()
     paths = sorted(path for entry in inputs for path in collect(entry))
@@ -128,7 +131,7 @@ def main() -> int:
         or not SHA256.fullmatch(str(project_binding.get("project_tree_sha256", "")))
     ):
         raise RuntimeError("generated Xcode project verification returned an invalid source binding")
-    source_revision, _manifest_sha = current_manifest()
+    source_revision, source_manifest_sha256 = current_manifest()
     storage_cache = storage_cache_command()
 
     derived = ROOT / ".build/physical-marketing-derived-data"
@@ -194,12 +197,31 @@ def main() -> int:
         "source_provenance": {
             "plist": "Info.plist",
             "key": "V2N_BUILD_SOURCE_COMMIT",
-            "generated_project": project_binding,
         },
     }
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    receipt_bytes = (json.dumps(receipt, indent=2, sort_keys=True) + "\n").encode("utf-8")
+    output.write_bytes(receipt_bytes)
     output.chmod(0o600)
+    project_binding_path = output.with_name(PROJECT_BINDING_FILENAME)
+    project_binding_payload = {
+        "schema_version": 1,
+        "source_commit": source_commit,
+        "source_revision": source_revision,
+        "source_manifest_path": SOURCE_MANIFEST_RELATIVE_PATH,
+        "source_manifest_sha256": source_manifest_sha256,
+        "build_receipt_sha256": hashlib.sha256(receipt_bytes).hexdigest(),
+        "generated_project": project_binding,
+    }
+    project_binding_bytes = (json.dumps(project_binding_payload, indent=2, sort_keys=True) + "\n").encode("utf-8")
+    project_binding_path.write_bytes(project_binding_bytes)
+    project_binding_path.chmod(0o600)
+    print(json.dumps({
+        "schema_version": 1,
+        "receipt_sha256": hashlib.sha256(receipt_bytes).hexdigest(),
+        "binding_path": str(project_binding_path),
+        "binding_sha256": hashlib.sha256(project_binding_bytes).hexdigest(),
+    }, sort_keys=True))
     return 0
 
 
