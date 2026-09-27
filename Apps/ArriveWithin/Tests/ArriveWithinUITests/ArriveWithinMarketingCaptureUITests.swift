@@ -177,11 +177,26 @@ final class ArriveWithinMarketingCaptureUITests: XCTestCase {
         userInfo: [NSLocalizedDescriptionKey: "App is missing build-bound capture provenance"]
       )
     }
-    let fields = Dictionary(uniqueKeysWithValues: provenance.label.split(separator: ";").compactMap { component in
-      let parts = component.split(separator: "=", maxSplits: 1).map(String.init)
-      guard parts.count == 2 else { return nil }
-      return (parts[0], parts[1])
-    })
+    var fields: [String: String] = [:]
+    for component in provenance.label.split(separator: ";") {
+      let parts = component.split(separator: "=", maxSplits: 1)
+      guard parts.count == 2 else {
+        throw NSError(
+          domain: "ArriveWithinMarketingCapture",
+          code: 2,
+          userInfo: [NSLocalizedDescriptionKey: "App capture provenance contains a malformed field"]
+        )
+      }
+      let key = String(parts[0])
+      guard fields[key] == nil else {
+        throw NSError(
+          domain: "ArriveWithinMarketingCapture",
+          code: 3,
+          userInfo: [NSLocalizedDescriptionKey: "App capture provenance contains a duplicate field"]
+        )
+      }
+      fields[key] = String(parts[1])
+    }
     XCTAssertEqual(fields["bundle_id"], "com.philipps.arrivewithin.ios")
     XCTAssertEqual(fields["marketing_version"], "1.0.2")
     XCTAssertEqual(fields["build_number"], "19")
