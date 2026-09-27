@@ -28,13 +28,8 @@
     "Marketing/AppStoreScreenshots/scripts/physical-capture-provenance.ts",
     "Marketing/AppStoreScreenshots/scripts/physical-report-validators"
   ],
-  "source_revision": "ec288215f3657113e38cc6503e5c0f752b37cd7904499347f1106e26a7dad1ba",
+  "source_revision": "acea8bef500149b9514c7fb28ccb85643a6cc8aa5d5933ea81e4c3890d43906b",
   "files": [
-    {
-      "path": "Apps/ArriveWithin/Resources/.DS_Store",
-      "bytes": 6148,
-      "sha256": "51c6d4cbcf8ce3b84e8635da2930cf032304ba80b23bde3efbda5c80d9d37392"
-    },
     {
       "path": "Apps/ArriveWithin/Resources/AppIcon.icon/Assets/living-shoot.png",
       "bytes": 76159,
@@ -147,8 +142,8 @@
     },
     {
       "path": "Apps/ArriveWithin/Sources/AppDependencies.swift",
-      "bytes": 22543,
-      "sha256": "8cdbde3ad4d6b1df233fb080bcffa072e6a72e4c6618fafd105e1456048d9379"
+      "bytes": 22879,
+      "sha256": "2c871c993a7f26065c8f2d5846597ff6849496c6a30ca60b70e8135fc6afcd4d"
     },
     {
       "path": "Apps/ArriveWithin/Sources/AppLocalization.swift",
@@ -157,8 +152,8 @@
     },
     {
       "path": "Apps/ArriveWithin/Sources/AppModel.swift",
-      "bytes": 75596,
-      "sha256": "073ff15816b8c95b6258fff9de8fe42ec96205c04e1ba523946ad7fcec6d93c8"
+      "bytes": 76057,
+      "sha256": "f09aeb5ba269ea58d94e0703afa8c809740f359aaf075180e6c0d26e5dae639c"
     },
     {
       "path": "Apps/ArriveWithin/Sources/AppOwnedShareSheet.swift",
@@ -2021,11 +2016,6 @@
       "sha256": "8939d88fb0066a92e2a366b1f3da71ca89187d8e35357abead585f1dbb13c957"
     },
     {
-      "path": "Marketing/AppStoreScreenshots/scripts/physical-report-validators/__pycache__/appstore-ipad13-en-garden-seed.cpython-314.pyc",
-      "bytes": 661,
-      "sha256": "2dc517a7d568f61b1ebc84520f6df845b32c052026ec1b3786760beb9f696478"
-    },
-    {
       "path": "Marketing/AppStoreScreenshots/scripts/physical-report-validators/appstore-ipad13-de-garden-day.py",
       "bytes": 248,
       "sha256": "1a6d0b337e8512b1f0e9d50438f4e4a07cd49d9abc564a5d0f29320ce3fd3614"
@@ -2262,8 +2252,8 @@
     },
     {
       "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/JournalTextDraftRepository.swift",
-      "bytes": 8066,
-      "sha256": "008dcc797848bdff328d3bb98c8c70723625900a8888681903e11ce46d0fa7de"
+      "bytes": 8744,
+      "sha256": "363169445e47ccff51b70438ee6ed6b354df67826fa5126375380ed7d8f65520"
     },
     {
       "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/PracticeEventCSV.swift",
@@ -2322,8 +2312,8 @@
     },
     {
       "path": "scripts/app_store_physical_build_adapter.py",
-      "bytes": 10298,
-      "sha256": "033cf4a86b9c15c376526d69c07fae3600f0d0db02f414cb0b4920c2b6660dbb"
+      "bytes": 10688,
+      "sha256": "ddb6883c321b8bc11f1ec931056faf19607d22ed292ee5793a1d6c6c831a40a8"
     },
     {
       "path": "scripts/run_guarded_physical_xcode_tests.sh",

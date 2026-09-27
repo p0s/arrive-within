@@ -23,6 +23,10 @@ function sha256(data: Buffer | string): string {
   return createHash("sha256").update(data).digest("hex");
 }
 
+export function isIncidentalCaptureSourceEntry(name: string): boolean {
+  return name === ".DS_Store" || name === "__pycache__" || name.endsWith(".pyc") || name.endsWith(".pyo");
+}
+
 export async function loadCaptureSourceInputs(): Promise<string[]> {
   const contractPath = path.join(PROJECT_ROOT, CAPTURE_SOURCE_INPUTS_PATH);
   const contract = JSON.parse(await readFile(contractPath, "utf8")) as {
@@ -42,6 +46,9 @@ export async function loadCaptureSourceInputs(): Promise<string[]> {
 }
 
 async function collect(relative: string): Promise<string[]> {
+  if (isIncidentalCaptureSourceEntry(path.basename(relative))) {
+    throw new Error(`incidental file cannot be an explicit capture source input: ${relative}`);
+  }
   const absolute = path.join(PROJECT_ROOT, relative);
   const stat = await lstat(absolute);
   if (stat.isSymbolicLink()) throw new Error(`capture source input must not be a symbolic link: ${relative}`);
@@ -53,6 +60,7 @@ async function collect(relative: string): Promise<string[]> {
   for (const child of children.sort((left, right) => left.name.localeCompare(right.name))) {
     const childRelative = path.posix.join(relative.split(path.sep).join(path.posix.sep), child.name);
     if (child.isSymbolicLink()) throw new Error(`capture source input must not contain a symbolic link: ${childRelative}`);
+    if (isIncidentalCaptureSourceEntry(child.name)) continue;
     if (child.isDirectory()) result.push(...(await collect(childRelative)));
     else if (child.isFile()) result.push(childRelative);
     else throw new Error(`unsupported capture source entry: ${childRelative}`);

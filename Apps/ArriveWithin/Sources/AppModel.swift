@@ -992,9 +992,9 @@ final class AppModel {
             cleanupFailed = true
           }
         }
-        try await refreshJournal(profile: profile)
+        let draftsCleared = try await refreshJournal(profile: profile)
         await refreshProductDataStatus()
-        return !cleanupFailed
+        return !cleanupFailed && draftsCleared
       case .conflict:
         journalNotice = .editConflict
         try await refreshJournal(profile: profile)
@@ -1038,9 +1038,9 @@ final class AppModel {
       ) {
       case .saved:
         journalNotice = nil
-        try await refreshJournal(profile: profile)
+        let draftsCleared = try await refreshJournal(profile: profile)
         await refreshProductDataStatus()
-        return true
+        return draftsCleared
       case .conflict:
         journalNotice = .editConflict
         try await refreshJournal(profile: profile)
@@ -1838,18 +1838,30 @@ final class AppModel {
     )
   }
 
-  private func refreshJournal(profile: LocalProfile) async throws {
+  @discardableResult
+  private func refreshJournal(profile: LocalProfile) async throws -> Bool {
     async let currentEntries = dependencies.journalRepository.entries(
       profileGenerationID: profile.profileGenerationID,
-      includingDeleted: false
+      includingDeleted: true
     )
     async let currentConflicts = dependencies.journalRepository.conflicts(
       profileGenerationID: profile.profileGenerationID
     )
-    journalEntries = try await currentEntries
+    let allEntries = try await currentEntries
+    journalEntries = allEntries.filter { !$0.isDeleted }
     journalConflicts = try await currentConflicts
     if !journalConflicts.isEmpty, journalNotice == nil { journalNotice = .editConflict }
     cleanupOrphanedJournalAudio()
+    do {
+      try await dependencies.journalTextDraftRepository.deleteEntryDrafts(
+        entryIDs: Set(allEntries.filter(\.isDeleted).map(\.id)),
+        profileGenerationID: profile.profileGenerationID
+      )
+      return true
+    } catch {
+      journalNotice = .draftSaveFailed
+      return false
+    }
   }
 
   private func cleanupOrphanedJournalAudio() {

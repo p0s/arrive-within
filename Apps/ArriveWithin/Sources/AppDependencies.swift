@@ -511,6 +511,14 @@ private actor UITestFailingJournalTextDraftRepository: JournalTextDraftRepositor
     try await base.delete(editorKey: editorKey, profileGenerationID: profileGenerationID)
   }
 
+  func deleteEntryDrafts(entryIDs: Set<UUID>, profileGenerationID: UUID) async throws {
+    if failFirstDeletion, !hasFailedFirstDeletion {
+      hasFailedFirstDeletion = true
+      throw JournalTextDraftError.couldNotPersist
+    }
+    try await base.deleteEntryDrafts(entryIDs: entryIDs, profileGenerationID: profileGenerationID)
+  }
+
   func deleteAll() async throws {
     try await base.deleteAll()
   }

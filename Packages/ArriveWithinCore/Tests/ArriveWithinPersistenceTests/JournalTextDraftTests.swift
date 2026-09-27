@@ -66,4 +66,43 @@ struct JournalTextDraftTests {
     try await repository.deleteAll()
     #expect(try await repository.load(editorKey: draft.editorKey, profileGenerationID: generation) == nil)
   }
+
+  @Test("Deleting tombstoned entry drafts preserves other entries and profiles")
+  func deletedEntryDrafts() async throws {
+    let directory = FileManager.default.temporaryDirectory
+      .appending(path: "arrive-within-drafts-\(UUID().uuidString)", directoryHint: .isDirectory)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let repository = FileJournalTextDraftRepository(
+      fileURL: directory.appending(path: "journal-drafts-v1.json")
+    )
+    let generation = UUID()
+    let otherGeneration = UUID()
+    let deletedID = UUID()
+    let retainedID = UUID()
+    let deletedKey = "entry:\(deletedID.uuidString.lowercased())"
+    let retainedKey = "entry:\(retainedID.uuidString.lowercased())"
+    for (key, profile) in [
+      (deletedKey, generation),
+      (retainedKey, generation),
+      (deletedKey, otherGeneration),
+    ] {
+      try await repository.save(
+        JournalTextDraft(
+          editorKey: key,
+          profileGenerationID: profile,
+          linkedPracticeEventID: nil,
+          text: "Private reflection"
+        )
+      )
+    }
+
+    try await repository.deleteEntryDrafts(
+      entryIDs: [deletedID],
+      profileGenerationID: generation
+    )
+
+    #expect(try await repository.load(editorKey: deletedKey, profileGenerationID: generation) == nil)
+    #expect(try await repository.load(editorKey: retainedKey, profileGenerationID: generation) != nil)
+    #expect(try await repository.load(editorKey: deletedKey, profileGenerationID: otherGeneration) != nil)
+  }
 }

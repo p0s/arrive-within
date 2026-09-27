@@ -48,7 +48,13 @@ def storage_cache_command() -> Path:
     return command.resolve(strict=True)
 
 
+def is_incidental_capture_source_entry(name: str) -> bool:
+    return name in {".DS_Store", "__pycache__"} or name.endswith((".pyc", ".pyo"))
+
+
 def collect(relative: str) -> list[str]:
+    if is_incidental_capture_source_entry(Path(relative).name):
+        raise RuntimeError(f"incidental file cannot be an explicit capture source input: {relative}")
     base = ROOT / relative
     if base.is_symlink():
         raise RuntimeError(f"source input is a symlink: {relative}")
@@ -61,6 +67,8 @@ def collect(relative: str) -> list[str]:
         child_relative = f"{relative}/{child.name}"
         if child.is_symlink():
             raise RuntimeError(f"source input contains a symlink: {child_relative}")
+        if is_incidental_capture_source_entry(child.name):
+            continue
         if child.is_dir():
             result.extend(collect(child_relative))
         elif child.is_file():

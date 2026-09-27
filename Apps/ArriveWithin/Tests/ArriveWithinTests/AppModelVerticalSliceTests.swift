@@ -76,6 +76,117 @@ struct AppModelVerticalSliceTests {
     #expect(model.journalNotice == .draftSaveFailed)
   }
 
+  @Test("Deleting an entry removes its persisted edit draft")
+  func deletingJournalEntryRemovesDraft() async throws {
+    let directory = FileManager.default.temporaryDirectory
+      .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let draftRepository = FileJournalTextDraftRepository(
+      fileURL: directory.appending(path: "journal-drafts-v1.json")
+    )
+    let eventRepository = InMemoryPracticeEventRepository()
+    let model = AppModel(
+      dependencies: AppDependencies(
+        profileRepository: TestProfileRepository(),
+        eventRepository: eventRepository,
+        sessionRepository: TestSessionRepository(),
+        preferencesRepository: TestPreferencesRepository(),
+        journalTextDraftRepository: draftRepository,
+        completionCoordinator: SessionCompletionCoordinator(repository: eventRepository),
+        clock: VirtualSessionClock(
+          moment: SessionMoment(
+            monotonicMilliseconds: 1_000,
+            wallClock: Date(timeIntervalSince1970: 1_786_320_000)
+          )
+        ),
+        dataDirectory: directory,
+        audioController: NoOpMeditationAudioController(),
+        timerEndAlertController: NoOpTimerEndAlertController(),
+        hapticController: NoOpMeditationHapticController()
+      )
+    )
+    await model.start()
+    await model.exploreGarden()
+    let entry = try #require(await model.saveJournalEntry(
+      existing: nil,
+      linkedPracticeEventID: nil,
+      text: "Saved reflection"
+    ))
+    let editorKey = "entry:\(entry.id.uuidString.lowercased())"
+    #expect(await model.saveJournalTextDraft(
+      editorKey: editorKey,
+      linkedPracticeEventID: nil,
+      text: "Unfinished private edit"
+    ))
+
+    #expect(await model.deleteJournalEntry(entry))
+    #expect(try await draftRepository.load(
+      editorKey: editorKey,
+      profileGenerationID: entry.profileGenerationID
+    ) == nil)
+    #expect(model.journalEntries.isEmpty)
+  }
+
+  @Test("A failed entry-draft cleanup is reported and retried on relaunch")
+  func deletedJournalDraftCleanupRetriesOnRelaunch() async throws {
+    let directory = FileManager.default.temporaryDirectory
+      .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let fileRepository = FileJournalTextDraftRepository(
+      fileURL: directory.appending(path: "journal-drafts-v1.json")
+    )
+    let draftRepository = FailingOnceEntryDraftCleanupRepository(base: fileRepository)
+    let eventRepository = InMemoryPracticeEventRepository()
+    let dependencies = AppDependencies(
+      profileRepository: TestProfileRepository(),
+      eventRepository: eventRepository,
+      sessionRepository: TestSessionRepository(),
+      preferencesRepository: TestPreferencesRepository(),
+      journalTextDraftRepository: draftRepository,
+      completionCoordinator: SessionCompletionCoordinator(repository: eventRepository),
+      clock: VirtualSessionClock(
+        moment: SessionMoment(
+          monotonicMilliseconds: 1_000,
+          wallClock: Date(timeIntervalSince1970: 1_786_320_000)
+        )
+      ),
+      dataDirectory: directory,
+      audioController: NoOpMeditationAudioController(),
+      timerEndAlertController: NoOpTimerEndAlertController(),
+      hapticController: NoOpMeditationHapticController()
+    )
+    let model = AppModel(dependencies: dependencies)
+    await model.start()
+    await model.exploreGarden()
+    let entry = try #require(await model.saveJournalEntry(
+      existing: nil,
+      linkedPracticeEventID: nil,
+      text: "Saved reflection"
+    ))
+    let editorKey = "entry:\(entry.id.uuidString.lowercased())"
+    #expect(await model.saveJournalTextDraft(
+      editorKey: editorKey,
+      linkedPracticeEventID: nil,
+      text: "Unfinished private edit"
+    ))
+
+    #expect(!(await model.deleteJournalEntry(entry)))
+    #expect(model.journalNotice == .draftSaveFailed)
+    #expect(try await fileRepository.load(
+      editorKey: editorKey,
+      profileGenerationID: entry.profileGenerationID
+    ) != nil)
+
+    let relaunched = AppModel(dependencies: dependencies)
+    await relaunched.start()
+    #expect(relaunched.launchPhase == .ready)
+    #expect(relaunched.journalEntries.isEmpty)
+    #expect(try await fileRepository.load(
+      editorKey: editorKey,
+      profileGenerationID: entry.profileGenerationID
+    ) == nil)
+  }
+
   @Test("Product replacement stays disabled while a new practice session is being persisted")
   func productReplacementWaitsForPracticeStartWrite() async throws {
     let eventRepository = InMemoryPracticeEventRepository()
@@ -1234,9 +1345,42 @@ private actor RejectingJournalTextDraftRepository: JournalTextDraftRepository {
     throw JournalTextDraftError.couldNotPersist
   }
 
+  func deleteEntryDrafts(entryIDs: Set<UUID>, profileGenerationID: UUID) async throws {
+    _ = entryIDs
+    _ = profileGenerationID
+    throw JournalTextDraftError.couldNotPersist
+  }
+
   func deleteAll() async throws {
     throw JournalTextDraftError.couldNotPersist
   }
+}
+
+private actor FailingOnceEntryDraftCleanupRepository: JournalTextDraftRepository {
+  private let base: any JournalTextDraftRepository
+  private var hasFailed = false
+
+  init(base: any JournalTextDraftRepository) { self.base = base }
+
+  func load(editorKey: String, profileGenerationID: UUID) async throws -> JournalTextDraft? {
+    try await base.load(editorKey: editorKey, profileGenerationID: profileGenerationID)
+  }
+
+  func save(_ draft: JournalTextDraft) async throws { try await base.save(draft) }
+
+  func delete(editorKey: String, profileGenerationID: UUID) async throws {
+    try await base.delete(editorKey: editorKey, profileGenerationID: profileGenerationID)
+  }
+
+  func deleteEntryDrafts(entryIDs: Set<UUID>, profileGenerationID: UUID) async throws {
+    if !entryIDs.isEmpty && !hasFailed {
+      hasFailed = true
+      throw JournalTextDraftError.couldNotPersist
+    }
+    try await base.deleteEntryDrafts(entryIDs: entryIDs, profileGenerationID: profileGenerationID)
+  }
+
+  func deleteAll() async throws { try await base.deleteAll() }
 }
 
 @MainActor

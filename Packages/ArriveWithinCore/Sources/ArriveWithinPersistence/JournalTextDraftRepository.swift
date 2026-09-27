@@ -65,6 +65,7 @@ public protocol JournalTextDraftRepository: Sendable {
   func load(editorKey: String, profileGenerationID: UUID) async throws -> JournalTextDraft?
   func save(_ draft: JournalTextDraft) async throws
   func delete(editorKey: String, profileGenerationID: UUID) async throws
+  func deleteEntryDrafts(entryIDs: Set<UUID>, profileGenerationID: UUID) async throws
   func deleteAll() async throws
 }
 
@@ -137,10 +138,22 @@ public actor FileJournalTextDraftRepository: JournalTextDraftRepository {
   public func delete(editorKey: String, profileGenerationID: UUID) throws {
     guard Self.isValidEditorKey(editorKey) else { throw JournalTextDraftError.invalidDraft }
     var envelope = try readEnvelope()
+    let previousCount = envelope.drafts.count
     envelope.drafts.removeAll {
       $0.editorKey == editorKey && $0.profileGenerationID == profileGenerationID
     }
-    try write(envelope)
+    if envelope.drafts.count != previousCount { try write(envelope) }
+  }
+
+  public func deleteEntryDrafts(entryIDs: Set<UUID>, profileGenerationID: UUID) throws {
+    guard !entryIDs.isEmpty else { return }
+    let editorKeys = Set(entryIDs.map { "entry:\($0.uuidString.lowercased())" })
+    var envelope = try readEnvelope()
+    let previousCount = envelope.drafts.count
+    envelope.drafts.removeAll {
+      $0.profileGenerationID == profileGenerationID && editorKeys.contains($0.editorKey)
+    }
+    if envelope.drafts.count != previousCount { try write(envelope) }
   }
 
   public func deleteAll() throws {
