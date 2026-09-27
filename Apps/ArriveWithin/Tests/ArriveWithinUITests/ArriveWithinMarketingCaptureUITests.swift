@@ -168,7 +168,7 @@ final class ArriveWithinMarketingCaptureUITests: XCTestCase {
     let locale = name.contains("marketing-de-DE-") ? "de-DE" : "en-US"
     let captureID = String(name.dropFirst("marketing-\(locale)-".count))
     let expectedAppearance = ["garden-seed", "garden-hero"].contains(captureID) ? "dark" : "light"
-    let provenance = app.staticTexts["marketing.capture.provenance"]
+    let provenance = app.descendants(matching: .any)["marketing.capture.provenance"]
     let hasCaptureProvenance = provenance.waitForExistence(timeout: 3)
     guard hasCaptureProvenance else {
       throw NSError(
