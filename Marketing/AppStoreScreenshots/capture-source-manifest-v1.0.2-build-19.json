@@ -28,7 +28,7 @@
     "Marketing/AppStoreScreenshots/scripts/physical-capture-provenance.ts",
     "Marketing/AppStoreScreenshots/scripts/physical-report-validators"
   ],
-  "source_revision": "6cc6cbe5b496a5a24e4f2d5fdd3d84ba0be3e401cb0dd5d06cbf771b2242e79f",
+  "source_revision": "229e8397655e913d1b71c403d97ca5a5560437f45406bf75265a5a2ca3f42499",
   "files": [
     {
       "path": "Apps/ArriveWithin/Resources/.DS_Store",
@@ -2317,8 +2317,8 @@
     },
     {
       "path": "project.yml",
-      "bytes": 7013,
-      "sha256": "13e183d0e2478aae5bcb8d32d4d4a12eed90b3ccfd1127285fadddcf2fd00abc"
+      "bytes": 7050,
+      "sha256": "23d49e62f4700dee37ab13cb1e94a229a6d2b0be2823e2eb9dfff4af82f457a1"
     },
     {
       "path": "scripts/app_store_physical_build_adapter.py",

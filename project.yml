@@ -69,6 +69,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.philipps.arrivewithin.ios
         PRODUCT_NAME: Arrive Within
+        EXECUTABLE_NAME: ArriveWithin
         PRODUCT_MODULE_NAME: ArriveWithin
         CODE_SIGN_STYLE: $(ARRIVE_WITHIN_APP_CODE_SIGN_STYLE)
         PROVISIONING_PROFILE_SPECIFIER: $(ARRIVE_WITHIN_PROVISIONING_PROFILE_SPECIFIER)
@@ -137,7 +138,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.philipps.arrivewithin.ios.tests
         CODE_SIGN_STYLE: Automatic
         GENERATE_INFOPLIST_FILE: YES
-        TEST_HOST: $(BUILT_PRODUCTS_DIR)/Arrive Within.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Arrive Within
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/Arrive Within.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ArriveWithin
         BUNDLE_LOADER: $(TEST_HOST)
     dependencies:
       - target: ArriveWithin
