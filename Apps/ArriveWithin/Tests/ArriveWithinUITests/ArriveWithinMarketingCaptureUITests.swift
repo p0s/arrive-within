@@ -168,7 +168,8 @@ final class ArriveWithinMarketingCaptureUITests: XCTestCase {
     let captureID = String(name.dropFirst("marketing-\(locale)-".count))
     let expectedAppearance = ["garden-seed", "garden-hero"].contains(captureID) ? "dark" : "light"
     let provenance = app.staticTexts["marketing.capture.provenance"]
-    XCTAssertTrue(provenance.waitForExistence(timeout: 3), "App is missing build-bound capture provenance")
+    let hasCaptureProvenance = provenance.waitForExistence(timeout: 3)
+    XCTAssertTrue(hasCaptureProvenance, "App is missing build-bound capture provenance")
     let fields = Dictionary(uniqueKeysWithValues: provenance.label.split(separator: ";").compactMap { component in
       let parts = component.split(separator: "=", maxSplits: 1).map(String.init)
       guard parts.count == 2 else { return nil }
