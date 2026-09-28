@@ -26,6 +26,24 @@ node scripts/test-analytics.mjs
 node edge/worker.test.mjs
 ```
 
+Deploy through Wrangler from `Website`:
+
+```sh
+wrangler deploy --config edge/wrangler.toml
+```
+
+The checked-in Wrangler build hook runs `pnpm verify:edge` before upload. For
+`deploy` and `versions upload`, its wrapper sets the canonical production
+origin so the generated sitemap and robots file use `https://arrivewithin.com`.
+For local `wrangler dev`, it preserves the local origin behavior. The
+verification rebuilds and validates the site, sitemap, robots file, analytics
+behavior, and edge Worker.
+
+This is a Wrangler CLI build hook; it does not create a GitHub push-triggered
+deployment. Cloudflare Workers Builds has separate build settings and does not
+apply Wrangler's `[build]` command, so configure the same verification command
+there if that deployment integration is used.
+
 An unattached version can be uploaded without activating a public endpoint:
 
 ```sh
