@@ -5,6 +5,10 @@ account_id = "0317b000520a8e6b237de500c592d67a"
 workers_dev = false
 preview_urls = false
 
+[build]
+# Build canonical crawler files and validate the site and Worker before upload.
+command = "node scripts/wrangler-build.mjs"
+
 [[routes]]
 pattern = "arrivewithin.com"
 custom_domain = true
