@@ -24,7 +24,7 @@
       "Renderer/src/world-model.ts",
       "Shared/GardenState.schema.json"
     ],
-    "renderer_source_sha256": "08823839ccb8c331da03d1140d20debb5bbc5c79124120b86ac1a03073b59be8",
+    "renderer_source_sha256": "c3f8327851c077074f60c7899cdad57f299c52c58fb496870a522f139489d8f4",
     "garden_state_schema_sha256": "a73eb83fd1326b3c113663db54005a93024862fa630d8f92a4f3cf1fecc08fee"
   },
   "capture": {

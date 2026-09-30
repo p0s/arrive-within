@@ -5,7 +5,7 @@
   "checks_failed": 0,
   "human_review": "pending",
   "release_ready": false,
-  "manifest_sha256": "6d2e1b916fba323da7a829eaf2b2900f6c5284579b6d800e600214052a0abec3",
+  "manifest_sha256": "d42862d5b66565fb05f6d01ce6ca34daec172e2bf434197c454caecc8d93b07c",
   "failures": [],
   "checks": [
     {
@@ -51,17 +51,17 @@
     {
       "id": "schema-hash",
       "passed": true,
-      "detail": "GardenState schema must match or retain the one exact historical-media boundary"
+      "detail": "GardenState schema must match the regenerated source"
     },
     {
       "id": "renderer-source-hash",
       "passed": true,
-      "detail": "renderer source must match or retain the one exact historical-media boundary"
+      "detail": "renderer source must match the regenerated source"
     },
     {
       "id": "post-generation-boundary",
       "passed": true,
-      "detail": "source drift must be absent or exactly bound as deferred historical media"
+      "detail": "media must bind the exact current Garden renderer and schema without a deferred historical exception"
     },
     {
       "id": "frame-1-mapping",

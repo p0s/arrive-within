@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import { listProspectivePublicFiles } from "./lib/prospective-public-files.mjs";
 import {
   detectPublicPrivacySignatures,
+  privateLocalDirectory,
   publicRepositoryURL,
 } from "./lib/public-repository-link-policy.mjs";
 
@@ -48,7 +49,7 @@ const PRIVATE_PREFIXES = [
   "ContentProduction/auditions/", "ContentProduction/model-cache/", "ContentProduction/production-candidates/", "Signing/", "AppStoreConnect/", "CloudKit/Private/",
   "CloudKit/Local/", "Evidence/", "Artifacts/", "BuildArtifacts/", "TestResults/", "docs/evidence/local/",
 ];
-const GENERATED_SEGMENTS = new Set([".build", ".git", ".next", ".pnpm-store", ".swiftpm", ".venv", ".vercel", "__pycache__", "DerivedData", "node_modules", "xcuserdata"]);
+const GENERATED_SEGMENTS = new Set([".build", ".git", ".next", ".pnpm-store", ".swiftpm", ".venv", ".vercel", "__pycache__", "DerivedData", "node_modules", "xcuserdata", privateLocalDirectory]);
 const BINARY_EXTENSIONS = new Set([".aac", ".aiff", ".app", ".cer", ".der", ".gif", ".heic", ".ipa", ".jpeg", ".jpg", ".m4a", ".mobileprovision", ".mov", ".mp3", ".mp4", ".p12", ".pdf", ".png", ".wav", ".xcarchive", ".xcresult", ".zip"]);
 const DEFAULT_ARCHIVE_SCAN_LIMITS = Object.freeze({
   maxDepth: 3,

@@ -313,7 +313,7 @@ async function main() {
     ? "candidate-only-not-selected"
     : plan.upload_authorization;
   const captures = await loadSourceCaptures();
-  await validateCaptures(captures, captures.sets, requiredCaptureIDs);
+  await validateCaptures(captures, captures.sets);
 
   const sets: SetResult[] = [];
   for (const locale of plan.locales) {
@@ -384,8 +384,12 @@ async function main() {
         "contact-sheet dimensions and SHA-256 readback",
         "ZIP contents and byte readback",
         "headline and proof bounds are recorded and meet the geometry contract for all 24 candidate images",
-        "Garden-day iPhone and iPad 13 source captures are current, real-clock, opaque RGB captures",
-        "Apple's required 13-inch iPad screenshots are source-bound to the current signed physical-device build and fixture evidence",
+        captures.schema_version === 6
+          ? "Garden-day iPhone and iPad 13 source captures are current, source-bound fixed-clock, opaque RGB Simulator captures"
+          : "Garden-day iPhone and iPad 13 source captures are current, real-clock, opaque RGB captures",
+        captures.schema_version === 6
+          ? "The required 13-inch iPad screenshots bind the signed app-source commit, native Simulator build, clock fixture, and exact XCTest results"
+          : "The required 13-inch iPad screenshots are source-bound to the current signed physical-device build and fixture evidence",
         "XCTest runtime warnings are preserved by test identity; Garden-day tests have no warnings",
         "external network request count is zero",
       ],

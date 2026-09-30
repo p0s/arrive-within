@@ -186,7 +186,7 @@ async function main() {
   const currentSet = findCaptureSet(captures, options.locale, options.device);
   const companionDevice: DeviceId = options.device === "iphone-6.9" ? "ipad-13" : "iphone-6.9";
   const companionSet = findCaptureSet(captures, options.locale, companionDevice);
-  await validateCaptures(captures, options.singleSetCandidate ? [currentSet] : [currentSet, companionSet], requiredCaptureIDs);
+  await validateCaptures(captures, captures.sets);
 
   const target = new URL(options.url);
   if (

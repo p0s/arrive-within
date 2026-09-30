@@ -28,15 +28,15 @@
   },
   "sourceCaptures": {
     "state": "candidate-ready",
-    "method": "Guarded XCUITest run serially on the exact configured iPhone 17 Pro and iPad Pro 11-inch (M5) simulator pool routes; captures retain original runtime pixels.",
-    "test": "ArriveWithinMarketingCaptureUITests: selected source states plus real-clock Garden-day locale tests in one four-test result per device.",
-    "statusBarProfile": "Actual visible system status from each exact passed simulator capture run; real-clock Garden-day status agrees with its local capture time; no synthetic status-bar overlay.",
-    "sourceRevision": "27192a1de32b40c6ee66494a45f81bc28b87e7cbc680f3d11b904f00baa2a810",
+    "method": "Four guarded XCUITest simulator result bundles for iPhone 17 Pro and iPad Pro 13-inch (M5), with source-bound day/dusk app-clock fixtures; simulator system status is captured as rendered.",
+    "test": "ArriveWithinMarketingCaptureUITests: each selected/dusk and Garden-day/day bundle contains exactly the English and German test; every original screenshot is paired with source/build/clock proof from that same xcresult.",
+    "statusBarProfile": "Simulator system status captured as rendered; no status-bar override.",
+    "sourceRevision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
     "sourceRevisionKind": "sha256-capture-source-manifest",
     "sourceManifestPath": "capture-source-manifest-v1.0.2-build-19.json",
     "resultBundle": {
-      "name": "20260925T083050Z-46593-4a2aa42019.xcresult",
-      "xcresult_tree_sha256": "f24ef6aaff491155620033fad5e4b05bf3b30e83fb7caa137d33bf45f4cfee1c",
+      "name": "iphone-6.9-selected-2b1b1ef12ce34b50.xcresult",
+      "xcresult_tree_sha256": "2b1b1ef12ce34b501390c9f5a704775baa6baa32dc6a49bde770a0efdc863b47",
       "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()",
       "runtime_warnings": [
         "Invalid frame dimension (negative or non-finite)."
@@ -44,53 +44,66 @@
     },
     "safeSyntheticData": true,
     "setCompleteness": "full-locale-device-matrix",
-    "gardenDayCaptures": [
-      {
-        "device": "iphone-6.9",
-        "source_revision": "27192a1de32b40c6ee66494a45f81bc28b87e7cbc680f3d11b904f00baa2a810",
-        "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
-        "source_manifest_sha256": "5dd09760f9d7b2961688e51b20af293b6be402be3780098779a203bafbbd84c4",
-        "result_bundle": {
-          "name": "20260925T083050Z-46593-4a2aa42019.xcresult",
-          "xcresult_tree_sha256": "f24ef6aaff491155620033fad5e4b05bf3b30e83fb7caa137d33bf45f4cfee1c",
-          "passed_tests": 4,
-          "failed_tests": 0,
-          "skipped_tests": 0,
-          "runtime_warnings_by_test": {
-            "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()": [
-              "Invalid frame dimension (negative or non-finite)."
-            ],
-            "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()": [
-              "Invalid frame dimension (negative or non-finite)."
-            ],
-            "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayEnglish()": [],
-            "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()": []
+    "gardenGrowthSources": {
+      "back": {
+        "captureId": "garden-seed",
+        "path": "public/runtime-ui/de-DE/iphone-6.9/garden-seed.png",
+        "sha256": "bf3fb08fe79fac37c6f73b90235098473e1ca0422709a90841ec5bfc7ff0252c",
+        "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()",
+        "source_evidence": {
+          "device": "iphone-6.9",
+          "source_commit": "277db0c0a956bd1ead8852bff66f0d26e561fdff",
+          "build_proof_sha256": "cb752952873b94f260ac9c8eed150ac380db2018971f94fb3c97050d0b76a458",
+          "source_revision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
+          "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+          "source_manifest_sha256": "e4bfc19da7c5ca5c0dd95014ef44184e5aeefffbe0c58f386db9cae6aee19f63",
+          "result_bundle": {
+            "role": "selected",
+            "name": "iphone-6.9-selected-2b1b1ef12ce34b50.xcresult",
+            "xcresult_tree_sha256": "2b1b1ef12ce34b501390c9f5a704775baa6baa32dc6a49bde770a0efdc863b47"
           },
-          "simulator": {
-            "device_name": "Codex Pool iPhone 1",
-            "model_name": "iPhone 17 Pro",
-            "os_version": "26.5",
-            "platform": "iOS Simulator"
-          }
-        },
-        "test_identifiers": {
-          "en-US": "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayEnglish()",
-          "de-DE": "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()"
-        },
-        "clock_mode": "unmodified-simulator-system-clock",
-        "capture_local_date": "2026-09-25",
-        "capture_local_times": {
-          "en-US": "16:33",
-          "de-DE": "16:33"
-        },
-        "visible_status_times": {
-          "en-US": "16:33",
-          "de-DE": "16:33"
-        },
-        "timezone": "Asia/Singapore",
-        "phase": "day"
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()",
+          "clock_fixture_id": "dusk-v1",
+          "clock_epoch": "1785577260",
+          "garden_local_date": "2026-08-01",
+          "garden_local_time": "17:41",
+          "timezone": "Asia/Singapore",
+          "garden_phase": "dusk",
+          "captured_at": "2026-09-30T06:26:11.072Z",
+          "system_timezone": "Asia/Singapore",
+          "appearance": "dark"
+        }
+      },
+      "front": {
+        "captureId": "garden-day",
+        "path": "public/runtime-ui/de-DE/iphone-6.9/garden-day.png",
+        "sha256": "726514b49982290c129943d510f0369363681f4b9c55852fb9208e1825166e6b",
+        "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()",
+        "source_evidence": {
+          "device": "iphone-6.9",
+          "source_commit": "277db0c0a956bd1ead8852bff66f0d26e561fdff",
+          "build_proof_sha256": "e51efee8902b3567a85f7629b38788155244ac87ab80483d432acfbcfe57483e",
+          "source_revision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
+          "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+          "source_manifest_sha256": "e4bfc19da7c5ca5c0dd95014ef44184e5aeefffbe0c58f386db9cae6aee19f63",
+          "result_bundle": {
+            "role": "garden-day",
+            "name": "iphone-6.9-garden-day-3ea8115a3c85f60c.xcresult",
+            "xcresult_tree_sha256": "3ea8115a3c85f60cbfd9b728d0fed91a0050b0885013e43c453745603f8e5c7e"
+          },
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()",
+          "clock_fixture_id": "day-v1",
+          "clock_epoch": "1785548460",
+          "garden_local_date": "2026-08-01",
+          "garden_local_time": "09:41",
+          "timezone": "Asia/Singapore",
+          "garden_phase": "day",
+          "captured_at": "2026-09-30T06:37:25.212Z",
+          "system_timezone": "Asia/Singapore",
+          "appearance": "light"
+        }
       }
-    ],
+    },
     "currentSet": {
       "locale": "de-DE",
       "device": "iphone-6.9",
@@ -99,8 +112,8 @@
       "width": 1206,
       "height": 2622,
       "result_bundle": {
-        "name": "20260925T083050Z-46593-4a2aa42019.xcresult",
-        "xcresult_tree_sha256": "f24ef6aaff491155620033fad5e4b05bf3b30e83fb7caa137d33bf45f4cfee1c",
+        "name": "iphone-6.9-selected-2b1b1ef12ce34b50.xcresult",
+        "xcresult_tree_sha256": "2b1b1ef12ce34b501390c9f5a704775baa6baa32dc6a49bde770a0efdc863b47",
         "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()",
         "runtime_warnings": [
           "Invalid frame dimension (negative or non-finite)."
@@ -108,9 +121,9 @@
       },
       "capture_source": {
         "state": "current",
-        "source_revision": "27192a1de32b40c6ee66494a45f81bc28b87e7cbc680f3d11b904f00baa2a810",
+        "source_revision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
         "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
-        "source_manifest_sha256": "5dd09760f9d7b2961688e51b20af293b6be402be3780098779a203bafbbd84c4",
+        "source_manifest_sha256": "e4bfc19da7c5ca5c0dd95014ef44184e5aeefffbe0c58f386db9cae6aee19f63",
         "app_version": "1.0.2",
         "build_number": "19",
         "bound_capture_ids": [
@@ -126,51 +139,184 @@
       "captures": {
         "garden-hero": {
           "path": "public/runtime-ui/de-DE/iphone-6.9/garden-hero.png",
-          "sha256": "537510c1bf9cc921ed94467dc99daa04360be85d87930737823eb1d84499b22b",
-          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
-        },
-        "garden-day": {
-          "path": "public/runtime-ui/de-DE/iphone-6.9/garden-day.png",
-          "sha256": "cbf5c2730eb71fab97f1f2c009d7da8ed47a5e7b97dfca9509dab0bf65e7c673",
-          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()"
+          "sha256": "7d22dc6ee720fd52a1f81ab8b95a0b12ed0880587750f17eaf31c0ee8afc7c78",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()",
+          "source_evidence": {
+            "device": "iphone-6.9",
+            "source_commit": "277db0c0a956bd1ead8852bff66f0d26e561fdff",
+            "build_proof_sha256": "4d90edab7c5350e359c578c2c7f870e5461cdf4473a7f0e4bae8d323193b227f",
+            "source_revision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
+            "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+            "source_manifest_sha256": "e4bfc19da7c5ca5c0dd95014ef44184e5aeefffbe0c58f386db9cae6aee19f63",
+            "result_bundle": {
+              "role": "selected",
+              "name": "iphone-6.9-selected-2b1b1ef12ce34b50.xcresult",
+              "xcresult_tree_sha256": "2b1b1ef12ce34b501390c9f5a704775baa6baa32dc6a49bde770a0efdc863b47"
+            },
+            "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()",
+            "clock_fixture_id": "dusk-v1",
+            "clock_epoch": "1785577260",
+            "garden_local_date": "2026-08-01",
+            "garden_local_time": "17:41",
+            "timezone": "Asia/Singapore",
+            "garden_phase": "dusk",
+            "captured_at": "2026-09-30T06:26:19.066Z",
+            "system_timezone": "Asia/Singapore",
+            "appearance": "dark"
+          }
         },
         "garden-seed": {
           "path": "public/runtime-ui/de-DE/iphone-6.9/garden-seed.png",
-          "sha256": "fc3613700e00316110f55d4de18075608788b3202e01652fa39617f6949d2c1e",
-          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
+          "sha256": "bf3fb08fe79fac37c6f73b90235098473e1ca0422709a90841ec5bfc7ff0252c",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()",
+          "source_evidence": {
+            "device": "iphone-6.9",
+            "source_commit": "277db0c0a956bd1ead8852bff66f0d26e561fdff",
+            "build_proof_sha256": "cb752952873b94f260ac9c8eed150ac380db2018971f94fb3c97050d0b76a458",
+            "source_revision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
+            "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+            "source_manifest_sha256": "e4bfc19da7c5ca5c0dd95014ef44184e5aeefffbe0c58f386db9cae6aee19f63",
+            "result_bundle": {
+              "role": "selected",
+              "name": "iphone-6.9-selected-2b1b1ef12ce34b50.xcresult",
+              "xcresult_tree_sha256": "2b1b1ef12ce34b501390c9f5a704775baa6baa32dc6a49bde770a0efdc863b47"
+            },
+            "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()",
+            "clock_fixture_id": "dusk-v1",
+            "clock_epoch": "1785577260",
+            "garden_local_date": "2026-08-01",
+            "garden_local_time": "17:41",
+            "timezone": "Asia/Singapore",
+            "garden_phase": "dusk",
+            "captured_at": "2026-09-30T06:26:11.072Z",
+            "system_timezone": "Asia/Singapore",
+            "appearance": "dark"
+          }
         },
         "journey-calendar": {
           "path": "public/runtime-ui/de-DE/iphone-6.9/journey-calendar.png",
-          "sha256": "c1831a047929ba5f0928a50690fcaee08008909302fcc6b35216a4fc53b2f537",
-          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
+          "sha256": "772265481d882236e7c912d976233073f43b9d1383afcccb3e7a15aa22b76488",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()",
+          "source_evidence": {
+            "device": "iphone-6.9",
+            "source_commit": "277db0c0a956bd1ead8852bff66f0d26e561fdff",
+            "build_proof_sha256": "770f408f1c5079aa8f812ab7655c32c37d334aa9c80f96d4e60cc6551fb67782",
+            "source_revision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
+            "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+            "source_manifest_sha256": "e4bfc19da7c5ca5c0dd95014ef44184e5aeefffbe0c58f386db9cae6aee19f63",
+            "result_bundle": {
+              "role": "selected",
+              "name": "iphone-6.9-selected-2b1b1ef12ce34b50.xcresult",
+              "xcresult_tree_sha256": "2b1b1ef12ce34b501390c9f5a704775baa6baa32dc6a49bde770a0efdc863b47"
+            },
+            "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()",
+            "clock_fixture_id": "dusk-v1",
+            "clock_epoch": "1785577260",
+            "garden_local_date": "2026-08-01",
+            "garden_local_time": "17:41",
+            "timezone": "Asia/Singapore",
+            "garden_phase": "dusk",
+            "captured_at": "2026-09-30T06:26:38.164Z",
+            "system_timezone": "Asia/Singapore",
+            "appearance": "light"
+          }
         },
         "journey-milestones": {
           "path": "public/runtime-ui/de-DE/iphone-6.9/journey-milestones.png",
-          "sha256": "a0805b1bc565867f86e4f6fb2d68c0cfc1dfbc2e362fbbf94da7a3b8184adfbc",
-          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
+          "sha256": "989d0ad4ab21bdc5bb056d6a1c67a9700663b0806c62105b69a8c1a6f4fe3b9e",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()",
+          "source_evidence": {
+            "device": "iphone-6.9",
+            "source_commit": "277db0c0a956bd1ead8852bff66f0d26e561fdff",
+            "build_proof_sha256": "e5a65d6321819e165d97afd1445b455076df2142c8879cda1e1d02c2efa9ab0e",
+            "source_revision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
+            "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+            "source_manifest_sha256": "e4bfc19da7c5ca5c0dd95014ef44184e5aeefffbe0c58f386db9cae6aee19f63",
+            "result_bundle": {
+              "role": "selected",
+              "name": "iphone-6.9-selected-2b1b1ef12ce34b50.xcresult",
+              "xcresult_tree_sha256": "2b1b1ef12ce34b501390c9f5a704775baa6baa32dc6a49bde770a0efdc863b47"
+            },
+            "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()",
+            "clock_fixture_id": "dusk-v1",
+            "clock_epoch": "1785577260",
+            "garden_local_date": "2026-08-01",
+            "garden_local_time": "17:41",
+            "timezone": "Asia/Singapore",
+            "garden_phase": "dusk",
+            "captured_at": "2026-09-30T06:27:05.887Z",
+            "system_timezone": "Asia/Singapore",
+            "appearance": "light"
+          }
         },
         "journal": {
           "path": "public/runtime-ui/de-DE/iphone-6.9/journal.png",
-          "sha256": "298cb1abab5ceb7641f961053af8360fe4e0a9fe76843aecdd848e484bf63e02",
-          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
+          "sha256": "07c706d263054fba7efcb941c17e6b4ffd88144e96c183a7a933cec0320c2cb9",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()",
+          "source_evidence": {
+            "device": "iphone-6.9",
+            "source_commit": "277db0c0a956bd1ead8852bff66f0d26e561fdff",
+            "build_proof_sha256": "6c4ea0c0c019a7d270c311b51d1ce859b74aacc95a4f17382d8a9dfef95cf395",
+            "source_revision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
+            "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+            "source_manifest_sha256": "e4bfc19da7c5ca5c0dd95014ef44184e5aeefffbe0c58f386db9cae6aee19f63",
+            "result_bundle": {
+              "role": "selected",
+              "name": "iphone-6.9-selected-2b1b1ef12ce34b50.xcresult",
+              "xcresult_tree_sha256": "2b1b1ef12ce34b501390c9f5a704775baa6baa32dc6a49bde770a0efdc863b47"
+            },
+            "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()",
+            "clock_fixture_id": "dusk-v1",
+            "clock_epoch": "1785577260",
+            "garden_local_date": "2026-08-01",
+            "garden_local_time": "17:41",
+            "timezone": "Asia/Singapore",
+            "garden_phase": "dusk",
+            "captured_at": "2026-09-30T06:27:23.404Z",
+            "system_timezone": "Asia/Singapore",
+            "appearance": "light"
+          }
+        },
+        "garden-day": {
+          "path": "public/runtime-ui/de-DE/iphone-6.9/garden-day.png",
+          "sha256": "726514b49982290c129943d510f0369363681f4b9c55852fb9208e1825166e6b",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()",
+          "source_evidence": {
+            "device": "iphone-6.9",
+            "source_commit": "277db0c0a956bd1ead8852bff66f0d26e561fdff",
+            "build_proof_sha256": "e51efee8902b3567a85f7629b38788155244ac87ab80483d432acfbcfe57483e",
+            "source_revision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
+            "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+            "source_manifest_sha256": "e4bfc19da7c5ca5c0dd95014ef44184e5aeefffbe0c58f386db9cae6aee19f63",
+            "result_bundle": {
+              "role": "garden-day",
+              "name": "iphone-6.9-garden-day-3ea8115a3c85f60c.xcresult",
+              "xcresult_tree_sha256": "3ea8115a3c85f60cbfd9b728d0fed91a0050b0885013e43c453745603f8e5c7e"
+            },
+            "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()",
+            "clock_fixture_id": "day-v1",
+            "clock_epoch": "1785548460",
+            "garden_local_date": "2026-08-01",
+            "garden_local_time": "09:41",
+            "timezone": "Asia/Singapore",
+            "garden_phase": "day",
+            "captured_at": "2026-09-30T06:37:25.212Z",
+            "system_timezone": "Asia/Singapore",
+            "appearance": "light"
+          }
         }
       }
     },
-    "companionGarden": {
+    "companionSet": {
       "locale": "de-DE",
-      "device": "ipad-11",
-      "model": "iPad Pro 11-inch (M5)",
-      "os": "iOS 26.5 Simulator",
-      "capture": {
-        "path": "public/runtime-ui/de-DE/ipad-11/garden-hero.png",
-        "sha256": "6df9f357dfa6005705c78b322603a0b877eaa417377352606cb09ba1e2ad1649",
-        "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()"
-      }
+      "device": "ipad-13",
+      "model": "iPad Pro 13-inch (M5)",
+      "os": "iOS 26.5 Simulator"
     }
   },
   "contactSheet": {
     "filename": "_contact-sheet.jpg",
-    "sha256": "d25acf77a7f56ca2b311116205c114bdf18e181acada6fe40dadbd2b401ce7ff",
+    "sha256": "9966864395f819efbcbc81fda5435c81e5d440bed22195adfe6692a6710ddc4a",
     "width": 1440,
     "height": 1890,
     "encoding": "sharp 0.35.3 JPEG quality 92, 4:4:4 chroma subsampling, no metadata"
@@ -178,7 +324,7 @@
   "items": [
     {
       "filename": "01-growth-rhythm-de-de-iphone-6.9-1320x2868.png",
-      "sha256": "1cd92af232fe4697698ca3378557a51d2cf45302e79d621ba2691fb973448ef7",
+      "sha256": "e636895f231ac0cb7ee45026f3e7c78b36dd1331e99d21f003f547e6c1201911",
       "slide": 1,
       "slideId": "growth-rhythm",
       "idea": "Browse a private monthly practice rhythm without pressure",
@@ -208,7 +354,7 @@
     },
     {
       "filename": "02-growth-take-root-de-de-iphone-6.9-1320x2868.png",
-      "sha256": "8a3417fee501a8e88e704ad59f08c099bd0875cdd394312c992f1470b2fe3509",
+      "sha256": "b09ac3577ba8dee1beb1212b50e69c43c2c49691784d0695b7ea964c6d941bf8",
       "slide": 2,
       "slideId": "growth-take-root",
       "idea": "A qualifying practice becomes lasting visible growth",
@@ -238,7 +384,7 @@
     },
     {
       "filename": "03-growth-arrive-de-de-iphone-6.9-1320x2868.png",
-      "sha256": "e23613a0e29fb88def7cdb041e1668abd44ea1284a8365c52b7faf564ac952e1",
+      "sha256": "8e4b6c8f9011e027b74f71b64d9b494c33b7ed640b3b34a1f40d0117b7442f71",
       "slide": 3,
       "slideId": "growth-arrive",
       "idea": "Arrive in the present through the living Garden",
@@ -268,7 +414,7 @@
     },
     {
       "filename": "04-growth-stays-de-de-iphone-6.9-1320x2868.png",
-      "sha256": "d8a0f39d3dec0f596c5cb3b352fb3d37fa3be4ca2a7fd29da1b3950e39ba4314",
+      "sha256": "41aa8cec1aa13fa2cb894ccd82c85aa0e2460f280f3c3db49725702bdde2e795",
       "slide": 4,
       "slideId": "growth-stays",
       "idea": "Milestones remain as a nonpunitive record of practice",
@@ -298,7 +444,7 @@
     },
     {
       "filename": "05-growth-reflect-de-de-iphone-6.9-1320x2868.png",
-      "sha256": "9143956992eeed5c01e2259ce83a7c67144904714f64d851a273310d85465e31",
+      "sha256": "9b35610f1a1a99b097b8ca18d2aadb2758ce0e651ecf1d6506862dba8ee3384c",
       "slide": 5,
       "slideId": "growth-reflect",
       "idea": "Private reflection gives practice personal meaning",
@@ -328,7 +474,7 @@
     },
     {
       "filename": "06-growth-refuge-de-de-iphone-6.9-1320x2868.png",
-      "sha256": "e8e19d04c6f9ce8dfafbb863c21a75df6ae136242d599d4110381de3137964b1",
+      "sha256": "8ae51756fb90946d65beeff2ddea2d7cd8e14b97e7015771d86dfc4b5fe5aa6d",
       "slide": 6,
       "slideId": "growth-refuge",
       "idea": "The mature Garden remembers consistent practice",

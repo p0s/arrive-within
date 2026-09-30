@@ -1,59 +1,59 @@
 {
   "schema_version": 1,
-  "source_revision": "27192a1de32b40c6ee66494a45f81bc28b87e7cbc680f3d11b904f00baa2a810",
+  "source_revision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
   "rights": "First-party Arrive Within rendered app UI; public redistribution is intended under the repository media license after final repository licensing review.",
   "capture_state": "Guarded iOS 26.5 simulator UI from app version 1.0.2 build 19 with deterministic safe synthetic product data; not physical-device, CloudKit, signed-candidate, or App Store evidence.",
   "public_media_source_state": "current-source-renderer-media-generated-review-pending",
-  "public_media_source_revision": "08823839ccb8c331da03d1140d20debb5bbc5c79124120b86ac1a03073b59be8",
+  "public_media_source_revision": "c3f8327851c077074f60c7899cdad57f299c52c58fb496870a522f139489d8f4",
   "public_media_review": "Regenerated from the current renderer with external requests blocked; owner visual review is pending.",
   "public_media_next_action": "Complete owner visual review before any website deployment; regenerate after future renderer changes.",
   "assets": [
     {
       "file": "garden-en-iphone.png",
       "source": "Marketing/AppStoreScreenshots/public/runtime-ui/en-US/iphone-6.9/garden-hero.png",
-      "sha256": "d2cbe68762f9fedc4c3d4a036e82e840a5aab8597709d09fcac437adcd0ce071",
+      "sha256": "89e81594ac895e889622da833814104b35fb7becc5b564755acfd534be4bb8b4",
       "alt": "Arrive Within on iPhone showing a mature living garden and the Meditate action."
     },
     {
       "file": "garden-de-iphone.png",
       "source": "Marketing/AppStoreScreenshots/public/runtime-ui/de-DE/iphone-6.9/garden-hero.png",
-      "sha256": "537510c1bf9cc921ed94467dc99daa04360be85d87930737823eb1d84499b22b",
+      "sha256": "7d22dc6ee720fd52a1f81ab8b95a0b12ed0880587750f17eaf31c0ee8afc7c78",
       "alt": "Arrive Within auf dem iPhone mit einem gewachsenen Garten und der Aktion Meditieren."
     },
     {
       "file": "journey-en-iphone.png",
       "source": "Marketing/AppStoreScreenshots/public/runtime-ui/en-US/iphone-6.9/journey-calendar.png",
-      "sha256": "68390e13f46d0fdd5f1387cead5638ce92a5a5bedaad02e2855e7b0d2cdfc72b",
+      "sha256": "0b506d71d78e993a34b5a1155002f7b66482acc1d3f910a1ceec795b797543bb",
       "alt": "The private Arrive Within practice calendar shows an honest rhythm without streak pressure."
     },
     {
       "file": "journey-de-iphone.png",
       "source": "Marketing/AppStoreScreenshots/public/runtime-ui/de-DE/iphone-6.9/journey-calendar.png",
-      "sha256": "c1831a047929ba5f0928a50690fcaee08008909302fcc6b35216a4fc53b2f537",
+      "sha256": "772265481d882236e7c912d976233073f43b9d1383afcccb3e7a15aa22b76488",
       "alt": "Der private Praxiskalender in Arrive Within zeigt einen ehrlichen Rhythmus ohne Streak-Druck."
     },
     {
       "file": "journal-en-ipad.png",
-      "source": "Marketing/AppStoreScreenshots/public/runtime-ui/en-US/ipad-11/journal.png",
-      "sha256": "0281249e35a8884b54b1dbfa544ebf838081d601d9cb071756ca16fa824f9629",
+      "source": "Marketing/AppStoreScreenshots/public/runtime-ui/en-US/ipad-13/journal.png",
+      "sha256": "68eaeccb747f7cb841887dfc9c2ff2fe2de7328ce323aca2179e0dcc2d4265b6",
       "alt": "The private Arrive Within journal and reflection editor on iPad."
     },
     {
       "file": "journal-de-ipad.png",
-      "source": "Marketing/AppStoreScreenshots/public/runtime-ui/de-DE/ipad-11/journal.png",
-      "sha256": "393262148680a1c3ff7a1d563c4467ec34dc858b6363c4cbc26d705376bb2513",
+      "source": "Marketing/AppStoreScreenshots/public/runtime-ui/de-DE/ipad-13/journal.png",
+      "sha256": "1cd2dca6cc782f6c2ec3f0cffb41a0f6fedb4bbc1f4e41fa487fc1d19b7ecfa3",
       "alt": "Das private Arrive Within Journal mit Reflexionseditor auf dem iPad."
     },
     {
       "file": "garden-en-ipad.png",
-      "source": "Marketing/AppStoreScreenshots/public/runtime-ui/en-US/ipad-11/garden-hero.png",
-      "sha256": "3ae830b3069f6e2df7eb1aee4d20c6b8eb5de4fb7f7e0124784ead0a835ea956",
+      "source": "Marketing/AppStoreScreenshots/public/runtime-ui/en-US/ipad-13/garden-hero.png",
+      "sha256": "8660c6aa7c8aa22e0d6f175b046c9741b65c16fc785444d8b4b8b2c8dadd2c96",
       "alt": "The mature Arrive Within garden in the adaptive iPad layout."
     },
     {
       "file": "garden-de-ipad.png",
-      "source": "Marketing/AppStoreScreenshots/public/runtime-ui/de-DE/ipad-11/garden-hero.png",
-      "sha256": "6df9f357dfa6005705c78b322603a0b877eaa417377352606cb09ba1e2ad1649",
+      "source": "Marketing/AppStoreScreenshots/public/runtime-ui/de-DE/ipad-13/garden-hero.png",
+      "sha256": "231cdc6909076b2c4c27f91f62025b3ba665a569ea2fefb7ab8cedd78351302a",
       "alt": "Der gewachsene Arrive Within Garten im angepassten iPad-Layout."
     },
     {
@@ -76,7 +76,7 @@
     }
   ],
   "public_media_review_state": "pending-owner-visual-review",
-  "capture_source_manifest_sha256": "5dd09760f9d7b2961688e51b20af293b6be402be3780098779a203bafbbd84c4",
+  "capture_source_manifest_sha256": "e4bfc19da7c5ca5c0dd95014ef44184e5aeefffbe0c58f386db9cae6aee19f63",
   "app_store_ui_review_state": "pending-owner-visual-review",
   "app_store_ui_next_action": "Complete owner visual review before App Store Connect upload and website deployment."
 }

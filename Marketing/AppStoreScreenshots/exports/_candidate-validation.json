@@ -2,16 +2,15 @@
   "schemaVersion": 1,
   "status": "candidate-pass-human-review-pending",
   "checks": [
-    "4 exact locale/device sets, 24 numbered opaque RGB PNGs at the frozen iPhone and accepted 11-inch iPad dimensions",
+    "4 exact locale/device sets, 24 numbered opaque RGB PNGs at the frozen iPhone and required 13-inch iPad dimensions",
     "per-image and per-artifact SHA-256 readback",
     "PNG normalization is idempotent",
     "per-set JSON and text validation pass",
     "contact-sheet dimensions and SHA-256 readback",
     "ZIP contents and byte readback",
     "headline and proof bounds are recorded and meet the geometry contract for all 24 candidate images",
-    "Garden-day iPhone and iPad 11 source captures are current, real-clock, opaque RGB captures",
-    "retained iPad 13 source captures are explicitly stale/incomplete and retain their pinned source hashes",
-    "Apple 11-inch accepted screenshots are eligible for 13-inch display scaling when 13-inch screenshots are omitted",
+    "Garden-day iPhone and iPad 13 source captures are current, source-bound fixed-clock, opaque RGB Simulator captures",
+    "The required 13-inch iPad screenshots bind the signed app-source commit, native Simulator build, clock fixture, and exact XCTest results",
     "XCTest runtime warnings are preserved by test identity; Garden-day tests have no warnings",
     "external network request count is zero"
   ],
@@ -28,20 +27,30 @@
         ],
         "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()": [
           "Invalid frame dimension (negative or non-finite)."
-        ],
+        ]
+      }
+    },
+    {
+      "device": "iphone-6.9",
+      "warningsByTest": {
         "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayEnglish()": [],
         "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()": []
       }
     },
     {
-      "device": "ipad-11",
+      "device": "ipad-13",
       "warningsByTest": {
         "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()": [
           "Invalid frame dimension (negative or non-finite)."
         ],
         "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesGerman()": [
           "Invalid frame dimension (negative or non-finite)."
-        ],
+        ]
+      }
+    },
+    {
+      "device": "ipad-13",
+      "warningsByTest": {
         "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayEnglish()": [],
         "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayGerman()": []
       }

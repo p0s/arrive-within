@@ -144,3 +144,4 @@ tmp/
 temp/
 /.asc/
 /.agents/
+.p0s-local/

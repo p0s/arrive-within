@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
   "state": "local-design-candidates-owner-selection-pending",
-  "generated_at": "2026-09-25T12:02:10.636Z",
+  "generated_at": "2026-09-30T07:30:44.282Z",
   "source": {
     "generator": "Marketing/GardenDesignLab/scripts/generate-garden-design-lab.mjs",
     "generator_sha256": "ca7fd95170caa4bf0de9aa966f17f9d45b5f185844ddf97c010275f0f0fe6850",
     "files": [
       {
         "path": "Renderer/src/scene.ts",
-        "sha256": "ba16db1b7f70782f27046e71c8e8b3b6168c5a3acc001b34eb5e23ca8e9a3275"
+        "sha256": "5f377ec702274834eebe234c962914764b589c2bce94492c1786cddfe13b011d"
       },
       {
         "path": "Renderer/src/visual-design.ts",
@@ -72,8 +72,8 @@
         "device": "iphone",
         "preset": "empty",
         "path": "output/verdant-atelier/iphone/empty.png",
-        "sha256": "74c2b0abf5ff56c5800581360c5e89549c30b7214dcebc6cca9fa3204bf10a4d",
-        "bytes": 43699,
+        "sha256": "8a81bbc7b3105023cddd35c738b6c97cfdc6349456971c1556ec5e6b014d0fc6",
+        "bytes": 43617,
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -120,8 +120,8 @@
         "device": "iphone",
         "preset": "first-growth",
         "path": "output/verdant-atelier/iphone/first-growth.png",
-        "sha256": "de079a90023faa1f891f2cede04cdff1571142f5c5c78c4cca3fc32b07d83d83",
-        "bytes": 53389,
+        "sha256": "0816fca085bd19f996d8d8c00294f99a4a7ad23890223d43f1050706cf9b8e21",
+        "bytes": 53491,
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -168,8 +168,8 @@
         "device": "iphone",
         "preset": "milestone-reveal",
         "path": "output/verdant-atelier/iphone/milestone-reveal.png",
-        "sha256": "e919f280393f83e42dcb711ae443766fc3899cd0e415400f971c8e2562381f20",
-        "bytes": 92283,
+        "sha256": "ee9868663ec3ecddf46dcf7ca4ab211e09238214766d918c5c9e32aba20b7589",
+        "bytes": 92487,
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -216,8 +216,8 @@
         "device": "iphone",
         "preset": "micro-growth",
         "path": "output/verdant-atelier/iphone/micro-growth.png",
-        "sha256": "4b0ea2d1e08c7bce0b518c8fa8dc4fdb3e5248b057ac82405d4b080254872d3e",
-        "bytes": 115973,
+        "sha256": "45e54976973ff1d65e4e661b5b81cd5cec4847ee5632bb90aabe2e600255adea",
+        "bytes": 116045,
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -236,11 +236,11 @@
             3.6,
             4.8
           ],
-          "drawCalls": 36,
-          "triangles": 33543,
-          "geometries": 29,
+          "drawCalls": 38,
+          "triangles": 33951,
+          "geometries": 31,
           "textures": 8,
-          "programs": 27,
+          "programs": 28,
           "rebuildCount": 4,
           "context": "available",
           "effectivePixelRatio": 1,
@@ -264,8 +264,8 @@
         "device": "iphone",
         "preset": "mature",
         "path": "output/verdant-atelier/iphone/mature.png",
-        "sha256": "e843e4679d120c8b01900709d0587d77d675cef87d3eb8e3700db958ddc456be",
-        "bytes": 115292,
+        "sha256": "8200a1464b500d180d8ec80a74db5ec66c76722a38a62ee0c8479375cbb4fcde",
+        "bytes": 115197,
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -284,11 +284,11 @@
             3.6,
             4.8
           ],
-          "drawCalls": 36,
-          "triangles": 33543,
-          "geometries": 29,
+          "drawCalls": 38,
+          "triangles": 33951,
+          "geometries": 31,
           "textures": 8,
-          "programs": 27,
+          "programs": 28,
           "rebuildCount": 5,
           "context": "available",
           "effectivePixelRatio": 1,
@@ -312,8 +312,8 @@
         "device": "iphone",
         "preset": "empty",
         "path": "output/paper-sanctuary/iphone/empty.png",
-        "sha256": "b9ac444af41fbc7333942dbbf98fb1355c997759670d4081f82f4dd7582d6ff9",
-        "bytes": 50495,
+        "sha256": "0ace4f3d7928eb8afe79653ccecfea8c6f655249e9e0a3ee781dcf550e7afc73",
+        "bytes": 50509,
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -360,8 +360,8 @@
         "device": "iphone",
         "preset": "first-growth",
         "path": "output/paper-sanctuary/iphone/first-growth.png",
-        "sha256": "d7eaab7c3af5e17b1be982d946bb52f9defbd396c423682716c330617879e5be",
-        "bytes": 62975,
+        "sha256": "e291901eccc4f1e2e500486d8676fdde2c1cbfd08f9f61cc7c2b114372b5eb94",
+        "bytes": 62951,
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -408,8 +408,8 @@
         "device": "iphone",
         "preset": "milestone-reveal",
         "path": "output/paper-sanctuary/iphone/milestone-reveal.png",
-        "sha256": "9d82513dfd76cef261ce21ecda26aeb4a8858e6c2b736f3fa779f215a22cdb14",
-        "bytes": 104464,
+        "sha256": "fe1f1b122814e5f3ab8e5afbeccfde01421e251652a3a55375a171485ecaf282",
+        "bytes": 104435,
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -456,8 +456,8 @@
         "device": "iphone",
         "preset": "micro-growth",
         "path": "output/paper-sanctuary/iphone/micro-growth.png",
-        "sha256": "10a449f1f6cab6ceb65de49f7b3690a9275a937177cfd68878e27703cb486f55",
-        "bytes": 132389,
+        "sha256": "77ebe57f5739ca217b09564cb41ffb55ab026cbcbb4ca30b34888f852acc6d04",
+        "bytes": 132420,
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -476,11 +476,11 @@
             4.2,
             5.5
           ],
-          "drawCalls": 36,
-          "triangles": 41817,
-          "geometries": 28,
+          "drawCalls": 38,
+          "triangles": 42225,
+          "geometries": 30,
           "textures": 8,
-          "programs": 29,
+          "programs": 30,
           "rebuildCount": 4,
           "context": "available",
           "effectivePixelRatio": 1,
@@ -504,8 +504,8 @@
         "device": "iphone",
         "preset": "mature",
         "path": "output/paper-sanctuary/iphone/mature.png",
-        "sha256": "ba44b7eab33135306e29555e2fc7c13164b58994be98f433f3be847d7920ec18",
-        "bytes": 131799,
+        "sha256": "c16c54e0e656b2ba3b605e5693c3b855143ebb04a2fe133b421173d71e43677f",
+        "bytes": 132573,
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -524,11 +524,11 @@
             4.2,
             5.5
           ],
-          "drawCalls": 36,
-          "triangles": 41817,
-          "geometries": 28,
+          "drawCalls": 38,
+          "triangles": 42225,
+          "geometries": 30,
           "textures": 8,
-          "programs": 29,
+          "programs": 30,
           "rebuildCount": 5,
           "context": "available",
           "effectivePixelRatio": 1,
@@ -552,8 +552,8 @@
         "device": "iphone",
         "preset": "empty",
         "path": "output/twilight-refuge/iphone/empty.png",
-        "sha256": "12a90478ee9ef1f506e489c3c4387b7e9e6474a132eea8dcfdb924c2437b1715",
-        "bytes": 42335,
+        "sha256": "184b261337742e2ffe5ea320a72cea8f055baa48e81159394c722bddedc27f2d",
+        "bytes": 42344,
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -600,8 +600,8 @@
         "device": "iphone",
         "preset": "first-growth",
         "path": "output/twilight-refuge/iphone/first-growth.png",
-        "sha256": "a7ed6d47c6a05fc78ed5608f4f290517347c4bb68e3c77eb4e5cc161e39b0cc2",
-        "bytes": 50700,
+        "sha256": "c4ee005d22e1b2c35db2a816f8015ad4b8e6e3bf197b5a6b55068dea65018ce3",
+        "bytes": 50729,
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -648,8 +648,8 @@
         "device": "iphone",
         "preset": "milestone-reveal",
         "path": "output/twilight-refuge/iphone/milestone-reveal.png",
-        "sha256": "e2cdc5d76bfc3ccbfcd6e345cca7540984f709ca0b8c4e0579a365529760de73",
-        "bytes": 86922,
+        "sha256": "1182083c6a7b1f1d26d819600f01cc2adaa4c80a8414e23b49d071dace19b749",
+        "bytes": 86843,
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -696,8 +696,8 @@
         "device": "iphone",
         "preset": "micro-growth",
         "path": "output/twilight-refuge/iphone/micro-growth.png",
-        "sha256": "9df27f01fda3476673129b918de8ecb127b368e732daee9e414ef1be7ed0db95",
-        "bytes": 106190,
+        "sha256": "25a2ce4bfb981f113e3dc4f102c35f3bdd3eed0b228a2c8e36ff471b5a710bd0",
+        "bytes": 106432,
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -716,11 +716,11 @@
             2.8,
             5.2
           ],
-          "drawCalls": 35,
-          "triangles": 10161,
-          "geometries": 28,
+          "drawCalls": 37,
+          "triangles": 10569,
+          "geometries": 30,
           "textures": 7,
-          "programs": 23,
+          "programs": 25,
           "rebuildCount": 4,
           "context": "available",
           "effectivePixelRatio": 1,
@@ -744,8 +744,8 @@
         "device": "iphone",
         "preset": "mature",
         "path": "output/twilight-refuge/iphone/mature.png",
-        "sha256": "d2dd118e63b2f50dd22311b2e2fa98c52809c34839e774dff0b1676a49e03a4e",
-        "bytes": 105752,
+        "sha256": "a5b712bdb61534bdc6cc3575384ef3e99989916181b584de823cc5ed6e74d022",
+        "bytes": 105588,
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -764,11 +764,11 @@
             2.8,
             5.2
           ],
-          "drawCalls": 35,
-          "triangles": 10161,
-          "geometries": 28,
+          "drawCalls": 37,
+          "triangles": 10569,
+          "geometries": 30,
           "textures": 7,
-          "programs": 23,
+          "programs": 25,
           "rebuildCount": 5,
           "context": "available",
           "effectivePixelRatio": 1,
@@ -792,8 +792,8 @@
         "device": "ipad",
         "preset": "empty",
         "path": "output/verdant-atelier/ipad/empty.png",
-        "sha256": "278880dc58b23a70b0e69f6b4aa0ccdfe7077efa51114f55da59cd27d771143e",
-        "bytes": 95183,
+        "sha256": "9b337edd0187fb412501a8dd3765bb23b284dd9b29ad5d0715b8d90b05c81664",
+        "bytes": 95218,
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -840,8 +840,8 @@
         "device": "ipad",
         "preset": "first-growth",
         "path": "output/verdant-atelier/ipad/first-growth.png",
-        "sha256": "311021e1787f473987f9444c2448e88778cc9abbcdfcdf886f2f1b9ddcd71ec2",
-        "bytes": 115389,
+        "sha256": "fed828432cc44122305a0de24ac1508398c056629d819c165e2a9ab9d1be1182",
+        "bytes": 115357,
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -888,8 +888,8 @@
         "device": "ipad",
         "preset": "milestone-reveal",
         "path": "output/verdant-atelier/ipad/milestone-reveal.png",
-        "sha256": "b19f02d67213850424d1c7caaf43490e4496052f39399b832bb0b4e76adc7025",
-        "bytes": 218273,
+        "sha256": "fe2ef1e9d6cbf6e3ea1b710bedfe4375cd8d749364a33d64ed0ac34da4904910",
+        "bytes": 218079,
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -936,8 +936,8 @@
         "device": "ipad",
         "preset": "micro-growth",
         "path": "output/verdant-atelier/ipad/micro-growth.png",
-        "sha256": "68d43e6a655d77f35f00fcfab5a3120bc10836d826186e782eaa0aa9ee0b745e",
-        "bytes": 270791,
+        "sha256": "d7236bbf19bbfaff2001c346bff90b5595c80598ad35746f14714378afde3fee",
+        "bytes": 271333,
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -956,11 +956,11 @@
             3.6,
             4.8
           ],
-          "drawCalls": 38,
-          "triangles": 33975,
-          "geometries": 30,
+          "drawCalls": 40,
+          "triangles": 34383,
+          "geometries": 32,
           "textures": 8,
-          "programs": 28,
+          "programs": 29,
           "rebuildCount": 4,
           "context": "available",
           "effectivePixelRatio": 1,
@@ -984,8 +984,8 @@
         "device": "ipad",
         "preset": "mature",
         "path": "output/verdant-atelier/ipad/mature.png",
-        "sha256": "cff246bd428447d78eba22c67720018a107e517e4d83467c057b10314149e98a",
-        "bytes": 268902,
+        "sha256": "7ca1fe5283103e47bc36f3f502c920c77011d24e5d3a826bd9658f3a1e9987d3",
+        "bytes": 267337,
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -1004,11 +1004,11 @@
             3.6,
             4.8
           ],
-          "drawCalls": 38,
-          "triangles": 33975,
-          "geometries": 30,
+          "drawCalls": 40,
+          "triangles": 34383,
+          "geometries": 32,
           "textures": 8,
-          "programs": 28,
+          "programs": 29,
           "rebuildCount": 5,
           "context": "available",
           "effectivePixelRatio": 1,
@@ -1032,8 +1032,8 @@
         "device": "ipad",
         "preset": "empty",
         "path": "output/paper-sanctuary/ipad/empty.png",
-        "sha256": "d2528ccd434bf780f3d8e7e915e88ee4bbd5024deb8e9937379a39ececab49a7",
-        "bytes": 108529,
+        "sha256": "8ec2ac8db7490705f57b9d9bad8fc83f6e03e59f9a437bd375657cf5fa807519",
+        "bytes": 108723,
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -1080,8 +1080,8 @@
         "device": "ipad",
         "preset": "first-growth",
         "path": "output/paper-sanctuary/ipad/first-growth.png",
-        "sha256": "fce06f255fc2786c050136444ec17fcb481ab50ff7ff66f7780262daade20b2d",
-        "bytes": 134923,
+        "sha256": "955a713846eb1480020cf01c4e79599768fed45931048a88e51ce73ff413b879",
+        "bytes": 134841,
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -1128,8 +1128,8 @@
         "device": "ipad",
         "preset": "milestone-reveal",
         "path": "output/paper-sanctuary/ipad/milestone-reveal.png",
-        "sha256": "87502f455557270db9f2fe3e6d127e0869b2ea9c958a4540511c61f7883fb0d2",
-        "bytes": 249145,
+        "sha256": "c9c49359e92617595fa46456787ad6297e94e43256f88eb30edb172362f6296b",
+        "bytes": 248865,
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -1176,8 +1176,8 @@
         "device": "ipad",
         "preset": "micro-growth",
         "path": "output/paper-sanctuary/ipad/micro-growth.png",
-        "sha256": "aceebdc554ff8f156911d31aef31a239385bf6c548845023f4bda1842302975b",
-        "bytes": 320144,
+        "sha256": "1faa945ccbb71a1e4f2c5293999b3e00595ef8670e2934cfce1ed761ee740362",
+        "bytes": 316575,
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -1196,11 +1196,11 @@
             4.2,
             5.5
           ],
-          "drawCalls": 38,
-          "triangles": 42249,
-          "geometries": 29,
+          "drawCalls": 40,
+          "triangles": 42657,
+          "geometries": 31,
           "textures": 8,
-          "programs": 30,
+          "programs": 31,
           "rebuildCount": 4,
           "context": "available",
           "effectivePixelRatio": 1,
@@ -1224,8 +1224,8 @@
         "device": "ipad",
         "preset": "mature",
         "path": "output/paper-sanctuary/ipad/mature.png",
-        "sha256": "97ba710da333d3ec79e87393f08cbeceb484bd9ebe06489013420f5c3c4277cc",
-        "bytes": 305159,
+        "sha256": "0850d499bf64a46c66fc151ef7f8ad02d227759b31a5ebbb60c7ccfcba3bcd71",
+        "bytes": 305181,
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -1272,8 +1272,8 @@
         "device": "ipad",
         "preset": "empty",
         "path": "output/twilight-refuge/ipad/empty.png",
-        "sha256": "9ae6ab6bdc4a5456f8b66dba93832ca8d45764634ca7ad6798f7c3ea6926eee7",
-        "bytes": 80360,
+        "sha256": "8dc96427f8be7e839724478f84cb93986776567f69a39eddf8b419249bf3bf5c",
+        "bytes": 80387,
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -1320,8 +1320,8 @@
         "device": "ipad",
         "preset": "first-growth",
         "path": "output/twilight-refuge/ipad/first-growth.png",
-        "sha256": "3b68db1329b54a290e736ff4854a51eba3a47656ec2079036dda38b1a18d196b",
-        "bytes": 97674,
+        "sha256": "ff9c6fe31f73d533e277b7d23effa7d4ff3355ae2c62af3aff55b3de407902c0",
+        "bytes": 97668,
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -1368,8 +1368,8 @@
         "device": "ipad",
         "preset": "milestone-reveal",
         "path": "output/twilight-refuge/ipad/milestone-reveal.png",
-        "sha256": "4458d1ebdf80aa7fae5e0f06f098182a2eb5b3e4f2b00644b305c1ff2b78cf4a",
-        "bytes": 190800,
+        "sha256": "b7bda752e047edaed7759043a818e3048429ee8234da7bfae6dce6a0c37f75e4",
+        "bytes": 190839,
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -1416,8 +1416,8 @@
         "device": "ipad",
         "preset": "micro-growth",
         "path": "output/twilight-refuge/ipad/micro-growth.png",
-        "sha256": "f3230885c1cd8f6c0c34c457de0b052c113f204d00ea920f45af8a6fa3efe844",
-        "bytes": 240586,
+        "sha256": "bc5b9be27107e80819cfcffe7d257986390f28c7eb4a38dcb75d22d50cdbc00b",
+        "bytes": 240477,
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -1436,11 +1436,11 @@
             2.8,
             5.2
           ],
-          "drawCalls": 37,
-          "triangles": 10593,
-          "geometries": 29,
+          "drawCalls": 39,
+          "triangles": 11001,
+          "geometries": 31,
           "textures": 7,
-          "programs": 24,
+          "programs": 26,
           "rebuildCount": 4,
           "context": "available",
           "effectivePixelRatio": 1,
@@ -1464,8 +1464,8 @@
         "device": "ipad",
         "preset": "mature",
         "path": "output/twilight-refuge/ipad/mature.png",
-        "sha256": "c76d915607be04ce3612e34f65946063bdd5efa9193488ab7cffd45e4d7e5851",
-        "bytes": 239925,
+        "sha256": "ef27bf57f5d0fa3e8f318dbd204abde46c255e75079057c0c26bd8472ac3460b",
+        "bytes": 240437,
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -1484,11 +1484,11 @@
             2.8,
             5.2
           ],
-          "drawCalls": 37,
-          "triangles": 10593,
-          "geometries": 29,
+          "drawCalls": 39,
+          "triangles": 11001,
+          "geometries": 31,
           "textures": 7,
-          "programs": 24,
+          "programs": 26,
           "rebuildCount": 5,
           "context": "available",
           "effectivePixelRatio": 1,
@@ -3584,8 +3584,8 @@
       {
         "direction": "verdant-atelier",
         "path": "output/verdant-atelier-contact-sheet.jpg",
-        "sha256": "524ce5bf94123b195c78a5b75c27d61b8e4b29a80748409e207dc688c84f7537",
-        "bytes": 159675
+        "sha256": "e3ca025fec0a06e2b6f615f3339fa92de290fc4688b4c5527cabd71cf8ae3572",
+        "bytes": 159558
       },
       {
         "direction": "verdant-atelier",
@@ -3597,8 +3597,8 @@
       {
         "direction": "paper-sanctuary",
         "path": "output/paper-sanctuary-contact-sheet.jpg",
-        "sha256": "644fd9e3c0a2e48102c863856091b2aa33a3a84e3d64e8bfb635ba2a2008f31a",
-        "bytes": 180123
+        "sha256": "320c99bd4eb0c5341c56ebd2ffb092e9b92ebf2416f19f4bfc7a87be31cf165a",
+        "bytes": 180389
       },
       {
         "direction": "paper-sanctuary",
@@ -3610,8 +3610,8 @@
       {
         "direction": "twilight-refuge",
         "path": "output/twilight-refuge-contact-sheet.jpg",
-        "sha256": "30c63a24ef8b45a206c3300a1a1cad482f7feff2bbd9c92f73868a0ca5e40ff9",
-        "bytes": 124895
+        "sha256": "48cf070ee4adb48507a81aae1f318fd3ad70337a93354ed69e4e50aa353f6db7",
+        "bytes": 125180
       },
       {
         "direction": "twilight-refuge",
@@ -3633,8 +3633,8 @@
         ],
         "frame_count": 58,
         "path": "output/verdant-atelier/motion-standard.mp4",
-        "sha256": "b316f453a8273b7948647a01fd49a8db998f52ff0d344308325393e9b4541ed8",
-        "bytes": 140596
+        "sha256": "d7400e23160e7368213044ba10c0ccd557ccea23c3cca23f98e93f22e8a02b9f",
+        "bytes": 141769
       },
       {
         "direction": "verdant-atelier",
@@ -3645,8 +3645,8 @@
         ],
         "frame_count": 26,
         "path": "output/verdant-atelier/motion-reduced.mp4",
-        "sha256": "af47d6583cf8e00ad3b3e26d841c599a1b88d40a4658f1c1de3d87a05f232274",
-        "bytes": 63747
+        "sha256": "977618e7856831fda3b873a5b0301245eba98fc37d8cb111a496a6f634983598",
+        "bytes": 63591
       },
       {
         "direction": "paper-sanctuary",
@@ -3659,8 +3659,8 @@
         ],
         "frame_count": 58,
         "path": "output/paper-sanctuary/motion-standard.mp4",
-        "sha256": "eba3621fda112ffac60cfdcd3847fb277d67defe496785a7a4d915c7ac673477",
-        "bytes": 162919
+        "sha256": "fdd60b4d316154fc2ae58a25035ee90e1ac997103df4d7b3e51f2e87756c82b0",
+        "bytes": 159337
       },
       {
         "direction": "paper-sanctuary",
@@ -3671,8 +3671,8 @@
         ],
         "frame_count": 26,
         "path": "output/paper-sanctuary/motion-reduced.mp4",
-        "sha256": "79354d5cbca0fc20652521b5c7cac88e4b582f9fcd28a6c9118a6da40f99eec5",
-        "bytes": 69413
+        "sha256": "df7827e7defa84be16d75f731a3811609a10866b7be3ec06b23861ff8236489a",
+        "bytes": 69050
       },
       {
         "direction": "twilight-refuge",
@@ -3685,8 +3685,8 @@
         ],
         "frame_count": 58,
         "path": "output/twilight-refuge/motion-standard.mp4",
-        "sha256": "50feb8ccec3b61943112d18e44c057f7fe1469ca16aac3b7ebc6798ac540c828",
-        "bytes": 104665
+        "sha256": "1dae947756ae4dc60ad1df3c061e43dbb19b48e3014b809eb029404a9383e06b",
+        "bytes": 105689
       },
       {
         "direction": "twilight-refuge",
@@ -3697,8 +3697,8 @@
         ],
         "frame_count": 26,
         "path": "output/twilight-refuge/motion-reduced.mp4",
-        "sha256": "08e11967794e4ef5450a72cede999e95ce5acd80451b4a21d54c3d3c3ceb39a5",
-        "bytes": 49899
+        "sha256": "5d4a0a702699fd792cd125652818ef4f7e6344a11da34aa2d0df84d0328277d1",
+        "bytes": 49961
       }
     ]
   },

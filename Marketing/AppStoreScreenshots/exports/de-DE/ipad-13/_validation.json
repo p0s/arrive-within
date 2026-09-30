@@ -15,6 +15,18 @@
       "opaqueRgb": true,
       "errors": [],
       "geometry": {
+        "headlineBounds": {
+          "x": 185.765625,
+          "y": 92.875,
+          "width": 1692.46875,
+          "height": 283.34375
+        },
+        "proofBounds": {
+          "x": 158.921875,
+          "y": 550.390625,
+          "width": 1746.15625,
+          "height": 2308.203125
+        },
         "headlineToProofGap": 174.171875,
         "headlineToProofGapRatio": 0.06328919876453488,
         "proofHeight": 2308.203125,
@@ -33,6 +45,18 @@
       "opaqueRgb": true,
       "errors": [],
       "geometry": {
+        "headlineBounds": {
+          "x": 185.765625,
+          "y": 92.875,
+          "width": 1692.46875,
+          "height": 283.34375
+        },
+        "proofBounds": {
+          "x": 0,
+          "y": 550.390625,
+          "width": 2064,
+          "height": 2100.34375
+        },
         "headlineToProofGap": 174.171875,
         "headlineToProofGapRatio": 0.06328919876453488,
         "proofHeight": 2100.34375,
@@ -51,6 +75,18 @@
       "opaqueRgb": true,
       "errors": [],
       "geometry": {
+        "headlineBounds": {
+          "x": 185.765625,
+          "y": 92.875,
+          "width": 1692.46875,
+          "height": 283.34375
+        },
+        "proofBounds": {
+          "x": 158.921875,
+          "y": 550.390625,
+          "width": 1746.15625,
+          "height": 2308.203125
+        },
         "headlineToProofGap": 174.171875,
         "headlineToProofGapRatio": 0.06328919876453488,
         "proofHeight": 2308.203125,
@@ -69,6 +105,18 @@
       "opaqueRgb": true,
       "errors": [],
       "geometry": {
+        "headlineBounds": {
+          "x": 185.765625,
+          "y": 92.875,
+          "width": 1692.46875,
+          "height": 283.34375
+        },
+        "proofBounds": {
+          "x": 158.921875,
+          "y": 550.390625,
+          "width": 1746.15625,
+          "height": 2308.203125
+        },
         "headlineToProofGap": 174.171875,
         "headlineToProofGapRatio": 0.06328919876453488,
         "proofHeight": 2308.203125,
@@ -87,6 +135,18 @@
       "opaqueRgb": true,
       "errors": [],
       "geometry": {
+        "headlineBounds": {
+          "x": 185.765625,
+          "y": 92.875,
+          "width": 1692.46875,
+          "height": 283.34375
+        },
+        "proofBounds": {
+          "x": 158.921875,
+          "y": 550.390625,
+          "width": 1746.15625,
+          "height": 2308.203125
+        },
         "headlineToProofGap": 174.171875,
         "headlineToProofGapRatio": 0.06328919876453488,
         "proofHeight": 2308.203125,
@@ -105,6 +165,18 @@
       "opaqueRgb": true,
       "errors": [],
       "geometry": {
+        "headlineBounds": {
+          "x": 185.765625,
+          "y": 92.875,
+          "width": 1692.46875,
+          "height": 283.34375
+        },
+        "proofBounds": {
+          "x": 158.921875,
+          "y": 550.390625,
+          "width": 1746.15625,
+          "height": 2308.203125
+        },
         "headlineToProofGap": 174.171875,
         "headlineToProofGapRatio": 0.06328919876453488,
         "proofHeight": 2308.203125,

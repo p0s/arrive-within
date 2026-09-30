@@ -1,6 +1,7 @@
 import { lstat } from "node:fs/promises";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
+import { privateLocalDirectory } from "./public-repository-link-policy.mjs";
 
 function normalized(value) {
   return value.split(path.sep).join("/");
@@ -24,7 +25,7 @@ function forbiddenDefenseInDepth(relative) {
     || segments.some((segment) => new Set([
       ".build", ".codex", ".evidence", ".git", ".next", ".pnpm-store",
       ".swiftpm", ".venv", ".vercel", "__pycache__", "DerivedData",
-      "node_modules", "xcuserdata",
+      "node_modules", "xcuserdata", privateLocalDirectory,
     ]).has(segment));
 }
 
