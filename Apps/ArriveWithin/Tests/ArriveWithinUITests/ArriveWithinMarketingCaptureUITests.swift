@@ -1,3 +1,4 @@
+#if DEBUG
 import Foundation
 import XCTest
 
@@ -33,9 +34,7 @@ final class ArriveWithinMarketingCaptureUITests: XCTestCase {
 
   private func captureGardenDay(locale: String, language: String) throws {
     XCUIDevice.shared.orientation = .portrait
-    assertSingaporeCaptureWindow(isDay: true)
-
-    let app = launchApp(language: language, journeyDay: 30, appearance: "light")
+    let app = launchApp(language: language, journeyDay: 30, appearance: "light", clockFixtureID: "day-v1")
     enterGarden(app)
     XCTAssertTrue(app.webViews["garden.renderer.ready"].waitForExistence(timeout: 12))
     try attach("marketing-\(locale)-garden-day", app: app)
@@ -48,7 +47,6 @@ final class ArriveWithinMarketingCaptureUITests: XCTestCase {
     journalText: String
   ) throws {
     XCUIDevice.shared.orientation = .portrait
-    assertSingaporeCaptureWindow(isDay: false)
     let seedApp = launchApp(language: language, appearance: "dark")
     enterGarden(seedApp)
     XCTAssertTrue(seedApp.webViews["garden.renderer.ready"].waitForExistence(timeout: 12))
@@ -97,23 +95,11 @@ final class ArriveWithinMarketingCaptureUITests: XCTestCase {
     journalApp.terminate()
   }
 
-  private func assertSingaporeCaptureWindow(isDay: Bool) {
-    let timeZone = TimeZone.current
-    XCTAssertEqual(timeZone.identifier, "Asia/Singapore", "Marketing captures must use the real Singapore local clock")
-    var calendar = Calendar(identifier: .gregorian)
-    calendar.timeZone = timeZone
-    let localHour = calendar.component(.hour, from: Date())
-    if isDay {
-      XCTAssertTrue((8..<17).contains(localHour), "Garden-day captures require 08:00–16:59 SGT")
-    } else {
-      XCTAssertTrue(localHour >= 17 || localHour < 5, "Dark Garden captures require 17:00–04:59 SGT")
-    }
-  }
-
   private func launchApp(
     language: String,
     journeyDay: Int? = nil,
     appearance: String,
+    clockFixtureID: String = "dusk-v1",
     extraArguments: [String] = []
   ) -> XCUIApplication {
     let app = XCUIApplication()
@@ -124,6 +110,7 @@ final class ArriveWithinMarketingCaptureUITests: XCTestCase {
       "-ui-test-reduce-motion",
       "-ui-test-disable-autocorrection",
       "-ui-test-capture-provenance",
+      "-ui-test-marketing-clock", clockFixtureID,
       "-ui-test-\(appearance)-appearance",
     ]
     app.launchArguments.append(contentsOf: extraArguments)
@@ -203,14 +190,24 @@ final class ArriveWithinMarketingCaptureUITests: XCTestCase {
     XCTAssertEqual(fields["appearance"], expectedAppearance, "Captured app color scheme must match the selected screenshot state")
     XCTAssertTrue(fields["source_commit"].map { $0.range(of: "^[a-f0-9]{40}$", options: .regularExpression) != nil } ?? false)
     XCTAssertTrue(fields["source_revision"].map { $0.range(of: "^[a-f0-9]{64}$", options: .regularExpression) != nil } ?? false)
-
+    let fixture = try MarketingCaptureClockFixture.load(
+      id: captureID == "garden-day" ? "day-v1" : "dusk-v1",
+      bundle: Bundle(for: Self.self)
+    )
+    XCTAssertEqual(fields["clock_fixture_id"], fixture.id)
+    XCTAssertEqual(fields["clock_epoch"], String(Int64(fixture.epoch)))
+    XCTAssertEqual(fields["timezone"], fixture.timezone)
+    XCTAssertEqual(fields["garden_phase"], fixture.gardenPhase, "The rendered Garden phase must come from the injected native clock")
+    let capturedAt = Date()
+    let timestampFormatter = ISO8601DateFormatter()
+    timestampFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
     let screenshot = XCTAttachment(screenshot: app.screenshot())
     screenshot.name = name
     screenshot.lifetime = .keepAlways
     add(screenshot)
 
     let proof: [String: String] = [
-      "schema": "arrive-within-capture-build-proof/v1",
+      "schema": "arrive-within-capture-build-proof/v2",
       "capture_id": captureID,
       "locale": locale,
       "bundle_id": fields["bundle_id"] ?? "",
@@ -219,6 +216,12 @@ final class ArriveWithinMarketingCaptureUITests: XCTestCase {
       "appearance": fields["appearance"] ?? "",
       "source_commit": fields["source_commit"] ?? "",
       "source_revision": fields["source_revision"] ?? "",
+      "clock_fixture_id": fields["clock_fixture_id"] ?? "",
+      "clock_epoch": fields["clock_epoch"] ?? "",
+      "timezone": fields["timezone"] ?? "",
+      "garden_phase": fields["garden_phase"] ?? "",
+      "captured_at": timestampFormatter.string(from: capturedAt),
+      "system_timezone": TimeZone.current.identifier,
     ]
     let proofData = try JSONSerialization.data(withJSONObject: proof, options: [.sortedKeys])
     let proofAttachment = XCTAttachment(data: proofData, uniformTypeIdentifier: "public.json")
@@ -227,3 +230,4 @@ final class ArriveWithinMarketingCaptureUITests: XCTestCase {
     add(proofAttachment)
   }
 }
+#endif

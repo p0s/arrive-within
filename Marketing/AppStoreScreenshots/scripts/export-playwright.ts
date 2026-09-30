@@ -421,7 +421,6 @@ async function main() {
       resultBundle: currentSet.result_bundle,
       safeSyntheticData: captures.safe_synthetic_data,
       setCompleteness: options.singleSetCandidate ? "single-set-candidate-matrix-incomplete" : "full-locale-device-matrix",
-      gardenDayCaptures: (captures.garden_day_captures ?? []).filter((capture) => capture.device === options.device),
       gardenGrowthSources: {
         back: { captureId: "garden-seed", ...currentSet.captures["garden-seed"] },
         front: { captureId: "garden-day", ...currentSet.captures["garden-day"] },

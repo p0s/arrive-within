@@ -1,6 +1,21 @@
 # Local App Store screenshot matrix
 
-Status: No submission-ready 24-image candidate is ready. The exports on disk were captured for 1.0.2 (19), but their source revision predates the current working tree and they do not meet the active 13-inch physical-capture and build-bound provenance contract. I inspected the current iPhone contact sheet and source capture: slide 2 still shows a light-appearance seed at 16:31 behind the light Garden, so it does not meet the requested dark-seed/light-Garden composition. Fresh phone and 13-inch physical captures are pending. The corrected icon artwork is present in the repository; archive, Home Screen, TestFlight, and storefront icon readback are pending. App Store Connect has not been changed. Exact replacement images require owner visual review before screenshot upload.
+Status: No submission-ready 24-image candidate is ready. The files on disk are historical and do not meet the current source-bound schema 6 contract. Their slide 2 seed is light appearance and does not prove the requested dark-seed/light-Garden composition. Fresh captures from four iPhone/iPad simulator xcresults are pending. Physical hardware, TestFlight, and release checks remain separate evidence. The corrected icon artwork is present; archive, Home Screen, TestFlight, and storefront icon readback are pending. App Store Connect has not been changed. Exact replacement images require owner visual review before screenshot upload.
+
+## Current simulator capture protocol
+
+Fresh marketing capture uses iPhone 17 Pro and iPad Pro 13-inch (M5) simulators on iOS 26.5. Each device has one selected-state/dusk xcresult and one Garden-day/day xcresult; each result contains exactly two passing tests, English and German. The selected-state run captures Garden hero, Garden seed, Journey calendar, Journey milestones, and Journal. The other run captures Garden-day.
+
+The shared app clock fixture is independent of the simulator system clock and needs no real-time day/dusk wait:
+
+| Fixture | UTC instant | Asia/Singapore | Garden phase | Use |
+|---|---|---|---|---|
+| `day-v1` | `2026-08-01T01:41:00Z` | `2026-08-01 09:41` | day | Garden-day |
+| `dusk-v1` | `2026-08-01T09:41:00Z` | `2026-08-01 17:41` | dusk | Every selected-state capture, including Journey and Journal |
+
+The simulator status bar is captured as rendered and receives no override. Source proof binds the shared fixture ID and epoch, Garden timezone/phase, fixture-derived local date/time, actual XCTest capture timestamp, and observed system timezone. The public evidence retains product model/platform/OS, safe bundle names, and hashes while omitting pool identifiers, custom pool device names, and private result paths.
+
+Schema 6 accepts exactly four simulator result bundles for the current signed source revision. It does not accept physical-device screenshots as marketing inputs. Physical hardware and TestFlight tests continue under their separate release contracts.
 
 ## Historical output
 

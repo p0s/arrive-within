@@ -85,6 +85,9 @@ targets:
         SUPPORTS_MACCATALYST: NO
         SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: NO
         SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: NO
+      configs:
+        Release:
+          EXCLUDED_SOURCE_FILE_NAMES: MarketingCaptureClockFixtures.json
     dependencies:
       - target: ArriveWithinLiveActivity
         embed: true
@@ -183,6 +186,8 @@ targets:
       Release: Config/Base.xcconfig
     sources:
       - path: Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinMarketingCaptureUITests.swift
+      - path: Apps/ArriveWithin/Sources/MarketingCaptureClockFixture.swift
+      - path: Apps/ArriveWithin/Resources/MarketingCaptureClockFixtures.json
     settings:
       base:
         PRODUCT_NAME: $(TARGET_NAME)

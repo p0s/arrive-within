@@ -455,6 +455,13 @@ struct AppDependencies {
 
   #if DEBUG
     private static func testClock(arguments: [String]) -> (any SessionClock)? {
+      do {
+        if let fixture = try MarketingCaptureClockFixture.parse(arguments: arguments) {
+          return FixedSessionClock(wallClock: fixture.date)
+        }
+      } catch {
+        preconditionFailure("Invalid simulator marketing clock fixture.")
+      }
       if let flagIndex = arguments.firstIndex(of: "-ui-test-wall-clock-epoch"),
         arguments.indices.contains(flagIndex + 1),
         let epoch = TimeInterval(arguments[flagIndex + 1])

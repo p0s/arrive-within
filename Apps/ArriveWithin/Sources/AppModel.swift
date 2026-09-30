@@ -1808,6 +1808,7 @@ final class AppModel {
 
   private func refreshGarden(profile: LocalProfile, reduceMotion: Bool = false) async throws {
     let currentMoment = dependencies.clock.now().wallClock
+    let presentationTimeZone = gardenPresentationTimeZone
     let events = try await dependencies.eventRepository.allEvents(
       profileGenerationID: profile.profileGenerationID
     )
@@ -1824,12 +1825,12 @@ final class AppModel {
         customization: customization,
         reduceMotion: reduceMotion,
         qualityHint: .balanced,
-        localDayPhase: GardenDayPhase.presentation(at: currentMoment, timeZone: .current)
+        localDayPhase: GardenDayPhase.presentation(at: currentMoment, timeZone: presentationTimeZone)
       )
     )
     let currentDay = try? PracticeDayKey.containing(
       currentMoment,
-      timeZone: .current
+      timeZone: presentationTimeZone
     )
     journeyProjection = JourneyReducer.reduce(
       events: events,
@@ -1837,6 +1838,30 @@ final class AppModel {
       currentPracticeDay: currentDay
     )
   }
+
+  private var gardenPresentationTimeZone: TimeZone {
+    #if DEBUG
+      if let fixture = try? MarketingCaptureClockFixture.parse(arguments: ProcessInfo.processInfo.arguments) {
+        return fixture.timeZone
+      }
+    #endif
+    return .current
+  }
+
+  #if DEBUG
+    var simulatorMarketingClockProvenance: [String] {
+      guard let fixture = try? MarketingCaptureClockFixture.parse(arguments: ProcessInfo.processInfo.arguments) else {
+        return []
+      }
+      let instant = dependencies.clock.now().wallClock
+      return [
+        "clock_fixture_id=\(fixture.id)",
+        "clock_epoch=\(Int64(instant.timeIntervalSince1970))",
+        "timezone=\(gardenPresentationTimeZone.identifier)",
+        "garden_phase=\(gardenState?.localDayPhase?.rawValue ?? "unavailable")",
+      ]
+    }
+  #endif
 
   @discardableResult
   private func refreshJournal(profile: LocalProfile) async throws -> Bool {

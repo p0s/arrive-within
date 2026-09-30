@@ -12,7 +12,6 @@ export type GardenPhase = "dawn" | "day" | "dusk" | "night";
 export type CaptureAppearance = "dark" | "light";
 
 export type SimulatorProvenance = {
-  device_name: string;
   model_name: string;
   os_version: string;
   platform: string;
@@ -99,10 +98,14 @@ export type SimulatorCaptureSourceEvidence = {
   source_manifest_sha256: string;
   result_bundle: { role: CaptureRole; name: string; xcresult_tree_sha256: string };
   test_identifier: string;
-  capture_local_date: string;
-  visible_status_time: string;
+  clock_fixture_id: "day-v1" | "dusk-v1";
+  clock_epoch: string;
+  garden_local_date: string;
+  garden_local_time: string;
   timezone: "Asia/Singapore";
   garden_phase: GardenPhase;
+  captured_at: string;
+  system_timezone: string;
   appearance: CaptureAppearance;
 };
 
@@ -155,29 +158,6 @@ export type CaptureSet = {
   superseded_captures?: Record<string, CaptureRecord>;
 };
 
-export type GardenDayCapture = {
-  device: CurrentDeviceId;
-  source_revision: string;
-  source_manifest_path: string;
-  source_manifest_sha256: string;
-  result_bundle: {
-    name: string;
-    xcresult_tree_sha256: string;
-    passed_tests: number;
-    failed_tests: number;
-    skipped_tests: number;
-    runtime_warnings_by_test?: Record<string, string[]>;
-    simulator?: SimulatorProvenance;
-  };
-  test_identifiers: Record<LocaleId, string>;
-  clock_mode: "unmodified-simulator-system-clock";
-  capture_local_date: string;
-  capture_local_times: Record<LocaleId, string>;
-  visible_status_times: Record<LocaleId, string>;
-  timezone: string;
-  phase: "day";
-};
-
 export type CaptureResultBundle = {
   device: DeviceId;
   capture_role?: CaptureRole;
@@ -193,6 +173,10 @@ export type CaptureResultBundle = {
   test_identifiers?: string[];
   runtime_warnings_by_test?: Record<string, string[]>;
   simulator?: SimulatorProvenance;
+  clock_fixture_id?: "day-v1" | "dusk-v1";
+  clock_epoch?: string;
+  timezone?: "Asia/Singapore";
+  garden_phase?: GardenPhase;
 };
 
 export type PhysicalCaptureEvidenceManifest = {
@@ -260,7 +244,6 @@ export type SourceCaptures = {
     notes: string;
   };
   post_capture_change?: import("./capture-drift-policy").AnyCaptureDriftAttestation;
-  garden_day_captures?: GardenDayCapture[];
   result_bundles: CaptureResultBundle[];
   physical_capture_evidence_manifest?: { path: string; sha256: string };
   superseded_result_bundles?: CaptureResultBundle[];

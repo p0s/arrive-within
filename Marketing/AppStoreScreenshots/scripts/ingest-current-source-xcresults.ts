@@ -22,8 +22,7 @@ import {
   type CaptureResultBundle,
   type CaptureRole,
   type CaptureSet,
-  type CurrentDeviceId,
-  type GardenDayCapture,
+  type DeviceId,
   type LocaleId,
   type SimulatorProvenance,
   type SourceCaptures,
@@ -35,15 +34,18 @@ import {
   matchesCaptureProofAttachmentName,
   makeCaptureSourceEvidence,
   parseCaptureBuildProof,
-  parseCaptureEvidenceInput,
   type CaptureEvidenceExpectation,
-  type CaptureEvidenceInput,
   type CaptureBuildProof,
   type CaptureId,
 } from "./capture-evidence";
 import { validateOpaqueRgbPng } from "./image-validation";
 import { computeCaptureSourceManifest } from "./source-provenance";
-import { CAPTURE_STATUS_BAR_PROFILE } from "./physical-capture-provenance";
+import { APPROVED_SIMULATOR_RESULTS_ROOT, assertTrustedSimulatorResultsRoot } from "./simulator-result-paths";
+import {
+  expectedClockFixtureID,
+  MARKETING_STATUS_BAR_DECLARATION,
+  marketingClockFixture,
+} from "./marketing-clock-fixtures";
 
 const PROJECT_ROOT = path.resolve(ROOT, "../..");
 const SOURCE_MANIFEST_PATH = "capture-source-manifest-v1.0.2-build-19.json";
@@ -56,11 +58,9 @@ const DAY_TESTS: Record<LocaleId, string> = {
   "de-DE": expectedCaptureTestIdentifier("de-DE", "garden-day"),
 };
 const SELECTED_IDS = SELECTED_CAPTURE_IDS.filter((id): id is Exclude<CaptureId, "garden-day"> => id !== "garden-day");
-const PHONE = "iphone-6.9" as const;
-const PHONE_MODEL_HINT = "iPhone 17 Pro";
 const LOCALES: LocaleId[] = ["en-US", "de-DE"];
 
-type BundleInput = { selected: string; "garden-day": string };
+type BundleInput = Record<DeviceId, Record<CaptureRole, string>>;
 type Attachment = {
   deviceName: string;
   exportedFileName: string;
@@ -81,7 +81,8 @@ type TestResults = {
 };
 type TestCaseEvidence = { result: string; runtimeWarnings: string[] };
 type CaptureBundleResult = {
-  device: CurrentDeviceId;
+  device: DeviceId;
+  rawDeviceName: string;
   role: CaptureRole;
   result: string;
   name: string;
@@ -90,13 +91,16 @@ type CaptureBundleResult = {
   runtimeWarningsByTest: Record<string, string[]>;
   testIdentifiers: string[];
   simulator: SimulatorProvenance;
+  clockFixtureID: "day-v1" | "dusk-v1";
+  clockEpoch: string;
+  timezone: "Asia/Singapore";
+  gardenPhase: "day" | "dusk";
   groups: AttachmentGroup[];
   captureProofs: Record<string, { proof: CaptureBuildProof; sha256: string }>;
 };
 type DeviceResult = {
   resultBundles: CaptureResultBundle[];
   sets: CaptureSet[];
-  dayCapture: GardenDayCapture;
 };
 
 function sha256(data: Buffer | string): string {
@@ -111,19 +115,15 @@ function arg(flag: string): string {
 
 function parseInputs(): BundleInput {
   return {
-    selected: arg("--iphone-selected-result"),
-    "garden-day": arg("--iphone-day-result"),
+    "iphone-6.9": {
+      selected: arg("--iphone-selected-result"),
+      "garden-day": arg("--iphone-day-result"),
+    },
+    "ipad-13": {
+      selected: arg("--ipad13-selected-result"),
+      "garden-day": arg("--ipad13-day-result"),
+    },
   };
-}
-
-async function loadEvidenceInput(
-  filename: string,
-  currentSource: { source_revision: string; source_manifest_path: string; source_manifest_sha256: string },
-): Promise<CaptureEvidenceInput> {
-  const absolute = path.resolve(PROJECT_ROOT, filename);
-  const stat = await lstat(absolute);
-  if (!stat.isFile() || stat.isSymbolicLink()) throw new Error("capture evidence JSON must be a regular local file");
-  return parseCaptureEvidenceInput(JSON.parse(await readFile(absolute, "utf8")) as unknown, currentSource);
 }
 
 function requireSignedCaptureSource(manifestPaths: string[]): string {
@@ -143,10 +143,15 @@ function requireSignedCaptureSource(manifestPaths: string[]): string {
 }
 
 async function assertPoolResult(input: string): Promise<string> {
-  const configuredRoot = process.env.ARRIVE_WITHIN_SIMULATOR_RESULTS_ROOT;
-  if (!configuredRoot) throw new Error("set ARRIVE_WITHIN_SIMULATOR_RESULTS_ROOT to the local simulator-pool result directory");
-  const absolute = path.resolve(PROJECT_ROOT, input);
+  const configuredRoot = process.env.ARRIVE_WITHIN_SIMULATOR_RESULTS_ROOT ?? APPROVED_SIMULATOR_RESULTS_ROOT;
+  const trustedRoot = await realpath(APPROVED_SIMULATOR_RESULTS_ROOT);
   const root = await realpath(configuredRoot);
+  assertTrustedSimulatorResultsRoot(root, trustedRoot);
+  const rootStat = await lstat(trustedRoot);
+  if (!rootStat.isDirectory() || rootStat.isSymbolicLink()) throw new Error("simulator-pool result root is not a regular directory");
+  const absolute = path.resolve(PROJECT_ROOT, input);
+  const inputStat = await lstat(absolute);
+  if (!inputStat.isDirectory() || inputStat.isSymbolicLink()) throw new Error(`xcresult is not a regular directory: ${input}`);
   const result = await realpath(absolute);
   if (!result.startsWith(`${root}${path.sep}`) || !result.endsWith(".xcresult")) {
     throw new Error(`xcresult must be under the approved simulator-pool results root: ${input}`);
@@ -204,7 +209,7 @@ async function exportAttachments(result: string): Promise<{ root: string; groups
 
 async function readBundle(
   input: string,
-  device: CurrentDeviceId,
+  device: DeviceId,
   role: CaptureRole,
   currentSource: { source_commit: string; source_revision: string },
 ): Promise<CaptureBundleResult> {
@@ -214,8 +219,9 @@ async function readBundle(
   ], { encoding: "utf8", maxBuffer: 16 * 1024 * 1024 })) as TestResults;
   if (testResults.devices.length !== 1) throw new Error(`${device}/${role}: expected exactly one simulator destination`);
   const simulator = testResults.devices[0];
+  const expectedModel = device === "iphone-6.9" ? "iPhone 17 Pro" : "iPad Pro 13-inch (M5)";
   if (
-    !simulator.modelName.includes(PHONE_MODEL_HINT)
+    simulator.modelName !== expectedModel
     || simulator.platform !== "iOS Simulator"
     || simulator.osVersion !== "26.5"
     || !/^[A-F0-9-]{36}$/.test(simulator.deviceId)
@@ -287,21 +293,26 @@ async function readBundle(
         captureProofs[`${locale}/${captureID}`] = { proof, sha256: sha256(proofBytes) };
       }
     }
+    const fixture = marketingClockFixture(expectedClockFixtureID(role));
     return {
       device,
+      rawDeviceName: simulator.deviceName,
       role,
       result,
-      name: path.basename(result),
+      name: `${device}-${role}-${treeSha256.slice(0, 16)}.xcresult`,
       treeSha256,
       passedTests: testCases.size,
       runtimeWarningsByTest: Object.fromEntries([...testCases.entries()].map(([identifier, evidence]) => [identifier, evidence.runtimeWarnings])),
       testIdentifiers: [...testCases.keys()].sort(),
       simulator: {
-        device_name: simulator.deviceName,
         model_name: simulator.modelName,
         os_version: simulator.osVersion,
         platform: simulator.platform,
       },
+      clockFixtureID: fixture.id,
+      clockEpoch: String(fixture.epoch),
+      timezone: fixture.timezone,
+      gardenPhase: fixture.garden_phase,
       groups: exported.groups,
       captureProofs,
     };
@@ -329,6 +340,10 @@ function resultBundleRecord(
     test_identifiers: bundle.testIdentifiers,
     runtime_warnings_by_test: bundle.runtimeWarningsByTest,
     simulator: bundle.simulator,
+    clock_fixture_id: bundle.clockFixtureID,
+    clock_epoch: bundle.clockEpoch,
+    timezone: bundle.timezone,
+    garden_phase: bundle.gardenPhase,
   };
 }
 
@@ -340,7 +355,6 @@ async function copyCapture(
   set: CaptureSet,
   bundle: CaptureBundleResult,
   source: { source_commit: string; source_revision: string; source_manifest_path: string; source_manifest_sha256: string },
-  time: CaptureEvidenceInput["captures"]["iphone-6.9"][LocaleId][CaptureId],
 ): Promise<void> {
   const prefix = `marketing-${locale}-${id}_0_`;
   const matches = group.attachments.filter((attachment) =>
@@ -349,8 +363,8 @@ async function copyCapture(
   );
   if (matches.length !== 1) throw new Error(`${set.device}/${locale}/${id}: expected one exact screenshot attachment`);
   const attachment = matches[0];
-  if (attachment.isAssociatedWithFailure || attachment.deviceName !== bundle.simulator.device_name) {
-    throw new Error(`${set.device}/${locale}/${id}: attachment device or failure provenance is invalid (${attachment.deviceName})`);
+  if (attachment.isAssociatedWithFailure || attachment.deviceName !== bundle.rawDeviceName) {
+    throw new Error(`${set.device}/${locale}/${id}: attachment device or failure provenance is invalid`);
   }
   const candidate = path.resolve(exportedRoot, attachment.exportedFileName);
   if (!candidate.startsWith(`${path.resolve(exportedRoot)}${path.sep}`)) throw new Error("attachment path escapes the export root");
@@ -377,11 +391,10 @@ async function copyCapture(
   await mkdir(path.dirname(destination), { recursive: true });
   await copyFile(capturePath, destination);
   const bytes = await readFile(destination);
-  const role = id === "garden-day" ? "garden-day" : "selected";
   const buildProof = bundle.captureProofs[`${locale}/${id}`];
   if (!buildProof) throw new Error(`${set.device}/${locale}/${id}: source-proof attachment is missing`);
   const evidenceExpectation: CaptureEvidenceExpectation = {
-    device: set.device as CurrentDeviceId,
+    device: set.device as DeviceId,
     locale,
     capture_id: id,
     source_commit: source.source_commit,
@@ -389,9 +402,9 @@ async function copyCapture(
     source_revision: source.source_revision,
     source_manifest_path: source.source_manifest_path,
     source_manifest_sha256: source.source_manifest_sha256,
-    result_bundle: { role, name: bundle.name, xcresult_tree_sha256: bundle.treeSha256 },
+    result_bundle: { role: bundle.role, name: bundle.name, xcresult_tree_sha256: bundle.treeSha256 },
   };
-  const sourceEvidence = makeCaptureSourceEvidence(evidenceExpectation, time);
+  const sourceEvidence = makeCaptureSourceEvidence(evidenceExpectation, buildProof.proof);
   set.captures[id] = {
     path: relativePath,
     sha256: sha256(bytes),
@@ -402,12 +415,11 @@ async function copyCapture(
 
 async function ingestDevice(
   inputs: BundleInput,
-  device: "iphone-6.9",
-  evidenceInput: CaptureEvidenceInput,
+  device: DeviceId,
   currentSource: { source_commit: string; source_revision: string; source_manifest_path: string; source_manifest_sha256: string },
 ): Promise<DeviceResult> {
-  const selected = await readBundle(inputs.selected, device, "selected", currentSource);
-  const gardenDay = await readBundle(inputs["garden-day"], device, "garden-day", currentSource);
+  const selected = await readBundle(inputs[device].selected, device, "selected", currentSource);
+  const gardenDay = await readBundle(inputs[device]["garden-day"], device, "garden-day", currentSource);
   if (selected.name === gardenDay.name || selected.treeSha256 === gardenDay.treeSha256) {
     throw new Error(`${device}: selected and Garden-day evidence must be separate exact result bundles`);
   }
@@ -458,7 +470,6 @@ async function ingestDevice(
           set,
           selected,
           currentSource,
-          evidenceInput.captures[device][locale][id],
         );
       }
       await copyCapture(
@@ -469,48 +480,12 @@ async function ingestDevice(
         set,
         gardenDay,
         currentSource,
-        evidenceInput.captures[device][locale]["garden-day"],
       );
       sets.push(set);
     }
-
-    const englishDayTime = evidenceInput.captures[device]["en-US"]["garden-day"];
-    const germanDayTime = evidenceInput.captures[device]["de-DE"]["garden-day"];
-    if (englishDayTime.capture_local_date !== germanDayTime.capture_local_date) {
-      throw new Error(`${device}: English and German Garden-day captures must share one local capture date`);
-    }
-    const dayCapture: GardenDayCapture = {
-      device,
-      source_revision: currentSource.source_revision,
-      source_manifest_path: currentSource.source_manifest_path,
-      source_manifest_sha256: currentSource.source_manifest_sha256,
-      result_bundle: {
-        name: gardenDay.name,
-        xcresult_tree_sha256: gardenDay.treeSha256,
-        passed_tests: gardenDay.passedTests,
-        failed_tests: 0,
-        skipped_tests: 0,
-        runtime_warnings_by_test: gardenDay.runtimeWarningsByTest,
-        simulator: gardenDay.simulator,
-      },
-      test_identifiers: { ...DAY_TESTS },
-      clock_mode: "unmodified-simulator-system-clock",
-      capture_local_date: englishDayTime.capture_local_date,
-      capture_local_times: {
-        "en-US": englishDayTime.visible_status_time,
-        "de-DE": germanDayTime.visible_status_time,
-      },
-      visible_status_times: {
-        "en-US": englishDayTime.visible_status_time,
-        "de-DE": germanDayTime.visible_status_time,
-      },
-      timezone: "Asia/Singapore",
-      phase: "day",
-    };
     return {
       resultBundles: [resultBundleRecord(selected, currentSource), resultBundleRecord(gardenDay, currentSource)],
       sets,
-      dayCapture,
     };
   } finally {
     await rm(selectedExport.root, { recursive: true });
@@ -520,21 +495,6 @@ async function ingestDevice(
 
 async function main(): Promise<void> {
   const inputs = parseInputs();
-  const evidenceInputPath = arg("--capture-evidence-json");
-  const existingCapturesPath = path.join(ROOT, "source-captures.json");
-  const existingStat = await lstat(existingCapturesPath);
-  if (!existingStat.isFile() || existingStat.isSymbolicLink()) throw new Error("source-captures.json must be a regular file");
-  const existing = JSON.parse(await readFile(existingCapturesPath, "utf8")) as SourceCaptures;
-  if (![3, 4].includes(existing.schema_version) || !Array.isArray(existing.sets)) {
-    throw new Error("phone capture ingestion requires schema 3 or transitional schema 4 source-captures.json");
-  }
-  const priorIPadSets = existing.sets.filter((set) => set.device === "ipad-13");
-  if (
-    priorIPadSets.length !== 2
-    || JSON.stringify(priorIPadSets.map((set) => set.locale).sort()) !== JSON.stringify([...LOCALES].sort())
-    || priorIPadSets.some((set) => set.capture_source.state !== "stale-incomplete")
-  ) throw new Error("phone-only ingestion requires exactly two explicitly stale 13-inch iPad placeholders");
-
   const currentManifest = await computeCaptureSourceManifest();
   const sourceCommit = requireSignedCaptureSource(currentManifest.files.map((record) => record.path));
   const currentSource = {
@@ -543,49 +503,33 @@ async function main(): Promise<void> {
     source_manifest_path: SOURCE_MANIFEST_PATH,
     source_manifest_sha256: sha256(Buffer.from(`${JSON.stringify(currentManifest, null, 2)}\n`)),
   };
-  const evidenceInput = await loadEvidenceInput(evidenceInputPath, currentSource);
-
-  const phone = await ingestDevice(inputs, PHONE, evidenceInput, currentSource);
+  const phone = await ingestDevice(inputs, "iphone-6.9", currentSource);
+  const ipad = await ingestDevice(inputs, "ipad-13", currentSource);
   const finalManifest = await computeCaptureSourceManifest();
   if (JSON.stringify(finalManifest) !== JSON.stringify(currentManifest)) {
-    throw new Error("App source changed during split-bundle ingestion; refusing to bind captures across revisions");
+    throw new Error("App source changed during four-bundle ingestion; refusing to bind captures across revisions");
   }
   const currentManifestBytes = Buffer.from(`${JSON.stringify(currentManifest, null, 2)}\n`);
-
-  for (const device of phone.sets) {
-    device.captures = Object.fromEntries([...SELECTED_CAPTURE_IDS].map((id) => [id, device.captures[id]]));
-  }
-  const priorBundles = ((existing.result_bundles ?? []) as unknown as Array<Record<string, unknown>>)
-    .filter((bundle) => bundle.device === "iphone-6.9" || bundle.device === "ipad-13") as unknown as CaptureResultBundle[];
-  const supersededBundles = new Map<string, CaptureResultBundle>();
-  for (const bundle of [...(existing.superseded_result_bundles ?? []), ...priorBundles]) {
-    supersededBundles.set(`${bundle.device}\0${bundle.name}\0${bundle.xcresult_tree_sha256}`, bundle);
-  }
   const updated: SourceCaptures = {
-    ...existing,
-    schema_version: 4,
+    schema_version: 6,
     state: "candidate-ready",
-    capture_method: "Guarded XCUITest selected-state and real-clock Garden-day runs on the configured iPhone simulator; the 13-inch iPad placeholders remain explicitly stale until separate signed physical-device fixtures pass.",
-    capture_test: "ArriveWithinMarketingCaptureUITests: English/German selected-state captures at dusk/night and English/German Garden-day captures at 08:00–16:59 SGT in distinct iPhone result bundles; iPad evidence is ingested separately from guarded physical-fixture runs.",
-    status_bar_profile: CAPTURE_STATUS_BAR_PROFILE,
+    capture_method: "Four guarded XCUITest simulator result bundles for iPhone 17 Pro and iPad Pro 13-inch (M5), with source-bound day/dusk app-clock fixtures; simulator system status is captured as rendered.",
+    capture_test: "ArriveWithinMarketingCaptureUITests: each selected/dusk and Garden-day/day bundle contains exactly the English and German test; every original screenshot is paired with source/build/clock proof from that same xcresult.",
+    status_bar_profile: MARKETING_STATUS_BAR_DECLARATION,
     source_commit: sourceCommit,
     source_revision: currentManifest.source_revision,
     source_revision_kind: "sha256-capture-source-manifest",
     source_manifest_path: SOURCE_MANIFEST_PATH,
     source_manifest_sha256: currentSource.source_manifest_sha256,
-    result_bundles: phone.resultBundles,
-    superseded_result_bundles: [...supersededBundles.values()],
+    result_bundles: [...phone.resultBundles, ...ipad.resultBundles],
     safe_synthetic_data: true,
-    garden_day_captures: [phone.dayCapture],
-    sets: [...phone.sets, ...priorIPadSets],
-    human_visual_review: undefined,
-    post_capture_change: undefined,
+    sets: [...phone.sets, ...ipad.sets],
   };
 
   await writeFile(path.join(ROOT, SOURCE_MANIFEST_PATH), currentManifestBytes);
   await writeFile(path.join(ROOT, "source-captures.json"), `${JSON.stringify(updated, null, 2)}\n`);
   process.stdout.write(
-    `Ingested current iPhone selected/day bundles with signed-build proofs; 13-inch iPad placeholders remain explicitly stale pending physical iPad fixtures at revision ${currentManifest.source_revision}.\n`,
+    `Ingested four current simulator bundles for iPhone and 13-inch iPad, bound to signed source and day/dusk fixtures at ${currentManifest.source_revision}.\n`,
   );
 }
 

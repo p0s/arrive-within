@@ -89,6 +89,7 @@ print "== App Store screenshot source and output matrix =="
   node --import tsx scripts/validate-narrative-alternatives.ts
   node --import tsx scripts/test-capture-drift-policy.ts
   node --import tsx scripts/test-capture-evidence.ts
+  node --import tsx scripts/test-simulator-capture-contract.ts
   node --import tsx scripts/test-capture-set-provenance.ts
   node --import tsx scripts/test-capture-source-commit.ts
   node --import tsx scripts/test-capture-source-inputs.ts

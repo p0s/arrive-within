@@ -30,14 +30,15 @@ struct ProductShell: View {
           "marketing_version=\(info["CFBundleShortVersionString"] as? String ?? "")",
           "build_number=\(info["CFBundleVersion"] as? String ?? "")",
           "appearance=\(colorScheme == .dark ? "dark" : "light")",
-        ].joined(separator: ";")
-        Text(label)
+        ] + model.simulatorMarketingClockProvenance
+        let provenanceLabel = label.joined(separator: ";")
+        Text(provenanceLabel)
           .font(.system(size: 1))
           .foregroundStyle(.clear)
           .frame(width: 1, height: 1)
           .accessibilityElement()
           .accessibilityIdentifier("marketing.capture.provenance")
-          .accessibilityLabel(label)
+          .accessibilityLabel(provenanceLabel)
       }
     #endif
   }

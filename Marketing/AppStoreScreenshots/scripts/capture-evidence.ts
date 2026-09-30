@@ -5,6 +5,10 @@ import type {
   GardenPhase,
   LocaleId,
 } from "./contracts";
+import {
+  expectedClockFixtureIDForCapture,
+  marketingClockFixture,
+} from "./marketing-clock-fixtures";
 
 export const CAPTURE_IDS = [
   "garden-hero",
@@ -16,20 +20,6 @@ export const CAPTURE_IDS = [
 ] as const;
 
 export type CaptureId = typeof CAPTURE_IDS[number];
-export type CaptureTimeInput = {
-  capture_local_date: string;
-  visible_status_time: string;
-  timezone: "Asia/Singapore";
-};
-
-export type CaptureEvidenceInput = {
-  source_bindings: Record<"iphone-6.9", Record<CaptureRole, {
-    source_revision: string;
-    source_manifest_path: string;
-    source_manifest_sha256: string;
-  }>>;
-  captures: Record<"iphone-6.9", Record<LocaleId, Record<CaptureId, CaptureTimeInput>>>;
-};
 
 export type CaptureSourceEvidence = {
   device: CurrentDeviceId;
@@ -40,10 +30,14 @@ export type CaptureSourceEvidence = {
   source_manifest_sha256: string;
   result_bundle: { role: CaptureRole; name: string; xcresult_tree_sha256: string };
   test_identifier: string;
-  capture_local_date: string;
-  visible_status_time: string;
+  clock_fixture_id: "day-v1" | "dusk-v1";
+  clock_epoch: string;
+  garden_local_date: string;
+  garden_local_time: string;
   timezone: "Asia/Singapore";
   garden_phase: GardenPhase;
+  captured_at: string;
+  system_timezone: string;
   appearance: CaptureAppearance;
 };
 
@@ -60,7 +54,7 @@ export type CaptureEvidenceExpectation = {
 };
 
 export type CaptureBuildProof = {
-  schema: "arrive-within-capture-build-proof/v1";
+  schema: "arrive-within-capture-build-proof/v2";
   capture_id: CaptureId;
   locale: LocaleId;
   bundle_id: "com.philipps.arrivewithin.ios";
@@ -69,11 +63,16 @@ export type CaptureBuildProof = {
   appearance: CaptureAppearance;
   source_commit: string;
   source_revision: string;
+  clock_fixture_id: "day-v1" | "dusk-v1";
+  clock_epoch: string;
+  timezone: "Asia/Singapore";
+  garden_phase: "day" | "dusk";
+  captured_at: string;
+  system_timezone: string;
 };
 
-const DEVICES = ["iphone-6.9"] as const;
 const LOCALES: LocaleId[] = ["en-US", "de-DE"];
-const ROLES: CaptureRole[] = ["selected", "garden-day"];
+const DEVICES: CurrentDeviceId[] = ["iphone-6.9", "ipad-13"];
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -93,13 +92,27 @@ function sha256(value: unknown, context: string): asserts value is string {
   }
 }
 
-function validDate(value: unknown, context: string): asserts value is string {
-  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-    throw new Error(`${context}: expected local date YYYY-MM-DD`);
+function assertCapturedAt(value: unknown, context: string): asserts value is string {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?Z$/.test(value)) {
+    throw new Error(`${context}: captured_at must be an ISO-8601 UTC instant`);
   }
-  const [year, month, day] = value.split("-").map(Number);
-  const date = new Date(Date.UTC(year, month - 1, day));
-  if (date.toISOString().slice(0, 10) !== value) throw new Error(`${context}: invalid local date`);
+  const instant = new Date(value);
+  if (!Number.isFinite(instant.getTime())) throw new Error(`${context}: captured_at is invalid`);
+  const seconds = value.replace(/\.\d+Z$/, "Z");
+  if (new Date(seconds).toISOString().slice(0, 19) !== seconds.slice(0, 19)) {
+    throw new Error(`${context}: captured_at has an invalid calendar date or time`);
+  }
+}
+
+function assertIanaTimezone(value: unknown, context: string): asserts value is string {
+  if (typeof value !== "string" || value.length < 1 || value.length > 128) {
+    throw new Error(`${context}: system_timezone is missing or invalid`);
+  }
+  try {
+    new Intl.DateTimeFormat("en", { timeZone: value }).format(new Date(0));
+  } catch {
+    throw new Error(`${context}: system_timezone is not a valid IANA timezone`);
+  }
 }
 
 export function parseCaptureBuildProof(
@@ -108,18 +121,25 @@ export function parseCaptureBuildProof(
 ): CaptureBuildProof {
   if (!isRecord(value)) throw new Error("capture build proof must be a JSON object");
   exactKeys(value, [
-    "schema", "capture_id", "locale", "bundle_id", "marketing_version", "build_number", "appearance", "source_commit", "source_revision",
+    "schema", "capture_id", "locale", "bundle_id", "marketing_version", "build_number", "appearance",
+    "source_commit", "source_revision", "clock_fixture_id", "clock_epoch", "timezone", "garden_phase", "captured_at", "system_timezone",
   ], "capture build proof");
+  const fixture = marketingClockFixture(value.clock_fixture_id);
+  assertCapturedAt(value.captured_at, "capture build proof");
+  assertIanaTimezone(value.system_timezone, "capture build proof");
   if (
-    value.schema !== "arrive-within-capture-build-proof/v1" ||
+    value.schema !== "arrive-within-capture-build-proof/v2" ||
     value.capture_id !== expected.capture_id || value.locale !== expected.locale ||
     value.bundle_id !== "com.philipps.arrivewithin.ios" ||
     value.marketing_version !== "1.0.2" || value.build_number !== "19" ||
     value.appearance !== expectedCaptureAppearance(expected.capture_id) ||
     value.source_commit !== expected.source_commit || value.source_revision !== expected.source_revision ||
     typeof value.source_commit !== "string" || !/^[a-f0-9]{40}$/.test(value.source_commit) ||
-    typeof value.source_revision !== "string" || !/^[a-f0-9]{64}$/.test(value.source_revision)
-  ) throw new Error("capture build proof does not match the current signed build and source");
+    typeof value.source_revision !== "string" || !/^[a-f0-9]{64}$/.test(value.source_revision) ||
+    value.clock_fixture_id !== expectedClockFixtureIDForCapture(expected.capture_id) ||
+    value.clock_epoch !== String(fixture.epoch) || value.timezone !== fixture.timezone ||
+    value.garden_phase !== fixture.garden_phase
+  ) throw new Error("capture build proof does not match the current signed source or clock fixture");
   return value as CaptureBuildProof;
 }
 
@@ -167,86 +187,11 @@ export function matchesCaptureProofAttachmentName(
   return /^[A-Za-z0-9_-]{1,128}$/.test(xcresultSuffix);
 }
 
-function assertTimeInput(value: unknown, captureID: CaptureId, context: string): CaptureTimeInput {
-  if (!isRecord(value)) throw new Error(`${context}: missing per-capture time evidence`);
-  exactKeys(value, ["capture_local_date", "visible_status_time", "timezone"], context);
-  validDate(value.capture_local_date, context);
-  parseVisibleStatusTime(value.visible_status_time, context);
-  if (value.timezone !== "Asia/Singapore") throw new Error(`${context}: timezone must be Asia/Singapore`);
-  const phase = gardenPhaseAt(value.visible_status_time as string);
-  if (["garden-seed", "garden-hero"].includes(captureID) && !["dusk", "night"].includes(phase)) {
-    throw new Error(`${context}: dark Garden capture requires a dusk/night local status time`);
-  }
-  if (captureID === "garden-day" && phase !== "day") {
-    throw new Error(`${context}: light Garden-day capture requires a Day-phase local status time (08:00–16:59)`);
-  }
-  return value as CaptureTimeInput;
-}
-
-export function parseCaptureEvidenceInput(
-  value: unknown,
-  currentSource: { source_revision: string; source_manifest_path: string; source_manifest_sha256: string },
-): CaptureEvidenceInput {
-  if (!isRecord(value)) throw new Error("capture evidence input must be an object");
-  exactKeys(value, ["source_bindings", "captures"], "capture evidence input");
-  if (!isRecord(value.source_bindings) || !isRecord(value.captures)) {
-    throw new Error("capture evidence input must contain source_bindings and captures maps");
-  }
-  exactKeys(value.source_bindings, [...DEVICES], "source_bindings");
-  exactKeys(value.captures, [...DEVICES], "captures");
-
-  const sourceBindings = {} as CaptureEvidenceInput["source_bindings"];
-  const captures = {} as CaptureEvidenceInput["captures"];
-  for (const device of DEVICES) {
-    const deviceBindings = value.source_bindings[device];
-    if (!isRecord(deviceBindings)) throw new Error(`${device}: source bindings must be an object`);
-    exactKeys(deviceBindings, ROLES, `${device} source bindings`);
-    const roles = {} as CaptureEvidenceInput["source_bindings"][typeof device];
-    for (const role of ROLES) {
-      const binding = deviceBindings[role];
-      if (!isRecord(binding)) throw new Error(`${device}/${role}: source binding must be an object`);
-      exactKeys(binding, ["source_revision", "source_manifest_path", "source_manifest_sha256"], `${device}/${role} source binding`);
-      sha256(binding.source_revision, `${device}/${role} source revision`);
-      sha256(binding.source_manifest_sha256, `${device}/${role} source manifest`);
-      if (typeof binding.source_manifest_path !== "string" || !binding.source_manifest_path) {
-        throw new Error(`${device}/${role}: source manifest path must be a non-empty string`);
-      }
-      if (
-        binding.source_revision !== currentSource.source_revision ||
-        binding.source_manifest_path !== currentSource.source_manifest_path ||
-        binding.source_manifest_sha256 !== currentSource.source_manifest_sha256
-      ) throw new Error(`${device}/${role}: result bundle was captured from a different source manifest`);
-      roles[role] = {
-        source_revision: binding.source_revision,
-        source_manifest_path: binding.source_manifest_path,
-        source_manifest_sha256: binding.source_manifest_sha256,
-      };
-    }
-    sourceBindings[device] = roles;
-
-    const deviceCaptures = value.captures[device];
-    if (!isRecord(deviceCaptures)) throw new Error(`${device}: capture time map must be an object`);
-    exactKeys(deviceCaptures, LOCALES, `${device} capture time map`);
-    const localeCaptures = {} as CaptureEvidenceInput["captures"][typeof device];
-    for (const locale of LOCALES) {
-      const captureTimes = deviceCaptures[locale];
-      if (!isRecord(captureTimes)) throw new Error(`${device}/${locale}: capture time map must be an object`);
-      exactKeys(captureTimes, [...CAPTURE_IDS], `${device}/${locale} capture time map`);
-      const parsedTimes = {} as CaptureEvidenceInput["captures"][typeof device][typeof locale];
-      for (const captureID of CAPTURE_IDS) {
-        parsedTimes[captureID] = assertTimeInput(captureTimes[captureID], captureID, `${device}/${locale}/${captureID}`);
-      }
-      localeCaptures[locale] = parsedTimes;
-    }
-    captures[device] = localeCaptures;
-  }
-  return { source_bindings: sourceBindings, captures };
-}
-
 export function makeCaptureSourceEvidence(
   expected: CaptureEvidenceExpectation,
-  time: CaptureTimeInput,
+  proof: CaptureBuildProof,
 ): CaptureSourceEvidence {
+  const fixture = marketingClockFixture(proof.clock_fixture_id);
   const evidence: CaptureSourceEvidence = {
     device: expected.device,
     source_commit: expected.source_commit,
@@ -256,10 +201,14 @@ export function makeCaptureSourceEvidence(
     source_manifest_sha256: expected.source_manifest_sha256,
     result_bundle: { ...expected.result_bundle },
     test_identifier: expectedCaptureTestIdentifier(expected.locale, expected.capture_id),
-    capture_local_date: time.capture_local_date,
-    visible_status_time: time.visible_status_time,
-    timezone: time.timezone,
-    garden_phase: gardenPhaseAt(time.visible_status_time),
+    clock_fixture_id: fixture.id,
+    clock_epoch: String(fixture.epoch),
+    garden_local_date: fixture.local_date,
+    garden_local_time: fixture.local_time,
+    timezone: fixture.timezone,
+    garden_phase: fixture.garden_phase,
+    captured_at: proof.captured_at,
+    system_timezone: proof.system_timezone,
     appearance: expectedCaptureAppearance(expected.capture_id),
   };
   assertCaptureSourceEvidence(evidence, expected);
@@ -273,7 +222,8 @@ export function assertCaptureSourceEvidence(
   if (!isRecord(value)) throw new Error(`${expected.device}/${expected.locale}/${expected.capture_id}: missing source evidence`);
   exactKeys(value, [
     "device", "source_commit", "build_proof_sha256", "source_revision", "source_manifest_path", "source_manifest_sha256", "result_bundle",
-    "test_identifier", "capture_local_date", "visible_status_time", "timezone", "garden_phase", "appearance",
+    "test_identifier", "clock_fixture_id", "clock_epoch", "garden_local_date", "garden_local_time", "timezone", "garden_phase",
+    "captured_at", "system_timezone", "appearance",
   ], `${expected.device}/${expected.locale}/${expected.capture_id} source evidence`);
   const context = `${expected.device}/${expected.locale}/${expected.capture_id}`;
   if (
@@ -298,20 +248,33 @@ export function assertCaptureSourceEvidence(
     typeof bundle.name !== "string" || !bundle.name.endsWith(".xcresult")
   ) throw new Error(`${context}: capture is bound to a different result bundle`);
   sha256(bundle.xcresult_tree_sha256, `${context} result bundle hash`);
-  const testIdentifier = expectedCaptureTestIdentifier(expected.locale, expected.capture_id);
-  if (value.test_identifier !== testIdentifier) throw new Error(`${context}: capture test identifier mismatch`);
-  if (value.timezone !== "Asia/Singapore") throw new Error(`${context}: capture timezone mismatch`);
-  validDate(value.capture_local_date, context);
-  const phase = gardenPhaseAt(value.visible_status_time as string);
-  if (value.garden_phase !== phase) throw new Error(`${context}: recorded Garden phase does not match visible local time`);
+  if (value.test_identifier !== expectedCaptureTestIdentifier(expected.locale, expected.capture_id)) {
+    throw new Error(`${context}: capture test identifier mismatch`);
+  }
+  const fixture = marketingClockFixture(value.clock_fixture_id);
+  assertCapturedAt(value.captured_at, `${context} source evidence`);
+  assertIanaTimezone(value.system_timezone, `${context} source evidence`);
+  if (
+    value.clock_fixture_id !== expectedClockFixtureIDForCapture(expected.capture_id) ||
+    value.clock_epoch !== String(fixture.epoch) ||
+    value.garden_local_date !== fixture.local_date ||
+    value.garden_local_time !== fixture.local_time ||
+    value.timezone !== fixture.timezone ||
+    value.garden_phase !== fixture.garden_phase
+  ) throw new Error(`${context}: captured Garden clock does not match its source-bound fixture`);
   if (value.appearance !== expectedCaptureAppearance(expected.capture_id)) {
     throw new Error(`${context}: capture appearance does not match its selected test state`);
   }
-  if (["garden-seed", "garden-hero"].includes(expected.capture_id) && !["dusk", "night"].includes(phase)) {
-    throw new Error(`${context}: dark Garden capture is outside the dusk/night phase`);
+  if (["garden-seed", "garden-hero"].includes(expected.capture_id) && fixture.garden_phase !== "dusk") {
+    throw new Error(`${context}: dark Garden capture requires the dusk fixture`);
   }
-  if (expected.capture_id === "garden-day" && phase !== "day") {
-    throw new Error(`${context}: Garden-day capture is outside the 08:00–16:59 Day phase`);
+  if (expected.capture_id === "garden-day" && fixture.garden_phase !== "day") {
+    throw new Error(`${context}: Garden-day capture requires the day fixture`);
   }
-  parseVisibleStatusTime(value.visible_status_time, context);
+  if (gardenPhaseAt(value.garden_local_time as string) !== fixture.garden_phase) {
+    throw new Error(`${context}: shared fixture local time does not match its Garden phase`);
+  }
+  if (!DEVICES.includes(expected.device) || !LOCALES.includes(expected.locale)) {
+    throw new Error(`${context}: unsupported device or locale`);
+  }
 }

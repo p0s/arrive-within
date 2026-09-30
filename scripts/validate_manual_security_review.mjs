@@ -54,7 +54,7 @@ async function main() {
     "Marketing/AppStoreScreenshots/pnpm-lock.yaml",
     "Marketing/AppStoreScreenshots/scripts/contracts.ts",
     "Marketing/AppStoreScreenshots/scripts/export-playwright.ts",
-    "Marketing/AppStoreScreenshots/scripts/ingest-xcresult-captures.ts",
+    "Marketing/AppStoreScreenshots/scripts/ingest-current-source-xcresults.ts",
     "Marketing/AppStoreScreenshots/scripts/validate-plan.ts",
     "Packages/ArriveWithinCore/Sources/ArriveWithinFeedback/FeedbackClient.swift",
     "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/JournalEntry.swift",
@@ -141,15 +141,16 @@ async function main() {
 
   const contracts = byName.get("Marketing/AppStoreScreenshots/scripts/contracts.ts");
   const exporter = byName.get("Marketing/AppStoreScreenshots/scripts/export-playwright.ts");
-  const ingest = byName.get("Marketing/AppStoreScreenshots/scripts/ingest-xcresult-captures.ts");
+  const ingest = byName.get("Marketing/AppStoreScreenshots/scripts/ingest-current-source-xcresults.ts");
   const planTests = byName.get("Marketing/AppStoreScreenshots/scripts/validate-plan.ts");
   record(
     "marketing-origin-and-path-boundary",
     contracts.includes("candidate.origin === targetOrigin")
       && contracts.includes("if (path.isAbsolute(relativePath))")
       && exporter.includes("isAllowedCaptureRequest(requestUrl, target.origin)")
-      && ingest.includes("resolveBoundedChildPath(exported.root, attachment.exportedFileName)")
-      && ingest.includes("sourceCandidateStat.isSymbolicLink()")
+      && ingest.includes("capturePath.startsWith(`${exportedRealRoot}${path.sep}`)")
+      && ingest.includes("!stat.isFile() || stat.isSymbolicLink()")
+      && ingest.includes("assertTrustedSimulatorResultsRoot(root, trustedRoot)")
       && planTests.includes("String.fromCharCode(64)")
       && planTests.includes("external.invalid")
       && planTests.includes("../outside.png"),

@@ -28,7 +28,7 @@
     "Marketing/AppStoreScreenshots/scripts/physical-capture-provenance.ts",
     "Marketing/AppStoreScreenshots/scripts/physical-report-validators"
   ],
-  "source_revision": "5abf772b36a97695d576a658aad210d9e47bbcc2bbf902e7aaf19df02c2adb6f",
+  "source_revision": "31819df7d597b0417d7b1d7ba32d0586d3e20c170d8d17868c5a7f9c23870678",
   "files": [
     {
       "path": "Apps/ArriveWithin/Resources/AppIcon.icon/Assets/living-shoot.png",
@@ -116,6 +116,11 @@
       "sha256": "faaf226afbfb9c8327e55e9d062222baf730996cf5f15097acd8249dc3d81e4c"
     },
     {
+      "path": "Apps/ArriveWithin/Resources/MarketingCaptureClockFixtures.json",
+      "bytes": 508,
+      "sha256": "fe3201e17aff6deaee5d93dea5a6d5532424cd6e95767f46407bdfb2c27fb7d0"
+    },
+    {
       "path": "Apps/ArriveWithin/Resources/PrivacyInfo.xcprivacy",
       "bytes": 632,
       "sha256": "0562b6e4331f1fcffb4d7b7e3e11c240ebbf6dbef84ec1b66318408d9f2d524b"
@@ -142,8 +147,8 @@
     },
     {
       "path": "Apps/ArriveWithin/Sources/AppDependencies.swift",
-      "bytes": 22879,
-      "sha256": "2c871c993a7f26065c8f2d5846597ff6849496c6a30ca60b70e8135fc6afcd4d"
+      "bytes": 23146,
+      "sha256": "dc1d37d91230aca0b346a7fff3deb4107742ce0f10341106a0fa654aa480efa1"
     },
     {
       "path": "Apps/ArriveWithin/Sources/AppLocalization.swift",
@@ -152,8 +157,8 @@
     },
     {
       "path": "Apps/ArriveWithin/Sources/AppModel.swift",
-      "bytes": 76057,
-      "sha256": "f09aeb5ba269ea58d94e0703afa8c809740f359aaf075180e6c0d26e5dae639c"
+      "bytes": 76945,
+      "sha256": "7302fa33f5b32d285cb2236bcdbd5340b9a1d5d6ea9b6b87cf4b8bff3e2e5d52"
     },
     {
       "path": "Apps/ArriveWithin/Sources/AppOwnedShareSheet.swift",
@@ -226,6 +231,11 @@
       "sha256": "341de9f7c73ade0d22a72a4d649f3b0a69b96e0ebd549203aed7731e04e745b9"
     },
     {
+      "path": "Apps/ArriveWithin/Sources/MarketingCaptureClockFixture.swift",
+      "bytes": 3204,
+      "sha256": "b9b5f64b4b468153e2338c3115237872f54857ef9037d3e853ea5cd05fe35183"
+    },
+    {
       "path": "Apps/ArriveWithin/Sources/MarketingCaptureFixture.swift",
       "bytes": 7070,
       "sha256": "59df833c9e88011867f8438aeb62256f1d734059b76fbefe155635acf90e14d2"
@@ -272,8 +282,8 @@
     },
     {
       "path": "Apps/ArriveWithin/Sources/ProductShell.swift",
-      "bytes": 5431,
-      "sha256": "023cafadebf429e17139346cbc74c8de67421598d616f0b686e0556549cd65e1"
+      "bytes": 5529,
+      "sha256": "c400291e397fbbe719d5ccfc7ac09201c9cece554fd729b676fd487ea3833894"
     },
     {
       "path": "Apps/ArriveWithin/Sources/ReminderNotifications.swift",
@@ -297,8 +307,8 @@
     },
     {
       "path": "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinMarketingCaptureUITests.swift",
-      "bytes": 8821,
-      "sha256": "6d702f722eca7ef77feb0d5fcff1c3b0c3438235146830e1c59b501e07ba2e9d"
+      "bytes": 9232,
+      "sha256": "5281fa146ec8590203b549c2d0182cc420e75065d8e12e76b7b551b4d6d4175c"
     },
     {
       "path": "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinUITests.swift",
@@ -2307,8 +2317,8 @@
     },
     {
       "path": "project.yml",
-      "bytes": 7050,
-      "sha256": "23d49e62f4700dee37ab13cb1e94a229a6d2b0be2823e2eb9dfff4af82f457a1"
+      "bytes": 7307,
+      "sha256": "80b65bbfe6ffb3f552e7ae9a46ff26e083bf6ca53834a5a52d28e70971cba809"
     },
     {
       "path": "scripts/app_store_physical_build_adapter.py",
