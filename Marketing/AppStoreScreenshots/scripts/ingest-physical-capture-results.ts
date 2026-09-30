@@ -25,7 +25,7 @@ import {
 import { SELECTED_CAPTURE_IDS } from "./capture-set-provenance";
 import { CAPTURE_IDS, gardenPhaseAt, type CaptureId } from "./capture-evidence";
 import { computeCaptureSourceManifest } from "./source-provenance";
-import { CAPTURE_STATUS_BAR_PROFILE } from "./physical-capture-provenance";
+import { CAPTURE_STATUS_BAR_PROFILE, PHYSICAL_IPAD_PRODUCT_TYPE, assertPhysicalCaptureClock } from "./physical-capture-provenance";
 import { resolveProjectRegularFile } from "./physical-profile-paths";
 import { validateOpaqueRgbPng } from "./image-validation";
 import {
@@ -171,7 +171,7 @@ async function validatedRunnerCheck(
   ) throw new Error(`${check.id}: profile fixture does not match the day/night capture contract`);
 
   const device = requireObject(check.device, `${check.id}.device`);
-  if (device.family !== "iPad" || typeof device.model !== "string" || !device.model.includes("iPad Pro 13-inch") || typeof device.os_version !== "string") {
+  if (device.family !== "iPad" || device.model !== PHYSICAL_IPAD_PRODUCT_TYPE || typeof device.os_version !== "string") {
     throw new Error(`${check.id}: result is not from the configured physical 13-inch iPad`);
   }
   const receiptSummary = requireObject(check.receipt, `${check.id}.receipt`);
@@ -207,6 +207,7 @@ async function validatedRunnerCheck(
   const reportBytes = await readFile(reportPath);
   if (sha256(reportBytes) !== reportRecord.report_sha256) throw new Error(`${check.id}: app report hash mismatch`);
   const appReport = JSON.parse(reportBytes.toString("utf8")) as JsonObject;
+  assertPhysicalCaptureClock(appReport);
   const sourceManifestRevision = appReport.sourceManifestRevision;
   if (
     appReport.sourceCommit !== verifySource.commit ||
@@ -258,7 +259,7 @@ async function validatedRunnerCheck(
     appearance: appReport.appearance,
     capture_local_date: appReport.captureLocalDate,
     visible_status_time: visibleStatusTime,
-    timezone: "Asia/Singapore",
+    timezone: String(appReport.timezone),
     garden_phase: gardenPhaseAt(visibleStatusTime),
     source_manifest_revision: sourceManifestRevision,
     build_receipt: {

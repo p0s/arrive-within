@@ -7,6 +7,7 @@ import json
 import re
 from pathlib import Path
 import uuid
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 
 REPORT_KEYS = {
@@ -27,6 +28,7 @@ SHA256 = re.compile(r"^[a-f0-9]{64}$")
 COMMIT = re.compile(r"^[a-f0-9]{40}$")
 DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 TIME = re.compile(r"^(?:[01]\d|2[0-3]):[0-5]\d$")
+PHYSICAL_IPAD_PRODUCT_TYPE = "iPad16,5"
 
 
 def parse_iso(value: object, field: str) -> datetime:
@@ -111,8 +113,17 @@ def validate_report(
         raise ValueError("report fixture namespace is invalid") from error
     if str(parsed_namespace) != namespace:
         raise ValueError("report fixture namespace must be canonical lowercase UUID")
-    if report.get("timezone") != "Asia/Singapore":
-        raise ValueError("physical marketing capture requires the device timezone Asia/Singapore")
+    start = parse_iso(report.get("startedAt"), "startedAt")
+    observed_zone = report.get("timezone")
+    if not isinstance(observed_zone, str) or not observed_zone or len(observed_zone) > 128:
+        raise ValueError("physical capture timezone is invalid")
+    try:
+        local = start.astimezone(ZoneInfo(observed_zone))
+    except (ZoneInfoNotFoundError, ValueError) as error:
+        raise ValueError("physical capture timezone is invalid") from error
+    singapore = start.astimezone(ZoneInfo("Asia/Singapore"))
+    if local.utcoffset() != singapore.utcoffset() or local.replace(tzinfo=None) != singapore.replace(tzinfo=None):
+        raise ValueError("physical capture timezone must match Asia/Singapore at the capture instant")
     if not isinstance(report.get("captureLocalDate"), str) or not DATE.fullmatch(report["captureLocalDate"]):
         raise ValueError("captureLocalDate must be YYYY-MM-DD")
     try:
@@ -122,6 +133,8 @@ def validate_report(
     status_time = report.get("visibleStatusTime")
     if not isinstance(status_time, str):
         raise ValueError("visibleStatusTime is missing")
+    if report["captureLocalDate"] != local.strftime("%Y-%m-%d") or status_time != local.strftime("%H:%M"):
+        raise ValueError("reported date and visible time must match the unmodified capture clock")
     phase = garden_phase(status_time)
     if report.get("gardenPhase") != phase:
         raise ValueError("reported Garden phase does not match the actual local time")
@@ -130,11 +143,10 @@ def validate_report(
             raise ValueError("dark Garden capture must occur during real local dusk or night")
     elif phase != "day":
         raise ValueError("physical App Store capture must occur during real local day (08:00–16:59)")
-    if device_family != "iPad" or "iPad Pro 13-inch" not in device_model:
+    if device_family != "iPad" or device_model != PHYSICAL_IPAD_PRODUCT_TYPE:
         raise ValueError("physical capture must use the configured 13-inch iPad route")
     if not re.fullmatch(r"\d+\.\d+(?:\.\d+)?", os_version):
         raise ValueError("physical device OS version is invalid")
-    start = parse_iso(report.get("startedAt"), "startedAt")
     boundary = parse_iso(started_after, "started-after")
     observed_now = now or datetime.now(timezone.utc)
     if start <= boundary or start > observed_now.astimezone(timezone.utc):

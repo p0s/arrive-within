@@ -28,7 +28,7 @@
     "Marketing/AppStoreScreenshots/scripts/physical-capture-provenance.ts",
     "Marketing/AppStoreScreenshots/scripts/physical-report-validators"
   ],
-  "source_revision": "acea8bef500149b9514c7fb28ccb85643a6cc8aa5d5933ea81e4c3890d43906b",
+  "source_revision": "5abf772b36a97695d576a658aad210d9e47bbcc2bbf902e7aaf19df02c2adb6f",
   "files": [
     {
       "path": "Apps/ArriveWithin/Resources/AppIcon.icon/Assets/living-shoot.png",
@@ -2012,8 +2012,8 @@
     },
     {
       "path": "Marketing/AppStoreScreenshots/scripts/physical-capture-provenance.ts",
-      "bytes": 481,
-      "sha256": "8939d88fb0066a92e2a366b1f3da71ca89187d8e35357abead585f1dbb13c957"
+      "bytes": 3286,
+      "sha256": "e81d3b6ca210c11955ec5bd30c5c493784885eb283c89ceb63fd70f83569e376"
     },
     {
       "path": "Marketing/AppStoreScreenshots/scripts/physical-report-validators/appstore-ipad13-de-garden-day.py",
@@ -2077,8 +2077,8 @@
     },
     {
       "path": "Marketing/AppStoreScreenshots/scripts/physical_capture_contract.py",
-      "bytes": 6888,
-      "sha256": "dccc111081d9a6c4c02980d30ae66453f334c39c91b3599427ea94ceb62ac77e"
+      "bytes": 7720,
+      "sha256": "e46199e324d4d3f4c6de1392974f6287fdb0c158dbd2dfc8c668f0745e40ca7d"
     },
     {
       "path": "Packages/ArriveWithinCore/Package.swift",

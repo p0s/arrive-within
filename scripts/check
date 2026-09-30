@@ -95,6 +95,7 @@ print "== App Store screenshot source and output matrix =="
   node --import tsx scripts/test-physical-profile-paths.ts
   node --import tsx scripts/test-physical-build-provenance.ts
   node --import tsx scripts/test-private-artifact-paths.ts
+  node --import tsx scripts/test-physical-capture-clock.ts
   python3 scripts/test-physical-capture-contract.py
   python3 ../../scripts/test_verify_marketing_capture_project.py
   node --import tsx scripts/test-reproducibility-inventory.ts

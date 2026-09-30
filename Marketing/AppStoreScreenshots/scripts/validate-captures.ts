@@ -22,7 +22,7 @@ import {
 } from "./contracts";
 import { assertCaptureSetSourceBinding } from "./capture-set-provenance";
 import { assertCaptureSourceCommit } from "./capture-source-commit";
-import { assertCaptureStatusBarProfile } from "./physical-capture-provenance";
+import { assertCaptureStatusBarProfile, PHYSICAL_IPAD_PRODUCT_TYPE, assertPhysicalCaptureClock } from "./physical-capture-provenance";
 import {
   assertCaptureSourceEvidence,
   expectedCaptureRole,
@@ -157,7 +157,7 @@ async function validatePhysicalEvidence(
     manifest.source.source_manifest_path !== currentBinding.source_manifest_path ||
     manifest.source.source_manifest_sha256 !== currentBinding.source_manifest_sha256 ||
     manifest.device?.family !== "iPad" || manifest.device.route !== "physical-device" ||
-    !manifest.device.model.includes("iPad Pro 13-inch") ||
+    manifest.device.model !== PHYSICAL_IPAD_PRODUCT_TYPE ||
     !/^\d+\.\d+(?:\.\d+)?$/.test(manifest.device.os_version) ||
     !Array.isArray(manifest.captures)
   ) throw new Error("physical-evidence manifest source, signature, or device identity does not match current captures");
@@ -194,7 +194,7 @@ async function validatePhysicalEvidence(
     const expectedArguments = (profileCase?.fixture as { arguments?: unknown[] } | undefined)?.arguments;
     if (
       item.check_id !== expectedID || item.fixture_id !== expectedID || item.scenario_id !== expectedScenario ||
-      item.timezone !== "Asia/Singapore" || !/^\d{4}-\d{2}-\d{2}$/.test(item.capture_local_date) ||
+      typeof item.timezone !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(item.capture_local_date) ||
       !timeIsValid || !expectedPhases.includes(item.garden_phase) ||
       (!isDark && (hour < 8 || hour >= 17)) ||
       item.source_manifest_revision !== currentBinding.source_revision ||
@@ -247,8 +247,9 @@ async function validatePhysicalEvidence(
       report.sourceManifestRevision !== currentBinding.source_revision ||
       report.captureLocalDate !== item.capture_local_date ||
       report.visibleStatusTime !== item.visible_status_time ||
-      report.timezone !== "Asia/Singapore" || report.gardenPhase !== item.garden_phase
+      report.timezone !== item.timezone || report.gardenPhase !== item.garden_phase
     ) throw new Error(context + ": app report does not match the profile fixture or signed build evidence");
+    assertPhysicalCaptureClock(report);
     indexed.set(physicalCaptureKey(item.locale, item.capture_id), item);
   }
   if (generatedProjects.size !== 1) throw new Error("physical captures do not share one generated-project source binding");

@@ -123,7 +123,7 @@ export type PhysicalCaptureSourceEvidence = {
   device_os_version: string;
   capture_local_date: string;
   visible_status_time: string;
-  timezone: "Asia/Singapore";
+  timezone: string;
   garden_phase: GardenPhase;
   appearance: CaptureAppearance;
 };
@@ -215,7 +215,7 @@ export type PhysicalCaptureEvidenceManifest = {
     appearance: CaptureAppearance;
     capture_local_date: string;
     visible_status_time: string;
-    timezone: "Asia/Singapore";
+    timezone: string;
     garden_phase: GardenPhase;
     source_manifest_revision: string;
     build_receipt: {

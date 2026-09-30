@@ -49,7 +49,8 @@ class PhysicalCaptureContractTests(unittest.TestCase):
             "gardenPhase": garden_phase(time_text),
         }
 
-    def validate(self, report: dict[str, object], capture_id: str, locale: str) -> dict[str, object]:
+    def validate(self, report: dict[str, object], capture_id: str, locale: str,
+                 *, device_family: str = "iPad", device_model: str = "iPad16,5") -> dict[str, object]:
         start = datetime.fromisoformat(str(report["startedAt"]))
         return validate_report(
             report,
@@ -59,8 +60,8 @@ class PhysicalCaptureContractTests(unittest.TestCase):
             marketing_version="1.0.2",
             build_number="19",
             source_commit=self.source_commit,
-            device_family="iPad",
-            device_model="iPad Pro 13-inch (M4)",
+            device_family=device_family,
+            device_model=device_model,
             os_version="26.6",
             started_after=(start - timedelta(seconds=2)).isoformat(),
             now=start + timedelta(seconds=2),
@@ -109,7 +110,7 @@ class PhysicalCaptureContractTests(unittest.TestCase):
                 build_number="19",
                 source_commit="c" * 40,
                 device_family="iPad",
-                device_model="iPad Pro 13-inch (M4)",
+                device_model="iPad16,5",
                 os_version="26.6",
                 started_after="2026-09-25T04:00:00+00:00",
                 now=datetime.fromisoformat(str(report["startedAt"])) + timedelta(seconds=2),
@@ -137,8 +138,45 @@ class PhysicalCaptureContractTests(unittest.TestCase):
             self.validate(report, "garden-day", "en-US")
         report = self.report("garden-day", "en-US", "12:00")
         report["timezone"] = "UTC"
-        with self.assertRaisesRegex(ValueError, "timezone Asia/Singapore"):
+        with self.assertRaisesRegex(ValueError, "timezone must match Asia/Singapore"):
             self.validate(report, "garden-day", "en-US")
+
+    def test_equivalent_observed_timezone_is_preserved(self) -> None:
+        report = self.report("garden-day", "en-US", "08:06")
+        report["timezone"] = "Asia/Shanghai"
+        self.assertEqual(self.validate(report, "garden-day", "en-US")["status"], "passed")
+        self.assertEqual(report["timezone"], "Asia/Shanghai")
+
+    def test_clock_date_minute_and_unknown_timezone_fail(self) -> None:
+        for key, value in [("captureLocalDate", "2026-09-26"), ("visibleStatusTime", "12:01"),
+                           ("timezone", "Mars/Olympus"), ("startedAt", "2026-09-25T04:00:00")]:
+            with self.subTest(key=key):
+                report = self.report("garden-day", "en-US", "12:00")
+                report[key] = value
+                with self.assertRaises(ValueError):
+                    self.validate(report, "garden-day", "en-US")
+
+    def test_historical_dst_is_not_unconditionally_equivalent(self) -> None:
+        report = self.report("garden-day", "en-US", "08:00")
+        report.update(timezone="Asia/Shanghai", startedAt="1991-07-01T00:00:00+00:00", captureLocalDate="1991-07-01")
+        with self.assertRaisesRegex(ValueError, "timezone must match Asia/Singapore"):
+            self.validate(report, "garden-day", "en-US")
+
+    def test_midnight_rollover_requires_the_correct_local_date(self) -> None:
+        report = self.report("garden-hero", "en-US", "00:01")
+        report.update(timezone="Asia/Shanghai", startedAt="2026-09-25T16:01:00+00:00", captureLocalDate="2026-09-26")
+        self.assertEqual(self.validate(report, "garden-hero", "en-US")["status"], "passed")
+        report["captureLocalDate"] = "2026-09-25"
+        with self.assertRaisesRegex(ValueError, "unmodified capture clock"):
+            self.validate(report, "garden-hero", "en-US")
+
+    def test_only_the_exact_configured_physical_product_type_passes(self) -> None:
+        report = self.report("garden-day", "en-US", "12:00")
+        for model in ["iPad16,3", "iPad13,18", "iPad Pro 13-inch (M4)", "unknown"]:
+            with self.subTest(model=model), self.assertRaisesRegex(ValueError, "configured 13-inch iPad"):
+                self.validate(report, "garden-day", "en-US", device_model=model)
+        with self.assertRaisesRegex(ValueError, "configured 13-inch iPad"):
+            self.validate(report, "garden-day", "en-US", device_family="iPhone")
 
 
 if __name__ == "__main__":

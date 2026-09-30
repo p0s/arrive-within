@@ -36,7 +36,8 @@
     "export:de:ipad": "tsx scripts/export-playwright.ts --url http://127.0.0.1:3000/?device=ipad-13\\&locale=de-DE --width 2064 --height 2752 --locale de-DE --device ipad-13 --theme forest-twilight --out exports/de-DE/ipad-13",
     "generate:capture-source-manifest": "tsx scripts/write-capture-source-manifest.ts",
     "test:physical-capture-contract": "tsx scripts/test-physical-profile-paths.ts && python3 scripts/test-physical-capture-contract.py && python3 ../../scripts/test_verify_marketing_capture_project.py",
-    "ingest:physical-captures": "tsx scripts/ingest-physical-capture-results.ts"
+    "ingest:physical-captures": "tsx scripts/ingest-physical-capture-results.ts",
+    "test:physical-capture-clock": "tsx scripts/test-physical-capture-clock.ts"
   },
   "dependencies": {
     "jszip": "3.10.1",
