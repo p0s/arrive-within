@@ -1,6 +1,6 @@
 # ADR 0008: Preserve icon material and verify Apple layer order
 
-Status: Accepted for local implementation; release packaging remains gated.
+Status: Accepted; source-level validation now checks transparency rather than PNG channel encoding. Complete app/archive, owner, device, and store review remain separate.
 
 ## Problem
 
@@ -16,6 +16,6 @@ Validate Apple's compiled phone and pad previews in addition to source previews.
 
 ## Validation and release boundary
 
-Current evidence lives in `docs/brand/icon-build-validation.json` and `docs/brand/compiled/2026-09-15/`. The installed Xcode 27 asset compiler emits masked RGBA small compatibility PNGs while its 1024 marketing renditions remain opaque RGB. Preserve those actual output facts. The existing no-alpha compatibility release gate is retained; `validate_app_icon.mjs --local-preview` verifies the artwork without claiming that release gate passed. A release-toolchain rebuild or explicit resolution of the archive format remains necessary before distribution.
+Current evidence lives in `docs/brand/icon-build-validation.json` and `docs/brand/compiled/2026-09-15/`. Xcode 27 emits RGBA small compatibility PNGs, but inspection of every pixel finds alpha 255 throughout and zero transparent pixels; its 1024 marketing renditions are opaque RGB. The release validator therefore accepts an alpha channel only when all decoded pixels are opaque, matching Apple's published app-icon guidance that an alpha channel is allowed but transparent regions are not ([Technical Q&A QA1686](https://developer.apple.com/library/archive/qa/qa1686/_index.html)). The validator independently decodes the checksum-bound compatibility PNGs and counts transparent pixels; this replaces the earlier over-strict channel-presence check.
 
 The contact sheet's Dark/Tinted variants are marketing previews. Physical Home Screen appearances, a complete app/archive, owner production approval, and App Store display have separate evidence requirements.

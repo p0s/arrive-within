@@ -1,10 +1,11 @@
 #!/usr/bin/env tsx
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
-import { readFile, readdir, writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { ROOT, loadSourceCaptures } from "./contracts";
+import { ROOT, assertPlan, loadPlan, loadSourceCaptures, type ScreenshotPlan } from "./contracts";
+import { collectCurrentExportFiles } from "./export-inventory";
 
 const projectRoot = path.resolve(ROOT, "../..");
 const reportPath = path.join(projectRoot, "docs", "qa", "marketing", "app-store-screenshots-reproducibility.json");
@@ -17,27 +18,19 @@ function sha256(data: Buffer | string): string {
   return createHash("sha256").update(data).digest("hex");
 }
 
-async function collect(directory: string, relative = "", selectedOnly = false): Promise<string[]> {
-  const files: string[] = [];
-  for (const entry of (await readdir(directory, { withFileTypes: true })).sort((a, b) => a.name.localeCompare(b.name))) {
-    if (selectedOnly && relative === "" && entry.name === "alternatives") continue;
-    if (entry.name === "_reproducibility.json") continue;
-    const child = path.join(relative, entry.name);
-    const absolute = path.join(directory, entry.name);
-    if (entry.isDirectory()) files.push(...await collect(absolute, child, selectedOnly));
-    else if (entry.isFile()) files.push(child.split(path.sep).join("/"));
-    else throw new Error(`unsupported export entry ${child}`);
-  }
-  return files;
+function expectedArtifactCount(plan: ScreenshotPlan): number {
+  const setCount = plan.locales.length * plan.devices.length;
+  return plan.expected_final_images + setCount * 5 + 3;
 }
 
-async function snapshot(narrative: string | null = null): Promise<Snapshot> {
+async function snapshot(plan: ScreenshotPlan, narrative: string | null = null): Promise<Snapshot> {
   const root = narrative
     ? path.join(ROOT, "exports", "alternatives", narrative)
     : path.join(ROOT, "exports");
-  const files = await collect(root, "", narrative === null);
-  if (files.length !== 47) {
-    throw new Error(`expected exactly 47 ${narrative ?? "selected"} export artifacts, found ${files.length}`);
+  const files = await collectCurrentExportFiles(root, plan);
+  const expected = expectedArtifactCount(plan);
+  if (files.length !== expected) {
+    throw new Error(`expected exactly ${expected} ${narrative ?? "selected"} current export artifacts, found ${files.length}`);
   }
   const artifacts: Artifact[] = [];
   const tree = createHash("sha256");
@@ -62,26 +55,20 @@ function run(script: string, args: string[] = []): void {
   });
 }
 
-function exportPass(baseUrl: string, narrative: string | null = null): void {
-  const jobs = [
-    ["iphone-6.9", "en-US", "1320", "2868", "exports/en-US/iphone-6.9"],
-    ["iphone-6.9", "de-DE", "1320", "2868", "exports/de-DE/iphone-6.9"],
-    ["ipad-13", "en-US", "2064", "2752", "exports/en-US/ipad-13"],
-    ["ipad-13", "de-DE", "2064", "2752", "exports/de-DE/ipad-13"],
-  ];
-  for (const [device, locale, width, height, output] of jobs) {
+function exportPass(baseUrl: string, plan: ScreenshotPlan, narrative: string | null = null): void {
+  for (const locale of plan.locales) for (const device of plan.devices) {
     const url = new URL(baseUrl);
-    url.searchParams.set("device", device);
+    url.searchParams.set("device", device.id);
     url.searchParams.set("locale", locale);
     if (narrative) url.searchParams.set("narrative", narrative);
     const args = [
       "--url", url.href,
-      "--width", width,
-      "--height", height,
+      "--width", String(device.width),
+      "--height", String(device.height),
       "--locale", locale,
-      "--device", device,
+      "--device", device.id,
       "--theme", "forest-twilight",
-      "--out", narrative ? `exports/alternatives/${narrative}/${locale}/${device}` : output,
+      "--out", narrative ? `exports/alternatives/${narrative}/${locale}/${device.id}` : `exports/${locale}/${device.id}`,
     ];
     if (narrative) args.unshift("--narrative", narrative);
     run("scripts/export-playwright.ts", args);
@@ -96,7 +83,9 @@ function snapshotsMatch(left: Snapshot, right: Snapshot): boolean {
 async function checkExisting(): Promise<void> {
   const report = JSON.parse(await readFile(reportPath, "utf8"));
   const captures = await loadSourceCaptures();
-  const current = await snapshot();
+  const plan = await loadPlan();
+  assertPlan(plan);
+  const current = await snapshot(plan);
   if (
     report.schema_version !== 1 ||
     report.status !== "passed" ||
@@ -104,7 +93,7 @@ async function checkExisting(): Promise<void> {
     report.source_revision !== captures.source_revision ||
     report.pass_1.sha256 !== report.pass_2.sha256 ||
     !snapshotsMatch(current, report.pass_2)
-  ) throw new Error("screenshot reproducibility record does not match current 47-artifact export tree");
+  ) throw new Error("screenshot reproducibility record does not match the current plan-bound export tree");
   process.stdout.write(`Screenshot reproducibility record passed: ${current.files} artifacts, tree SHA-256 ${current.sha256}.\n`);
 }
 
@@ -121,12 +110,14 @@ async function main(): Promise<void> {
   const narrativeIndex = process.argv.indexOf("--narrative");
   const narrative = narrativeIndex >= 0 ? process.argv[narrativeIndex + 1] : null;
   if (narrativeIndex >= 0 && !narrative) throw new Error("missing --narrative value");
+  const plan = await loadPlan();
+  assertPlan(plan);
   const captures = await loadSourceCaptures();
 
-  exportPass(baseUrl.href, narrative);
-  const first = await snapshot(narrative);
-  exportPass(baseUrl.href, narrative);
-  const second = await snapshot(narrative);
+  exportPass(baseUrl.href, plan, narrative);
+  const first = await snapshot(plan, narrative);
+  exportPass(baseUrl.href, plan, narrative);
+  const second = await snapshot(plan, narrative);
   if (!snapshotsMatch(first, second)) {
     const changed = first.artifacts.filter((item, index) => JSON.stringify(item) !== JSON.stringify(second.artifacts[index])).map((item) => item.file);
     throw new Error(`two-pass export is not byte reproducible: ${changed.join(", ")}`);
@@ -140,8 +131,8 @@ async function main(): Promise<void> {
     product: "Arrive Within",
     source_revision: captures.source_revision,
     passes: 2,
-    sets_per_pass: 4,
-    images_per_pass: 24,
+    sets_per_pass: plan.locales.length * plan.devices.length,
+    images_per_pass: plan.expected_final_images,
     external_network_policy: "Each exporter blocks non-local requests and fails if any are attempted.",
     narrative: narrative ?? "selected",
     human_visual_review: narrative
@@ -155,7 +146,7 @@ async function main(): Promise<void> {
           state: "pending",
           basis: "Fresh source captures require inspection of all four English/German iPhone/iPad contact sheets.",
         },
-    upload_authorization: narrative ? "candidate-only-not-selected" : "authorized-for-app-store-version-1.0-after-current-source-validation",
+    upload_authorization: narrative ? "candidate-only-not-selected" : "candidate-only-human-review-pending-not-upload-authorized",
     pass_1: first,
     pass_2: second,
   };

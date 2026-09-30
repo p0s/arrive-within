@@ -58,7 +58,9 @@ struct PremiumGardenStylesView: View {
           )
           .accessibilityIdentifier("garden.styles.unlock")
 
-          if !model.premiumGardenAccess.productIsAvailable {
+          if model.premiumGardenProductIsLoading {
+            ProgressView()
+          } else if !model.premiumGardenAccess.productIsAvailable {
             Text("garden.styles.unavailable")
               .font(.footnote)
               .foregroundStyle(.secondary)
@@ -75,6 +77,7 @@ struct PremiumGardenStylesView: View {
       }
     }
     .navigationTitle("garden.styles.title")
+    .task { await model.loadPremiumGardenProduct() }
     .sheet(item: $requestedStyle) { style in
       PremiumGardenPaywallView(model: model, requestedStyle: style)
     }

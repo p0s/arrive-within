@@ -1,6 +1,7 @@
 import fixture from "../../Shared/fixtures/garden-state-day-2.json";
+import * as THREE from "three";
 import { describe, expect, it } from "vitest";
-import { gardenVisualSignature } from "../src/scene";
+import { gardenVisualSignature, mergeStaticGeometry } from "../src/scene";
 import { directionEvidence, resolveVisualModel, styleProfileFor } from "../src/visual-design";
 import {
   shippingGardenVisualDirection,
@@ -17,6 +18,25 @@ const directions = [verdantAtelier, paperSanctuary, twilightRefuge] as const;
 const state = validateGardenState(fixture);
 
 describe("selectable visual directions", () => {
+  it("merges the faceted Stop Motion bird body with its indexed beak geometry", () => {
+    const body = new THREE.DodecahedronGeometry(1, 0);
+    const head = new THREE.DodecahedronGeometry(0.16, 0);
+    const beak = new THREE.ConeGeometry(0.075, 0.24, 5);
+    const expectedVertexCount = body.getAttribute("position").count
+      + head.getAttribute("position").count
+      + (beak.getIndex()?.count ?? beak.getAttribute("position").count);
+    const merged = mergeStaticGeometry([
+      { geometry: body, position: [0, 0, 0] },
+      { geometry: head, position: [0.48, 0, 0] },
+      { geometry: beak, position: [0.64, 0, 0], rotation: [0, 0, -Math.PI / 2] },
+    ]);
+
+    expect(merged.index).toBeNull();
+    expect(merged.getAttribute("position").count).toBe(expectedVertexCount);
+    expect(merged.getAttribute("normal").count).toBe(expectedVertexCount);
+    merged.dispose();
+  });
+
   it("ships the owner-selected Twilight Refuge through one compile-time authority", () => {
     expect(shippingGardenVisualSelection).toEqual({
       state: "owner-selected",
@@ -49,6 +69,19 @@ describe("selectable visual directions", () => {
     expect(models[1]?.sunIntensity).toBeGreaterThan(models[3]?.sunIntensity ?? Infinity);
     expect(models[3]?.starOpacity).toBeGreaterThan(models[2]?.starOpacity ?? Infinity);
     expect(models[1]?.starOpacity).toBe(0);
+    expect(models[1]?.foliageColors).not.toEqual(models[3]?.foliageColors);
+    expect(models[1]?.trunkColor).not.toBe(models[3]?.trunkColor);
+    expect(models[1]?.groundColor).not.toBe(models[3]?.groundColor);
+    const dayCanopyBrightness = models[1]?.foliageColors.reduce(
+      (total, color) => total + colorValue(color), 0,
+    ) ?? 0;
+    const nightCanopyBrightness = models[3]?.foliageColors.reduce(
+      (total, color) => total + colorValue(color), 0,
+    ) ?? Infinity;
+    const canopyCount = models[1]?.foliageColors.length ?? 0;
+    expect(canopyCount).toBeGreaterThan(0);
+    expect(dayCanopyBrightness / canopyCount).toBeGreaterThan(500);
+    expect(dayCanopyBrightness).toBeGreaterThan(nightCanopyBrightness * 1.6);
   });
 
   it("provides three distinct original production compositions", () => {
@@ -194,3 +227,11 @@ describe("selectable visual directions", () => {
     }
   });
 });
+
+function colorValue(hex: string): number {
+  const normalized = hex.replace(/^#/, "");
+  return [0, 2, 4].reduce(
+    (total, offset) => total + Number.parseInt(normalized.slice(offset, offset + 2), 16),
+    0,
+  );
+}

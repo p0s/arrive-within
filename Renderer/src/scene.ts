@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import type { GardenState } from "./types";
 import {
   resolveDetailColor,
@@ -9,7 +10,6 @@ import {
   deriveWorldModel,
   type GardenBird,
   type GardenDetail,
-  type GardenGroundAnimal,
   type GardenWorldModel,
 } from "./world-model";
 import { GardenStyleMaterialFactory } from "./style-material";
@@ -63,6 +63,12 @@ export interface GardenRendererDiagnostics {
   motionCadence: number;
 }
 
+export function configureAnimatedWildlifeMesh(mesh: THREE.InstancedMesh): THREE.InstancedMesh {
+  // These few animated instances move beyond their creation-time bounds while the camera orbits.
+  mesh.frustumCulled = false;
+  return mesh;
+}
+
 const baseCameraPosition = new THREE.Vector3(5.7, 4.4, 8.6);
 
 export function createGardenScene(
@@ -92,6 +98,10 @@ export function createGardenScene(
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
+  // Garden geometry changes on growth events, while its frame-to-frame motion is subtle.
+  // Reuse the shadow map between those events instead of redrawing every caster each frame.
+  renderer.shadowMap.autoUpdate = false;
+  renderer.shadowMap.needsUpdate = true;
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(31, 1, 0.1, 60);
@@ -219,6 +229,7 @@ export function createGardenScene(
     contextIsLost = false;
     renderer.resetState();
     lastRendered = 0;
+    renderer.shadowMap.needsUpdate = true;
     renderer.render(scene, camera);
     events.contextRestored();
   };
@@ -256,7 +267,10 @@ export function createGardenScene(
         const scale = THREE.MathUtils.lerp(revealScale, 1, eased);
         world.root.scale.setScalar(scale);
         world.root.position.y = THREE.MathUtils.lerp(-0.06, 0, eased);
-        if (progress >= 1) revealStartedAt = undefined;
+        if (progress >= 1) {
+          revealStartedAt = undefined;
+          renderer.shadowMap.needsUpdate = true;
+        }
       }
     }
     if (!state.reduceMotion) {
@@ -320,6 +334,7 @@ export function createGardenScene(
           revealStartedAt = undefined;
         }
         settleGardenMotionPose(world, model);
+        renderer.shadowMap.needsUpdate = true;
         if (renderingIsActive && !document.hidden && !contextIsLost) {
           renderer.render(scene, camera);
         }
@@ -516,34 +531,7 @@ function buildWorld(model: GardenWorldModel, direction: GardenVisualDirection): 
     ? createProceduralGroundTexture(direction.id)
     : styleMaterials.texture("ground");
 
-  for (let layer = 0; layer < direction.composition.groundLayers; layer += 1) {
-    const groundColor = new THREE.Color(visual.groundColor).offsetHSL(
-      0,
-      0,
-      layer * (direction.foliageForm === "paper-relief" ? 0.028 : -0.014),
-    );
-    const ground = new THREE.Mesh(
-      organicGroundGeometry(
-        6.2 - layer * 0.11,
-        6.65 - layer * 0.06,
-        0.5,
-        direction.foliageForm === "paper-relief" ? 36 : 48,
-        layer,
-      ),
-      twilight
-        ? new THREE.MeshStandardMaterial({
-          color: groundColor,
-          map: groundTexture,
-          roughness: 1,
-          metalness: 0,
-          flatShading: direction.foliageForm !== "painted-botanical",
-        })
-        : styleMaterials.standard("ground", { color: groundColor }),
-    );
-    ground.position.y = -0.25 - layer * 0.07;
-    ground.receiveShadow = true;
-    root.add(ground);
-  }
+  root.add(buildGroundLayers(direction, visual.groundColor, groundTexture, styleMaterials, twilight));
 
   root.add(twilight
     ? buildHeroClearing(visual.groundColor)
@@ -552,36 +540,6 @@ function buildWorld(model: GardenWorldModel, direction: GardenVisualDirection): 
     root.add(twilight
       ? buildGardenPath(visual.groundColor)
       : buildGardenPath(visual.groundColor, styleMaterials));
-  }
-
-  const trunkGeometry = new THREE.CylinderGeometry(
-    model.trunkRadius * 0.56,
-    model.trunkRadius,
-    model.trunkHeight,
-    direction.foliageForm === "painted-botanical" ? 14 : 10,
-  );
-  const trunk = new THREE.Mesh(
-    trunkGeometry,
-    twilight
-      ? new THREE.MeshStandardMaterial({
-        color: direction.palette.trunk,
-        map: null,
-        roughness: 0.96,
-        metalness: 0,
-        flatShading: true,
-      })
-      : styleMaterials.standard("trunk", { color: direction.palette.trunk }),
-  );
-  trunk.position.y = model.trunkHeight / 2;
-  trunk.castShadow = true;
-  trunk.receiveShadow = true;
-  root.add(trunk);
-  if (styleMaterials.hasInkOutline()) {
-    const trunkOutline = new THREE.Mesh(trunkGeometry, styleMaterials.outline("trunk"));
-    trunkOutline.name = "hero-tree-ink-edge";
-    trunkOutline.position.copy(trunk.position);
-    trunkOutline.scale.setScalar(direction.material?.outlineScale ?? 1.035);
-    root.add(trunkOutline);
   }
 
   const canopy = buildCanopy(model, visual.foliageColors, direction, styleMaterials);
@@ -673,6 +631,54 @@ function buildWorld(model: GardenWorldModel, direction: GardenVisualDirection): 
   return { root, canopy, particles, birds, groundWildlife, styleMaterials, styleTargets };
 }
 
+function buildGroundLayers(
+  direction: GardenVisualDirection,
+  color: string,
+  texture: THREE.Texture | null,
+  styleMaterials: GardenStyleMaterialFactory,
+  twilight: boolean,
+): THREE.InstancedMesh {
+  const count = direction.composition.groundLayers;
+  const geometry = singleMaterialGeometry(organicGroundGeometry(
+    6.2,
+    6.65,
+    0.5,
+    direction.foliageForm === "paper-relief" ? 36 : 48,
+    0,
+  ));
+  const material = twilight
+    ? new THREE.MeshStandardMaterial({
+      color: "#ffffff",
+      map: texture,
+      roughness: 1,
+      metalness: 0,
+      flatShading: direction.foliageForm !== "painted-botanical",
+    })
+    : styleMaterials.standard("ground", { color: "#ffffff" });
+  const mesh = new THREE.InstancedMesh(geometry, material, count);
+  mesh.name = "garden-ground-layers";
+  const transform = new THREE.Object3D();
+  for (let layer = 0; layer < count; layer += 1) {
+    transform.position.set(0, -0.25 - layer * 0.07, 0);
+    const scale = 1 - layer * 0.014;
+    transform.scale.set(scale, 1, scale);
+    transform.updateMatrix();
+    mesh.setMatrixAt(layer, transform.matrix);
+    mesh.setColorAt(
+      layer,
+      new THREE.Color(color).offsetHSL(
+        0,
+        0,
+        layer * (direction.foliageForm === "paper-relief" ? 0.028 : -0.014),
+      ),
+    );
+  }
+  mesh.instanceMatrix.needsUpdate = true;
+  if (mesh.instanceColor !== null) mesh.instanceColor.needsUpdate = true;
+  mesh.receiveShadow = true;
+  return mesh;
+}
+
 function qualityHintFor(model: GardenWorldModel): "low" | "balanced" | "high" {
   if (model.quality.pixelRatioLimit <= 1) return "low";
   if (model.quality.pixelRatioLimit >= 2) return "high";
@@ -727,6 +733,9 @@ const instancedDetailKinds = new Set<GardenDetail["kind"]>([
   "blossoms",
   "drifting-life",
   "clouds",
+  "ripples",
+  "warm-light",
+  "wind",
   "twilight-stars",
 ]);
 
@@ -745,22 +754,6 @@ function buildDetailObjects(
     return true;
   });
   const objects: THREE.Object3D[] = [];
-  const roots = details.filter((detail) => detail.kind === "roots");
-  if (roots.length > 0) {
-    objects.push(
-      buildInstancedCylinders(
-        roots.map((detail) => ({
-          start: new THREE.Vector3(0, 0.065, 0),
-          end: new THREE.Vector3(detail.x, detail.y, detail.z),
-          radius: 0.045 * detail.scale,
-          color: resolveDetailColor(detail.color, detail.kind, direction),
-        })),
-        styleMaterials,
-        "trunk",
-      ),
-    );
-  }
-
   for (const kind of instancedDetailKinds) {
     const matching = details.filter((detail) => detail.kind === kind);
     if (matching.length > 0) {
@@ -780,10 +773,24 @@ function buildInstancedBranches(
   model: GardenWorldModel,
   direction: GardenVisualDirection,
   styleMaterials: GardenStyleMaterialFactory,
-): THREE.InstancedMesh | null {
-  const segments = model.foliage.flatMap((cluster, index) =>
-    index > 0 && index % 2 === 0
-      ? [{
+): THREE.Object3D | null {
+  const trunkColor = resolveVisualModel(model, direction).trunkColor;
+  const segments = [
+    {
+      start: new THREE.Vector3(0, 0, 0),
+      end: new THREE.Vector3(0, model.trunkHeight, 0),
+      radius: model.trunkRadius,
+      color: trunkColor,
+    },
+    ...model.details.filter((detail) => detail.kind === "roots").map((detail) => ({
+      start: new THREE.Vector3(0, 0.065, 0),
+      end: new THREE.Vector3(detail.x, detail.y, detail.z),
+      radius: 0.045 * detail.scale,
+      color: resolveDetailColor(detail.color, detail.kind, direction),
+    })),
+    ...model.foliage.flatMap((cluster, index) =>
+      index > 0 && index % 2 === 0
+        ? [{
         start: new THREE.Vector3(
           cluster.x * 0.08,
           Math.min(model.trunkHeight * 0.7, cluster.y * 0.64),
@@ -791,11 +798,36 @@ function buildInstancedBranches(
         ),
         end: new THREE.Vector3(cluster.x * 0.82, cluster.y * 0.94, cluster.z * 0.82),
         radius: model.trunkRadius * (index % 4 === 0 ? 0.24 : 0.19),
-        color: direction.palette.trunk,
+        color: trunkColor,
       }]
       : [],
-  );
-  return segments.length > 0 ? buildInstancedCylinders(segments, styleMaterials, "trunk") : null;
+    ),
+  ];
+  if (segments.length === 0) return null;
+  const sides = direction.foliageForm === "painted-botanical" ? 14 : 10;
+  const mesh = buildInstancedCylinders(segments, styleMaterials, "trunk", sides);
+  mesh.name = "hero-trunk-roots-and-branches";
+  const group = new THREE.Group();
+  group.add(mesh);
+  if (styleMaterials.hasInkOutline()) {
+    const outline = new THREE.InstancedMesh(
+      mesh.geometry,
+      styleMaterials.outline("trunk"),
+      1,
+    );
+    const matrix = new THREE.Matrix4();
+    mesh.getMatrixAt(0, matrix);
+    matrix.scale(new THREE.Vector3(
+      direction.material?.outlineScale ?? 1.035,
+      direction.material?.outlineScale ?? 1.035,
+      direction.material?.outlineScale ?? 1.035,
+    ));
+    outline.setMatrixAt(0, matrix);
+    outline.instanceMatrix.needsUpdate = true;
+    outline.name = "hero-tree-ink-edge";
+    group.add(outline);
+  }
+  return group;
 }
 
 function buildInstancedCylinders(
@@ -807,8 +839,9 @@ function buildInstancedCylinders(
   }>,
   styleMaterials?: GardenStyleMaterialFactory,
   role: "trunk" | "rock" = "rock",
+  sides = 10,
 ): THREE.InstancedMesh {
-  const geometry = new THREE.CylinderGeometry(0.7, 1, 1, 7);
+  const geometry = singleMaterialGeometry(new THREE.CylinderGeometry(0.56, 1, 1, sides));
   const material = styleMaterials?.standard(role) ?? new THREE.MeshStandardMaterial({
     color: "#ffffff",
     roughness: 0.96,
@@ -831,6 +864,7 @@ function buildInstancedCylinders(
   mesh.instanceMatrix.needsUpdate = true;
   if (mesh.instanceColor !== null) mesh.instanceColor.needsUpdate = true;
   mesh.castShadow = true;
+  mesh.receiveShadow = true;
   return mesh;
 }
 
@@ -841,7 +875,7 @@ function buildInstancedDetailKind(
   model: GardenWorldModel,
   styleMaterials: GardenStyleMaterialFactory,
 ): THREE.Object3D {
-  if (kind === "clouds") return buildCloudBanks(details, direction, model, styleMaterials);
+  if (kind === "clouds") return buildInstancedCloudBanks(details, direction, model);
   const geometry = detailGeometry(kind, styleMaterials);
   const material = detailMaterial(kind, model, direction, styleMaterials);
   const mesh = new THREE.InstancedMesh(geometry, material, details.length);
@@ -857,6 +891,19 @@ function buildInstancedDetailKind(
     case "stones":
       transform.rotation.set(detail.rotation * 0.12, detail.rotation, detail.rotation * 0.08);
       transform.scale.set(detail.scale, detail.scale * 0.36, detail.scale * 0.72);
+      break;
+    case "ripples":
+      transform.rotation.set(-Math.PI / 2, detail.rotation, 0);
+      transform.scale.set(detail.scale * 1.38, detail.scale, detail.scale);
+      break;
+    case "warm-light":
+      transform.position.y = 0.03;
+      transform.rotation.x = -Math.PI / 2;
+      transform.scale.setScalar(detail.scale * 0.62);
+      break;
+    case "wind":
+      transform.rotation.set(0.08, detail.rotation, detail.rotation * 0.06);
+      transform.scale.setScalar(detail.scale);
       break;
     case "undergrowth":
       transform.position.y = 0.025;
@@ -904,37 +951,43 @@ function buildInstancedDetailKind(
   return mesh;
 }
 
-function buildCloudBanks(
+function buildInstancedCloudBanks(
   details: GardenDetail[],
   direction: GardenVisualDirection,
   model: GardenWorldModel,
-  styleMaterials: GardenStyleMaterialFactory,
-): THREE.Group {
-  const group = new THREE.Group();
-  group.name = "air-iii-authored-cloud-banks";
+): THREE.InstancedMesh {
   const texture = createCloudBankTexture();
   const visual = resolveVisualModel(model, direction);
   const opacity = visual.dayPhase === "day" ? 0.25 : visual.dayPhase === "night" ? 0.09 : 0.16;
+  const mesh = new THREE.InstancedMesh(
+    new THREE.PlaneGeometry(1, 1),
+    new THREE.MeshBasicMaterial({
+      map: texture,
+      color: "#ffffff",
+      transparent: true,
+      opacity,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+    }),
+    details.length,
+  );
+  mesh.name = "air-iii-authored-cloud-banks";
+  const transform = new THREE.Object3D();
   for (const [index, detail] of details.entries()) {
-    const sprite = new THREE.Sprite(
-      new THREE.SpriteMaterial({
-        map: texture,
-        color: resolveDetailColor(detail.color, detail.kind, direction),
-        transparent: true,
-        opacity,
-        depthWrite: false,
-        rotation: detail.rotation * 0.16,
-      }),
-    );
-    sprite.position.set(detail.x, detail.y, detail.z);
-    sprite.scale.set(
+    transform.position.set(detail.x, detail.y, detail.z);
+    transform.rotation.set(0, 0, detail.rotation * 0.16);
+    transform.scale.set(
       detail.scale * (index % 2 === 0 ? 3.65 : 3.05),
       detail.scale * (index % 3 === 0 ? 0.92 : 1.06),
       1,
     );
-    group.add(sprite);
+    transform.updateMatrix();
+    mesh.setMatrixAt(index, transform.matrix);
+    mesh.setColorAt(index, new THREE.Color(resolveDetailColor(detail.color, detail.kind, direction)));
   }
-  return group;
+  mesh.instanceMatrix.needsUpdate = true;
+  if (mesh.instanceColor !== null) mesh.instanceColor.needsUpdate = true;
+  return mesh;
 }
 
 function createCloudBankTexture(): THREE.CanvasTexture {
@@ -984,6 +1037,16 @@ function detailGeometry(
     return treatment === "rounded-inflated" || treatment === "moulded-clay"
       ? new THREE.SphereGeometry(1, 12, 8)
       : new THREE.DodecahedronGeometry(1, 0);
+  case "ripples": return new THREE.RingGeometry(0.38, 0.405, 36, 1, 0, Math.PI * 1.34);
+  case "warm-light": return new THREE.CircleGeometry(1, 28);
+  case "wind": {
+    const curve = new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3(-1, 0, 0),
+      new THREE.Vector3(0, 0.24, 0.14),
+      new THREE.Vector3(1, 0, 0.28),
+    );
+    return new THREE.TubeGeometry(curve, 24, 0.008, 3, false);
+  }
   case "drifting-life": return floatingLeafGeometry();
   case "clouds": return new THREE.SphereGeometry(1, 12, 7);
   case "twilight-stars": return new THREE.SphereGeometry(1, 6, 4);
@@ -1024,6 +1087,44 @@ function detailMaterial(
       color: "#ffffff",
       transparent: true,
       opacity: visual.dayPhase === "day" ? 0.2 : visual.dayPhase === "night" ? 0.09 : 0.15,
+      depthWrite: false,
+    });
+  case "ripples":
+    return styleMaterials?.basic("water", {
+      color: "#ffffff",
+      transparent: true,
+      opacity: 0.28,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+    }) ?? new THREE.MeshBasicMaterial({
+      color: "#ffffff",
+      transparent: true,
+      opacity: 0.28,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+    });
+  case "warm-light":
+    return styleMaterials?.basic("celestial", {
+      color: "#ffffff",
+      transparent: true,
+      opacity: model.dayPhase === "day" ? 0.025 : 0.08,
+      depthWrite: false,
+    }) ?? new THREE.MeshBasicMaterial({
+      color: "#ffffff",
+      transparent: true,
+      opacity: model.dayPhase === "day" ? 0.025 : 0.08,
+      depthWrite: false,
+    });
+  case "wind":
+    return styleMaterials?.basic("celestial", {
+      color: "#ffffff",
+      transparent: true,
+      opacity: model.dayPhase === "day" ? 0.1 : 0.16,
+      depthWrite: false,
+    }) ?? new THREE.MeshBasicMaterial({
+      color: "#ffffff",
+      transparent: true,
+      opacity: model.dayPhase === "day" ? 0.1 : 0.16,
       depthWrite: false,
     });
   case "drifting-life":
@@ -1651,16 +1752,6 @@ function buildDetail(
   const position = new THREE.Vector3(detail.x, detail.y, detail.z);
   const color = resolveDetailColor(detail.color, detail.kind, direction);
   switch (detail.kind) {
-  case "roots": {
-    const root = cylinderBetween(
-      new THREE.Vector3(0, 0.065, 0),
-      position,
-      0.045 * detail.scale,
-      color,
-      styleMaterials.standard("trunk", { color }),
-    );
-    return root;
-  }
   case "stones": {
     const stone = new THREE.Mesh(
       detailGeometry("stones", styleMaterials),
@@ -1870,72 +1961,44 @@ function buildDetail(
   }
   case "moon": {
     const visual = resolveVisualModel(model, direction);
-    const moon = new THREE.Group();
-    moon.name = "space-ii-moon";
-    const disc = new THREE.Sprite(
-      new THREE.SpriteMaterial({
-        map: createMoonDiscTexture(),
-        color,
-        transparent: true,
-        opacity: visual.moonOpacity,
-        depthWrite: false,
-      }),
-    );
-    disc.scale.set(detail.scale * 2, detail.scale * 2, 1);
-    disc.renderOrder = 1;
-    const halo = new THREE.Sprite(
-      new THREE.SpriteMaterial({
-        map: createMoonHaloTexture(),
-        color: visual.celestialGlowColor,
-        transparent: true,
-        opacity: visual.moonOpacity * 0.46,
-        depthWrite: false,
-      }),
-    );
-    halo.scale.setScalar(detail.scale * 3.25);
-    halo.renderOrder = 0;
-    moon.add(halo, disc);
+    const moon = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: createMoonTexture(),
+      color: "#ffffff",
+      transparent: true,
+      opacity: visual.moonOpacity,
+      depthWrite: false,
+    }));
+    moon.name = "space-ii-moon-and-halo";
+    moon.scale.setScalar(detail.scale * 3.25);
     moon.position.copy(position);
     return moon;
   }
   case "sanctuary": {
     return buildGardenPavilion(detail, direction, model, styleMaterials);
   }
+  default:
+    throw new Error(`Unsupported direct garden detail: ${detail.kind}`);
   }
 }
 
-function createMoonHaloTexture(): THREE.CanvasTexture {
-  const canvas = document.createElement("canvas");
-  canvas.width = 128;
-  canvas.height = 128;
-  const context = canvas.getContext("2d");
-  if (context === null) throw new Error("Garden moon halo texture context is unavailable.");
-  const gradient = context.createRadialGradient(64, 64, 22, 64, 64, 62);
-  gradient.addColorStop(0, "rgba(255, 246, 216, 0.16)");
-  gradient.addColorStop(0.42, "rgba(255, 229, 178, 0.14)");
-  gradient.addColorStop(0.72, "rgba(238, 188, 126, 0.055)");
-  gradient.addColorStop(1, "rgba(238, 188, 126, 0)");
-  context.fillStyle = gradient;
-  context.fillRect(0, 0, 128, 128);
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.minFilter = THREE.LinearFilter;
-  texture.magFilter = THREE.LinearFilter;
-  texture.needsUpdate = true;
-  return texture;
-}
-
-function createMoonDiscTexture(): THREE.CanvasTexture {
+function createMoonTexture(): THREE.CanvasTexture {
   const canvas = document.createElement("canvas");
   canvas.width = 160;
   canvas.height = 160;
   const context = canvas.getContext("2d");
-  if (context === null) throw new Error("Garden moon disc texture context is unavailable.");
-  const gradient = context.createRadialGradient(68, 58, 8, 80, 80, 61);
-  gradient.addColorStop(0, "rgba(255, 250, 226, 0.98)");
-  gradient.addColorStop(0.72, "rgba(235, 227, 201, 0.96)");
-  gradient.addColorStop(1, "rgba(198, 207, 201, 0.9)");
-  context.fillStyle = gradient;
+  if (context === null) throw new Error("Garden moon halo texture context is unavailable.");
+  const halo = context.createRadialGradient(80, 80, 24, 80, 80, 79);
+  halo.addColorStop(0, "rgba(255, 246, 216, 0.12)");
+  halo.addColorStop(0.48, "rgba(255, 229, 178, 0.13)");
+  halo.addColorStop(0.76, "rgba(238, 188, 126, 0.055)");
+  halo.addColorStop(1, "rgba(238, 188, 126, 0)");
+  context.fillStyle = halo;
+  context.fillRect(0, 0, 160, 160);
+  const disc = context.createRadialGradient(68, 58, 8, 80, 80, 61);
+  disc.addColorStop(0, "rgba(255, 250, 226, 0.98)");
+  disc.addColorStop(0.72, "rgba(235, 227, 201, 0.96)");
+  disc.addColorStop(1, "rgba(198, 207, 201, 0.9)");
+  context.fillStyle = disc;
   context.beginPath();
   context.arc(80, 80, 60, 0, Math.PI * 2);
   context.fill();
@@ -1951,6 +2014,59 @@ function createMoonDiscTexture(): THREE.CanvasTexture {
   texture.magFilter = THREE.LinearFilter;
   texture.needsUpdate = true;
   return texture;
+}
+
+interface GardenPartTransform {
+  position: [number, number, number];
+  rotation?: [number, number, number];
+  scale?: [number, number, number];
+}
+
+function singleMaterialGeometry(geometry: THREE.BufferGeometry): THREE.BufferGeometry {
+  geometry.clearGroups();
+  return geometry;
+}
+
+function uniformVertexColorGeometry(geometry: THREE.BufferGeometry, color: string): THREE.BufferGeometry {
+  const positions = geometry.getAttribute("position");
+  const value = new THREE.Color(color);
+  const colors = new Float32Array(positions.count * 3);
+  for (let index = 0; index < positions.count; index += 1) {
+    const offset = index * 3;
+    colors[offset] = value.r;
+    colors[offset + 1] = value.g;
+    colors[offset + 2] = value.b;
+  }
+  geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+  return geometry;
+}
+
+export function mergeStaticGeometry(parts: Array<GardenPartTransform & { geometry: THREE.BufferGeometry }>): THREE.BufferGeometry {
+  const transform = new THREE.Object3D();
+  const sourceGeometries = parts.map((part) => {
+    const geometry = singleMaterialGeometry(part.geometry.clone());
+    transform.position.set(...part.position);
+    transform.rotation.set(...(part.rotation ?? [0, 0, 0]));
+    transform.scale.set(...(part.scale ?? [1, 1, 1]));
+    transform.updateMatrix();
+    geometry.applyMatrix4(transform.matrix);
+    return geometry;
+  });
+  const indexedStates = new Set(sourceGeometries.map((geometry) => geometry.index !== null));
+  const geometries = indexedStates.size > 1
+    ? sourceGeometries.map((geometry) => {
+      if (geometry.index === null) return geometry;
+      return geometry.toNonIndexed();
+    })
+    : sourceGeometries;
+  try {
+    const merged = mergeGeometries(geometries, false);
+    if (merged === null) throw new Error("Pavilion geometry could not be merged.");
+    return merged;
+  } finally {
+    for (const geometry of new Set([...sourceGeometries, ...geometries])) geometry.dispose();
+    for (const geometry of new Set(parts.map((part) => part.geometry))) geometry.dispose();
+  }
 }
 
 function buildGardenPavilion(
@@ -1998,14 +2114,14 @@ function buildGardenPavilion(
       side: THREE.DoubleSide,
     });
 
-  const plinth = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.16, 1.5), stoneMaterial);
+  const plinth = new THREE.Mesh(singleMaterialGeometry(new THREE.BoxGeometry(2.5, 0.16, 1.5)), stoneMaterial);
   plinth.position.y = 0.12;
   plinth.castShadow = true;
   plinth.receiveShadow = true;
   pavilion.add(plinth);
 
   const floor = new THREE.Mesh(
-    new THREE.BoxGeometry(2.18, 0.1, 1.3),
+    singleMaterialGeometry(new THREE.BoxGeometry(2.18, 0.1, 1.3)),
     twilight
       ? new THREE.MeshStandardMaterial({
         color: timber.clone().offsetHSL(0, -0.04, 0.08),
@@ -2022,27 +2138,27 @@ function buildGardenPavilion(
   pavilion.add(floor);
 
   const columnGeometry = new THREE.CylinderGeometry(0.052, 0.07, 1.34, 6);
-  for (const x of [-0.88, 0.88]) {
-    for (const z of [-0.49, 0.49]) {
-      const column = new THREE.Mesh(columnGeometry, timberMaterial);
-      column.position.set(x, 0.98, z);
-      column.castShadow = true;
-      pavilion.add(column);
-    }
-  }
-
-  for (const z of [-0.5, 0.5]) {
-    const beam = new THREE.Mesh(new THREE.BoxGeometry(2.26, 0.1, 0.085), timberMaterial);
-    beam.position.set(0, 1.61, z);
-    beam.castShadow = true;
-    pavilion.add(beam);
-  }
-  for (const x of [-0.92, 0.92]) {
-    const beam = new THREE.Mesh(new THREE.BoxGeometry(0.085, 0.085, 1.18), timberMaterial);
-    beam.position.set(x, 1.56, 0);
-    beam.castShadow = true;
-    pavilion.add(beam);
-  }
+  const frontBeamGeometry = new THREE.BoxGeometry(2.26, 0.1, 0.085);
+  const sideBeamGeometry = new THREE.BoxGeometry(0.085, 0.085, 1.18);
+  const ridgeGeometry = new THREE.BoxGeometry(0.075, 0.07, 1.76);
+  const timberStructure = new THREE.Mesh(mergeStaticGeometry([
+    ...[-0.88, 0.88].flatMap((x) => [-0.49, 0.49].map((z) => ({
+      geometry: columnGeometry,
+      position: [x, 0.98, z] as [number, number, number],
+    }))),
+    ...[-0.5, 0.5].map((z) => ({
+      geometry: frontBeamGeometry,
+      position: [0, 1.61, z] as [number, number, number],
+    })),
+    ...[-0.92, 0.92].map((x) => ({
+      geometry: sideBeamGeometry,
+      position: [x, 1.56, 0] as [number, number, number],
+    })),
+    { geometry: ridgeGeometry, position: [0, 2.29, 0] },
+  ]), timberMaterial);
+  timberStructure.name = "pavilion-timber-structure";
+  timberStructure.castShadow = true;
+  pavilion.add(timberStructure);
 
   const roofGeometry = new THREE.BufferGeometry();
   roofGeometry.setAttribute(
@@ -2071,23 +2187,21 @@ function buildGardenPavilion(
     pavilion.add(roofEdge);
   }
 
-  for (const z of [-0.88, 0.88]) {
-    const fascia = new THREE.Mesh(new THREE.BoxGeometry(2.96, 0.07, 0.07), roofMaterial);
-    fascia.position.set(0, 1.705, z);
-    fascia.castShadow = true;
-    pavilion.add(fascia);
-  }
-  for (const x of [-1.45, 1.45]) {
-    const fascia = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.07, 1.76), roofMaterial);
-    fascia.position.set(x, 1.705, 0);
-    fascia.castShadow = true;
-    pavilion.add(fascia);
-  }
-
-  const ridge = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.07, 1.76), timberMaterial);
-  ridge.position.y = 2.29;
-  ridge.castShadow = true;
-  pavilion.add(ridge);
+  const longFasciaGeometry = new THREE.BoxGeometry(2.96, 0.07, 0.07);
+  const sideFasciaGeometry = new THREE.BoxGeometry(0.07, 0.07, 1.76);
+  const fascia = new THREE.Mesh(mergeStaticGeometry([
+    ...[-0.88, 0.88].map((z) => ({
+      geometry: longFasciaGeometry,
+      position: [0, 1.705, z] as [number, number, number],
+    })),
+    ...[-1.45, 1.45].map((x) => ({
+      geometry: sideFasciaGeometry,
+      position: [x, 1.705, 0] as [number, number, number],
+    })),
+  ]), roofMaterial);
+  fascia.name = "pavilion-roof-fascia";
+  fascia.castShadow = true;
+  pavilion.add(fascia);
 
   const interiorWarmth = new THREE.Mesh(
     new THREE.PlaneGeometry(1.25, 0.72),
@@ -2125,6 +2239,14 @@ function floatingLeafGeometry(): THREE.ShapeGeometry {
   return new THREE.ShapeGeometry(shape, 5);
 }
 
+interface InstancedBirdParts {
+  body: THREE.InstancedMesh;
+  bodyOutline: THREE.InstancedMesh | null;
+  wings: THREE.InstancedMesh;
+}
+
+const instancedBirdParts = new WeakMap<THREE.Group, InstancedBirdParts>();
+
 function buildBirds(
   model: GardenWorldModel,
   direction: GardenVisualDirection,
@@ -2132,57 +2254,74 @@ function buildBirds(
 ): THREE.Group {
   const flock = new THREE.Group();
   flock.name = "air-ii-bird-flock";
+  if (model.birds.length === 0) return flock;
+
+  const treatment = styleMaterials.profile.geometryTreatment;
+  const birdGeometry = treatment === "faceted-miniature"
+    ? new THREE.DodecahedronGeometry(1, 0)
+    : new THREE.SphereGeometry(1, 8, 5);
+  const headGeometry = treatment === "faceted-miniature"
+    ? new THREE.DodecahedronGeometry(0.16, 0)
+    : new THREE.SphereGeometry(0.16, 7, 5);
+  const material = direction.id === "twilight-refuge"
+    ? new THREE.MeshBasicMaterial({ color: "#ffffff", side: THREE.DoubleSide })
+    : styleMaterials.standard("wildlife", { color: "#ffffff", side: THREE.DoubleSide });
+  const bodyMaterial = material.clone();
+  bodyMaterial.vertexColors = true;
+  bodyMaterial.needsUpdate = true;
+  const compositeBodyGeometry = mergeStaticGeometry([
+    {
+      geometry: uniformVertexColorGeometry(birdGeometry, "#ffffff"),
+      position: [0, 0, 0],
+      rotation: [0, 0, -0.08],
+      scale: [0.42, 0.15, 0.13],
+    },
+    {
+      geometry: uniformVertexColorGeometry(headGeometry, "#ffffff"),
+      position: [0.48, 0, 0],
+    },
+    {
+      geometry: uniformVertexColorGeometry(
+        singleMaterialGeometry(new THREE.ConeGeometry(0.075, 0.24, 5)),
+        "#a48b59",
+      ),
+      position: [0.64, 0, 0],
+      rotation: [0, 0, -Math.PI / 2],
+    },
+  ]);
+  const bodyOutlineGeometry = styleMaterials.hasInkOutline()
+    ? compositeBodyGeometry.clone().scale(1.05, 1.05, 1.05)
+    : null;
+  const bodyOutline = bodyOutlineGeometry === null
+    ? null
+    : configureAnimatedWildlifeMesh(
+      new THREE.InstancedMesh(bodyOutlineGeometry, styleMaterials.outline("wildlife"), model.birds.length),
+    );
+  const body = configureAnimatedWildlifeMesh(
+    new THREE.InstancedMesh(compositeBodyGeometry, bodyMaterial, model.birds.length),
+  );
+  const wings = configureAnimatedWildlifeMesh(new THREE.InstancedMesh(
+    birdWingGeometry(1), material, model.birds.length * 2,
+  ));
+  body.name = "air-ii-bird-bodies-and-heads";
+  wings.name = "air-ii-bird-wings";
+  if (bodyOutline !== null) bodyOutline.name = "air-ii-bird-body-edges";
+  if (bodyOutline !== null) flock.add(bodyOutline);
+  flock.add(body, wings);
   for (const [index, bird] of model.birds.entries()) {
-    const figure = new THREE.Group();
-    figure.name = `garden-bird-${index + 1}`;
-    const material = direction.id === "twilight-refuge"
-      ? new THREE.MeshBasicMaterial({ color: bird.color, side: THREE.DoubleSide })
-      : styleMaterials.standard("wildlife", { color: bird.color, side: THREE.DoubleSide });
-    const birdGeometry = styleMaterials.profile.geometryTreatment === "faceted-miniature"
-      ? new THREE.DodecahedronGeometry(1, 0)
-      : new THREE.SphereGeometry(1, 8, 5);
-    const body = new THREE.Mesh(birdGeometry, material);
-    body.scale.set(0.42, 0.15, 0.13);
-    body.rotation.z = -0.08;
-    if (styleMaterials.hasInkOutline()) {
-      const bodyEdge = new THREE.Mesh(birdGeometry, styleMaterials.outline("wildlife"));
-      bodyEdge.position.copy(body.position);
-      bodyEdge.rotation.copy(body.rotation);
-      bodyEdge.scale.copy(body.scale).multiplyScalar(1.05);
-      figure.add(bodyEdge);
-    }
-    figure.add(body);
-
-    const head = new THREE.Mesh(
-      styleMaterials.profile.geometryTreatment === "faceted-miniature"
-        ? new THREE.DodecahedronGeometry(0.16, 0)
-        : new THREE.SphereGeometry(0.16, 7, 5),
-      material,
-    );
-    head.position.x = 0.48;
-    figure.add(head);
-
-    const beak = new THREE.Mesh(
-      new THREE.ConeGeometry(0.075, 0.24, 5),
-      new THREE.MeshBasicMaterial({ color: "#a48b59" }),
-    );
-    beak.position.x = 0.64;
-    beak.rotation.z = -Math.PI / 2;
-    figure.add(beak);
-
-    const leftWing = buildBirdWing(1, material);
-    leftWing.name = "bird-wing-left";
-    leftWing.position.set(-0.08, 0.05, 0);
-    figure.add(leftWing);
-    const rightWing = buildBirdWing(-1, material);
-    rightWing.name = "bird-wing-right";
-    rightWing.position.set(-0.08, 0.05, 0);
-    figure.add(rightWing);
-
-    figure.scale.setScalar(bird.scale);
-    applyBirdPresentation(figure, resolveBirdSettledPresentation(bird));
-    flock.add(figure);
+    const color = new THREE.Color(bird.color);
+    body.setColorAt(index, color);
+    wings.setColorAt(index * 2, color);
+    wings.setColorAt(index * 2 + 1, color);
   }
+  for (const mesh of [bodyOutline, body, wings]) {
+    if (mesh?.instanceColor !== null && mesh?.instanceColor !== undefined) {
+      mesh.instanceColor.needsUpdate = true;
+    }
+  }
+  const parts = { body, bodyOutline, wings };
+  instancedBirdParts.set(flock, parts);
+  setBirdInstanceMatrices(flock, model);
   return flock;
 }
 
@@ -2252,32 +2391,56 @@ export function resolveBirdSettledPresentation(bird: GardenBird): GardenBirdPres
 }
 
 function animateBirds(flock: THREE.Group, model: GardenWorldModel, now: number): void {
-  for (const [index, figure] of flock.children.entries()) {
-    const bird = model.birds[index];
-    if (!(figure instanceof THREE.Group) || bird === undefined) continue;
-    applyBirdPresentation(figure, resolveBirdPresentation(bird, now));
-  }
+  setBirdInstanceMatrices(flock, model, now);
 }
 
 function settleBirds(flock: THREE.Group, model: GardenWorldModel): void {
-  for (const [index, figure] of flock.children.entries()) {
-    const bird = model.birds[index];
-    if (!(figure instanceof THREE.Group) || bird === undefined) continue;
-    applyBirdPresentation(figure, resolveBirdSettledPresentation(bird));
-  }
+  setBirdInstanceMatrices(flock, model);
 }
 
-function applyBirdPresentation(
-  figure: THREE.Group,
-  presentation: GardenBirdPresentation,
+function setBirdInstanceMatrices(
+  flock: THREE.Group,
+  model: GardenWorldModel,
+  now?: number,
 ): void {
-  figure.position.set(...presentation.position);
-  figure.rotation.y = presentation.yaw;
-  figure.rotation.z = presentation.roll;
-  const leftWing = figure.getObjectByName("bird-wing-left");
-  const rightWing = figure.getObjectByName("bird-wing-right");
-  if (leftWing !== undefined) leftWing.rotation.x = 0.1 + presentation.wingFlap;
-  if (rightWing !== undefined) rightWing.rotation.x = -0.1 - presentation.wingFlap;
+  const parts = instancedBirdParts.get(flock);
+  if (parts === undefined) return;
+  const parent = new THREE.Object3D();
+  const part = new THREE.Object3D();
+  const matrix = new THREE.Matrix4();
+  const write = (
+    mesh: THREE.InstancedMesh,
+    index: number,
+    position: [number, number, number],
+    rotation: [number, number, number],
+    scale: [number, number, number],
+  ): void => {
+    part.position.set(...position);
+    part.rotation.set(...rotation);
+    part.scale.set(...scale);
+    part.updateMatrix();
+    matrix.multiplyMatrices(parent.matrix, part.matrix);
+    mesh.setMatrixAt(index, matrix);
+  };
+
+  for (const [index, bird] of model.birds.entries()) {
+    const presentation = now === undefined
+      ? resolveBirdSettledPresentation(bird)
+      : resolveBirdPresentation(bird, now);
+    parent.position.set(...presentation.position);
+    parent.rotation.set(0, presentation.yaw, presentation.roll);
+    parent.scale.setScalar(bird.scale);
+    parent.updateMatrix();
+    write(parts.body, index, [0, 0, 0], [0, 0, 0], [1, 1, 1]);
+    if (parts.bodyOutline !== null) {
+      write(parts.bodyOutline, index, [0, 0, 0], [0, 0, 0], [1, 1, 1]);
+    }
+    write(parts.wings, index * 2, [-0.08, 0.05, 0], [0.1 + presentation.wingFlap, 0, 0], [1, 1, 1]);
+    write(parts.wings, index * 2 + 1, [-0.08, 0.05, 0], [-0.1 - presentation.wingFlap, 0, 0], [1, 1, -1]);
+  }
+  for (const mesh of [parts.bodyOutline, parts.body, parts.wings]) {
+    if (mesh !== null) mesh.instanceMatrix.needsUpdate = true;
+  }
 }
 
 function positiveModulo(value: number, modulus: number): number {
@@ -2289,8 +2452,7 @@ function interpolateAngle(from: number, to: number, progress: number): number {
   return from + delta * progress;
 }
 
-function buildBirdWing(side: 1 | -1, material: THREE.Material): THREE.Group {
-  const wing = new THREE.Group();
+function birdWingGeometry(side: 1 | -1): THREE.BufferGeometry {
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute(
     "position",
@@ -2304,9 +2466,7 @@ function buildBirdWing(side: 1 | -1, material: THREE.Material): THREE.Group {
   );
   geometry.setIndex([0, 1, 4, 1, 2, 3, 1, 3, 4]);
   geometry.computeVertexNormals();
-  wing.add(new THREE.Mesh(geometry, material));
-  wing.rotation.x = side * 0.1;
-  return wing;
+  return geometry;
 }
 
 function buildGroundWildlife(
@@ -2314,144 +2474,141 @@ function buildGroundWildlife(
   direction: GardenVisualDirection,
   styleMaterials: GardenStyleMaterialFactory,
 ): THREE.Group {
-  const wildlife = new THREE.Group();
-  wildlife.name = "space-iii-grass-wildlife";
-  for (const [index, animal] of model.groundAnimals.entries()) {
-    const hare = buildHare(animal, direction, styleMaterials);
-    hare.name = `garden-hare-${index + 1}`;
-    hare.userData.motionPhase = index * 2.41 + animal.rotation;
-    hare.userData.baseScale = animal.scale;
-    wildlife.add(hare);
-  }
-  return wildlife;
+  return buildInstancedGroundWildlife(model, direction, styleMaterials);
 }
 
-function buildHare(
-  animal: GardenGroundAnimal,
+interface InstancedHareParts {
+  bodyParts: THREE.InstancedMesh;
+  bodyOutline: THREE.InstancedMesh | null;
+  tails: THREE.InstancedMesh;
+}
+
+const instancedHareParts = new WeakMap<THREE.Group, InstancedHareParts>();
+
+function buildInstancedGroundWildlife(
+  model: GardenWorldModel,
   direction: GardenVisualDirection,
   styleMaterials: GardenStyleMaterialFactory,
 ): THREE.Group {
-  const hare = new THREE.Group();
-  const material = direction.id === "twilight-refuge"
-    ? new THREE.MeshStandardMaterial({
-      color: animal.color,
-      roughness: 0.96,
-      metalness: 0,
-      flatShading: true,
-    })
-    : styleMaterials.standard("wildlife", { color: animal.color });
+  const wildlife = new THREE.Group();
+  wildlife.name = "space-iii-grass-wildlife";
+  if (model.groundAnimals.length === 0) return wildlife;
   const treatment = styleMaterials.profile.geometryTreatment;
-  const wildlifeGeometry = treatment === "faceted-miniature"
+  const bodyGeometry = treatment === "faceted-miniature"
     ? new THREE.DodecahedronGeometry(1, 0)
     : new THREE.SphereGeometry(1, treatment === "rounded-inflated" || treatment === "moulded-clay" ? 12 : 9, 6);
-  const body = new THREE.Mesh(wildlifeGeometry, material);
-  const haunch = new THREE.Mesh(wildlifeGeometry, material);
-  const head = new THREE.Mesh(wildlifeGeometry, material);
-  const earGeometry = treatment === "faceted-miniature"
-    ? new THREE.DodecahedronGeometry(1, 0)
-    : new THREE.SphereGeometry(1, 7, 5);
-
-  if (animal.pose === "seated") {
-    body.position.set(0, 0.38, 0);
-    body.scale.set(0.25, 0.43, 0.23);
-    haunch.position.set(-0.18, 0.23, 0);
-    haunch.scale.set(0.34, 0.27, 0.29);
-    head.position.set(0.02, 0.73, 0);
-  } else {
-    body.position.set(0, 0.27, 0);
-    body.scale.set(0.41, 0.25, 0.24);
-    haunch.position.set(-0.28, 0.25, 0);
-    haunch.scale.set(0.3, 0.28, 0.28);
-    head.position.set(0.38, 0.25, 0);
-  }
-  head.scale.set(0.2, 0.22, 0.2);
-  if (styleMaterials.hasInkOutline()) {
-    const bodyEdge = new THREE.Mesh(wildlifeGeometry, styleMaterials.outline("wildlife"));
-    bodyEdge.position.copy(body.position);
-    bodyEdge.rotation.copy(body.rotation);
-    bodyEdge.scale.copy(body.scale).multiplyScalar(1.045);
-    hare.add(bodyEdge);
-  }
-  hare.add(body, haunch, head);
-
-  for (const [index, z] of [-0.075, 0.075].entries()) {
-    const ear = new THREE.Mesh(earGeometry, material);
-    ear.name = `hare-ear-${index + 1}`;
-    ear.position.set(
-      animal.pose === "seated" ? 0 : 0.39,
-      animal.pose === "seated" ? 1.02 : 0.48,
-      z,
-    );
-    ear.scale.set(0.07, 0.25, 0.055);
-    ear.rotation.z = animal.pose === "seated" ? -0.08 + index * 0.12 : -0.72 + index * 0.1;
-    hare.add(ear);
-  }
-
-  const tail = new THREE.Mesh(
-    new THREE.SphereGeometry(0.11, 7, 5),
-    direction.id === "twilight-refuge"
-      ? new THREE.MeshStandardMaterial({
-        color: "#a69b8b",
-        roughness: 0.98,
-        metalness: 0,
-        flatShading: true,
-      })
-      : styleMaterials.standard("wildlife", { color: "#a69b8b" }),
+  const bodyMaterial = direction.id === "twilight-refuge"
+    ? new THREE.MeshStandardMaterial({ color: "#ffffff", roughness: 0.96, metalness: 0, flatShading: true })
+    : styleMaterials.standard("wildlife", { color: "#ffffff" });
+  const tailMaterial = direction.id === "twilight-refuge"
+    ? new THREE.MeshStandardMaterial({ color: "#a69b8b", roughness: 0.98, metalness: 0, flatShading: true })
+    : styleMaterials.standard("wildlife", { color: "#a69b8b" });
+  const bodyParts = configureAnimatedWildlifeMesh(
+    new THREE.InstancedMesh(bodyGeometry, bodyMaterial, model.groundAnimals.length * 5),
   );
-  tail.position.set(-0.45, 0.32, 0);
-  hare.add(tail);
-  hare.position.set(animal.x, 0.08, animal.z);
-  hare.rotation.y = animal.rotation;
-  hare.scale.setScalar(animal.scale);
-  hare.traverse((object) => {
-    if (object instanceof THREE.Mesh) object.castShadow = true;
-  });
-  return hare;
+  const bodyOutline = styleMaterials.hasInkOutline()
+    ? configureAnimatedWildlifeMesh(
+      new THREE.InstancedMesh(bodyGeometry, styleMaterials.outline("wildlife"), model.groundAnimals.length),
+    )
+    : null;
+  const tails = configureAnimatedWildlifeMesh(new THREE.InstancedMesh(
+    new THREE.SphereGeometry(0.11, 7, 5), tailMaterial, model.groundAnimals.length,
+  ));
+  bodyParts.name = "space-iii-hare-body-parts";
+  tails.name = "space-iii-hare-tails";
+  if (bodyOutline !== null) bodyOutline.name = "space-iii-hare-body-edges";
+  if (bodyOutline !== null) wildlife.add(bodyOutline);
+  wildlife.add(bodyParts, tails);
+  for (const [index, animal] of model.groundAnimals.entries()) {
+    const color = new THREE.Color(animal.color);
+    for (let part = 0; part < 5; part += 1) bodyParts.setColorAt(index * 5 + part, color);
+  }
+  for (const mesh of [bodyParts, bodyOutline, tails]) {
+    if (mesh?.instanceColor !== null && mesh?.instanceColor !== undefined) {
+      mesh.instanceColor.needsUpdate = true;
+    }
+    if (mesh !== null) mesh.castShadow = true;
+  }
+  instancedHareParts.set(wildlife, { bodyParts, bodyOutline, tails });
+  wildlife.userData.gardenWorldModel = model;
+  setHareInstanceMatrices(wildlife, model);
+  return wildlife;
 }
 
 function animateGroundWildlife(wildlife: THREE.Group, now: number): void {
-  for (const child of wildlife.children) {
-    if (!(child instanceof THREE.Group)) continue;
-    const phase = Number(child.userData.motionPhase ?? 0);
-    const baseScale = Number(child.userData.baseScale ?? 1);
-    child.scale.set(baseScale, baseScale * (1 + Math.sin(now * 0.0011 + phase) * 0.012), baseScale);
-    const ear = child.getObjectByName("hare-ear-2");
-    if (ear !== undefined) ear.rotation.y = Math.sin(now * 0.0008 + phase) * 0.1;
-  }
+  const model = wildlife.userData.gardenWorldModel as GardenWorldModel | undefined;
+  if (model !== undefined) setHareInstanceMatrices(wildlife, model, now);
 }
 
 function settleGroundWildlife(wildlife: THREE.Group): void {
-  for (const child of wildlife.children) {
-    if (!(child instanceof THREE.Group)) continue;
-    const baseScale = Number(child.userData.baseScale ?? 1);
-    child.scale.setScalar(baseScale);
-    const ear = child.getObjectByName("hare-ear-2");
-    if (ear !== undefined) ear.rotation.y = 0;
-  }
+  const model = wildlife.userData.gardenWorldModel as GardenWorldModel | undefined;
+  if (model !== undefined) setHareInstanceMatrices(wildlife, model);
 }
 
-function cylinderBetween(
-  start: THREE.Vector3,
-  end: THREE.Vector3,
-  radius: number,
-  color = "#6a4d39",
-  material?: THREE.Material,
-): THREE.Mesh {
-  const direction = end.clone().sub(start);
-  const geometry = new THREE.CylinderGeometry(radius * 0.7, radius, direction.length(), 7);
-  const branch = new THREE.Mesh(
-    geometry,
-    material ?? new THREE.MeshStandardMaterial({
-      color,
-      roughness: 0.96,
-      metalness: 0,
-      flatShading: true,
-    }),
-  );
-  branch.position.copy(start).add(end).multiplyScalar(0.5);
-  branch.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.normalize());
-  branch.castShadow = true;
-  return branch;
+function setHareInstanceMatrices(
+  wildlife: THREE.Group,
+  model: GardenWorldModel,
+  now?: number,
+): void {
+  const parts = instancedHareParts.get(wildlife);
+  if (parts === undefined) return;
+  wildlife.userData.gardenWorldModel = model;
+  const parent = new THREE.Object3D();
+  const part = new THREE.Object3D();
+  const matrix = new THREE.Matrix4();
+  const write = (
+    mesh: THREE.InstancedMesh,
+    index: number,
+    position: [number, number, number],
+    rotation: [number, number, number],
+    scale: [number, number, number],
+  ): void => {
+    part.position.set(...position);
+    part.rotation.set(...rotation);
+    part.scale.set(...scale);
+    part.updateMatrix();
+    matrix.multiplyMatrices(parent.matrix, part.matrix);
+    mesh.setMatrixAt(index, matrix);
+  };
+
+  for (const [index, animal] of model.groundAnimals.entries()) {
+    const phase = index * 2.41 + animal.rotation;
+    const bounce = now === undefined ? 0 : Math.sin(now * 0.0011 + phase) * 0.012;
+    const earYaw = now === undefined ? 0 : Math.sin(now * 0.0008 + phase) * 0.1;
+    parent.position.set(animal.x, 0.08, animal.z);
+    parent.rotation.set(0, animal.rotation, 0);
+    parent.scale.set(animal.scale, animal.scale * (1 + bounce), animal.scale);
+    parent.updateMatrix();
+
+    const seated = animal.pose === "seated";
+    const bodyPosition: [number, number, number] = [0, seated ? 0.38 : 0.27, 0];
+    const bodyScale: [number, number, number] = seated ? [0.25, 0.43, 0.23] : [0.41, 0.25, 0.24];
+    const haunchPosition: [number, number, number] = seated ? [-0.18, 0.23, 0] : [-0.28, 0.25, 0];
+    const haunchScale: [number, number, number] = seated ? [0.34, 0.27, 0.29] : [0.3, 0.28, 0.28];
+    const headPosition: [number, number, number] = seated ? [0.02, 0.73, 0] : [0.38, 0.25, 0];
+    const bodyIndex = index * 5;
+    write(parts.bodyParts, bodyIndex, bodyPosition, [0, 0, 0], bodyScale);
+    write(parts.bodyParts, bodyIndex + 1, haunchPosition, [0, 0, 0], haunchScale);
+    write(parts.bodyParts, bodyIndex + 2, headPosition, [0, 0, 0], [0.2, 0.22, 0.2]);
+    if (parts.bodyOutline !== null) {
+      write(parts.bodyOutline, index, bodyPosition, [0, 0, 0], [
+        bodyScale[0] * 1.045, bodyScale[1] * 1.045, bodyScale[2] * 1.045,
+      ]);
+    }
+    for (const [earIndex, z] of [-0.075, 0.075].entries()) {
+      write(
+        parts.bodyParts,
+        bodyIndex + 3 + earIndex,
+        [seated ? 0 : 0.39, seated ? 1.02 : 0.48, z],
+        [0, earIndex === 1 ? earYaw : 0, seated ? -0.08 + earIndex * 0.12 : -0.72 + earIndex * 0.1],
+        [0.07, 0.25, 0.055],
+      );
+    }
+    write(parts.tails, index, [-0.45, 0.32, 0], [0, 0, 0], [1, 1, 1]);
+  }
+  for (const mesh of [parts.bodyParts, parts.bodyOutline, parts.tails]) {
+    if (mesh !== null) mesh.instanceMatrix.needsUpdate = true;
+  }
 }
 
 function configureQuality(
@@ -2469,6 +2626,7 @@ function configureQuality(
     sun.shadow.map.dispose();
     sun.shadow.map = null;
   }
+  renderer.shadowMap.needsUpdate = true;
 }
 
 function buildSkyDome(
@@ -2606,7 +2764,9 @@ export function disposeObjectResources(root: THREE.Object3D): void {
   const geometries = new Set<THREE.BufferGeometry>();
   const materials = new Set<THREE.Material>();
   const textures = new Set<THREE.Texture>();
+  const instancedMeshes = new Set<THREE.InstancedMesh>();
   root.traverse((object) => {
+    if (object instanceof THREE.InstancedMesh) instancedMeshes.add(object);
     if (object instanceof THREE.Mesh || object instanceof THREE.Points) {
       geometries.add(object.geometry);
     }
@@ -2614,6 +2774,7 @@ export function disposeObjectResources(root: THREE.Object3D): void {
     const objectMaterials = Array.isArray(object.material) ? object.material : [object.material];
     for (const material of objectMaterials) materials.add(material);
   });
+  for (const mesh of instancedMeshes) mesh.dispose();
   for (const geometry of geometries) geometry.dispose();
   for (const material of materials) {
     for (const value of Object.values(material)) {

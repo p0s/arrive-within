@@ -98,6 +98,7 @@ public enum ProductStoreError: Error, Equatable, Sendable {
   case couldNotLoadPersistentStore
   case unreadableRecord(entity: String)
   case conflictingEventIdentifier(existingSessionID: UUID)
+  case replacementRequiresLocalStore
   case couldNotPersist
 }
 
@@ -567,6 +568,9 @@ public actor CoreDataProductStore {
         guard expectedRevision == current.revision, entry.revision == current.revision else {
           return .conflict(current: current, attempted: entry)
         }
+        guard current.revision < JournalEntry.maximumPersistedRevision else {
+          throw JournalEntryError.invalidRevision
+        }
         let saved = try entry.persisted(revision: current.revision + 1)
         let record = Self.insert(Entity.journal, context: context)
         try Self.write(saved, audioData: audioData, to: record)
@@ -699,6 +703,66 @@ public actor CoreDataProductStore {
     try await perform { context in
       for entity in Entity.allCases {
         for record in try Self.fetch(entity, context: context) { context.delete(record) }
+      }
+      try Self.save(context)
+    }
+  }
+
+  /// Replaces the complete local product snapshot in one Core Data save.
+  /// Validation happens before this call; a failed save rolls back the whole
+  /// replacement and leaves the prior snapshot intact.
+  public func replaceAllProductData(
+    with restore: PreparedProductDataRestore,
+    modifiedAt: Date
+  ) async throws {
+    guard mode == .localOnly else { throw ProductStoreError.replacementRequiresLocalStore }
+    try await perform { context in
+      for entity in Entity.allCases {
+        for record in try Self.fetch(entity, context: context) { context.delete(record) }
+      }
+
+      let profile = Self.insert(Entity.profile, context: context)
+      profile.setValue(restore.profile.profileGenerationID.uuidString, forKey: "profileGenerationID")
+      profile.setValue(restore.profile.installationID.uuidString, forKey: "installationID")
+      profile.setValue(Int64(restore.profile.schemaVersion), forKey: "schemaVersion")
+      profile.setValue(restore.profile.createdAt, forKey: "createdAt")
+      profile.setValue(restore.profile.resetAt ?? restore.profile.createdAt, forKey: "modifiedAt")
+      profile.setValue(true, forKey: "isActive")
+      profile.setValue(
+        restore.profile.previousProfileGenerationID?.uuidString,
+        forKey: "previousProfileGenerationID"
+      )
+      profile.setValue(restore.profile.resetAt, forKey: "resetAt")
+      profile.setValue(try Self.encode(restore.profile), forKey: "payload")
+
+      for event in restore.events {
+        let record = Self.insert(Entity.event, context: context)
+        record.setValue(event.id.uuidString, forKey: "eventID")
+        record.setValue(event.sessionID.uuidString, forKey: "sessionID")
+        record.setValue(event.profileGenerationID.uuidString, forKey: "profileGenerationID")
+        record.setValue(event.createdAt, forKey: "createdAt")
+        record.setValue(try Self.encode(event), forKey: "payload")
+      }
+
+      let customization = Self.insert(Entity.customization, context: context)
+      customization.setValue(restore.profile.profileGenerationID.uuidString, forKey: "profileGenerationID")
+      customization.setValue(modifiedAt, forKey: "modifiedAt")
+      customization.setValue(try Self.encode(restore.customization), forKey: "payload")
+
+      for entry in restore.journalEntries {
+        let record = Self.insert(Entity.journal, context: context)
+        try Self.write(
+          entry,
+          audioData: restore.journalAudioByEntryID[entry.id],
+          to: record
+        )
+      }
+
+      for identifier in restore.favoritePracticeIDs.sorted() {
+        let record = Self.insert(Entity.favorite, context: context)
+        record.setValue(identifier, forKey: "practiceID")
+        record.setValue(modifiedAt, forKey: "modifiedAt")
+        record.setValue(false, forKey: "removed")
       }
       try Self.save(context)
     }

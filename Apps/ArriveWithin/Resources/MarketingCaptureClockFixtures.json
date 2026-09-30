@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "fixtures": [
+    {
+      "id": "day-v1",
+      "epoch": 1785548460,
+      "instant": "2026-08-01T01:41:00Z",
+      "timezone": "Asia/Singapore",
+      "local_date": "2026-08-01",
+      "local_time": "09:41",
+      "garden_phase": "day"
+    },
+    {
+      "id": "dusk-v1",
+      "epoch": 1785577260,
+      "instant": "2026-08-01T09:41:00Z",
+      "timezone": "Asia/Singapore",
+      "local_date": "2026-08-01",
+      "local_time": "17:41",
+      "garden_phase": "dusk"
+    }
+  ]
+}

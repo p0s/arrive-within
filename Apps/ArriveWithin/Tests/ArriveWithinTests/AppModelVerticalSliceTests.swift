@@ -7,9 +7,368 @@ import Testing
 
 @testable import ArriveWithin
 
+@MainActor
+private final class SuspendedCatalogPurchaseClient: PremiumGardenPurchaseClient {
+  private(set) var catalogRequests = 0
+  private var catalogContinuation: CheckedContinuation<PremiumGardenAccessSnapshot, Never>?
+  private var startedContinuation: CheckedContinuation<Void, Never>?
+  private var completedSnapshot: PremiumGardenAccessSnapshot?
+
+  func refresh() async -> PremiumGardenAccessSnapshot { .unavailable }
+
+  func loadProduct() async -> PremiumGardenAccessSnapshot {
+    catalogRequests += 1
+    if let completedSnapshot { return completedSnapshot }
+    return await withCheckedContinuation { continuation in
+      catalogContinuation = continuation
+      startedContinuation?.resume()
+      startedContinuation = nil
+    }
+  }
+
+  func waitForCatalogRequest() async {
+    guard catalogRequests == 0 else { return }
+    await withCheckedContinuation { startedContinuation = $0 }
+  }
+
+  func finishCatalogRequest() {
+    let snapshot = PremiumGardenAccessSnapshot(
+      isOwned: false, productIsAvailable: true, displayPrice: "$4.99"
+    )
+    completedSnapshot = snapshot
+    catalogContinuation?.resume(returning: snapshot)
+    catalogContinuation = nil
+  }
+
+  func purchase() async throws -> PremiumGardenPurchaseOutcome {
+    throw PremiumGardenPurchaseError.productUnavailable
+  }
+  func restore() async -> PremiumGardenAccessSnapshot { .unavailable }
+  func entitlementUpdates() -> AsyncStream<Void> { AsyncStream { $0.finish() } }
+}
+
 @Suite("Native timer-to-garden vertical slice")
 @MainActor
 struct AppModelVerticalSliceTests {
+  @Test("A cancelled styles view shares its pending catalog load with the reopened view")
+  func cancelledCatalogLoadIsSharedOnReentry() async {
+    let client = SuspendedCatalogPurchaseClient()
+    let events = InMemoryPracticeEventRepository()
+    let directory = FileManager.default.temporaryDirectory
+      .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let model = AppModel(dependencies: AppDependencies(
+      profileRepository: TestProfileRepository(),
+      eventRepository: events,
+      sessionRepository: TestSessionRepository(),
+      preferencesRepository: TestPreferencesRepository(),
+      premiumGardenPurchaseClient: client,
+      completionCoordinator: SessionCompletionCoordinator(repository: events),
+      clock: VirtualSessionClock(moment: SessionMoment(
+        monotonicMilliseconds: 1_000,
+        wallClock: Date(timeIntervalSince1970: 1_786_320_000)
+      )),
+      dataDirectory: directory,
+      audioController: NoOpMeditationAudioController(),
+      timerEndAlertController: NoOpTimerEndAlertController(),
+      hapticController: NoOpMeditationHapticController()
+    ))
+    await model.start()
+    #expect(model.launchPhase == .firstUse)
+    #expect(client.catalogRequests == 0)
+
+    let firstView = Task { await model.loadPremiumGardenProduct() }
+    await client.waitForCatalogRequest()
+    #expect(model.premiumGardenProductIsLoading)
+    firstView.cancel()
+    let reentry = AsyncStream<Void>.makeStream()
+    var entered = reentry.stream.makeAsyncIterator()
+    let reopenedView = Task { @MainActor in
+      reentry.continuation.yield(())
+      reentry.continuation.finish()
+      await model.loadPremiumGardenProduct()
+    }
+    _ = await entered.next()
+    client.finishCatalogRequest()
+    await firstView.value
+    await reopenedView.value
+
+    #expect(client.catalogRequests == 1)
+    #expect(!model.premiumGardenProductIsLoading)
+    #expect(model.premiumGardenAccess.productIsAvailable)
+    #expect(model.premiumGardenAccess.displayPrice == "$4.99")
+    #expect(!model.premiumGardenAccess.isOwned)
+  }
+
+  @Test("A failed timer preference write is visible and does not start practice")
+  func timerSettingsFailureDoesNotStart() async throws {
+    let eventRepository = InMemoryPracticeEventRepository()
+    let model = AppModel(
+      dependencies: AppDependencies(
+        profileRepository: TestProfileRepository(),
+        eventRepository: eventRepository,
+        sessionRepository: TestSessionRepository(),
+        preferencesRepository: RejectingPreferencesRepository(),
+        completionCoordinator: SessionCompletionCoordinator(repository: eventRepository),
+        clock: VirtualSessionClock(
+          moment: SessionMoment(
+            monotonicMilliseconds: 1_000,
+            wallClock: Date(timeIntervalSince1970: 1_786_320_000)
+          )
+        ),
+        dataDirectory: FileManager.default.temporaryDirectory
+          .appending(path: UUID().uuidString, directoryHint: .isDirectory),
+        audioController: NoOpMeditationAudioController(),
+        timerEndAlertController: NoOpTimerEndAlertController(),
+        hapticController: NoOpMeditationHapticController()
+      )
+    )
+
+    await model.start()
+    let started = await model.beginTimerPractice(with: .standard)
+
+    #expect(!started)
+    #expect(model.activeSession == nil)
+    #expect(model.practiceNotice == .couldNotSavePreferences)
+    #expect(model.launchPhase == .firstUse)
+  }
+
+  @Test("A failed unfinished-draft deletion is returned to the editor")
+  func journalDraftDeletionFailureIsReported() async throws {
+    let eventRepository = InMemoryPracticeEventRepository()
+    let model = AppModel(
+      dependencies: AppDependencies(
+        profileRepository: TestProfileRepository(),
+        eventRepository: eventRepository,
+        sessionRepository: TestSessionRepository(),
+        preferencesRepository: TestPreferencesRepository(),
+        journalTextDraftRepository: RejectingJournalTextDraftRepository(),
+        completionCoordinator: SessionCompletionCoordinator(repository: eventRepository),
+        clock: VirtualSessionClock(
+          moment: SessionMoment(
+            monotonicMilliseconds: 1_000,
+            wallClock: Date(timeIntervalSince1970: 1_786_320_000)
+          )
+        ),
+        dataDirectory: FileManager.default.temporaryDirectory
+          .appending(path: UUID().uuidString, directoryHint: .isDirectory),
+        audioController: NoOpMeditationAudioController(),
+        timerEndAlertController: NoOpTimerEndAlertController(),
+        hapticController: NoOpMeditationHapticController()
+      )
+    )
+
+    await model.start()
+    await model.exploreGarden()
+    let deleted = await model.deleteJournalTextDraft(editorKey: "new:unlinked")
+
+    #expect(!deleted)
+    #expect(model.journalNotice == .draftSaveFailed)
+  }
+
+  @Test("Deleting an entry removes its persisted edit draft")
+  func deletingJournalEntryRemovesDraft() async throws {
+    let directory = FileManager.default.temporaryDirectory
+      .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let draftRepository = FileJournalTextDraftRepository(
+      fileURL: directory.appending(path: "journal-drafts-v1.json")
+    )
+    let eventRepository = InMemoryPracticeEventRepository()
+    let model = AppModel(
+      dependencies: AppDependencies(
+        profileRepository: TestProfileRepository(),
+        eventRepository: eventRepository,
+        sessionRepository: TestSessionRepository(),
+        preferencesRepository: TestPreferencesRepository(),
+        journalTextDraftRepository: draftRepository,
+        completionCoordinator: SessionCompletionCoordinator(repository: eventRepository),
+        clock: VirtualSessionClock(
+          moment: SessionMoment(
+            monotonicMilliseconds: 1_000,
+            wallClock: Date(timeIntervalSince1970: 1_786_320_000)
+          )
+        ),
+        dataDirectory: directory,
+        audioController: NoOpMeditationAudioController(),
+        timerEndAlertController: NoOpTimerEndAlertController(),
+        hapticController: NoOpMeditationHapticController()
+      )
+    )
+    await model.start()
+    await model.exploreGarden()
+    let entry = try #require(await model.saveJournalEntry(
+      existing: nil,
+      linkedPracticeEventID: nil,
+      text: "Saved reflection"
+    ))
+    let editorKey = "entry:\(entry.id.uuidString.lowercased())"
+    #expect(await model.saveJournalTextDraft(
+      editorKey: editorKey,
+      linkedPracticeEventID: nil,
+      text: "Unfinished private edit"
+    ))
+
+    #expect(await model.deleteJournalEntry(entry))
+    #expect(try await draftRepository.load(
+      editorKey: editorKey,
+      profileGenerationID: entry.profileGenerationID
+    ) == nil)
+    #expect(model.journalEntries.isEmpty)
+  }
+
+  @Test("A failed entry-draft cleanup is reported and retried on relaunch")
+  func deletedJournalDraftCleanupRetriesOnRelaunch() async throws {
+    let directory = FileManager.default.temporaryDirectory
+      .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let fileRepository = FileJournalTextDraftRepository(
+      fileURL: directory.appending(path: "journal-drafts-v1.json")
+    )
+    let draftRepository = FailingOnceEntryDraftCleanupRepository(base: fileRepository)
+    let eventRepository = InMemoryPracticeEventRepository()
+    let dependencies = AppDependencies(
+      profileRepository: TestProfileRepository(),
+      eventRepository: eventRepository,
+      sessionRepository: TestSessionRepository(),
+      preferencesRepository: TestPreferencesRepository(),
+      journalTextDraftRepository: draftRepository,
+      completionCoordinator: SessionCompletionCoordinator(repository: eventRepository),
+      clock: VirtualSessionClock(
+        moment: SessionMoment(
+          monotonicMilliseconds: 1_000,
+          wallClock: Date(timeIntervalSince1970: 1_786_320_000)
+        )
+      ),
+      dataDirectory: directory,
+      audioController: NoOpMeditationAudioController(),
+      timerEndAlertController: NoOpTimerEndAlertController(),
+      hapticController: NoOpMeditationHapticController()
+    )
+    let model = AppModel(dependencies: dependencies)
+    await model.start()
+    await model.exploreGarden()
+    let entry = try #require(await model.saveJournalEntry(
+      existing: nil,
+      linkedPracticeEventID: nil,
+      text: "Saved reflection"
+    ))
+    let editorKey = "entry:\(entry.id.uuidString.lowercased())"
+    #expect(await model.saveJournalTextDraft(
+      editorKey: editorKey,
+      linkedPracticeEventID: nil,
+      text: "Unfinished private edit"
+    ))
+
+    #expect(!(await model.deleteJournalEntry(entry)))
+    #expect(model.journalNotice == .draftSaveFailed)
+    #expect(try await fileRepository.load(
+      editorKey: editorKey,
+      profileGenerationID: entry.profileGenerationID
+    ) != nil)
+
+    let relaunched = AppModel(dependencies: dependencies)
+    await relaunched.start()
+    #expect(relaunched.launchPhase == .ready)
+    #expect(relaunched.journalEntries.isEmpty)
+    #expect(try await fileRepository.load(
+      editorKey: editorKey,
+      profileGenerationID: entry.profileGenerationID
+    ) == nil)
+  }
+
+  @Test("Product replacement stays disabled while a new practice session is being persisted")
+  func productReplacementWaitsForPracticeStartWrite() async throws {
+    let eventRepository = InMemoryPracticeEventRepository()
+    let sessionRepository = SuspendedFirstSaveSessionRepository()
+    let model = AppModel(
+      dependencies: AppDependencies(
+        profileRepository: TestProfileRepository(),
+        eventRepository: eventRepository,
+        sessionRepository: sessionRepository,
+        preferencesRepository: TestPreferencesRepository(),
+        completionCoordinator: SessionCompletionCoordinator(repository: eventRepository),
+        clock: VirtualSessionClock(
+          moment: SessionMoment(
+            monotonicMilliseconds: 1_000,
+            wallClock: Date(timeIntervalSince1970: 1_786_320_000)
+          )
+        ),
+        dataDirectory: FileManager.default.temporaryDirectory
+          .appending(path: UUID().uuidString, directoryHint: .isDirectory),
+        audioController: NoOpMeditationAudioController(),
+        timerEndAlertController: NoOpTimerEndAlertController(),
+        hapticController: NoOpMeditationHapticController()
+      )
+    )
+
+    await model.start()
+    let startTask = Task {
+      try await model.startPractice(mode: .timer, targetMinutes: 3)
+    }
+    await sessionRepository.waitForFirstSave()
+
+    #expect(model.activeSession == nil)
+    #expect(!model.canReplaceProductData)
+
+    await sessionRepository.resumeFirstSave()
+    try await startTask.value
+
+    #expect(model.activeSession != nil)
+    #expect(!model.canReplaceProductData)
+  }
+
+  @Test("An in-progress product replacement rejects new practice and journal writes")
+  func productWritesAreBlockedDuringRestore() async throws {
+    let eventRepository = InMemoryPracticeEventRepository()
+    let recorder = TestJournalAudioRecorder()
+    let model = AppModel(
+      dependencies: AppDependencies(
+        profileRepository: TestProfileRepository(),
+        eventRepository: eventRepository,
+        sessionRepository: TestSessionRepository(),
+        preferencesRepository: TestPreferencesRepository(),
+        completionCoordinator: SessionCompletionCoordinator(repository: eventRepository),
+        clock: VirtualSessionClock(
+          moment: SessionMoment(
+            monotonicMilliseconds: 1_000,
+            wallClock: Date(timeIntervalSince1970: 1_786_320_000)
+          )
+        ),
+        dataDirectory: FileManager.default.temporaryDirectory
+          .appending(path: UUID().uuidString, directoryHint: .isDirectory),
+        audioController: NoOpMeditationAudioController(),
+        timerEndAlertController: NoOpTimerEndAlertController(),
+        hapticController: NoOpMeditationHapticController(),
+        journalAudioRecorder: recorder
+      )
+    )
+
+    await model.start()
+    model.isPerformingDataAction = true
+
+    let practiceStarted = await model.beginPractice(mode: .timer, targetMinutes: 3)
+    let journalEntry = await model.saveJournalEntry(
+      existing: nil,
+      linkedPracticeEventID: nil,
+      text: "This write must wait until restore finishes."
+    )
+    let draftSaved = await model.saveJournalTextDraft(
+      editorKey: "restore-race",
+      linkedPracticeEventID: nil,
+      text: "This draft must wait until restore finishes."
+    )
+    await model.beginJournalRecording()
+
+    #expect(!practiceStarted)
+    #expect(journalEntry == nil)
+    #expect(!draftSaved)
+    #expect(recorder.permissionRequestCount == 0)
+    #expect(recorder.startCount == 0)
+    #expect(model.activeSession == nil)
+    #expect(!model.canReplaceProductData)
+  }
+
   #if !targetEnvironment(simulator)
     @Test("A prepared timer starts bundled sound without a fallback notice on device")
     func preparedTimerStartsNativeAudioOnDevice() async throws {
@@ -948,6 +1307,15 @@ private actor TestPreferencesRepository: MeditationPreferencesRepository {
   func saveTimerPreferences(_ preferences: TimerPreferences) { self.preferences = preferences }
 }
 
+private actor RejectingPreferencesRepository: MeditationPreferencesRepository {
+  func loadTimerPreferences() -> TimerPreferences { .standard }
+
+  func saveTimerPreferences(_ preferences: TimerPreferences) throws {
+    _ = preferences
+    throw FilePersistenceError.couldNotPersist
+  }
+}
+
 private actor RejectingAppSettingsRepository: AppSettingsRepository {
   let language: AppLanguage
 
@@ -1003,14 +1371,120 @@ private actor TestSessionRepository: MeditationSessionRepository {
   }
 }
 
+private actor SuspendedFirstSaveSessionRepository: MeditationSessionRepository {
+  private var session: MeditationSession?
+  private var hasStartedFirstSave = false
+  private var hasSuspendedFirstSave = false
+  private var firstSaveStarted: CheckedContinuation<Void, Never>?
+  private var resumeFirstSaveContinuation: CheckedContinuation<Void, Never>?
+
+  func activeSession(profileGenerationID: UUID) -> MeditationSession? {
+    guard session?.profileGenerationID == profileGenerationID,
+      let phase = session?.phase,
+      [.prepared, .running, .paused, .completing].contains(phase)
+    else {
+      return nil
+    }
+    return session
+  }
+
+  func save(_ session: MeditationSession) async throws {
+    if !hasSuspendedFirstSave {
+      hasSuspendedFirstSave = true
+      hasStartedFirstSave = true
+      firstSaveStarted?.resume()
+      firstSaveStarted = nil
+      await withCheckedContinuation { resumeFirstSaveContinuation = $0 }
+    }
+    self.session = session
+  }
+
+  func remove(sessionID: UUID, profileGenerationID: UUID) {
+    guard session?.id == sessionID, session?.profileGenerationID == profileGenerationID else {
+      return
+    }
+    session = nil
+  }
+
+  func waitForFirstSave() async {
+    guard !hasStartedFirstSave else { return }
+    await withCheckedContinuation { firstSaveStarted = $0 }
+  }
+
+  func resumeFirstSave() {
+    resumeFirstSaveContinuation?.resume()
+    resumeFirstSaveContinuation = nil
+  }
+}
+
+private actor RejectingJournalTextDraftRepository: JournalTextDraftRepository {
+  func load(editorKey: String, profileGenerationID: UUID) async throws -> JournalTextDraft? {
+    _ = editorKey
+    _ = profileGenerationID
+    throw JournalTextDraftError.couldNotPersist
+  }
+
+  func save(_ draft: JournalTextDraft) async throws {
+    _ = draft
+    throw JournalTextDraftError.couldNotPersist
+  }
+
+  func delete(editorKey: String, profileGenerationID: UUID) async throws {
+    _ = editorKey
+    _ = profileGenerationID
+    throw JournalTextDraftError.couldNotPersist
+  }
+
+  func deleteEntryDrafts(entryIDs: Set<UUID>, profileGenerationID: UUID) async throws {
+    _ = entryIDs
+    _ = profileGenerationID
+    throw JournalTextDraftError.couldNotPersist
+  }
+
+  func deleteAll() async throws {
+    throw JournalTextDraftError.couldNotPersist
+  }
+}
+
+private actor FailingOnceEntryDraftCleanupRepository: JournalTextDraftRepository {
+  private let base: any JournalTextDraftRepository
+  private var hasFailed = false
+
+  init(base: any JournalTextDraftRepository) { self.base = base }
+
+  func load(editorKey: String, profileGenerationID: UUID) async throws -> JournalTextDraft? {
+    try await base.load(editorKey: editorKey, profileGenerationID: profileGenerationID)
+  }
+
+  func save(_ draft: JournalTextDraft) async throws { try await base.save(draft) }
+
+  func delete(editorKey: String, profileGenerationID: UUID) async throws {
+    try await base.delete(editorKey: editorKey, profileGenerationID: profileGenerationID)
+  }
+
+  func deleteEntryDrafts(entryIDs: Set<UUID>, profileGenerationID: UUID) async throws {
+    if !entryIDs.isEmpty && !hasFailed {
+      hasFailed = true
+      throw JournalTextDraftError.couldNotPersist
+    }
+    try await base.deleteEntryDrafts(entryIDs: entryIDs, profileGenerationID: profileGenerationID)
+  }
+
+  func deleteAll() async throws { try await base.deleteAll() }
+}
+
 @MainActor
 private final class TestJournalAudioRecorder: JournalAudioRecordingControlling {
   var eventHandler: ((JournalAudioRecordingEvent) -> Void)?
   var isRecording = false
   var elapsedMilliseconds: Int64 = 1_250
+  var permissionRequestCount = 0
   var startCount = 0
 
-  func requestPermission() async -> Bool { true }
+  func requestPermission() async -> Bool {
+    permissionRequestCount += 1
+    return true
+  }
 
   func start(fileURL: URL) throws {
     _ = fileURL

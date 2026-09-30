@@ -9,9 +9,9 @@ All three directions render the same validated GardenState, progression, milesto
 
 | Direction | Emotional quality | Visual hierarchy | Max draw calls | Max triangles | Max geometries | Complexity / package cost | Principal risk |
 | --- | --- | --- | ---: | ---: | ---: | --- | --- |
-| verdant-atelier | Warm, alive, botanical | Daylight tree remains the focal point | 34 | 39672 | 33 | Moderate geometry; highest foliage detail | Natural-color contrast requires final UI sweep |
-| paper-sanctuary | Tactile, quiet, illustrated | Layered leaves create storybook depth | 36 | 43006 | 34 | Moderate draw-call cost; no texture assets | Thin paper layers need final small-screen review |
-| twilight-refuge | Sheltered, contemplative, luminous | Amber growth accents read against indigo | 34 | 19122 | 33 | Moderate geometry; restrained particles | Dark-value separation needs increased-contrast review |
+| verdant-atelier | Warm, alive, botanical | Daylight tree remains the focal point | 40 | 34383 | 32 | Moderate geometry; highest foliage detail | Natural-color contrast requires final UI sweep |
+| paper-sanctuary | Tactile, quiet, illustrated | Layered leaves create storybook depth | 40 | 42657 | 31 | Moderate draw-call cost; no texture assets | Thin paper layers need final small-screen review |
+| twilight-refuge | Sheltered, contemplative, luminous | Amber growth accents read against indigo | 39 | 11001 | 31 | Moderate geometry; restrained particles | Dark-value separation needs increased-contrast review |
 
 ## Module pick sheet
 

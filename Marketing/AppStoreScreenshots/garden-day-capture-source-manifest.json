@@ -1,0 +1,2231 @@
+{
+  "schema_version": 1,
+  "algorithm": "SHA-256 over sorted UTF-8 relative-path, NUL, file-SHA-256, LF records",
+  "generated_at": null,
+  "generation_time_policy": "omitted-for-byte-reproducibility",
+  "project_root": ".",
+  "inputs": [
+    "project.yml",
+    "Config/Base.xcconfig",
+    "Config/Local.example.xcconfig",
+    "ArriveWithin.xcodeproj/project.pbxproj",
+    "ArriveWithin.xcodeproj/xcshareddata/xcschemes/ArriveWithin.xcscheme",
+    "Apps/ArriveWithin/Sources",
+    "Apps/ArriveWithin/Resources",
+    "Apps/ArriveWithin/Tests/ArriveWithinUITests",
+    "Packages/ArriveWithinCore/Package.swift",
+    "Packages/ArriveWithinCore/Sources",
+    "Content/guided",
+    "Renderer/dist",
+    "scripts/run_guarded_xcode_tests.sh",
+    "scripts/xcodebuild_runtime_test_preflight.zsh"
+  ],
+  "source_revision": "13477bc33d33ec130b1525c3e15e0b1d408da5509d6950a0828901e771c0a42c",
+  "files": [
+    {
+      "path": "Apps/ArriveWithin/Resources/.DS_Store",
+      "bytes": 6148,
+      "sha256": "51c6d4cbcf8ce3b84e8635da2930cf032304ba80b23bde3efbda5c80d9d37392"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/AppIcon.icon/Assets/living-shoot.png",
+      "bytes": 76159,
+      "sha256": "4e5877332415341ad1077490310d56dcc9662c16d49df5e2507d1e421ab56f34"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/AppIcon.icon/Assets/threshold-arch.png",
+      "bytes": 428355,
+      "sha256": "ca8c85ff5b7301454b3d53108461da8246704048e4809ad4a6522bf182f25e8d"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/AppIcon.icon/Assets/threshold-interior.png",
+      "bytes": 244800,
+      "sha256": "f0bc3f6ba8d47256f05bfcc7435005d8f5b5e9a8162e428862ac20af43bbb13f"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/AppIcon.icon/icon.json",
+      "bytes": 1284,
+      "sha256": "2a4335c31f2603aa7c15a5d6f4b25a4fa551b5e8b48dbff12b5a9454cf324125"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/Assets.xcassets/AccentColor.colorset/Contents.json",
+      "bytes": 618,
+      "sha256": "ff536b8c3fdc01b220bc0e96693a3e385ed8e519842bf3600540d3af7635b268"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/Assets.xcassets/Contents.json",
+      "bytes": 60,
+      "sha256": "f5fb0e1f3a8142892ed092efb5955c1c2cc537003a89ad7bbdb9dade7fe8985f"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/Assets.xcassets/LaunchBackground.colorset/Contents.json",
+      "bytes": 618,
+      "sha256": "da34190813e640de1ef33d0126fd01b42d5faf977cf46b6f99a145ffead5c75a"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/Audio/audio-assets.json",
+      "bytes": 1585,
+      "sha256": "5fcd3cd1a9e77b3af11d6ed4a0c1547c16cbd314374061f01d9db649837b3573"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/Audio/closing-bell-v1.wav",
+      "bytes": 524238,
+      "sha256": "cb736817872448631b88f4769c4698cfa044e1f81cb9218d7a76fc58f37eab5b"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/Audio/opening-bell-v1.wav",
+      "bytes": 383118,
+      "sha256": "3e37e03dc80b50035a06cb055ad4b1df49670a142ef8a887a2fd9d26b29b0278"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/Audio/still-air-v1.m4a",
+      "bytes": 178592,
+      "sha256": "d6c40f1cacf4c3714346cd85d38f28619b447b9029edb4c5094574c107f9a044"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/GardenPreviews/garden-preview-claymation.png",
+      "bytes": 90853,
+      "sha256": "f95b2d168c7c15fd73be9511ff83f5385c8b855c40f01730946d00d184ae6e8c"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/GardenPreviews/garden-preview-crochet.png",
+      "bytes": 107826,
+      "sha256": "7e86060a506684f3633638f3860fe007e3bc27507097f5c6169c6e834ca0f301"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/GardenPreviews/garden-preview-hand-drawn.png",
+      "bytes": 96433,
+      "sha256": "5f3031009b3e7b92d571c5d57a8b767d881da1447eefa1944f2b3076a5564861"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/GardenPreviews/garden-preview-stop-motion.png",
+      "bytes": 75534,
+      "sha256": "24b45ad6575fb5a600470e2cfd2bfd6cff9040fb7da1d1bebef4fb8518e1a146"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/GardenPreviews/garden-preview-twilight.png",
+      "bytes": 72069,
+      "sha256": "df92c24dcac5f61212479f14f80362720d89fbce47203960869f71b8b464485a"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/Info.plist",
+      "bytes": 2172,
+      "sha256": "cc2ff3758b5917c9975c6e4695b4625fa960e612f49581f44a382e9f080599a4"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/PrivacyInfo.xcprivacy",
+      "bytes": 632,
+      "sha256": "0562b6e4331f1fcffb4d7b7e3e11c240ebbf6dbef84ec1b66318408d9f2d524b"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/de.lproj/InfoPlist.strings",
+      "bytes": 256,
+      "sha256": "0e8919604c049999ce1dda2d62f3133a47650d0ba9f0c7829a1ec853548a423c"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/de.lproj/Localizable.strings",
+      "bytes": 24625,
+      "sha256": "40f2dcbb40cd0e48c01326a922dabff8b7a0cfa2067d7f49dfa537bc68182894"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/en.lproj/InfoPlist.strings",
+      "bytes": 240,
+      "sha256": "6dd438f771d1ce08ce58d0d216cc310743caa7bb8d7421f506d28d4020c91478"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/en.lproj/Localizable.strings",
+      "bytes": 22542,
+      "sha256": "82ebf18fc209c96b6d0724cf31c26fba48a6a934985105309e566a664b58b93e"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/AppDependencies.swift",
+      "bytes": 17589,
+      "sha256": "8de0e8d94e4f2b775421cc366c9caf7a0a8db4986d53a8b534b4cd0b73aad59b"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/AppLocalization.swift",
+      "bytes": 521,
+      "sha256": "e5ff538e728b2d19a7896dc4b9c18c2f1d17c15df334db8ca08e5758b49ff65c"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/AppModel.swift",
+      "bytes": 63291,
+      "sha256": "4a0cc249b037998efb97ecdb94f3f8b49b9a78548bea8b45ebd858fe2f5b3933"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/AppOwnedShareSheet.swift",
+      "bytes": 735,
+      "sha256": "adf6a508b01eccba6c0f1932b98a773ca075e8d8efe4d23a7dbae546e4605dc8"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/AppRootView.swift",
+      "bytes": 7168,
+      "sha256": "662a53a7991ddfe757569e0b27b9b532595e1fcdeb707070fb85fcdc3b4fa202"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/AppSection.swift",
+      "bytes": 617,
+      "sha256": "4195166ac390aebc2e5490d324482304a6a7837a4d473b9dedac58927e6da522"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/AppSettings.swift",
+      "bytes": 4617,
+      "sha256": "541f654da06c957688f83643b4b4c92e2f6961a53c630c6bdc6689081ac6692e"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/AppTheme.swift",
+      "bytes": 6176,
+      "sha256": "c2f0f57bcf0a99c8350661391dc59a9a10949d28821ee6f6d4a84eb1c3c711e9"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/ArriveWithinApp.swift",
+      "bytes": 1053,
+      "sha256": "026f8ed30e6e16b6d7ec1e3db0645dc6781ce3a192d9afc098e04893afe31bae"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/GardenView.swift",
+      "bytes": 8993,
+      "sha256": "cb29188e4596b61e773f07e6cb7e871d736bc7b8d74a14660a7946036a38a8da"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/GardenWebView.swift",
+      "bytes": 15902,
+      "sha256": "077d98e747bc06e0b3d0121432367fdcb1a6f3de3d3420d573889c9d47bd3752"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/GuidedCaptionTimeline.swift",
+      "bytes": 4644,
+      "sha256": "281a202e5e0dbca25cd2bf116126d1488805d170611a844b7a4e8d975a305181"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/GuidedLibraryView.swift",
+      "bytes": 13267,
+      "sha256": "f490e70e253d67eb1a7442af774bdbe94972f446f6600f345c7f62bd80aa557c"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/JournalAudioController.swift",
+      "bytes": 8507,
+      "sha256": "bbdf2a28fa56291af1d1fbe24be999f459f03d9f5e58c4d92ad34df434c2492f"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/JournalTranscriptionController.swift",
+      "bytes": 3162,
+      "sha256": "04e2612e5dd4e9f331c0f07b08326ea3ee8b4ce4ba2f992ce96004fc1d3be662"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/JournalView.swift",
+      "bytes": 21659,
+      "sha256": "4f1aee163e4477b626e93987f19c503aafbdc162876612b3330fdfc61ef2542d"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/JourneyView.swift",
+      "bytes": 14843,
+      "sha256": "5973db19e09721124812db688c0104fb7aa9d2477956f1178eb644ebd3171434"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/MeditationActivityAttributes.swift",
+      "bytes": 454,
+      "sha256": "9c0dcb0396ce33158b2cc091ab2e0773b366d00fea152836b6811407b95f69c8"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/MeditationAudioController.swift",
+      "bytes": 27208,
+      "sha256": "777dabc8d3b5d605b62bc49d6c33925a4bd0c85473ce0a89930c5e7d3f6b9ddf"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/MeditationLiveActivity.swift",
+      "bytes": 2869,
+      "sha256": "5fc08b40546f071bf9a265963b9a1908f7d59d5b7fbad696f4e59ad95ff8c90c"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/MeditationSignals.swift",
+      "bytes": 3397,
+      "sha256": "2b662734675a33190ac39392f111bb86d24c119c0d5d16be29557644117cc771"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/PracticeCalendarView.swift",
+      "bytes": 11477,
+      "sha256": "027b1266e25a9da4c0553d562a903506b25dacb307256a6ba8f3b98e45ffe8c6"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/PracticeView.swift",
+      "bytes": 29346,
+      "sha256": "16916bce80d3cee4afd6355185b9f8547e9a5aab8cf0a850ae166db146cae1da"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/PremiumGardenStyles.swift",
+      "bytes": 4720,
+      "sha256": "54b87e44fb31162110b2c12eff0b5ae6838256de28d210c8130751e1e0c519b4"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/PremiumGardenStylesView.swift",
+      "bytes": 9563,
+      "sha256": "d4955d4e0811f5b4b3af02f2a67efd2c1daa9ed90a47a48300cd265b5eb887af"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/ProductShell.swift",
+      "bytes": 3916,
+      "sha256": "205ede66662d090ff81d9d4f3563d348dc74e32eaaeccba9fc1455a27f2b11bf"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/ReminderNotifications.swift",
+      "bytes": 4127,
+      "sha256": "5b01cfc2bb4d73799a5103e87c4c974b0826dfc1a61a6e7c06c189bf37e3bae8"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/ReminderSettingsView.swift",
+      "bytes": 9222,
+      "sha256": "cd0d3952c24a120e2f039c1b482dc1f6c8a31b507a51649f4195cc8282bbb05e"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/RendererDiagnostics.swift",
+      "bytes": 8378,
+      "sha256": "a2a19604236ecc27f9be783185a39e0ea1c5a3c57e99a0dcf4bd184694b3c150"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/SettingsView.swift",
+      "bytes": 8698,
+      "sha256": "5d5c2319ddfabf088a49c216206468cad43dc76b63600583168c3f2da9423411"
+    },
+    {
+      "path": "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinMarketingCaptureUITests.swift",
+      "bytes": 5404,
+      "sha256": "dd0e4a08330b43ed8d2852fd94d86cb6bea9d246afff268f104ffc286090785c"
+    },
+    {
+      "path": "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinUITests.swift",
+      "bytes": 58398,
+      "sha256": "c2d9acccb069687343d7f33e111126db1dd230bf09a22c51476b4c50db3942de"
+    },
+    {
+      "path": "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinVerificationUITests.swift",
+      "bytes": 4199,
+      "sha256": "25935f6efad6c8dc377f083955eed181b7ee582e757589d0a30cc8f2dfc6defd"
+    },
+    {
+      "path": "ArriveWithin.xcodeproj/project.pbxproj",
+      "bytes": 62662,
+      "sha256": "f99557a7a637288948e78bde354ca7b91844469fcec8f0bd7d4eda1b6af90d6d"
+    },
+    {
+      "path": "ArriveWithin.xcodeproj/xcshareddata/xcschemes/ArriveWithin.xcscheme",
+      "bytes": 5839,
+      "sha256": "d429dabe6318870b4d81d6862f8859575a237a8ba3810f9731487c18a8bf87f0"
+    },
+    {
+      "path": "Config/Base.xcconfig",
+      "bytes": 868,
+      "sha256": "e3edd545700056609738639c29558e156714b4b15b3eed8597bb929bc5b57479"
+    },
+    {
+      "path": "Config/Local.example.xcconfig",
+      "bytes": 265,
+      "sha256": "f8b3c8d369d1d0fbbb71df66adce9498ee1a82040d74610dbf4e0df734eea23d"
+    },
+    {
+      "path": "Content/guided/G01/audio.de.m4a",
+      "bytes": 1458773,
+      "sha256": "4b9546143f6aac27c1f1ae64dc30df6f1a987f46d72c38d4950bfca179b7dc03"
+    },
+    {
+      "path": "Content/guided/G01/audio.en.m4a",
+      "bytes": 1458773,
+      "sha256": "0765bf60aeecea90d6231e08bcc1f49606e499344c0cf0fa61b3c99072cd9d05"
+    },
+    {
+      "path": "Content/guided/G01/provenance.de.json",
+      "bytes": 2027,
+      "sha256": "6b2bc3b86dfa8006833948fb41a2dc2937d65fa46e6bd49f65ff30a06826ee72"
+    },
+    {
+      "path": "Content/guided/G01/provenance.en.json",
+      "bytes": 2023,
+      "sha256": "aa146938208215edae0c2e4b29ec629573e1409ec305fcefbba94684bf1f4aea"
+    },
+    {
+      "path": "Content/guided/G01/script.de.md",
+      "bytes": 1480,
+      "sha256": "19b219acdf9ddea45326f44dac4686ddf79a554aa929c2da3582967c1f2788c4"
+    },
+    {
+      "path": "Content/guided/G01/script.en.md",
+      "bytes": 1257,
+      "sha256": "ac29d925152d815b1a1e832d0b44c68f3f50dd920e72a530a7ec70c6aeae112d"
+    },
+    {
+      "path": "Content/guided/G01/transcript.de.vtt",
+      "bytes": 2012,
+      "sha256": "651c7a99cf86c36a883be18361d37aa7b082b6d7396e067bbb5d6270069204e4"
+    },
+    {
+      "path": "Content/guided/G01/transcript.en.vtt",
+      "bytes": 1796,
+      "sha256": "6a1c93a739d145a55b0f802c64d14e0ca3b26af863c590fcebc9df089b6e3b11"
+    },
+    {
+      "path": "Content/guided/G02/audio.de.m4a",
+      "bytes": 2430212,
+      "sha256": "719a186505715a0a22beed77221d45403a16b533604b7d87e23b90c73b39d277"
+    },
+    {
+      "path": "Content/guided/G02/audio.en.m4a",
+      "bytes": 2430212,
+      "sha256": "d7f4c54eba7002054b9e6dd5750c447eb7d7a420672acddefc61852b582d2b0f"
+    },
+    {
+      "path": "Content/guided/G02/provenance.de.json",
+      "bytes": 2026,
+      "sha256": "f50abb2b3ff03ec84b72dd2df903dc5a9e0b124442d9022cc7bbaafacfa913f1"
+    },
+    {
+      "path": "Content/guided/G02/provenance.en.json",
+      "bytes": 2024,
+      "sha256": "ae999fab412946b093da7ea5ff0a46837196f2c47046552e923120d91be86594"
+    },
+    {
+      "path": "Content/guided/G02/script.de.md",
+      "bytes": 2349,
+      "sha256": "50464b5fde551a5e737568a546f4cd16a408c4e7e318947ba1fad154dea942b9"
+    },
+    {
+      "path": "Content/guided/G02/script.en.md",
+      "bytes": 2176,
+      "sha256": "3821f0639864d11466c740109917d4c35cf6c89f20dd00e3d5f2d558a4cd79d8"
+    },
+    {
+      "path": "Content/guided/G02/transcript.de.vtt",
+      "bytes": 3160,
+      "sha256": "8a97ee51b8bb2f9b53c9cb49dc47e44a2d404247ac180d0c26bc113f6deb8344"
+    },
+    {
+      "path": "Content/guided/G02/transcript.en.vtt",
+      "bytes": 2996,
+      "sha256": "aeffdfc2a9dd2a210e2f1b131980951b058503ac066a6db61028be1fb89fe3bf"
+    },
+    {
+      "path": "Content/guided/G03/audio.de.m4a",
+      "bytes": 3401293,
+      "sha256": "153c220f6bc83cbf3bacfe38eedec3dfc4b8cf56418f14a502caa03eb2923f98"
+    },
+    {
+      "path": "Content/guided/G03/audio.en.m4a",
+      "bytes": 3401293,
+      "sha256": "1eb730a79557168cac928061bd7b4bc764f4b187eb35582ca9bd672b3d038e38"
+    },
+    {
+      "path": "Content/guided/G03/provenance.de.json",
+      "bytes": 2027,
+      "sha256": "67daf4efafcb11df507bea53b0551d1404371af82eab2098f3c4694c96df077f"
+    },
+    {
+      "path": "Content/guided/G03/provenance.en.json",
+      "bytes": 2024,
+      "sha256": "6a719789dce06febb8a16addf1e77218c5773da7013a0e34e00c35a1efd56da3"
+    },
+    {
+      "path": "Content/guided/G03/script.de.md",
+      "bytes": 3054,
+      "sha256": "eac74d8dc17e3188bae7c8447d307cd61dcb3b48d271149e7bd021b8ce49c40b"
+    },
+    {
+      "path": "Content/guided/G03/script.en.md",
+      "bytes": 2693,
+      "sha256": "384eff58d2661ba9f7b8c06f98d721f836d0f6d4e9bd9b90546ee9452c54533e"
+    },
+    {
+      "path": "Content/guided/G03/transcript.de.vtt",
+      "bytes": 4218,
+      "sha256": "8b75feb2024291472b3ad1470d50337dd6d951c08d733f0facdb2cc3dc4ba936"
+    },
+    {
+      "path": "Content/guided/G03/transcript.en.vtt",
+      "bytes": 3869,
+      "sha256": "844394401cbddb0a7e65cb8dc742a835db00c7fbc7cde60315af52f56f95aef4"
+    },
+    {
+      "path": "Content/guided/G04/audio.de.m4a",
+      "bytes": 4858259,
+      "sha256": "cb7903e850a465aa7b5a489fd4287468fdfc2abc4ba0eb1c4dcedd67833a48d4"
+    },
+    {
+      "path": "Content/guided/G04/audio.en.m4a",
+      "bytes": 4858271,
+      "sha256": "9db94b2107c409babb278e025207bd153e09f8189581814227305d6081750600"
+    },
+    {
+      "path": "Content/guided/G04/provenance.de.json",
+      "bytes": 2027,
+      "sha256": "148ed4deff036c6e6cc8ac1ff684f60877f5c9a3a30f7b964c5c4d2e40f22273"
+    },
+    {
+      "path": "Content/guided/G04/provenance.en.json",
+      "bytes": 2210,
+      "sha256": "e5478232a8f0da0b2942ce2c48676f355729249bd732bf5f36e82f89a9ebef46"
+    },
+    {
+      "path": "Content/guided/G04/script.de.md",
+      "bytes": 3414,
+      "sha256": "21c40ef43d766df9961a92a7e451953e1497d4a454e57629c6fd0b415c46e919"
+    },
+    {
+      "path": "Content/guided/G04/script.en.md",
+      "bytes": 2964,
+      "sha256": "8650cb82d1e9b71cf16e6d025393b32ab5ae44690ebc37a0257084fb28eb63ff"
+    },
+    {
+      "path": "Content/guided/G04/transcript.de.vtt",
+      "bytes": 4909,
+      "sha256": "204df23747b755409c67596c427b537686592ff31edee06faec7982beacb8329"
+    },
+    {
+      "path": "Content/guided/G04/transcript.en.vtt",
+      "bytes": 4434,
+      "sha256": "82ef2083b4066af43c868f2214f8e1456b5a5ee4b3cbcffda1734d936d0d3626"
+    },
+    {
+      "path": "Content/guided/G05/audio.de.m4a",
+      "bytes": 5829340,
+      "sha256": "8dbe96a3c13f133f9f4236551a4ca7c706f7d7ee740ec59c3df48774d9e17f80"
+    },
+    {
+      "path": "Content/guided/G05/audio.en.m4a",
+      "bytes": 5829398,
+      "sha256": "843b50f888bbe99ec5d58d60eda26682fe7ad1c27af53fcfe12f246ffeaf1a09"
+    },
+    {
+      "path": "Content/guided/G05/provenance.de.json",
+      "bytes": 2212,
+      "sha256": "f5740707612d5428e5f3d94f74447166f4e722cbd752d35bae4fbb990433ea5a"
+    },
+    {
+      "path": "Content/guided/G05/provenance.en.json",
+      "bytes": 2022,
+      "sha256": "1081d6fbe01cfad62b14552769be7198d4dd237bf0663976fe22909219859393"
+    },
+    {
+      "path": "Content/guided/G05/script.de.md",
+      "bytes": 4481,
+      "sha256": "0969de103462e27cefb89b50f52c197c2e6b614c9ddd276aeaa660fee61e2bb2"
+    },
+    {
+      "path": "Content/guided/G05/script.en.md",
+      "bytes": 3971,
+      "sha256": "a596cb19fdfc1199f77ff56427280770b6a069a72fcc5480f9247a134fe8a326"
+    },
+    {
+      "path": "Content/guided/G05/transcript.de.vtt",
+      "bytes": 6282,
+      "sha256": "ed3dff3eb4ffb983a975e1432601181f7a2c166373f0f5c90b40bb68c8c44528"
+    },
+    {
+      "path": "Content/guided/G05/transcript.en.vtt",
+      "bytes": 5791,
+      "sha256": "0ecc63ee74470bd735af58e6fb88ffa16051bb6301ed15e844cc169bf2743055"
+    },
+    {
+      "path": "Content/guided/G06/audio.de.m4a",
+      "bytes": 4858259,
+      "sha256": "8e8ea439212709ac84793f8164ac2df9dea4384e1bfec4a6cdd275f2d769b748"
+    },
+    {
+      "path": "Content/guided/G06/audio.en.m4a",
+      "bytes": 4858259,
+      "sha256": "36a073e9912e3609150a5387b663d9b0a0f3f3f084fc9a0afcb8f5debe8b6a70"
+    },
+    {
+      "path": "Content/guided/G06/provenance.de.json",
+      "bytes": 2213,
+      "sha256": "b0a0506163cce48fbb3aca2c1a9da62d136ab92ec89a6fee51e6c0c941b6cd0f"
+    },
+    {
+      "path": "Content/guided/G06/provenance.en.json",
+      "bytes": 2024,
+      "sha256": "11e3ced05f2e55c057e01397ab2c37a2ba78c620a92fed7d2f03a91690ce6332"
+    },
+    {
+      "path": "Content/guided/G06/script.de.md",
+      "bytes": 3735,
+      "sha256": "3416bc62b312f92f37f19a341519f3a23180901a1bd9fe55c13fcca035acc331"
+    },
+    {
+      "path": "Content/guided/G06/script.en.md",
+      "bytes": 3252,
+      "sha256": "bd678a71b851c83f4323b8fcf34c5bd881f6e739ef5bd4a536b6f466491313b8"
+    },
+    {
+      "path": "Content/guided/G06/transcript.de.vtt",
+      "bytes": 5103,
+      "sha256": "c8d8c5bfb61c93adc722b4ccaf32ec6461e9c9c77dbf54bfe0d1a614ec2dfeaa"
+    },
+    {
+      "path": "Content/guided/G06/transcript.en.vtt",
+      "bytes": 4636,
+      "sha256": "4357d05e77d7bd29f3c8ee6388ce62999a4fa7053dd0805e5fd7743df9ec7160"
+    },
+    {
+      "path": "Content/guided/G07/audio.de.m4a",
+      "bytes": 3886832,
+      "sha256": "3f07bfe1e8584451204e0e24a1f13dcddfa212dd145c4d9a81697f80acff5df9"
+    },
+    {
+      "path": "Content/guided/G07/audio.en.m4a",
+      "bytes": 3886832,
+      "sha256": "4ea2015711ca57b5d218461d9151cf032580a96564600f235fde8ca4860a006c"
+    },
+    {
+      "path": "Content/guided/G07/provenance.de.json",
+      "bytes": 2025,
+      "sha256": "8d36667a7970787bd29a7ea467c7e7502969d17d1a2d4ca34e6c109eabb13bde"
+    },
+    {
+      "path": "Content/guided/G07/provenance.en.json",
+      "bytes": 2208,
+      "sha256": "a7dc716f4db08f4db732533adb496cb911afa4b3cb2f3fb109c1976c4ef6855f"
+    },
+    {
+      "path": "Content/guided/G07/script.de.md",
+      "bytes": 3343,
+      "sha256": "a8fb384ab739d2fc7d32e915f2d596577ff751112d0b27e165ff69e9f3b5c84e"
+    },
+    {
+      "path": "Content/guided/G07/script.en.md",
+      "bytes": 2914,
+      "sha256": "31be41437dad9ac568cb1b32d1d2db891e53145e839f565aeeb20bac292ed506"
+    },
+    {
+      "path": "Content/guided/G07/transcript.de.vtt",
+      "bytes": 4666,
+      "sha256": "110684b8d74d2d8c53e146a62467f9aaf768f9843775d0dae27a2dfbc035367c"
+    },
+    {
+      "path": "Content/guided/G07/transcript.en.vtt",
+      "bytes": 4250,
+      "sha256": "48e0ae5285a984bf0a5e6c056989db8b08bff9aa11f87ec6b7baf84ed5f2c9d1"
+    },
+    {
+      "path": "Content/guided/G08/audio.de.m4a",
+      "bytes": 7286317,
+      "sha256": "757e9cedad10099512f2e3fa0ef7255f98b68b9148263638a6463f0376a01551"
+    },
+    {
+      "path": "Content/guided/G08/audio.en.m4a",
+      "bytes": 7286305,
+      "sha256": "d28cb9ef8c945575e685ae4016e70bd5b7a4e478c9daa2a7b92548965194ba4b"
+    },
+    {
+      "path": "Content/guided/G08/provenance.de.json",
+      "bytes": 2027,
+      "sha256": "eed09a28939d16ea18dab5d4020e48876c4359eaa7bf39cefcf548ee739ab080"
+    },
+    {
+      "path": "Content/guided/G08/provenance.en.json",
+      "bytes": 2208,
+      "sha256": "a019982f0669feae88060c6bcf9ab18b480824663257c99f7a5dd0a6c1a0a9d2"
+    },
+    {
+      "path": "Content/guided/G08/script.de.md",
+      "bytes": 5134,
+      "sha256": "c47314d92415f5c7cc25d456dd3edacb83cfce95d1d8536f710e9540a968b9b3"
+    },
+    {
+      "path": "Content/guided/G08/script.en.md",
+      "bytes": 4634,
+      "sha256": "e60cd152ff46a156cc16e6dcec1fc33f5dd0fecd6a8ad887691292a96060055b"
+    },
+    {
+      "path": "Content/guided/G08/transcript.de.vtt",
+      "bytes": 7317,
+      "sha256": "1c105651a7be32fff77a89059947c2632ba7a811d6d48ada9ec32bff58b1d96b"
+    },
+    {
+      "path": "Content/guided/G08/transcript.en.vtt",
+      "bytes": 6847,
+      "sha256": "9aa46a87386366a30873fdaad255246e8a858053120a532a3d059ac4f0ff4bf7"
+    },
+    {
+      "path": "Content/guided/G09/audio.de.m4a",
+      "bytes": 2430212,
+      "sha256": "d16464238ea07e87820e0052c4dc062cc3b62107d7173bfc06acc503ee7c9026"
+    },
+    {
+      "path": "Content/guided/G09/audio.en.m4a",
+      "bytes": 2430212,
+      "sha256": "aab0de980c3b0ff5efbbcf6deb97ab0031f533e30896f34d36685117920b7e84"
+    },
+    {
+      "path": "Content/guided/G09/provenance.de.json",
+      "bytes": 2027,
+      "sha256": "14facd709ea9309751ca16c61b2da798a7eeec8bfe0d7a2f2bd3cac84cac41ef"
+    },
+    {
+      "path": "Content/guided/G09/provenance.en.json",
+      "bytes": 2024,
+      "sha256": "bd03df1dfbd90b3f0b0d2b94969e9441f40a6c8f54a89914f8bea3ac90c8c731"
+    },
+    {
+      "path": "Content/guided/G09/script.de.md",
+      "bytes": 2246,
+      "sha256": "fefaf0ff2b0c8d855a5c4502849b9ebbfb406d022a42bce7501f7aa687b37a3f"
+    },
+    {
+      "path": "Content/guided/G09/script.en.md",
+      "bytes": 1952,
+      "sha256": "861fd3b68fed9359a43be4d99b2e59e112fee2653e7b968582cc3d3d0ad142cd"
+    },
+    {
+      "path": "Content/guided/G09/transcript.de.vtt",
+      "bytes": 3047,
+      "sha256": "2a004157f42cfd9d804c8284257389c32a2090392b7c81c5389bbcc5e7a0c8aa"
+    },
+    {
+      "path": "Content/guided/G09/transcript.en.vtt",
+      "bytes": 2762,
+      "sha256": "cef124a77e96da27b6c056c331953d57ee95ffe4560593b0a67c7fa2d8dc3db2"
+    },
+    {
+      "path": "Content/guided/G10/audio.de.m4a",
+      "bytes": 3401293,
+      "sha256": "d5d2b5703ebafe0c08928e6b94a0949883b1d80fe5bd6d139cbfa6d39947d27e"
+    },
+    {
+      "path": "Content/guided/G10/audio.en.m4a",
+      "bytes": 3401305,
+      "sha256": "b3ca63c6515ccb5062ef08a7c2c1554d1abbbef522e50cb09958305afae7b2f8"
+    },
+    {
+      "path": "Content/guided/G10/provenance.de.json",
+      "bytes": 2214,
+      "sha256": "b4d3c05505da471db7e3291cdc2b90264fdf416e4f3bbb91d980190ffc9203cf"
+    },
+    {
+      "path": "Content/guided/G10/provenance.en.json",
+      "bytes": 2210,
+      "sha256": "75cd973857d7e1bb6697690ac36f36fddeb91539f167383efa43fc5128150e4f"
+    },
+    {
+      "path": "Content/guided/G10/script.de.md",
+      "bytes": 2370,
+      "sha256": "bb5ed4ff69dd7ee1fa292a9ba26cbae4a9617aa450bb41755c75bc2212383638"
+    },
+    {
+      "path": "Content/guided/G10/script.en.md",
+      "bytes": 2096,
+      "sha256": "8127a233b76678aab4eda80ccdb118e770e63e481585bcf7c2a8a34eb1ad947f"
+    },
+    {
+      "path": "Content/guided/G10/transcript.de.vtt",
+      "bytes": 3238,
+      "sha256": "81f579142f5b5bdd5a8d6a85eb524a94cf5f4bc4cd69cd70bb76961a2883912c"
+    },
+    {
+      "path": "Content/guided/G10/transcript.en.vtt",
+      "bytes": 3001,
+      "sha256": "e973cbda588f8590b19d99cb9cfcd4e321f92cd2d279be304910e4ca51b79340"
+    },
+    {
+      "path": "Content/guided/G11/audio.de.m4a",
+      "bytes": 1458773,
+      "sha256": "2a295728d344edaeb9a18db00933ef15db7a035ea81d40a6df65e78bb568eae5"
+    },
+    {
+      "path": "Content/guided/G11/audio.en.m4a",
+      "bytes": 1458773,
+      "sha256": "772d714b1ab83743939e256fe3d7f77eefd659a849311dddd4a3176cf758ea58"
+    },
+    {
+      "path": "Content/guided/G11/provenance.de.json",
+      "bytes": 2027,
+      "sha256": "3d63319b6228537ecc52029e6c1ae1587443d43120c2c5ca0fed9316dd181fb4"
+    },
+    {
+      "path": "Content/guided/G11/provenance.en.json",
+      "bytes": 2024,
+      "sha256": "7529a2b4619c3518934878ae7e705e5c64b734c8eec9c2717b0abc0f690521e8"
+    },
+    {
+      "path": "Content/guided/G11/script.de.md",
+      "bytes": 1655,
+      "sha256": "3a010d5cf9706ce80114c1a62fd43c06d8496feb69e132da0962c4de0ebf7a98"
+    },
+    {
+      "path": "Content/guided/G11/script.en.md",
+      "bytes": 1460,
+      "sha256": "93e59f1b90e583ebfd429e13e9f30cfc625b19219f81818da25fb3e2ddb9018e"
+    },
+    {
+      "path": "Content/guided/G11/transcript.de.vtt",
+      "bytes": 2177,
+      "sha256": "854a4e8f0278fc8e86edaea7222021527b6db00f344345eb69ac48fc1b3a8b27"
+    },
+    {
+      "path": "Content/guided/G11/transcript.en.vtt",
+      "bytes": 1994,
+      "sha256": "2a804d3772f742a218da2d8b8c20f52144b7380d44113f652303f699f126c377"
+    },
+    {
+      "path": "Content/guided/G12/audio.de.m4a",
+      "bytes": 4858271,
+      "sha256": "f15ee2e77c260d5090b302cf7b6f95dcab839afce41104de43c8d32b6d5504ec"
+    },
+    {
+      "path": "Content/guided/G12/audio.en.m4a",
+      "bytes": 4858283,
+      "sha256": "db9be63eac13497eff22c088d99f51c12e203a8c0d62eb4590804916a8fe9dc4"
+    },
+    {
+      "path": "Content/guided/G12/provenance.de.json",
+      "bytes": 2213,
+      "sha256": "328f71e30a589e7a3c291959bd8ed3cfdf6984e8db3780365e934398a016ea53"
+    },
+    {
+      "path": "Content/guided/G12/provenance.en.json",
+      "bytes": 2210,
+      "sha256": "294597ea0aaf2f2d39fc277751bbbcd2a0c1a8abf7afa05fc75e7858bd402e8c"
+    },
+    {
+      "path": "Content/guided/G12/script.de.md",
+      "bytes": 4547,
+      "sha256": "8a527e9300d7bdfe86d56f2dd1019d7c067d810b22495d9671dfb13ccbd14177"
+    },
+    {
+      "path": "Content/guided/G12/script.en.md",
+      "bytes": 4046,
+      "sha256": "876bc27b7bb0f9c8463cec42f9275432e611607450240aef96ad83cf32bab97f"
+    },
+    {
+      "path": "Content/guided/G12/transcript.de.vtt",
+      "bytes": 6177,
+      "sha256": "3801e3d5b7ff75adaacb6bfbe268558b5c625941bf7bc73a2082e4f785dcb7b6"
+    },
+    {
+      "path": "Content/guided/G12/transcript.en.vtt",
+      "bytes": 5685,
+      "sha256": "683af8f77e6a16477c35105a8954415dbfdfaf75e1981ceaa2a06768452c4351"
+    },
+    {
+      "path": "Content/guided/G13/audio.de.m4a",
+      "bytes": 5829364,
+      "sha256": "0e87df260475910c348c08b82ef8c64bf3a0a350292693d2550da92b4e4a1eb9"
+    },
+    {
+      "path": "Content/guided/G13/audio.en.m4a",
+      "bytes": 5829428,
+      "sha256": "427481f6a2f0ca32bff52d40c251638d6731e2b339f7587fb8e250a6f4623936"
+    },
+    {
+      "path": "Content/guided/G13/provenance.de.json",
+      "bytes": 2212,
+      "sha256": "fcdab7792eef6508ce8c452e558b2ba6463dac6c9c80b10708062b31aea5b074"
+    },
+    {
+      "path": "Content/guided/G13/provenance.en.json",
+      "bytes": 2209,
+      "sha256": "3d25383b7be50cad78716e18918faa45fb063507931ad30a449dff560d88d9cc"
+    },
+    {
+      "path": "Content/guided/G13/script.de.md",
+      "bytes": 5875,
+      "sha256": "5446acf13d2e53e6a6a732f9be1148c8a63a9d26ab1f90a612fd7f8f8cd81634"
+    },
+    {
+      "path": "Content/guided/G13/script.en.md",
+      "bytes": 5176,
+      "sha256": "9182d5b4be5427b6aacfb9c670bb8914689e30f566a2145e3c2c1c1a61a0f154"
+    },
+    {
+      "path": "Content/guided/G13/transcript.de.vtt",
+      "bytes": 8307,
+      "sha256": "0c5c96e6346213f4d9211843a2962cb13cd75337f60cf34c919fbe4c056abd93"
+    },
+    {
+      "path": "Content/guided/G13/transcript.en.vtt",
+      "bytes": 7563,
+      "sha256": "40310e38c44834acf91519e712762893170da5b7db6b98c292dc346f9c4414c8"
+    },
+    {
+      "path": "Content/guided/G14/audio.de.m4a",
+      "bytes": 3886832,
+      "sha256": "3f89269898b6f64359c0e262461d2535dcc23d52d6de9090f0cc725884bb60f0"
+    },
+    {
+      "path": "Content/guided/G14/audio.en.m4a",
+      "bytes": 3886851,
+      "sha256": "f4b6082c3564cf8cf3a6832ed98a244dce5dfc11afc100e484705af4648aa028"
+    },
+    {
+      "path": "Content/guided/G14/provenance.de.json",
+      "bytes": 2025,
+      "sha256": "4896ca409fcfdd68ae50841172ec6aac9b4da26205038bd2b9f278ed3795d6db"
+    },
+    {
+      "path": "Content/guided/G14/provenance.en.json",
+      "bytes": 2208,
+      "sha256": "540ae3e33fa423252f561034aba78048eaf59833e2e8f02e288d5b901871e3f5"
+    },
+    {
+      "path": "Content/guided/G14/script.de.md",
+      "bytes": 4177,
+      "sha256": "948d0ea73db32daf48776d712d9a8ed203e77151be5041f8daf1cc486eac9630"
+    },
+    {
+      "path": "Content/guided/G14/script.en.md",
+      "bytes": 3634,
+      "sha256": "22904abb6ca9d8b9ad8241f8fa10b6931840195f95e55de4f085d32ef3bbf55e"
+    },
+    {
+      "path": "Content/guided/G14/transcript.de.vtt",
+      "bytes": 5797,
+      "sha256": "ef24439a8f41942f74e5fda543ce9203b7435105463d7508a3818c74b19f1e25"
+    },
+    {
+      "path": "Content/guided/G14/transcript.en.vtt",
+      "bytes": 5240,
+      "sha256": "335def25bee8b52e3e17f87902e52dc519795049ad7945addf54faeb563e8539"
+    },
+    {
+      "path": "Content/guided/G15/audio.de.m4a",
+      "bytes": 7286317,
+      "sha256": "e8c07c3cda57c0af71436d53d5a80cf5696f8b43db41a9b0387bd25935aabef1"
+    },
+    {
+      "path": "Content/guided/G15/audio.en.m4a",
+      "bytes": 7286329,
+      "sha256": "eb3ff5c46599174b285a14bf7fd36d2cc254fb0dad4e4eda3aaf778851113674"
+    },
+    {
+      "path": "Content/guided/G15/provenance.de.json",
+      "bytes": 2027,
+      "sha256": "7753d0523464a2b51768991ea28be8a1019c87c87baa111f445a6a8fbb058d0e"
+    },
+    {
+      "path": "Content/guided/G15/provenance.en.json",
+      "bytes": 2211,
+      "sha256": "2dff40a9b6b9920303e33a1763d7fa1574e3d48c565f50a93c35983ef83239e4"
+    },
+    {
+      "path": "Content/guided/G15/script.de.md",
+      "bytes": 6852,
+      "sha256": "b5de42932d344225213872511b82de1d75c05f07a60276d38d4f1cc992cd5053"
+    },
+    {
+      "path": "Content/guided/G15/script.en.md",
+      "bytes": 5878,
+      "sha256": "b5e9cb6244efc1208e61543fee04e6e51b4da2797eb1d7bc6a548e024f2cd730"
+    },
+    {
+      "path": "Content/guided/G15/transcript.de.vtt",
+      "bytes": 9595,
+      "sha256": "d23bba08be83f9362dccb3e403ad6431d5198762200823a4265d8eb98c807709"
+    },
+    {
+      "path": "Content/guided/G15/transcript.en.vtt",
+      "bytes": 8643,
+      "sha256": "478e7ded4f0ab3b8eeb7193182abc9029db9b5162228e7849000367e09ae45b1"
+    },
+    {
+      "path": "Content/guided/G16/audio.de.m4a",
+      "bytes": 2430212,
+      "sha256": "59b9a16a1c28d75277c5a903a490507575842a1b5c48b8ce50b0e88258008c39"
+    },
+    {
+      "path": "Content/guided/G16/audio.en.m4a",
+      "bytes": 2430212,
+      "sha256": "7df9280f668cc04608f7ed74a088e6e38587a653e38e22ca6046e79171d1e3e9"
+    },
+    {
+      "path": "Content/guided/G16/provenance.de.json",
+      "bytes": 2027,
+      "sha256": "def59f4d6874da25bc5f4fa9ee3220fe62ab55eac2c71aae88dc636ccbb87d7d"
+    },
+    {
+      "path": "Content/guided/G16/provenance.en.json",
+      "bytes": 2024,
+      "sha256": "c6e32fdbe7c1e9479ce37c3ad42e0f5e345ccc3b599ec8a71c11c508fdb4a525"
+    },
+    {
+      "path": "Content/guided/G16/script.de.md",
+      "bytes": 2507,
+      "sha256": "4e6ed32b16731091511916c11002278f855fd91e61c0a2128431200eae6f504c"
+    },
+    {
+      "path": "Content/guided/G16/script.en.md",
+      "bytes": 2222,
+      "sha256": "7df165f73db26b00ca38d44e27bd92f85f5b31ecdde4ac93f96899b1edb853ed"
+    },
+    {
+      "path": "Content/guided/G16/transcript.de.vtt",
+      "bytes": 3489,
+      "sha256": "d03e252aeb7643c5165fb6ac1445bb43582cdbb7bf6f84dd18184ea84d081687"
+    },
+    {
+      "path": "Content/guided/G16/transcript.en.vtt",
+      "bytes": 3216,
+      "sha256": "06192b394ebba799d94702777518da8ee11ea51039dfa9bf129a92c6730b0647"
+    },
+    {
+      "path": "Content/guided/G17/audio.de.m4a",
+      "bytes": 9714356,
+      "sha256": "22d2d5085f32f3a8bb748f6865afb31fa53c06743dd4d85e8e26df1851d4a070"
+    },
+    {
+      "path": "Content/guided/G17/audio.en.m4a",
+      "bytes": 9714614,
+      "sha256": "e3d1ca5882c5d7da312c0a5178d3a5f3c63a1610bc2e40afd805412e6d5f58c1"
+    },
+    {
+      "path": "Content/guided/G17/provenance.de.json",
+      "bytes": 2026,
+      "sha256": "27a8d55cdf241c34e9e13a7547d729daca60b10208c57e5c4e6c64e54efc4bc0"
+    },
+    {
+      "path": "Content/guided/G17/provenance.en.json",
+      "bytes": 2023,
+      "sha256": "715b45f5f7145b8dc664da6c5626f2f057176ffce899a7b8197c89f3950d0bc0"
+    },
+    {
+      "path": "Content/guided/G17/script.de.md",
+      "bytes": 6807,
+      "sha256": "7d97fe75f0add1d37dad32cf641ec6cf694800a31d4d7e4fd7a1d32d72b4308c"
+    },
+    {
+      "path": "Content/guided/G17/script.en.md",
+      "bytes": 6079,
+      "sha256": "4293c7984bf0ad3216567818708574518b7c30ae691a70470f66b4f6a407f53b"
+    },
+    {
+      "path": "Content/guided/G17/transcript.de.vtt",
+      "bytes": 9811,
+      "sha256": "07cb6d7bb50c221092ee71dd5643e7943cb0adfb233f5149fb17ae65e0b2f3e4"
+    },
+    {
+      "path": "Content/guided/G17/transcript.en.vtt",
+      "bytes": 9125,
+      "sha256": "03d224e74ca71d9a8c0f233f6a9bf2262d698872e3b3ef1b93412025e354af74"
+    },
+    {
+      "path": "Content/guided/G18/audio.de.m4a",
+      "bytes": 3401305,
+      "sha256": "ecd5d2cb3e8c99ef688c277df22c40d150cbcb39c9548df67a1085fb306b251c"
+    },
+    {
+      "path": "Content/guided/G18/audio.en.m4a",
+      "bytes": 3401305,
+      "sha256": "b38fe0d2de03709a1efb23298067567ae54dcdb668dd044e88e4bf592af31f59"
+    },
+    {
+      "path": "Content/guided/G18/provenance.de.json",
+      "bytes": 2027,
+      "sha256": "83ebe19e2c98b9c27c8536fef5329e88ca35f964ef9219507f782bc6572e58b1"
+    },
+    {
+      "path": "Content/guided/G18/provenance.en.json",
+      "bytes": 2024,
+      "sha256": "14f7292748e2f59b5840a2260414806fa778e90e846c70e83e18605b4fe9033a"
+    },
+    {
+      "path": "Content/guided/G18/script.de.md",
+      "bytes": 3579,
+      "sha256": "04da82d431e36d35a14529f97edda978329de7cd2ca40d103f6541c598f9f9fe"
+    },
+    {
+      "path": "Content/guided/G18/script.en.md",
+      "bytes": 3122,
+      "sha256": "0715f2c7843db56b643a8b5b593cc70b00643475dd322e57beaef0d8152fd294"
+    },
+    {
+      "path": "Content/guided/G18/transcript.de.vtt",
+      "bytes": 4840,
+      "sha256": "e32ef425f5ff5e38a97335142ebea8bd7f715e0c685f23da6a18c2dc63927981"
+    },
+    {
+      "path": "Content/guided/G18/transcript.en.vtt",
+      "bytes": 4400,
+      "sha256": "978fe4c21afd6132014cd27adbbbc16214ef5f139ec110c917e3916d2129d999"
+    },
+    {
+      "path": "Content/guided/G19/audio.de.m4a",
+      "bytes": 4858271,
+      "sha256": "642d762c8dd12d8234c4e1fb7dcf5d59ef982f723e4ba24c356cfcf5c4329f3e"
+    },
+    {
+      "path": "Content/guided/G19/audio.en.m4a",
+      "bytes": 4858271,
+      "sha256": "947ea10c4804a7a4f11f78555f5f368c857a30758aa5ff304708851fca986312"
+    },
+    {
+      "path": "Content/guided/G19/provenance.de.json",
+      "bytes": 2214,
+      "sha256": "c48a27be5976d3179b6005bc8cac9df35b93d7b76602897a6deb2123e10648be"
+    },
+    {
+      "path": "Content/guided/G19/provenance.en.json",
+      "bytes": 2395,
+      "sha256": "b18a0217b099c8262f15f293febd044d5c87a078695e52300150161064aa2bb8"
+    },
+    {
+      "path": "Content/guided/G19/script.de.md",
+      "bytes": 5411,
+      "sha256": "e92211ded868cbd43fc9399741b8eeb30a0b93a8650523c7222ff8d0b1aff117"
+    },
+    {
+      "path": "Content/guided/G19/script.en.md",
+      "bytes": 4530,
+      "sha256": "5995cac292737c531f55850dad85c38c65cc59b700fc800dc50cfcb130cec6f3"
+    },
+    {
+      "path": "Content/guided/G19/transcript.de.vtt",
+      "bytes": 7272,
+      "sha256": "2edd6def2716ef0dc3874b2ce077b91d1c22649fac330dfb11d61f0ef687eedd"
+    },
+    {
+      "path": "Content/guided/G19/transcript.en.vtt",
+      "bytes": 6412,
+      "sha256": "cddd7960eb24a03e80fd123cf293b8707a25e361c2113c6bffda55d746a8b660"
+    },
+    {
+      "path": "Content/guided/G20/audio.de.m4a",
+      "bytes": 4858271,
+      "sha256": "d29081b969a0b1716b1f136a20b6e17a57cd19fb9ffd661eb9fac656d306669e"
+    },
+    {
+      "path": "Content/guided/G20/audio.en.m4a",
+      "bytes": 4858271,
+      "sha256": "854708dae63a0644ffc1e3c91bf82bf663ea64265425dcf1e93a564fb9edc03f"
+    },
+    {
+      "path": "Content/guided/G20/provenance.de.json",
+      "bytes": 2214,
+      "sha256": "0aba31faa0a2ed00ccb4559835fa0361dfc2b2de09bfac1da2e60b21e6e393d3"
+    },
+    {
+      "path": "Content/guided/G20/provenance.en.json",
+      "bytes": 2394,
+      "sha256": "e0a4fc74efc5458a633974f5399ce7dc9576d7474c710c99410c99ed3722adae"
+    },
+    {
+      "path": "Content/guided/G20/script.de.md",
+      "bytes": 4558,
+      "sha256": "dd4c5d67f565fef317bda68793e83fa305fb059c5ed41e83498c882d7fb96cee"
+    },
+    {
+      "path": "Content/guided/G20/script.en.md",
+      "bytes": 3909,
+      "sha256": "bc72c22e6227f9ee928fcee8d1a65235e2a14e86657f0b88b8975f60b5dac4e0"
+    },
+    {
+      "path": "Content/guided/G20/transcript.de.vtt",
+      "bytes": 6060,
+      "sha256": "ef29a8c5a417e7ce2cc71bcfdbc77c4db2f14dae541c3450677c83d598986090"
+    },
+    {
+      "path": "Content/guided/G20/transcript.en.vtt",
+      "bytes": 5424,
+      "sha256": "ee7015c7d6594899fce90ccc6f100840652237f2509d40af9485095473f04168"
+    },
+    {
+      "path": "Content/guided/G21/audio.de.m4a",
+      "bytes": 3886860,
+      "sha256": "4c43b6568efd0eb809a9b6910dff6eddff38e7ee3ccbf44d270d58ebc26a905b"
+    },
+    {
+      "path": "Content/guided/G21/audio.en.m4a",
+      "bytes": 3886847,
+      "sha256": "e34654abba37e6ce8f71cc550b9b900b66fa03d86afcb02ff30f7eaa8cc5ef8a"
+    },
+    {
+      "path": "Content/guided/G21/provenance.de.json",
+      "bytes": 2211,
+      "sha256": "507e1fabce2455677a5638da2f570f2bc6233b48422546e593eefe3ff213f0ad"
+    },
+    {
+      "path": "Content/guided/G21/provenance.en.json",
+      "bytes": 2022,
+      "sha256": "01e732b0b9e3550fab5df975b2ce07068f23e21e2454e4fbc405963cb0080f06"
+    },
+    {
+      "path": "Content/guided/G21/script.de.md",
+      "bytes": 3731,
+      "sha256": "12a6bf1badbfe867409ff4e57b9018a0975c9b77e36c47fa3f226e994c2cd460"
+    },
+    {
+      "path": "Content/guided/G21/script.en.md",
+      "bytes": 3268,
+      "sha256": "9dedf1a3dfd92888a784aaf477bb27fd66de874897e59648a9bdf52bf7f10364"
+    },
+    {
+      "path": "Content/guided/G21/transcript.de.vtt",
+      "bytes": 4926,
+      "sha256": "5afd92b04878478705861f16f3c8710ae3917879f8c3101d8a0def7cd01058a1"
+    },
+    {
+      "path": "Content/guided/G21/transcript.en.vtt",
+      "bytes": 4472,
+      "sha256": "eb92774678766f1886b83afd8a0c382469523cf1e9b4717db538abbcbbcc3d50"
+    },
+    {
+      "path": "Content/guided/G22/audio.de.m4a",
+      "bytes": 2430212,
+      "sha256": "efd62091013a0eb9825d2245ec62e1b460b7b317264466a899c7fbf7f321f635"
+    },
+    {
+      "path": "Content/guided/G22/audio.en.m4a",
+      "bytes": 2430212,
+      "sha256": "e532dae2e8d9bd0b0c2627bc56e249b27f44baa29b31b590f2b246530fe0a5ba"
+    },
+    {
+      "path": "Content/guided/G22/provenance.de.json",
+      "bytes": 2214,
+      "sha256": "7c6e88bc1a65ff532ea51af56cdd808c9e6ff719c50b349b5cde7e260e2c46c2"
+    },
+    {
+      "path": "Content/guided/G22/provenance.en.json",
+      "bytes": 2210,
+      "sha256": "7e0d8c4d2d2c25c19664376ba4c25e565bf896d5075b5cbb5bd6935271c2663e"
+    },
+    {
+      "path": "Content/guided/G22/script.de.md",
+      "bytes": 2493,
+      "sha256": "3997e1818707f1bf5546a7dc6a3c0f766b8b052fd41cd5499f6f3598c0659445"
+    },
+    {
+      "path": "Content/guided/G22/script.en.md",
+      "bytes": 2165,
+      "sha256": "810bd124ef2d4b08eea088c5c33858cef6015db13f3e042ef26ba6507c1cde8e"
+    },
+    {
+      "path": "Content/guided/G22/transcript.de.vtt",
+      "bytes": 3288,
+      "sha256": "d4f93f07581675c9e6ff6212717bcbe205987fbbc98c7f477c480f2a956b9585"
+    },
+    {
+      "path": "Content/guided/G22/transcript.en.vtt",
+      "bytes": 2970,
+      "sha256": "52f7f9ed1792be43b8f5a25906565717c286c99dca56cc88c7baea3b0c91c198"
+    },
+    {
+      "path": "Content/guided/G23/audio.de.m4a",
+      "bytes": 4858259,
+      "sha256": "50a97cc5cd1e99967bdac0adb6e1d25da5d1b1d86a3cae329088cc8ec38df8a3"
+    },
+    {
+      "path": "Content/guided/G23/audio.en.m4a",
+      "bytes": 4858259,
+      "sha256": "58cf3bf1a9827c010f9c34ab6af88fdb248bb50c53534212feb2ca8c85339f26"
+    },
+    {
+      "path": "Content/guided/G23/provenance.de.json",
+      "bytes": 2027,
+      "sha256": "c072a6f8e7d1b6ec8e39db53e5bcdc1b1391c577dc3df90e8868640aa7639ddd"
+    },
+    {
+      "path": "Content/guided/G23/provenance.en.json",
+      "bytes": 2024,
+      "sha256": "40936496904bb241995e0aa9058426c33d8fe0a5af4d29e016714e5a29e27e40"
+    },
+    {
+      "path": "Content/guided/G23/script.de.md",
+      "bytes": 4167,
+      "sha256": "0a165fe57606f3a849fb5a6329dcff04c6717dece0b89ab48ee54a2d55166bfd"
+    },
+    {
+      "path": "Content/guided/G23/script.en.md",
+      "bytes": 3704,
+      "sha256": "3898c05d3127b03f92715ce94ba0189768bfeb14a2dd728e019ac6f8eeba163c"
+    },
+    {
+      "path": "Content/guided/G23/transcript.de.vtt",
+      "bytes": 5599,
+      "sha256": "b0d6676b1a4b0c529d2a5a410b63ec2898e36e10f66b11c810ea8c6ec24260cc"
+    },
+    {
+      "path": "Content/guided/G23/transcript.en.vtt",
+      "bytes": 5151,
+      "sha256": "450904e70d9176e11b8f8efc19730e071e4d78b933cfc9c6a0674a91f189a674"
+    },
+    {
+      "path": "Content/guided/G24/audio.de.m4a",
+      "bytes": 3401293,
+      "sha256": "6b723669a2e74a7a19b20d4414fd5ec79b7d446e4bf615c7193720604b1520f3"
+    },
+    {
+      "path": "Content/guided/G24/audio.en.m4a",
+      "bytes": 3401293,
+      "sha256": "b1e7a616e91ce5efb27a5d77b90b3872288569c6f2f57f5518dc951a7dfbc614"
+    },
+    {
+      "path": "Content/guided/G24/provenance.de.json",
+      "bytes": 2027,
+      "sha256": "57e70cbf8471f8b5882e0cb5ad76bc1b2760b67c8252f151efb8f691bf8edb63"
+    },
+    {
+      "path": "Content/guided/G24/provenance.en.json",
+      "bytes": 2023,
+      "sha256": "b191b8e60929172c046e6244325af9d9461c66af7741a07e0f036fe0ab879866"
+    },
+    {
+      "path": "Content/guided/G24/script.de.md",
+      "bytes": 2240,
+      "sha256": "d9d7bda19a7a63d8804521c6f5a9d4de83de1f53a05bc2f383807c2d09e493ba"
+    },
+    {
+      "path": "Content/guided/G24/script.en.md",
+      "bytes": 1986,
+      "sha256": "3f11d64b87c5612b3c370b23d2e8d09d81f7e17dd5bbc4d8be5705b1b95fe442"
+    },
+    {
+      "path": "Content/guided/G24/transcript.de.vtt",
+      "bytes": 3134,
+      "sha256": "ef4cdddf13c373a7ea0c81b9568229ab64062301a9e66fea169ba7ea2b3bb79e"
+    },
+    {
+      "path": "Content/guided/G24/transcript.en.vtt",
+      "bytes": 2897,
+      "sha256": "96920d6c3a696cc3b27bc9fc604321aa581d86e1acdc93aa5e7a20b0d1722ba5"
+    },
+    {
+      "path": "Content/guided/G25/audio.de.m4a",
+      "bytes": 1458773,
+      "sha256": "4b3f66b71e252996c2b2606f83f340c13774c5936fc8b887dcf097ec86a48ef5"
+    },
+    {
+      "path": "Content/guided/G25/audio.en.m4a",
+      "bytes": 1458773,
+      "sha256": "697dfd461e1501724d7af7e6fe9c90513751b2dd7fec185bb57b9f6ca6aa2642"
+    },
+    {
+      "path": "Content/guided/G25/provenance.de.json",
+      "bytes": 2027,
+      "sha256": "f9fa349c7f8b2b6ad69c72533bf71e4c65364f87fe92cbd16443c142fa128d86"
+    },
+    {
+      "path": "Content/guided/G25/provenance.en.json",
+      "bytes": 2024,
+      "sha256": "b4f7ecb7cb73b2bba02bed5d885e017d36e47666444d416b3b0cdce15397be99"
+    },
+    {
+      "path": "Content/guided/G25/script.de.md",
+      "bytes": 1618,
+      "sha256": "c21910e1784a93555d32bae8e3dc8bd7ee538f195f1edc01af91b02c6270a843"
+    },
+    {
+      "path": "Content/guided/G25/script.en.md",
+      "bytes": 1394,
+      "sha256": "7b82065e61b68b80513cdf07992357f2522f4ea47dae85c4f58c9bf3fe33f588"
+    },
+    {
+      "path": "Content/guided/G25/transcript.de.vtt",
+      "bytes": 2088,
+      "sha256": "3f7e7bc59fdff387516d75c972d76a703c092cb2affd53bac5cebb8b09bad5e0"
+    },
+    {
+      "path": "Content/guided/G25/transcript.en.vtt",
+      "bytes": 1882,
+      "sha256": "f406b6615db653306527b944c78197a0dce6051aff4207a5595a2f368d460949"
+    },
+    {
+      "path": "Content/guided/G26/audio.de.m4a",
+      "bytes": 5829359,
+      "sha256": "793a7028c823d20a81bef19f3b721ecb784073d4018ce4f5122c206d95f29d59"
+    },
+    {
+      "path": "Content/guided/G26/audio.en.m4a",
+      "bytes": 5829340,
+      "sha256": "e14d973aa4d30d42bd6bc98c92b5b11f9e6943d82dc3768b9da4209ac5d6adcd"
+    },
+    {
+      "path": "Content/guided/G26/provenance.de.json",
+      "bytes": 2212,
+      "sha256": "6ea3979c12f09c4d6aef32a0e1a97fc40a5828adeab4cbab6bbd9105e2b3ded7"
+    },
+    {
+      "path": "Content/guided/G26/provenance.en.json",
+      "bytes": 2022,
+      "sha256": "743ff21a0acb12f56c2c0d3edd1ee90446811bd7c3fa78c22d102e73c482b126"
+    },
+    {
+      "path": "Content/guided/G26/script.de.md",
+      "bytes": 4545,
+      "sha256": "206d18aace82381a8c5c4b66a3adfa75f8ed114c71c051ad7ce41cd5d52c11f1"
+    },
+    {
+      "path": "Content/guided/G26/script.en.md",
+      "bytes": 4017,
+      "sha256": "7cdbf8f1996176a0c61f19ec9066ae040a1821931543da2436c3540954f2b3fb"
+    },
+    {
+      "path": "Content/guided/G26/transcript.de.vtt",
+      "bytes": 6166,
+      "sha256": "7d18c8df2c73f160f91e1c1ff5cdc72cbf29d006d9e3c0a6cb902ceb1d191d99"
+    },
+    {
+      "path": "Content/guided/G26/transcript.en.vtt",
+      "bytes": 5660,
+      "sha256": "adc53026bf96a9e1523059f5e1c5c4f9389fc03bd414dfbff7c1d2fe38c88345"
+    },
+    {
+      "path": "Content/guided/G27/audio.de.m4a",
+      "bytes": 4858271,
+      "sha256": "6aebf3030dd029bf4ecb28ea1fe2fbe7b52433d4e9f64aa083cfc49401a70091"
+    },
+    {
+      "path": "Content/guided/G27/audio.en.m4a",
+      "bytes": 4858271,
+      "sha256": "d5b9ac51fbe3bd7616aa315583317e330eda4d44a71bd76fa9ca286f645a34c3"
+    },
+    {
+      "path": "Content/guided/G27/provenance.de.json",
+      "bytes": 2027,
+      "sha256": "cf000e03ca693d4e7de4495e54607270431c12fd799e13c5a6fbb87b5b92ef4e"
+    },
+    {
+      "path": "Content/guided/G27/provenance.en.json",
+      "bytes": 2024,
+      "sha256": "c058194f3085fb23d78e445473d9892b907897e8141beda1620e5664e753382f"
+    },
+    {
+      "path": "Content/guided/G27/script.de.md",
+      "bytes": 3951,
+      "sha256": "757b821d52c9492510a1ff62340c1852094e017bef25d2dff82dc387ce4de2e9"
+    },
+    {
+      "path": "Content/guided/G27/script.en.md",
+      "bytes": 3493,
+      "sha256": "4e3054385055faa707689a5b002fe7d4a25b4a5a2739a1f7ec1a20fdf7e65270"
+    },
+    {
+      "path": "Content/guided/G27/transcript.de.vtt",
+      "bytes": 5267,
+      "sha256": "671f48fd65dead3d121097d745a5391359eb413b5c07089c9ab72ebe460fa163"
+    },
+    {
+      "path": "Content/guided/G27/transcript.en.vtt",
+      "bytes": 4662,
+      "sha256": "a429b400372494fac12bee446b6ab325a4d9547c49f23af44b09e5ccacd55663"
+    },
+    {
+      "path": "Content/guided/G28/audio.de.m4a",
+      "bytes": 5829364,
+      "sha256": "73fdb3fd112e8808062b8a8fa6d071aa418a45116396125935d2d7eb0ec079f1"
+    },
+    {
+      "path": "Content/guided/G28/audio.en.m4a",
+      "bytes": 5829352,
+      "sha256": "8562265e3115424de9d8b16b9697308cde0f5af7fa88634b0770c77dfdc9cb77"
+    },
+    {
+      "path": "Content/guided/G28/provenance.de.json",
+      "bytes": 2212,
+      "sha256": "b241379916cf760e029fd885167ed7ed919b5688f1f5ff484b7beb2bc8655696"
+    },
+    {
+      "path": "Content/guided/G28/provenance.en.json",
+      "bytes": 2021,
+      "sha256": "224a971e660a7f444f270984adf91075130740d4b60447d11e563f070ae9ff62"
+    },
+    {
+      "path": "Content/guided/G28/script.de.md",
+      "bytes": 4479,
+      "sha256": "485f1f8d78367b41360109aeecd415258ccc19457dc673e7ec9616e72c29a49a"
+    },
+    {
+      "path": "Content/guided/G28/script.en.md",
+      "bytes": 3894,
+      "sha256": "9748b3b7e7816128d45c0dc10cdf651eff0a262f4da9a469b57528ecb27bac21"
+    },
+    {
+      "path": "Content/guided/G28/transcript.de.vtt",
+      "bytes": 5794,
+      "sha256": "61f059b04d375ba529810e8e7109c5c65758da465319d8a8ebe410a2f177d401"
+    },
+    {
+      "path": "Content/guided/G28/transcript.en.vtt",
+      "bytes": 5225,
+      "sha256": "f90ccc53956fa3bdff97d9695c9b1762894865ef165eb6fbfeba4baf30384806"
+    },
+    {
+      "path": "Content/guided/G29/audio.de.m4a",
+      "bytes": 4858271,
+      "sha256": "b79843d73133971458dee4fb74c2b96a9f76e319a344c6138c59188d7ec0d288"
+    },
+    {
+      "path": "Content/guided/G29/audio.en.m4a",
+      "bytes": 4858271,
+      "sha256": "871b7630089f646515ddb5dd01455e0b9a326d54b81f02d098f043205f07f931"
+    },
+    {
+      "path": "Content/guided/G29/provenance.de.json",
+      "bytes": 2027,
+      "sha256": "9a1bde04ca341fcb391e0ae263e457db5f7e1b12756b76b33ebe4c5343f6dca0"
+    },
+    {
+      "path": "Content/guided/G29/provenance.en.json",
+      "bytes": 2024,
+      "sha256": "c54048e4ba02516153a75ff5b80e628a28625a5c737bdf18989f413baf95bfb9"
+    },
+    {
+      "path": "Content/guided/G29/script.de.md",
+      "bytes": 4081,
+      "sha256": "e2b2b08a45edb21de7cbf19827fd5f225d3ea101ddbafea77aac8d6910a649d6"
+    },
+    {
+      "path": "Content/guided/G29/script.en.md",
+      "bytes": 3580,
+      "sha256": "a053fdcb5de1d4f330a4db11a40a96524f02eb8bcacd73e84f2cc74c06263a75"
+    },
+    {
+      "path": "Content/guided/G29/transcript.de.vtt",
+      "bytes": 5292,
+      "sha256": "c048527cc48b1e5cc0a7c9c386cc8fe3bbf4734cd0bdfb558ddbab0b04d1f5cb"
+    },
+    {
+      "path": "Content/guided/G29/transcript.en.vtt",
+      "bytes": 4813,
+      "sha256": "112ec2d74442282f62e287d5fa277f520d64ea70863a76268596654d06540f40"
+    },
+    {
+      "path": "Content/guided/G30/audio.de.m4a",
+      "bytes": 7286305,
+      "sha256": "3a25eaeb7d1457cbd50cd7f3f15e299a0428220df25793b83fba7571bc63b3ea"
+    },
+    {
+      "path": "Content/guided/G30/audio.en.m4a",
+      "bytes": 7286317,
+      "sha256": "65a34d7039fa5c29eafd8ffad289085dbbb50aa8216151b8f26f39846da168b4"
+    },
+    {
+      "path": "Content/guided/G30/provenance.de.json",
+      "bytes": 2213,
+      "sha256": "346dd5433f7c529cac61360f47ffa92efc12e4629f1c9ae1b31efe6342005572"
+    },
+    {
+      "path": "Content/guided/G30/provenance.en.json",
+      "bytes": 2024,
+      "sha256": "0573af33aad3d6d044b96d9eb6905d0d3b9d1e8790698211eb31d1550b3b92d2"
+    },
+    {
+      "path": "Content/guided/G30/script.de.md",
+      "bytes": 4689,
+      "sha256": "5ff4c743f61057e71f974c5a122ef5f41dcce0b9d81fce3aad9ad4b832dd7afa"
+    },
+    {
+      "path": "Content/guided/G30/script.en.md",
+      "bytes": 4058,
+      "sha256": "d4413009f652194edc808b1431a3f8e526ea5cfab64224e1b6611c2ef024fad5"
+    },
+    {
+      "path": "Content/guided/G30/transcript.de.vtt",
+      "bytes": 6556,
+      "sha256": "dc4549ba7b32de5b34c56fac206d27c9c761ee53cfb67d5ecb49bf3fe08af45a"
+    },
+    {
+      "path": "Content/guided/G30/transcript.en.vtt",
+      "bytes": 5939,
+      "sha256": "bde27f18950ef6bf94efdc854774d6b3a384c24fad619f7fca31aa801d2ca3f8"
+    },
+    {
+      "path": "Content/guided/G31/audio.de.m4a",
+      "bytes": 3886884,
+      "sha256": "045ed5a2141b9a7634e0ca61ec8fbf3eed583aec8292718caff64228a9e67ec2"
+    },
+    {
+      "path": "Content/guided/G31/audio.en.m4a",
+      "bytes": 3886844,
+      "sha256": "2b04048591d6169343fd280f9af3f5d20008c8476bd2b274912a7140229c640d"
+    },
+    {
+      "path": "Content/guided/G31/provenance.de.json",
+      "bytes": 2024,
+      "sha256": "6bf799197bf1d42c2c35d20a803c2fe90920de6eab57952079aedfd528b126fa"
+    },
+    {
+      "path": "Content/guided/G31/provenance.en.json",
+      "bytes": 2208,
+      "sha256": "afac3f3d4e54d9b4e746862809891401a98391aa394f0ad9012746987c082162"
+    },
+    {
+      "path": "Content/guided/G31/script.de.md",
+      "bytes": 3348,
+      "sha256": "694ae573a4627d1de213c4e6f47b396abf9446425364e6b159d602aa3129fc51"
+    },
+    {
+      "path": "Content/guided/G31/script.en.md",
+      "bytes": 2924,
+      "sha256": "3f71f1ac9625d0430a3edaf64bf681bb0c5bd7021fbd1d709ee3f1c6d7c393f8"
+    },
+    {
+      "path": "Content/guided/G31/transcript.de.vtt",
+      "bytes": 4358,
+      "sha256": "687bc6cdbbf6e04dbe75e4c20fb994d0c828683d4f218334383a08d9692eae32"
+    },
+    {
+      "path": "Content/guided/G31/transcript.en.vtt",
+      "bytes": 3948,
+      "sha256": "6bf4998b3de34dd1f4743d77115c76ae0cd3b963b01a63e9676f69f493e24e71"
+    },
+    {
+      "path": "Content/guided/G32/audio.de.m4a",
+      "bytes": 3401305,
+      "sha256": "546199301716d69827a3cd4c566c9176707ee7d6f2b4ab3644e6e3938b2dcde9"
+    },
+    {
+      "path": "Content/guided/G32/audio.en.m4a",
+      "bytes": 3401293,
+      "sha256": "b5965e8d0c4db21d294bf9967747bb79ff892b6164f0a857b65365c59810560a"
+    },
+    {
+      "path": "Content/guided/G32/provenance.de.json",
+      "bytes": 2027,
+      "sha256": "26618c50abe33e867329d0e6dfefb089d35ce5ad9b22019bc62de1b2d78ae769"
+    },
+    {
+      "path": "Content/guided/G32/provenance.en.json",
+      "bytes": 2024,
+      "sha256": "7de13705175b212fe8c9c20b22c19056d43d695fde7490ac87e8463f8ccc156e"
+    },
+    {
+      "path": "Content/guided/G32/script.de.md",
+      "bytes": 2895,
+      "sha256": "3995b34e77ef03b554e41d865ea76cbad9ed327e865e18b1be5537c160e57e11"
+    },
+    {
+      "path": "Content/guided/G32/script.en.md",
+      "bytes": 2522,
+      "sha256": "dc25fe971cda37268ff4e41a7502f55c5941cc3a21baace29c2c1e2fa5e9ead9"
+    },
+    {
+      "path": "Content/guided/G32/transcript.de.vtt",
+      "bytes": 3661,
+      "sha256": "c7c691a6596f4137d58801ff17019168914aa1d4efc23b7447aa6a9b6c6b7846"
+    },
+    {
+      "path": "Content/guided/G32/transcript.en.vtt",
+      "bytes": 3301,
+      "sha256": "97ecf39d2074a07ed2c17b67610c7c4ea8be9e6b0a35025169d37d5e99a3ec97"
+    },
+    {
+      "path": "Content/guided/G33/audio.de.m4a",
+      "bytes": 2430212,
+      "sha256": "9acc37a92d3889044c0af8b40f29b2990b387089547264399d8e259d2c96cf9d"
+    },
+    {
+      "path": "Content/guided/G33/audio.en.m4a",
+      "bytes": 2430212,
+      "sha256": "b84562a11606e54d94c4d4dad21454d992b9441eba1f58d4cb10cf47fd917def"
+    },
+    {
+      "path": "Content/guided/G33/provenance.de.json",
+      "bytes": 2212,
+      "sha256": "f65edc951f47d6fff9bdd685523aba7e91a90b63678065851209ca47ce1a8cba"
+    },
+    {
+      "path": "Content/guided/G33/provenance.en.json",
+      "bytes": 2024,
+      "sha256": "d7e83b4748b128a2301084f1a3b5f0dcb7730083b8e36c0601f9ad05b895ad7e"
+    },
+    {
+      "path": "Content/guided/G33/script.de.md",
+      "bytes": 2512,
+      "sha256": "d50517f07bd7062989392f0e83060ac650dc0d392bd9e2acb0944e3056fad644"
+    },
+    {
+      "path": "Content/guided/G33/script.en.md",
+      "bytes": 2189,
+      "sha256": "940d60cf8c5667692444d904a436c6a5278369d8314b35059bc603d989603fe5"
+    },
+    {
+      "path": "Content/guided/G33/transcript.de.vtt",
+      "bytes": 3338,
+      "sha256": "2b9e9c1ef8cfee62c7ce9d62e380899acc1f425a2512805bd0219d3f8860539b"
+    },
+    {
+      "path": "Content/guided/G33/transcript.en.vtt",
+      "bytes": 3026,
+      "sha256": "2d001a9207c223ea24335214143854912d1d09f9cdae4d95cc6c006364ff0a26"
+    },
+    {
+      "path": "Content/guided/G34/audio.de.m4a",
+      "bytes": 3886854,
+      "sha256": "ccfd6a4ebd0cd8d7286a8aa6258fa2994c20d1d1b55e4cba42d77b50ceebd439"
+    },
+    {
+      "path": "Content/guided/G34/audio.en.m4a",
+      "bytes": 3886880,
+      "sha256": "ceb05b4be1036df62d4c59d86d8549fae04b588ecf12d3e666460b85777bbfda"
+    },
+    {
+      "path": "Content/guided/G34/provenance.de.json",
+      "bytes": 2025,
+      "sha256": "e6fdbb0dd0d3635e18e5db309366203b96be5294c414f4d970d9cd665d115e57"
+    },
+    {
+      "path": "Content/guided/G34/provenance.en.json",
+      "bytes": 2022,
+      "sha256": "6172a99a281f82665bdfc94bb0ca9d475d8d3ab41bae47d089be0939f35434af"
+    },
+    {
+      "path": "Content/guided/G34/script.de.md",
+      "bytes": 3478,
+      "sha256": "7fa19e8ddf9904ed9710c8f135a6ab9f9abf2b97354e888b2a9b835db691d70a"
+    },
+    {
+      "path": "Content/guided/G34/script.en.md",
+      "bytes": 3066,
+      "sha256": "9ec46d77aed48760e5d22433738de46a7868ed1ff4d1237db21596f90548aea1"
+    },
+    {
+      "path": "Content/guided/G34/transcript.de.vtt",
+      "bytes": 4558,
+      "sha256": "2ed5c1873d979beff23b63a4f643089f8cd755a8b893b587dec053b6e3466db2"
+    },
+    {
+      "path": "Content/guided/G34/transcript.en.vtt",
+      "bytes": 4161,
+      "sha256": "404072825bf45a7d464186cc7fbe22d375f87a9c4d8d65fa610c0d262ab22f96"
+    },
+    {
+      "path": "Content/guided/G35/audio.de.m4a",
+      "bytes": 4858271,
+      "sha256": "4463413dc61887d48f2f03d67b4371d0f81c77547bcaf2558e0476da006e7444"
+    },
+    {
+      "path": "Content/guided/G35/audio.en.m4a",
+      "bytes": 4858259,
+      "sha256": "423ae5ca5dde599c81d1c3fe5649019dde3ac05aa2db9befacb5cdd87d3d40a5"
+    },
+    {
+      "path": "Content/guided/G35/provenance.de.json",
+      "bytes": 2214,
+      "sha256": "f33f1fed5cfe4ce0709328e83e3ab3d42ff9794067dbaf796f91e2b53f3d6457"
+    },
+    {
+      "path": "Content/guided/G35/provenance.en.json",
+      "bytes": 2209,
+      "sha256": "310abbf45b65303339d4052b3119425b37f6b7d4f90fcc6e95b8a8e512ce3b75"
+    },
+    {
+      "path": "Content/guided/G35/script.de.md",
+      "bytes": 3796,
+      "sha256": "6b3441908d1f8748e2aa979d45d76b1854b16e5053dae7ac687af33dce01f319"
+    },
+    {
+      "path": "Content/guided/G35/script.en.md",
+      "bytes": 3314,
+      "sha256": "c076465d8e7af59aa3c9de01d590a1f8697cdc2da47ffc84139fdc214665f671"
+    },
+    {
+      "path": "Content/guided/G35/transcript.de.vtt",
+      "bytes": 5015,
+      "sha256": "e27c02e6d78da1933254269ceaa4d344a1193bde0d0a2f9bdfde77291b71e622"
+    },
+    {
+      "path": "Content/guided/G35/transcript.en.vtt",
+      "bytes": 4554,
+      "sha256": "90e7f44f342610e81f03891a1ae78958f832edabafbb5fbcd907669670096eb0"
+    },
+    {
+      "path": "Content/guided/G36/audio.de.m4a",
+      "bytes": 1458773,
+      "sha256": "103f945c30bacee55648d0320aa481d562e059e4d0eddcc3b2d0c52a3473bd29"
+    },
+    {
+      "path": "Content/guided/G36/audio.en.m4a",
+      "bytes": 1458773,
+      "sha256": "fb0d88583fe79083e630b3ed68cd0c292356ee27418b080be4f33bdc924c9713"
+    },
+    {
+      "path": "Content/guided/G36/provenance.de.json",
+      "bytes": 2027,
+      "sha256": "42aef0edb5652584f681b6a661ebad963b6aa25eaa899b69ef68bea61b36b8d6"
+    },
+    {
+      "path": "Content/guided/G36/provenance.en.json",
+      "bytes": 2024,
+      "sha256": "600a0ed3484b8ae3a3fef99d708f79058cd27b6f9fadb86fab67933701d585e9"
+    },
+    {
+      "path": "Content/guided/G36/script.de.md",
+      "bytes": 1674,
+      "sha256": "a0516d3453de07512a611d5d3eb64f230f1f7cb5a3d235fb5a3e5d86c18e5215"
+    },
+    {
+      "path": "Content/guided/G36/script.en.md",
+      "bytes": 1464,
+      "sha256": "69ddba086e411a108b46daa247e0f9ee39d74f81907539a30c0e84489288d6be"
+    },
+    {
+      "path": "Content/guided/G36/transcript.de.vtt",
+      "bytes": 2162,
+      "sha256": "9933026ba381399843b33795025be620cb6c04deb3042aafea266549d618b35e"
+    },
+    {
+      "path": "Content/guided/G36/transcript.en.vtt",
+      "bytes": 1926,
+      "sha256": "37ad301bb734f3e5167fcfa7beae32b2469a3f704f5546b444618f1a703fbbd0"
+    },
+    {
+      "path": "Content/guided/G37/audio.de.m4a",
+      "bytes": 4858259,
+      "sha256": "f9d354fe541cdb2befc17d34992a20622c514170906d5f39a1adb499a09033eb"
+    },
+    {
+      "path": "Content/guided/G37/audio.en.m4a",
+      "bytes": 4858259,
+      "sha256": "1e6fb2c916c40cc56aa64df2b7cd50682300a3516e7732e429168a877a895cf7"
+    },
+    {
+      "path": "Content/guided/G37/provenance.de.json",
+      "bytes": 2027,
+      "sha256": "7999f9863a405abf4473775de635540e8aeb43dc45d5907a4c536a419f46bffd"
+    },
+    {
+      "path": "Content/guided/G37/provenance.en.json",
+      "bytes": 2024,
+      "sha256": "1b6a2f32be83cc1b566c3ec91cdd7e53178e9fac540883398f37f7caff177e88"
+    },
+    {
+      "path": "Content/guided/G37/script.de.md",
+      "bytes": 3818,
+      "sha256": "2fef46b0f1bd7a2a223e74a5d571bfb58e65f9f6bb0738e28c9af36a1a6f0b5b"
+    },
+    {
+      "path": "Content/guided/G37/script.en.md",
+      "bytes": 3334,
+      "sha256": "a12a2554e6690ac7c9638b48dddd1e4aa8472237a9b00c584013e3576f25e966"
+    },
+    {
+      "path": "Content/guided/G37/transcript.de.vtt",
+      "bytes": 5090,
+      "sha256": "8fa062329534bae316ad044933fe7cc201b12e6a9dddce31ae9e513c371c0793"
+    },
+    {
+      "path": "Content/guided/G37/transcript.en.vtt",
+      "bytes": 4627,
+      "sha256": "1a03e16aca1247256dde34480d09b1b10e5942e4bbccd355ee8232c1e6460365"
+    },
+    {
+      "path": "Content/guided/G38/audio.de.m4a",
+      "bytes": 7286317,
+      "sha256": "c414dc3de5a6248d96446bd7f4417f927c25a8fd15ed1770e47ae426e518ad09"
+    },
+    {
+      "path": "Content/guided/G38/audio.en.m4a",
+      "bytes": 7286329,
+      "sha256": "155bb7e6828321f020bed39bd8e01450408cbe78e63ae1ae8c5b0af14bb8d00f"
+    },
+    {
+      "path": "Content/guided/G38/provenance.de.json",
+      "bytes": 2027,
+      "sha256": "83434ea612da7b779914214ce5d7bdb78fc712f03da4c926e4bf2d15b2800072"
+    },
+    {
+      "path": "Content/guided/G38/provenance.en.json",
+      "bytes": 2024,
+      "sha256": "7788e61d93729141e9e40a369ede69d33c1f3e0aa83cc7d1c815c17d687e442e"
+    },
+    {
+      "path": "Content/guided/G38/script.de.md",
+      "bytes": 5324,
+      "sha256": "94c78fc85d61f441eb9267a1886c5b8ff427e417a27166e3962aab7c68c162c3"
+    },
+    {
+      "path": "Content/guided/G38/script.en.md",
+      "bytes": 4696,
+      "sha256": "13fa37786f221a9a7455c0cc2c2c8b8ef94698d425f5a0f3d18ad1970979fa08"
+    },
+    {
+      "path": "Content/guided/G38/transcript.de.vtt",
+      "bytes": 7147,
+      "sha256": "8abf6ba4816ee512e44c06f86acb39a1f101e0fe278cf2e23ddd3d2df0d70917"
+    },
+    {
+      "path": "Content/guided/G38/transcript.en.vtt",
+      "bytes": 6552,
+      "sha256": "16aaa15c7c500dc5b6c738a6bf99e3a289e8d3299a792b8fc53be45c0b3ccd9c"
+    },
+    {
+      "path": "Content/guided/G39/audio.de.m4a",
+      "bytes": 3886844,
+      "sha256": "9d89801e7365c859285b2ba980624888f383d8f0f8cfcebf8056ca8ac0b69657"
+    },
+    {
+      "path": "Content/guided/G39/audio.en.m4a",
+      "bytes": 3886844,
+      "sha256": "5d4b5f1c171c531e0ee467b2a5ce3e851c8e2262fa3ee8c81be45ff8457dcd98"
+    },
+    {
+      "path": "Content/guided/G39/provenance.de.json",
+      "bytes": 2025,
+      "sha256": "5fe12b48833e55011e301fbc136ac6ccfe273644bc8f79e40f4551ecbe0e66ce"
+    },
+    {
+      "path": "Content/guided/G39/provenance.en.json",
+      "bytes": 2021,
+      "sha256": "4a3b700468b5bc9db67970aee631123aed0eecc1ff6d554db243cbb8c8ad3882"
+    },
+    {
+      "path": "Content/guided/G39/script.de.md",
+      "bytes": 3257,
+      "sha256": "bc2b12eb6a55939d8976ae5cd54eaf13f2d625d0a1e999430100af8a46d81ea9"
+    },
+    {
+      "path": "Content/guided/G39/script.en.md",
+      "bytes": 2905,
+      "sha256": "5c4dc837f3d7041548a2a5590fb5c02463b847d3a80acc1382535fe5aff84752"
+    },
+    {
+      "path": "Content/guided/G39/transcript.de.vtt",
+      "bytes": 4371,
+      "sha256": "12f53392a714ea6aba39ce26277656b7a356f90690e072e5169fa1695dfd238f"
+    },
+    {
+      "path": "Content/guided/G39/transcript.en.vtt",
+      "bytes": 4039,
+      "sha256": "7f9faa9a3131767cd77ddf6ea3cf988dc12ed26f8730971f3f9ad472816d002b"
+    },
+    {
+      "path": "Content/guided/G40/audio.de.m4a",
+      "bytes": 5829478,
+      "sha256": "223ba2d57880410d3fa46ef6ac1534a85e12f33793f2e6356c96df87b3392e25"
+    },
+    {
+      "path": "Content/guided/G40/audio.en.m4a",
+      "bytes": 5829340,
+      "sha256": "034d07fed9eeb964299e3a5f851900dd3217b4757a897391898451890339c5f6"
+    },
+    {
+      "path": "Content/guided/G40/provenance.de.json",
+      "bytes": 2025,
+      "sha256": "71302cb56f542ec359bccbf542c89bdb198e6391cb8d2abb5f6bc6bf2373e38a"
+    },
+    {
+      "path": "Content/guided/G40/provenance.en.json",
+      "bytes": 2022,
+      "sha256": "b48ae5aa69f822fc32e17360ce233bf5e5604258d1fab5e3cb9d8a7ebbd9d10e"
+    },
+    {
+      "path": "Content/guided/G40/script.de.md",
+      "bytes": 4665,
+      "sha256": "6f5a74723c4ffdb061b79e14b1e8c522a287e8c2afb9f762a0b2627cc36ef9ff"
+    },
+    {
+      "path": "Content/guided/G40/script.en.md",
+      "bytes": 4034,
+      "sha256": "104d206cbb62ae4b85866b756bf77664bc2e57d925876528a5c4dca54fe88b5f"
+    },
+    {
+      "path": "Content/guided/G40/transcript.de.vtt",
+      "bytes": 6153,
+      "sha256": "f437c1210436ffee7d4609a48ef0ebb5dcaae654264e11dbd848ad5eef398f2f"
+    },
+    {
+      "path": "Content/guided/G40/transcript.en.vtt",
+      "bytes": 5479,
+      "sha256": "602adec9d6f1cf5f0a92861c76339441d16f9ecce2aaf367e5e44188881b06ee"
+    },
+    {
+      "path": "Content/guided/G41/audio.de.m4a",
+      "bytes": 4858259,
+      "sha256": "a385b95afb5ebee7a16b28a70706dbebf4dcfe869e3a6cccec58aa25d83cdc87"
+    },
+    {
+      "path": "Content/guided/G41/audio.en.m4a",
+      "bytes": 4858271,
+      "sha256": "29d4122e3d28b07c9fe750d482a27024a6987f4c13d2e7da435b8f8afd01d29c"
+    },
+    {
+      "path": "Content/guided/G41/provenance.de.json",
+      "bytes": 2027,
+      "sha256": "fdf0d99636adfb25fa3d8a17f5b7ab061d439918c8fb39f402a1acb755d27488"
+    },
+    {
+      "path": "Content/guided/G41/provenance.en.json",
+      "bytes": 2024,
+      "sha256": "750a5f5b7cf7935028be10ca1cec9b48409e9996bafe9888b1088d7ed66bdfad"
+    },
+    {
+      "path": "Content/guided/G41/script.de.md",
+      "bytes": 3232,
+      "sha256": "69444967c4b8cc08b44166706cb4be61d4743bb59387b0c00ab0688d794f9d6d"
+    },
+    {
+      "path": "Content/guided/G41/script.en.md",
+      "bytes": 2903,
+      "sha256": "fc7df75553e3f610b7f4db81e36d04fe0d6b83ce5f75d40d9281004a73c3c3a6"
+    },
+    {
+      "path": "Content/guided/G41/transcript.de.vtt",
+      "bytes": 4627,
+      "sha256": "438d84113192a30ec5dfa106a2a32b9ef5bba49ac66e8943587e4ab7c2d5c34f"
+    },
+    {
+      "path": "Content/guided/G41/transcript.en.vtt",
+      "bytes": 4273,
+      "sha256": "689a94004568a2af67a33607cf909d29d9289d25909f232319df5ee6251268f6"
+    },
+    {
+      "path": "Content/guided/G42/audio.de.m4a",
+      "bytes": 9714392,
+      "sha256": "26b45ecccb7252944b30c7c1d084dcc66d88ab75ad960f80db9fbee88f18f665"
+    },
+    {
+      "path": "Content/guided/G42/audio.en.m4a",
+      "bytes": 9714368,
+      "sha256": "759d55e3e49017ac815fcc0178f9313957dfc37edffa88abf806e16c6f1c38ab"
+    },
+    {
+      "path": "Content/guided/G42/provenance.de.json",
+      "bytes": 2213,
+      "sha256": "3a8202e23e4007c25ff490aaa8a02f11c040cc52b073dcd83a64673c652cbde5"
+    },
+    {
+      "path": "Content/guided/G42/provenance.en.json",
+      "bytes": 2210,
+      "sha256": "7274f1c7d38a6ee6d6ce8c8576cfec750066f2182e2fe35529bf2158f72ccc7f"
+    },
+    {
+      "path": "Content/guided/G42/script.de.md",
+      "bytes": 7313,
+      "sha256": "6c588ea7b3c03a6df5b518cfba73e17f8165dfea161933c86a19c816ded46df5"
+    },
+    {
+      "path": "Content/guided/G42/script.en.md",
+      "bytes": 6451,
+      "sha256": "59023987762aeb1305a02a67a3c4038319de3f82c78c627ca75814c02dd3b657"
+    },
+    {
+      "path": "Content/guided/G42/transcript.de.vtt",
+      "bytes": 10090,
+      "sha256": "05ea40e247548e6efb8a67f1a4768a9e6c75cc78d8b8ff41d3ceac80be514c8e"
+    },
+    {
+      "path": "Content/guided/G42/transcript.en.vtt",
+      "bytes": 9275,
+      "sha256": "99941fc2f83e0002c98f295f190da0b16c365f5f4d17e9c2768908bcec8b2974"
+    },
+    {
+      "path": "Content/guided/catalog.json",
+      "bytes": 57798,
+      "sha256": "02da61ef99f1ad7750a0c8799e2a94cd62c205fc57335ba013f91bbc04278218"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Package.swift",
+      "bytes": 2459,
+      "sha256": "cc78027ab5439e48e62e8b08dd286d2ce909324f31fffa80654d139c4a09d9a1"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinContent/GuidedFavoritesRepository.swift",
+      "bytes": 594,
+      "sha256": "114366d01fdcbb2cd353b5531ca947cbc6f3e7e00775910e32f23601e837edc4"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinContent/GuidedPractice.swift",
+      "bytes": 5870,
+      "sha256": "cc4622868503d5976e77fe40125b80c073a10e0af2fbee0f0646238e0e2dadd8"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/GardenMilestone.swift",
+      "bytes": 5727,
+      "sha256": "52b2e828ca97ff136f8722cda519176560912ef0ef823a535dc62a802b09f237"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/GardenState.swift",
+      "bytes": 5856,
+      "sha256": "3b6a0dcd7b2a51618b4915127d1a35bda4b9a5f412cb55a270eb150cea082da5"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/JournalEntry.swift",
+      "bytes": 12737,
+      "sha256": "ad57f1531b63c6cf04dc913ff2045851695c7e31043c3b8c655a52deff52c23c"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/JournalSearch.swift",
+      "bytes": 1238,
+      "sha256": "1417cf731599f0ebc5f7c00c3020573b88dba01352df81f2d3763e46c8920923"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/JourneyProjection.swift",
+      "bytes": 10142,
+      "sha256": "c95cd56fc7b95172f6287b0b4e64e6ebc446f65b43621be1a9d88ce99acf3377"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/LocalProfile.swift",
+      "bytes": 3540,
+      "sha256": "db798052c6a4c6d08e64f52c65d1e105865c4b83221fb0e5123462a101fcc0d9"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/MonthlyPracticeCalendar.swift",
+      "bytes": 5675,
+      "sha256": "b50a5dd3fffe09c161e1ef447d0131da29c0df28c32c4071279ca37933a1f3f5"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/PracticeEvent.swift",
+      "bytes": 8322,
+      "sha256": "2378427229ccac03b7871eee9056095aa131d2c51e9f83fbfcb5623847fb1ad0"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/ProgressionReducer.swift",
+      "bytes": 3644,
+      "sha256": "c8ff4c751c89e03cfda4fdb6449075b79ced22406d8da145c50b2a307bde1b58"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/WeeklyReminderSchedule.swift",
+      "bytes": 3637,
+      "sha256": "e3e8d9dc32cf1b59b83b7bf1cad5935353d23b00df8382388a5c2c1daedb6578"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinFeedback/FeedbackClient.swift",
+      "bytes": 8610,
+      "sha256": "11d5f9da692e6af7f08e02d7729e081dd77ffe56d77d2c5d22a035c60d0357e1"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinFeedback/FeedbackComposerModel.swift",
+      "bytes": 2887,
+      "sha256": "841df2a836081080549a6d734698c6e66dbeb8610680f83c255a1f9389d63908"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinFeedback/FeedbackModels.swift",
+      "bytes": 4633,
+      "sha256": "fae250b198066ec0be9ca8bf531c67dfbbe8add5a2425b1e70e6a96a37ce678d"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinGardenBridge/GardenBridgeContract.swift",
+      "bytes": 2812,
+      "sha256": "54b490c32a769e9acc4395efc50d14ba72d9afee2f341159ba8ad0c338fd867a"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinGardenBridge/GardenDescription.swift",
+      "bytes": 2614,
+      "sha256": "a13f617932bb68a13af9c3fa4fe899994c2ae47f8041823933cf32fed1df34ea"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinMeditation/AudioLifecyclePolicy.swift",
+      "bytes": 1597,
+      "sha256": "be0991c9afa87c54279d41aa4438d1515bd17d379c7d5a313e7eb7f2d9d6928c"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinMeditation/MeditationConfiguration.swift",
+      "bytes": 6233,
+      "sha256": "97cd1aa0a4fa6082a4f61dd3089bcb9c6d92df45484632f0a559713301b90550"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinMeditation/MeditationSession.swift",
+      "bytes": 15157,
+      "sha256": "e8784eedf3b11fe9d6221e57a8ef75e5fd257d6dc2015902080c18c2c1a3bb71"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinMeditation/MeditationSessionRepository.swift",
+      "bytes": 286,
+      "sha256": "7f040326114346b69ed59c9882f1ecc2ce6dca99e994f0f23c54e401ebb986ca"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinMeditation/SessionCompletionCoordinator.swift",
+      "bytes": 2754,
+      "sha256": "99c64cef5f8ecce69606670d717929d237be61145911abc048a81f1fe0bf9b6c"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/CloudKitSafePersistence.swift",
+      "bytes": 44271,
+      "sha256": "10521fd039eb6f28fd4312a7ec87a59b4bf5db21199c3dbd060f4d090f572ee4"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/ExportStagingManager.swift",
+      "bytes": 5573,
+      "sha256": "96ff603e756017ff8001bebdb527083f379c9d01175c592305523f753645226f"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/FileGardenCustomizationRepository.swift",
+      "bytes": 3342,
+      "sha256": "f1a493a33cf61120d009944f403082e56eb52fe8b4c5c0fe9421c9bf3a185683"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/FileGuidedFavoritesRepository.swift",
+      "bytes": 1966,
+      "sha256": "8f07b9d8d66048c29b0f2bdfff818898d49fe9d3b48c0a5c2ef917d2ba8b79ae"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/FileJournalEntryRepository.swift",
+      "bytes": 3761,
+      "sha256": "5270c4bb9572ce3a40f9afcfc45556f6b5bf5041bedead1f4dd008cb9495bfe5"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/FileLocalProfileRepository.swift",
+      "bytes": 1935,
+      "sha256": "045498290b4c27dc1d69a0ff52dc2c5b5a2ca14da7687a218fc9bfd01281f3af"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/FileMeditationPreferencesRepository.swift",
+      "bytes": 1493,
+      "sha256": "e53bec188fe01e6fe1d6c9d45429c18d21a56ffc0368956ee2d7088104e1855c"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/FileMeditationSessionRepository.swift",
+      "bytes": 2964,
+      "sha256": "353377d18fcef72921c7ebc5e6b8d2dd4282c6be745aa054746316050e4eb150"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/FilePracticeEventRepository.swift",
+      "bytes": 3608,
+      "sha256": "3bb4af6bbe3681d64fe72c140030d79696ff442aba95bb32ab36bdda00412827"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/FileWeeklyReminderScheduleRepository.swift",
+      "bytes": 4450,
+      "sha256": "ace3fbd793ce35272b611fb99d32c2f31a5638634ecd5e38b8afc8ca4e9b8f6d"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/JournalEntryExporter.swift",
+      "bytes": 8978,
+      "sha256": "dcb8611f83af30d006e74a05b26dc614c6ee6ed6051169f3bc34e7913c23f483"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/ProductDataController.swift",
+      "bytes": 10646,
+      "sha256": "07f3b4dc1577d55694b4575801db8221babf7f775e5d566b89d40cbd1bfaffea"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinPersistence/WholeProductExporter.swift",
+      "bytes": 8588,
+      "sha256": "bd1be665dd10008b3af8ab4f972cb1960a29166c2be62b3b29ade42b392b044a"
+    },
+    {
+      "path": "Packages/ArriveWithinCore/Sources/ArriveWithinTestSupport/Fixtures.swift",
+      "bytes": 3472,
+      "sha256": "b3d993a4a2ba301fb855df61e27430766633fea73241552357b6d71381ff1f33"
+    },
+    {
+      "path": "Renderer/dist/garden.css",
+      "bytes": 889,
+      "sha256": "c0fac88584c03d2be9b92c8a9dd5877a07b94f49b4feeabd1eb482d51040d4f0"
+    },
+    {
+      "path": "Renderer/dist/index.html",
+      "bytes": 787,
+      "sha256": "359463af29f8ecdc6b403560efb206185f0a61683fc9bff1dcca11a187bcc95e"
+    },
+    {
+      "path": "Renderer/dist/renderer-manifest.json",
+      "bytes": 389,
+      "sha256": "07d397aa0861d8afc280d65e9b45ba73373d5e2af8a01014b7c93154e3cd4107"
+    },
+    {
+      "path": "Renderer/dist/renderer.js",
+      "bytes": 773956,
+      "sha256": "edaf79eba5a22fdd446466106170ef708c8fe0aa0f32baa3dfda8d808cba85e2"
+    },
+    {
+      "path": "project.yml",
+      "bytes": 6068,
+      "sha256": "3ec1ff6fa8715e6412a646068ad708a505cea57cc1a09ad819faed5b089032ae"
+    },
+    {
+      "path": "scripts/run_guarded_xcode_tests.sh",
+      "bytes": 4037,
+      "sha256": "a86409044f2c008e60ac00588c3393015171d84f987d9602b4869710fd2f2ca7"
+    },
+    {
+      "path": "scripts/xcodebuild_runtime_test_preflight.zsh",
+      "bytes": 1508,
+      "sha256": "b576872a4a8cbfad5bd05417fd1a36a900a3e9a52f12f9ec66de761ebf41bac2"
+    }
+  ]
+}

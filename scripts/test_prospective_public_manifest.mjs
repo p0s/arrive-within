@@ -7,6 +7,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { listProspectivePublicFiles } from "./lib/prospective-public-files.mjs";
+import { privateLocalDirectory } from "./lib/public-repository-link-policy.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const outputs = [
@@ -83,22 +84,31 @@ try {
   await writeFile(path.join(fixture, "nested", ".env.production"), "private\n");
   await writeFile(path.join(fixture, "nested", "secret.p8"), "private\n");
   await writeFile(path.join(fixture, "nested", "__pycache__", "x.pyc"), "private\n");
+  await mkdir(path.join(fixture, privateLocalDirectory));
+  await mkdir(path.join(fixture, "nested", privateLocalDirectory));
+  await writeFile(path.join(fixture, privateLocalDirectory, "app-store-defaults.json"), "{}\n");
+  await writeFile(path.join(fixture, "nested", privateLocalDirectory, "config.json"), "{}\n");
   let rejectedSensitiveFixture = false;
+  let sensitiveFixtureFailure = "no rejection";
   try {
     await listProspectivePublicFiles(fixture);
   } catch (error) {
+    sensitiveFixtureFailure = error instanceof Error ? error.message : String(error);
     rejectedSensitiveFixture = error instanceof Error
       && error.message.includes("defense-in-depth private paths")
       && error.message.includes("local.entitlements.local")
       && error.message.includes("state.tsbuildinfo")
       && error.message.includes(".env.production")
       && error.message.includes("secret.p8")
-      && error.message.includes("__pycache__/x.pyc");
+      && error.message.includes("__pycache__/x.pyc")
+      && error.message.includes(`${privateLocalDirectory}/app-store-defaults.json`)
+      && error.message.includes(`nested/${privateLocalDirectory}/config.json`);
   }
-  if (!rejectedSensitiveFixture) throw new Error("sensitive fixture paths did not fail closed");
+  if (!rejectedSensitiveFixture) throw new Error(`sensitive fixture paths did not fail closed: ${sensitiveFixtureFailure}`);
   for (const rejected of [
     "nested/local.entitlements.local", "nested/state.tsbuildinfo",
     "nested/.env.production", "nested/secret.p8", "nested/__pycache__/x.pyc",
+    `${privateLocalDirectory}/app-store-defaults.json`, `nested/${privateLocalDirectory}/config.json`,
   ]) {
     await rm(path.join(fixture, rejected), { force: true });
   }

@@ -31,15 +31,21 @@ final class AppModel {
     case recordingFailed
     case recordingInterrupted
     case transcriptionUnavailable
+    case draftSaveFailed
   }
 
   enum DataNotice: Equatable {
     case exportFailed
+    case exportTooLarge
     case resetComplete
     case resetCleanupPending
     case resetFailed
     case deletionComplete
     case deletionFailed
+    case restoreInvalid
+    case restoreFailed
+    case restoreComplete
+    case restoreCleanupPending
   }
 
   enum ReminderNotice: Equatable {
@@ -85,6 +91,11 @@ final class AppModel {
     case guidedCatalogUnavailable
   }
 
+  enum PracticeNotice: Equatable {
+    case couldNotSavePreferences
+    case couldNotStart
+  }
+
   var launchPhase: LaunchPhase = .loading
   var selectedSection: AppSection = .garden
   var profile: LocalProfile?
@@ -100,6 +111,7 @@ final class AppModel {
   var premiumGardenAccess = PremiumGardenAccessSnapshot.unavailable
   var premiumGardenNotice: PremiumGardenNotice?
   var premiumGardenPurchaseIsInProgress = false
+  var premiumGardenProductIsLoading = false
   var settingsNotice: SettingsNotice?
   var guidedPractices: [GuidedPractice] = []
   var favoriteGuidedPracticeIDs: Set<String> = []
@@ -118,11 +130,14 @@ final class AppModel {
   var completeDataExportURL: URL?
   var dataNotice: DataNotice?
   var isPerformingDataAction = false
+  var preparedProductDataRestore: PreparedProductDataRestore?
+  private var productDataOperationsInFlight = 0
   var weeklyReminderSchedules: [WeeklyReminderSchedule] = []
   var reminderAuthorization: ReminderNotificationAuthorization = .notDetermined
   var reminderDeliveryStatus: ReminderDeliveryStatus = .inactive
   var reminderNotice: ReminderNotice?
   var audioNotice: AudioNotice?
+  var practiceNotice: PracticeNotice?
   var timerEndAlertAuthorization: TimerEndAlertAuthorization = .notDetermined
   var completionPresentation: CompletionPresentation?
   var recoveryAssessment: SessionRecoveryAssessment?
@@ -133,6 +148,20 @@ final class AppModel {
   var rendererSelectedQuality: GardenQualityHint = .balanced
   var rendererRecoveryCount = 0
 
+  var canReplaceProductData: Bool {
+    guard launchPhase != .loading,
+      activeSession == nil,
+      !isPerformingDataAction,
+      productDataOperationsInFlight == 0
+    else { return false }
+    switch journalRecordingPhase {
+    case .idle, .permissionDenied, .failed:
+      return true
+    case .requestingPermission, .recording, .ready, .interrupted:
+      return false
+    }
+  }
+
   @ObservationIgnored private let dependencies: AppDependencies
   @ObservationIgnored private var ticker: Task<Void, Never>?
   @ObservationIgnored private var preparationTask: Task<Void, Never>?
@@ -142,6 +171,26 @@ final class AppModel {
   @ObservationIgnored private var journalRecordingTicker: Task<Void, Never>?
   @ObservationIgnored private var rendererDiagnosticsRecorder = RendererDiagnosticsRecorder()
   @ObservationIgnored private var premiumGardenUpdatesTask: Task<Void, Never>?
+  @ObservationIgnored private var premiumGardenProductLoadTask: Task<Void, Never>?
+  @ObservationIgnored private var isStartingPractice = false
+  #if DEBUG
+    @ObservationIgnored private var marketingCaptureSurfaceIsReady = false
+    @ObservationIgnored private var marketingCaptureJournalEditorIsLoaded = false
+    @ObservationIgnored private var marketingCaptureJournalEditorIsPrefilled = false
+    @ObservationIgnored private var marketingCaptureAppearance: String?
+    @ObservationIgnored private var marketingCaptureReportWasWritten = false
+  #endif
+
+  private func beginProductDataOperation() -> Bool {
+    guard !isPerformingDataAction else { return false }
+    productDataOperationsInFlight += 1
+    return true
+  }
+
+  private func endProductDataOperation() {
+    precondition(productDataOperationsInFlight > 0)
+    productDataOperationsInFlight -= 1
+  }
 
   init(dependencies: AppDependencies) {
     self.dependencies = dependencies
@@ -220,6 +269,30 @@ final class AppModel {
       reminderNotice = .couldNotLoad
     }
 
+    #if DEBUG
+      if let fixture = dependencies.marketingCaptureFixture {
+        do {
+          _ = try await createProfileIfNeeded()
+          if fixture.captureID == .journal {
+            guard
+              await saveJournalTextDraft(
+                editorKey: "new:unlinked",
+                linkedPracticeEventID: nil,
+                text: fixture.syntheticJournalText
+              )
+            else {
+              throw UITestMarketingCaptureFixture.FixtureError.invalidArguments
+            }
+          }
+          selectedSection = fixture.captureID.section
+          launchPhase = .ready
+        } catch {
+          launchPhase = .failed
+        }
+        return
+      }
+    #endif
+
     do {
       guard let restoredProfile = try await dependencies.profileRepository.load() else {
         await dependencies.liveActivityController.endAll()
@@ -247,21 +320,33 @@ final class AppModel {
   }
 
   func beginFirstPractice() async {
+    guard beginProductDataOperation() else { return }
+    defer { endProductDataOperation() }
     do {
       _ = try await createProfileIfNeeded()
-      launchPhase = .ready
-      selectedSection = .practice
-      try await startPractice(
-        mode: .timer,
-        targetMinutes: 3,
-        configuration: .standard
-      )
     } catch {
       launchPhase = .failed
+      return
+    }
+    launchPhase = .ready
+    selectedSection = .practice
+    practiceNotice = nil
+    guard let practice = guidedPractices.first(where: { $0.id == "G01" }) else {
+      audioNotice = .guidedCatalogUnavailable
+      return
+    }
+    guard await startGuidedPractice(
+      practiceID: practice.id,
+      language: appLanguage.languageCode == "de" ? .german : .english
+    ) else {
+      practiceNotice = .couldNotStart
+      return
     }
   }
 
   func exploreGarden() async {
+    guard beginProductDataOperation() else { return }
+    defer { endProductDataOperation() }
     do {
       _ = try await createProfileIfNeeded()
       launchPhase = .ready
@@ -279,7 +364,11 @@ final class AppModel {
     guidedContentID: String? = nil,
     guidedContentVersion: Int? = nil
   ) async throws {
-    guard activeSession == nil else { return }
+    guard beginProductDataOperation() else { return }
+    defer { endProductDataOperation() }
+    guard activeSession == nil, !isStartingPractice else { return }
+    isStartingPractice = true
+    defer { isStartingPractice = false }
     audioNotice = nil
     let profile = try await createProfileIfNeeded()
     let moment = dependencies.clock.now()
@@ -334,16 +423,42 @@ final class AppModel {
     }
   }
 
-  func beginPractice(mode: PracticeMode, targetMinutes: Int?) async {
+  @discardableResult
+  func beginPractice(mode: PracticeMode, targetMinutes: Int?) async -> Bool {
     do {
       if mode == .guided, let practice = guidedPractices.first {
         let language: GuidedLanguage = appLanguage.languageCode == "de" ? .german : .english
-        await startGuidedPractice(practiceID: practice.id, language: language)
+        let started = await startGuidedPractice(practiceID: practice.id, language: language)
+        if !started { practiceNotice = .couldNotStart }
+        return started
       } else {
         try await startPractice(mode: mode, targetMinutes: targetMinutes)
+        practiceNotice = nil
+        return activeSession?.mode == mode
       }
     } catch {
-      launchPhase = .failed
+      practiceNotice = .couldNotStart
+      return false
+    }
+  }
+
+  @discardableResult
+  func beginTimerPractice(with preferences: TimerPreferences) async -> Bool {
+    practiceNotice = nil
+    guard await saveTimerPreferences(preferences) else { return false }
+    do {
+      try await startPractice(
+        mode: .timer,
+        targetMinutes: preferences.durationMinutes,
+        configuration: MeditationSessionConfiguration(
+          preparation: preferences.preparation,
+          audio: preferences.audio
+        )
+      )
+      return activeSession?.mode == .timer
+    } catch {
+      practiceNotice = .couldNotStart
+      return false
     }
   }
 
@@ -373,7 +488,7 @@ final class AppModel {
       )
       return activeSession?.guidedContentID == practice.id
     } catch {
-      launchPhase = .failed
+      audioNotice = .playbackUnavailable
       return false
     }
   }
@@ -389,6 +504,8 @@ final class AppModel {
   }
 
   func toggleFavorite(practiceID: String) async {
+    guard beginProductDataOperation() else { return }
+    defer { endProductDataOperation() }
     guard guidedPractices.contains(where: { $0.id == practiceID }) else { return }
     if favoriteGuidedPracticeIDs.contains(practiceID) {
       favoriteGuidedPracticeIDs.remove(practiceID)
@@ -406,6 +523,8 @@ final class AppModel {
   }
 
   func selectGardenVariant(milestoneID: Int, variantID: String) async {
+    guard beginProductDataOperation() else { return }
+    defer { endProductDataOperation() }
     guard let state = gardenState,
       milestoneID <= state.highestMilestone,
       let milestone = GardenMilestones.definition(id: milestoneID),
@@ -427,16 +546,24 @@ final class AppModel {
     }
   }
 
-  func saveTimerPreferences(_ preferences: TimerPreferences) async {
+  @discardableResult
+  func saveTimerPreferences(_ preferences: TimerPreferences) async -> Bool {
+    guard beginProductDataOperation() else { return false }
+    defer { endProductDataOperation() }
     do {
       try await dependencies.preferencesRepository.saveTimerPreferences(preferences)
       timerPreferences = preferences
+      practiceNotice = nil
+      return true
     } catch {
-      launchPhase = .failed
+      practiceNotice = .couldNotSavePreferences
+      return false
     }
   }
 
   func setAppLanguage(_ language: AppLanguage) async {
+    guard beginProductDataOperation() else { return }
+    defer { endProductDataOperation() }
     do {
       try await dependencies.appSettingsRepository.saveLanguage(language)
       appLanguage = language
@@ -451,6 +578,8 @@ final class AppModel {
   }
 
   func setGardenRenderStyle(_ style: GardenRenderStyle) async {
+    guard beginProductDataOperation() else { return }
+    defer { endProductDataOperation() }
     guard !style.isPremium || premiumGardenAccess.isOwned else { return }
     do {
       try await dependencies.appSettingsRepository.saveGardenRenderStyle(style)
@@ -521,6 +650,8 @@ final class AppModel {
     hour: Int,
     minute: Int
   ) async -> Bool {
+    guard beginProductDataOperation() else { return false }
+    defer { endProductDataOperation() }
     guard !weeklyReminderSchedules.contains(where: {
       $0.id != existing?.id && $0.weekday == weekday && $0.hour == hour && $0.minute == minute
     }) else {
@@ -563,6 +694,8 @@ final class AppModel {
   }
 
   func setWeeklyReminderEnabled(_ schedule: WeeklyReminderSchedule, isEnabled: Bool) async {
+    guard beginProductDataOperation() else { return }
+    defer { endProductDataOperation() }
     do {
       let updatedSchedule = try schedule.replacing(isEnabled: isEnabled, modifiedAt: Date())
       var updated = weeklyReminderSchedules.filter { $0.id != schedule.id }
@@ -584,6 +717,8 @@ final class AppModel {
   }
 
   func deleteWeeklyReminder(_ schedule: WeeklyReminderSchedule) async {
+    guard beginProductDataOperation() else { return }
+    defer { endProductDataOperation() }
     let updated = weeklyReminderSchedules.filter { $0.id != schedule.id }
     do {
       try await dependencies.weeklyReminderRepository.saveWeeklyReminderSchedules(updated)
@@ -687,6 +822,8 @@ final class AppModel {
     transcript: JournalTranscript? = nil,
     transcriptionState: JournalTranscriptionState = .notRequested
   ) async -> JournalEntry? {
+    guard beginProductDataOperation() else { return nil }
+    defer { endProductDataOperation() }
     guard let profile else { return nil }
     let now = Date()
     do {
@@ -737,7 +874,15 @@ final class AppModel {
         } else {
           journalNotice = nil
         }
-        try await refreshJournal(profile: profile)
+        do {
+          try await refreshJournal(profile: profile)
+        } catch {
+          if let index = journalEntries.firstIndex(where: { $0.id == saved.id }) {
+            journalEntries[index] = saved
+          } else {
+            journalEntries.append(saved)
+          }
+        }
         await refreshProductDataStatus()
         return saved
       case .conflict:
@@ -751,8 +896,76 @@ final class AppModel {
     }
   }
 
+  func loadJournalTextDraft(editorKey: String) async -> JournalTextDraft? {
+    guard beginProductDataOperation() else { return nil }
+    defer { endProductDataOperation() }
+    guard let profile else { return nil }
+    do {
+      #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-ui-test-delay-journal-draft-load") {
+          try await Task.sleep(for: .seconds(8))
+        }
+      #endif
+      return try await dependencies.journalTextDraftRepository
+        .load(editorKey: editorKey, profileGenerationID: profile.profileGenerationID)
+    } catch {
+      journalNotice = .draftSaveFailed
+      return nil
+    }
+  }
+
+  @discardableResult
+  func saveJournalTextDraft(editorKey: String, linkedPracticeEventID: UUID?, text: String) async -> Bool {
+    guard beginProductDataOperation() else { return false }
+    defer { endProductDataOperation() }
+    guard let profile else { return false }
+    do {
+      if text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+        try await dependencies.journalTextDraftRepository.delete(
+          editorKey: editorKey,
+          profileGenerationID: profile.profileGenerationID
+        )
+      } else {
+        let draft = try JournalTextDraft(
+          editorKey: editorKey,
+          profileGenerationID: profile.profileGenerationID,
+          linkedPracticeEventID: linkedPracticeEventID,
+          text: text
+        )
+        try await dependencies.journalTextDraftRepository.save(draft)
+      }
+      if journalNotice == .draftSaveFailed { journalNotice = nil }
+      return true
+    } catch {
+      journalNotice = .draftSaveFailed
+      return false
+    }
+  }
+
+  @discardableResult
+  func deleteJournalTextDraft(editorKey: String) async -> Bool {
+    guard beginProductDataOperation() else { return false }
+    defer { endProductDataOperation() }
+    guard let profile else { return false }
+    do {
+      try await dependencies.journalTextDraftRepository.delete(
+        editorKey: editorKey,
+        profileGenerationID: profile.profileGenerationID
+      )
+      if journalNotice == .draftSaveFailed { journalNotice = nil }
+      return true
+    } catch {
+      journalNotice = .draftSaveFailed
+      return false
+    }
+  }
+
   func deleteJournalEntry(_ entry: JournalEntry) async -> Bool {
-    guard let profile, entry.profileGenerationID == profile.profileGenerationID else {
+    guard beginProductDataOperation() else { return false }
+    defer { endProductDataOperation() }
+    guard let profile,
+      entry.profileGenerationID == profile.profileGenerationID
+    else {
       return false
     }
     do {
@@ -781,9 +994,9 @@ final class AppModel {
             cleanupFailed = true
           }
         }
-        try await refreshJournal(profile: profile)
+        let draftsCleared = try await refreshJournal(profile: profile)
         await refreshProductDataStatus()
-        return !cleanupFailed
+        return !cleanupFailed && draftsCleared
       case .conflict:
         journalNotice = .editConflict
         try await refreshJournal(profile: profile)
@@ -799,6 +1012,8 @@ final class AppModel {
     _ conflict: JournalReplicaConflict,
     keeping variant: JournalEntry
   ) async -> Bool {
+    guard beginProductDataOperation() else { return false }
+    defer { endProductDataOperation() }
     guard let profile,
       conflict.profileGenerationID == profile.profileGenerationID,
       variant.id == conflict.entryID,
@@ -825,9 +1040,9 @@ final class AppModel {
       ) {
       case .saved:
         journalNotice = nil
-        try await refreshJournal(profile: profile)
+        let draftsCleared = try await refreshJournal(profile: profile)
         await refreshProductDataStatus()
-        return true
+        return draftsCleared
       case .conflict:
         journalNotice = .editConflict
         try await refreshJournal(profile: profile)
@@ -840,7 +1055,11 @@ final class AppModel {
   }
 
   func exportJournalEntry(_ entry: JournalEntry) async -> URL? {
-    guard let profile, entry.profileGenerationID == profile.profileGenerationID else {
+    guard beginProductDataOperation() else { return nil }
+    defer { endProductDataOperation() }
+    guard let profile,
+      entry.profileGenerationID == profile.profileGenerationID
+    else {
       return nil
     }
     do {
@@ -870,6 +1089,12 @@ final class AppModel {
   }
 
   func beginJournalRecording() async {
+    guard beginProductDataOperation() else {
+      journalRecordingPhase = .failed
+      journalNotice = .recordingFailed
+      return
+    }
+    defer { endProductDataOperation() }
     guard activeSession == nil else {
       journalRecordingPhase = .failed
       journalNotice = .recordingFailed
@@ -934,6 +1159,8 @@ final class AppModel {
     _ attachment: JournalAudioAttachment,
     localeIdentifier: String
   ) async -> JournalTranscript? {
+    guard beginProductDataOperation() else { return nil }
+    defer { endProductDataOperation() }
     let url = dependencies.journalAudioDirectory.appending(path: attachment.relativeFileName)
     do {
       let transcript = try await dependencies.journalTranscriber.transcribe(
@@ -954,7 +1181,10 @@ final class AppModel {
   }
 
   func exportAllProductData() async {
-    guard let profile, let controller = dependencies.productDataController else {
+    guard canReplaceProductData,
+      let profile,
+      let controller = dependencies.productDataController
+    else {
       dataNotice = .exportFailed
       return
     }
@@ -964,14 +1194,74 @@ final class AppModel {
       completeDataExportURL = try await controller.exportAll(profile: profile, at: Date())
       dataNotice = nil
       await refreshProductDataStatus()
+    } catch ProductDataExportError.archiveTooLarge {
+      completeDataExportURL = nil
+      dataNotice = .exportTooLarge
     } catch {
       completeDataExportURL = nil
       dataNotice = .exportFailed
     }
   }
 
+  func prepareProductDataRestore(from archive: Data) async {
+    guard canReplaceProductData,
+      let controller = dependencies.productDataController
+    else {
+      dataNotice = .restoreFailed
+      return
+    }
+    isPerformingDataAction = true
+    defer { isPerformingDataAction = false }
+    do {
+      preparedProductDataRestore = try await controller.prepareRestore(from: archive)
+      dataNotice = nil
+    } catch {
+      preparedProductDataRestore = nil
+      dataNotice = .restoreInvalid
+    }
+  }
+
+  func reportInvalidProductDataRestore() {
+    preparedProductDataRestore = nil
+    dataNotice = .restoreInvalid
+  }
+
+  func cancelProductDataRestore() {
+    preparedProductDataRestore = nil
+  }
+
+  func restoreProductData() async {
+    guard canReplaceProductData,
+      let restore = preparedProductDataRestore,
+      let controller = dependencies.productDataController
+    else {
+      preparedProductDataRestore = nil
+      dataNotice = .restoreFailed
+      return
+    }
+    isPerformingDataAction = true
+    defer { isPerformingDataAction = false }
+    discardPendingJournalRecording()
+    completionPresentation = nil
+    pendingReflectionEventID = nil
+    do {
+      let outcome = try await controller.restoreAll(restore)
+      preparedProductDataRestore = nil
+      completeDataExportURL = nil
+      await dependencies.liveActivityController.endAll()
+      await retryLoad()
+      dataNotice = outcome.cleanupPending ? .restoreCleanupPending : .restoreComplete
+    } catch {
+      preparedProductDataRestore = nil
+      dataNotice = .restoreFailed
+    }
+  }
+
   func resetGardenAndPrivateHistory() async {
-    guard activeSession == nil, let profile, let controller = dependencies.productDataController else {
+    guard canReplaceProductData,
+      let profile,
+      let controller = dependencies.productDataController
+    else {
       dataNotice = .resetFailed
       return
     }
@@ -1006,7 +1296,7 @@ final class AppModel {
   }
 
   func deleteAllProductData() async {
-    guard activeSession == nil, let controller = dependencies.productDataController else {
+    guard canReplaceProductData, let controller = dependencies.productDataController else {
       dataNotice = .deletionFailed
       return
     }
@@ -1117,7 +1407,78 @@ final class AppModel {
   func reportRendererReady() {
     rendererIsReady = true
     rendererFailureMessage = nil
+    #if DEBUG
+      writeMarketingCaptureReportIfReady()
+    #endif
   }
+
+  #if DEBUG
+    var isPhysicalMarketingCapture: Bool {
+      dependencies.marketingCaptureFixture != nil
+    }
+
+    var suppressesMarketingCaptureKeyboard: Bool {
+      dependencies.marketingCaptureFixture?.captureID == .journal
+    }
+
+    var shouldPresentMarketingCaptureJournal: Bool {
+      dependencies.marketingCaptureFixture?.captureID == .journal
+    }
+
+    var isPhysicalMarketingMilestoneCapture: Bool {
+      dependencies.marketingCaptureFixture?.captureID == .journeyMilestones
+    }
+
+    var marketingCaptureJournalText: String? {
+      dependencies.marketingCaptureFixture?.syntheticJournalText
+    }
+
+    func reportMarketingCaptureSurfaceAppeared(_ surface: String, actualAppearance: String) {
+      guard dependencies.marketingCaptureFixture?.captureID.readySurface == surface else { return }
+      marketingCaptureAppearance = actualAppearance
+      marketingCaptureSurfaceIsReady = true
+      writeMarketingCaptureReportIfReady()
+    }
+
+    func reportMarketingCaptureJournalEditorLoaded(prefilled: Bool, actualAppearance: String) {
+      guard dependencies.marketingCaptureFixture?.captureID == .journal else { return }
+      marketingCaptureAppearance = actualAppearance
+      marketingCaptureSurfaceIsReady = true
+      marketingCaptureJournalEditorIsLoaded = true
+      marketingCaptureJournalEditorIsPrefilled = prefilled
+      writeMarketingCaptureReportIfReady()
+    }
+
+    private func writeMarketingCaptureReportIfReady() {
+      guard !marketingCaptureReportWasWritten,
+        marketingCaptureSurfaceIsReady,
+        let actualAppearance = marketingCaptureAppearance,
+        let fixture = dependencies.marketingCaptureFixture,
+        let reportURL = dependencies.marketingCaptureReportURL,
+        !fixture.captureID.requiresRenderer || rendererIsReady,
+        fixture.captureID != .journal || marketingCaptureJournalEditorIsLoaded
+      else { return }
+
+      let sourceManifestRevision =
+        Bundle.main.infoDictionary?["V2N_CAPTURE_SOURCE_REVISION"] as? String ?? ""
+      let report = PhysicalMarketingCaptureReport(
+        fixture: fixture,
+        actualAppearance: actualAppearance,
+        surface: fixture.captureID.readySurface,
+        rendererReady: fixture.captureID.requiresRenderer && rendererIsReady,
+        journalEditorPrefilled: marketingCaptureJournalEditorIsPrefilled,
+        sourceManifestRevision: sourceManifestRevision
+      )
+      do {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        try encoder.encode(report).write(to: reportURL, options: .atomic)
+        marketingCaptureReportWasWritten = true
+      } catch {
+        // The guarded verifier treats a missing report as a failed fixture.
+      }
+    }
+  #endif
 
   func reportRendererObservation(_ observation: RendererObservation) {
     rendererDiagnosticsRecorder.record(observation)
@@ -1244,6 +1605,21 @@ final class AppModel {
 
   private func refreshPremiumGardenAccess() async {
     applyPremiumGardenAccess(await dependencies.premiumGardenPurchaseClient.refresh())
+  }
+
+  func loadPremiumGardenProduct() async {
+    if premiumGardenProductLoadTask == nil {
+      premiumGardenProductIsLoading = true
+      let client = dependencies.premiumGardenPurchaseClient
+      premiumGardenProductLoadTask = Task { @MainActor [weak self] in
+        let snapshot = await client.loadProduct()
+        self?.applyPremiumGardenAccess(snapshot)
+        self?.premiumGardenProductIsLoading = false
+        self?.premiumGardenProductLoadTask = nil
+      }
+    }
+    // The model owns this lookup; cancelling one view must not cancel or discard it.
+    await premiumGardenProductLoadTask?.value
   }
 
   private func applyPremiumGardenAccess(_ snapshot: PremiumGardenAccessSnapshot) {
@@ -1449,6 +1825,7 @@ final class AppModel {
 
   private func refreshGarden(profile: LocalProfile, reduceMotion: Bool = false) async throws {
     let currentMoment = dependencies.clock.now().wallClock
+    let presentationTimeZone = gardenPresentationTimeZone
     let events = try await dependencies.eventRepository.allEvents(
       profileGenerationID: profile.profileGenerationID
     )
@@ -1465,12 +1842,12 @@ final class AppModel {
         customization: customization,
         reduceMotion: reduceMotion,
         qualityHint: .balanced,
-        localDayPhase: GardenDayPhase.presentation(at: currentMoment, timeZone: .current)
+        localDayPhase: GardenDayPhase.presentation(at: currentMoment, timeZone: presentationTimeZone)
       )
     )
     let currentDay = try? PracticeDayKey.containing(
       currentMoment,
-      timeZone: .current
+      timeZone: presentationTimeZone
     )
     journeyProjection = JourneyReducer.reduce(
       events: events,
@@ -1479,18 +1856,54 @@ final class AppModel {
     )
   }
 
-  private func refreshJournal(profile: LocalProfile) async throws {
+  private var gardenPresentationTimeZone: TimeZone {
+    #if DEBUG
+      if let fixture = try? MarketingCaptureClockFixture.parse(arguments: ProcessInfo.processInfo.arguments) {
+        return fixture.timeZone
+      }
+    #endif
+    return .current
+  }
+
+  #if DEBUG
+    var simulatorMarketingClockProvenance: [String] {
+      guard let fixture = try? MarketingCaptureClockFixture.parse(arguments: ProcessInfo.processInfo.arguments) else {
+        return []
+      }
+      let instant = dependencies.clock.now().wallClock
+      return [
+        "clock_fixture_id=\(fixture.id)",
+        "clock_epoch=\(Int64(instant.timeIntervalSince1970))",
+        "timezone=\(gardenPresentationTimeZone.identifier)",
+        "garden_phase=\(gardenState?.localDayPhase?.rawValue ?? "unavailable")",
+      ]
+    }
+  #endif
+
+  @discardableResult
+  private func refreshJournal(profile: LocalProfile) async throws -> Bool {
     async let currentEntries = dependencies.journalRepository.entries(
       profileGenerationID: profile.profileGenerationID,
-      includingDeleted: false
+      includingDeleted: true
     )
     async let currentConflicts = dependencies.journalRepository.conflicts(
       profileGenerationID: profile.profileGenerationID
     )
-    journalEntries = try await currentEntries
+    let allEntries = try await currentEntries
+    journalEntries = allEntries.filter { !$0.isDeleted }
     journalConflicts = try await currentConflicts
     if !journalConflicts.isEmpty, journalNotice == nil { journalNotice = .editConflict }
     cleanupOrphanedJournalAudio()
+    do {
+      try await dependencies.journalTextDraftRepository.deleteEntryDrafts(
+        entryIDs: Set(allEntries.filter(\.isDeleted).map(\.id)),
+        profileGenerationID: profile.profileGenerationID
+      )
+      return true
+    } catch {
+      journalNotice = .draftSaveFailed
+      return false
+    }
   }
 
   private func cleanupOrphanedJournalAudio() {

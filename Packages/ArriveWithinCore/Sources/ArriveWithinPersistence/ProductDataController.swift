@@ -11,6 +11,16 @@ public struct ProductResetOutcome: Equatable, Sendable {
   }
 }
 
+public struct ProductRestoreOutcome: Equatable, Sendable {
+  public let profile: LocalProfile
+  public let cleanupPending: Bool
+
+  public init(profile: LocalProfile, cleanupPending: Bool) {
+    self.profile = profile
+    self.cleanupPending = cleanupPending
+  }
+}
+
 public enum ProductDeletionOutcome: String, Codable, Equatable, Sendable {
   case localDeletionComplete
   case pendingPrivateCloudConfirmation
@@ -20,6 +30,7 @@ public enum ProductDataControlError: Error, Equatable, Sendable {
   case unsafeDataDirectory
   case unsafeDeletionTarget
   case couldNotDeleteLocalData
+  case restoreRequiresLocalStore
 }
 
 /// Coordinates whole-product export/reset/delete while keeping CloudKit truth
@@ -34,6 +45,7 @@ public actor ProductDataController {
     "garden-customization-v1.json",
     "guided-favorites-v1.json",
     "journal-v1.json",
+    "journal-drafts-v1.json",
     "meditation-preferences-v1.json",
     "practice-ledger-v1.json",
     "profile-v1.json",
@@ -81,6 +93,40 @@ public actor ProductDataController {
   public func syncStatus() async -> ProductSyncStatus { await store.syncStatus() }
 
   public func counts() async throws -> ProductDataCounts { try await store.counts() }
+
+  public func prepareRestore(from archive: Data) async throws -> PreparedProductDataRestore {
+    guard await store.syncStatus() == .localOnly else {
+      throw ProductDataControlError.restoreRequiresLocalStore
+    }
+    return try WholeProductImporter.prepare(archive)
+  }
+
+  /// Replaces saved product data only after a fully validated import is
+  /// explicitly confirmed by the app UI. Device settings and reminders are
+  /// intentionally retained.
+  public func restoreAll(
+    _ restore: PreparedProductDataRestore,
+    at restoredAt: Date = Date()
+  ) async throws -> ProductRestoreOutcome {
+    guard await store.syncStatus() == .localOnly else {
+      throw ProductDataControlError.restoreRequiresLocalStore
+    }
+    try await store.replaceAllProductData(with: restore, modifiedAt: restoredAt)
+
+    var cleanupPending = !deleteAllRegularFiles(in: journalAudioDirectory)
+    do {
+      try exportStaging.purgeAll()
+    } catch {
+      cleanupPending = true
+    }
+    for name in Self.standaloneProductArtifactNames
+    where !["app-settings-v1.json", "meditation-preferences-v1.json", "weekly-reminders-v1.json"].contains(name) {
+      cleanupPending = !deleteExactLocalItem(named: name, directory: dataDirectory)
+        || cleanupPending
+    }
+    _ = deleteExactLocalItem(named: deletionStateURL.lastPathComponent, directory: dataDirectory)
+    return ProductRestoreOutcome(profile: restore.profile, cleanupPending: cleanupPending)
+  }
 
   public func hasPendingPrivateCloudDeletion() -> Bool {
     guard fileManager.fileExists(atPath: deletionStateURL.path) else { return false }
@@ -171,6 +217,10 @@ public actor ProductDataController {
       cleanupPending = true
     }
     _ = deleteExactLocalItem(named: "session-state-v1.json", directory: dataDirectory)
+    cleanupPending = !deleteExactLocalItem(
+      named: "journal-drafts-v1.json",
+      directory: dataDirectory
+    ) || cleanupPending
     return ProductResetOutcome(profile: reset, cleanupPending: cleanupPending)
   }
 

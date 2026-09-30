@@ -1,7 +1,7 @@
 import { copyFile, lstat, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { repositoryURL, siteContent } from "../src/content.mjs";
+import { appStoreURL, repositoryURL, siteContent } from "../src/content.mjs";
 import {
   DIST,
   ROOT,
@@ -160,7 +160,7 @@ function homePage(locale) {
         <p class="eyebrow">${escapeHtml(home.eyebrow)}</p>
         <h1 id="hero-title"><span class="hero-product">Arrive Within</span><span class="hero-promise">${escapeHtml(home.title)}</span></h1>
         <p class="lede">${escapeHtml(home.intro)}</p>
-        <div class="actions"><a class="primary-action light" href="#garden-film">${escapeHtml(home.primaryAction)}</a><a class="text-action on-dark" href="${routeFor(locale, "privacy")}">${escapeHtml(home.secondaryAction)}</a></div>
+        <div class="actions"><a class="primary-action light" href="${appStoreURL}">${escapeHtml(home.primaryAction)}</a><a class="text-action on-dark" href="#garden-film">${escapeHtml(home.secondaryAction)}</a></div>
       </div>
     </section>
 

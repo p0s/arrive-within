@@ -3,13 +3,44 @@ import SwiftUI
 struct ProductShell: View {
   @Bindable var model: AppModel
   @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+  @Environment(\.colorScheme) private var colorScheme
 
   var body: some View {
-    if horizontalSizeClass == .regular {
-      TabletShell(model: model)
-    } else {
-      PhoneShell(model: model)
+    Group {
+      if horizontalSizeClass == .regular {
+        TabletShell(model: model)
+      } else {
+        PhoneShell(model: model)
+      }
     }
+    .overlay(alignment: .topLeading) {
+      captureProvenance
+    }
+  }
+
+  @ViewBuilder
+  private var captureProvenance: some View {
+    #if DEBUG
+      if ProcessInfo.processInfo.arguments.contains("-ui-test-capture-provenance") {
+        let info = Bundle.main.infoDictionary ?? [:]
+        let label = [
+          "source_commit=\(info["V2N_BUILD_SOURCE_COMMIT"] as? String ?? "")",
+          "source_revision=\(info["V2N_CAPTURE_SOURCE_REVISION"] as? String ?? "")",
+          "bundle_id=\(Bundle.main.bundleIdentifier ?? "")",
+          "marketing_version=\(info["CFBundleShortVersionString"] as? String ?? "")",
+          "build_number=\(info["CFBundleVersion"] as? String ?? "")",
+          "appearance=\(colorScheme == .dark ? "dark" : "light")",
+        ] + model.simulatorMarketingClockProvenance
+        let provenanceLabel = label.joined(separator: ";")
+        Text(provenanceLabel)
+          .font(.system(size: 1))
+          .foregroundStyle(.clear)
+          .frame(width: 1, height: 1)
+          .accessibilityElement()
+          .accessibilityIdentifier("marketing.capture.provenance")
+          .accessibilityLabel(provenanceLabel)
+      }
+    #endif
   }
 }
 
@@ -93,6 +124,7 @@ private struct TabletShell: View {
 private struct SectionDestination: View {
   let section: AppSection
   let model: AppModel
+  @Environment(\.colorScheme) private var colorScheme
 
   var body: some View {
     Group {
@@ -119,6 +151,15 @@ private struct SectionDestination: View {
           .accessibilityIdentifier("garden.settings")
         }
       }
+    }
+    .onAppear {
+      #if DEBUG
+        let surface = section == .garden ? "garden" : section == .journey ? "journey" : section.rawValue
+        model.reportMarketingCaptureSurfaceAppeared(
+          surface,
+          actualAppearance: colorScheme == .dark ? "dark" : "light"
+        )
+      #endif
     }
   }
 }

@@ -6,7 +6,7 @@ import { readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-import { isExactPostPublicationMediaFreeze } from "./public-media-drift-policy.mjs";
+import { isExactCurrentRendererArtifact } from "./public-media-drift-policy.mjs";
 
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const mediaRoot = resolve(scriptDirectory, "..");
@@ -37,21 +37,14 @@ check("plan-hash", sha256File(join(projectRoot, manifest.source.plan)) === manif
 const currentGardenSchemaSha256 = sha256File(join(projectRoot, "Shared/GardenState.schema.json"));
 const rendererSource = manifest.source.renderer_source_files.map((path) => `${path}\0${readFileSync(join(projectRoot, path))}`).join("\0");
 const currentRendererSourceSha256 = sha256Bytes(rendererSource);
-const currentFileSha256 = Object.fromEntries(
-  manifest.source.renderer_source_files.map((path) => [path, sha256File(join(projectRoot, path))]),
-);
-const sourceMatches =
-  currentGardenSchemaSha256 === manifest.source.garden_state_schema_sha256 &&
-  currentRendererSourceSha256 === manifest.source.renderer_source_sha256;
-const exactPostPublicationFreeze = isExactPostPublicationMediaFreeze({
+const sourceMatches = isExactCurrentRendererArtifact({
   manifest,
   currentRendererSourceSha256,
   currentGardenSchemaSha256,
-  currentFileSha256,
 });
-check("schema-hash", currentGardenSchemaSha256 === manifest.source.garden_state_schema_sha256 || exactPostPublicationFreeze, "GardenState schema must match or retain the one exact historical-media boundary");
-check("renderer-source-hash", currentRendererSourceSha256 === manifest.source.renderer_source_sha256 || exactPostPublicationFreeze, "renderer source must match or retain the one exact historical-media boundary");
-check("post-generation-boundary", sourceMatches ? manifest.post_generation_change === undefined : exactPostPublicationFreeze, "source drift must be absent or exactly bound as deferred historical media");
+check("schema-hash", currentGardenSchemaSha256 === manifest.source.garden_state_schema_sha256, "GardenState schema must match the regenerated source");
+check("renderer-source-hash", currentRendererSourceSha256 === manifest.source.renderer_source_sha256, "renderer source must match the regenerated source");
+check("post-generation-boundary", sourceMatches, "media must bind the exact current Garden renderer and schema without a deferred historical exception");
 
 let previousDay = -1;
 for (const [index, frame] of manifest.capture.frames.entries()) {
@@ -89,7 +82,7 @@ check("video-manifest", manifest.video.codec === video.codec_name && manifest.vi
 
 check("toolchain", manifest.toolchain.node === process.version && manifest.toolchain.playwright && manifest.toolchain.sharp && manifest.toolchain.ffmpeg.startsWith("ffmpeg version") && manifest.toolchain.ffprobe.startsWith("ffprobe version"), "toolchain versions must be explicit");
 const validationText = readFileSync(join(outputRoot, "validation.txt"), "utf8");
-check("validation-text", validationText.includes("status: passed-local-public-media-contract") && validationText.includes("human_review: pending") && validationText.includes("release_ready: false") && (!exactPostPublicationFreeze || (validationText.includes("current_source_state: regeneration-deferred-host-denial") && validationText.includes("current_garden_proof: separate"))), "plain-text validation must preserve human, release, and current-source boundaries");
+check("validation-text", validationText.includes("status: passed-local-public-media-contract") && validationText.includes("human_review: pending") && validationText.includes("release_ready: false") && !validationText.includes("regeneration-deferred-host-denial"), "plain-text validation must preserve human, release, and current-source boundaries");
 
 const report = {
   schema_version: 1,

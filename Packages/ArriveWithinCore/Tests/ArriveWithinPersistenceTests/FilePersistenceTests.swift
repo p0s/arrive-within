@@ -597,6 +597,47 @@ struct FilePersistenceTests {
     #expect(archive.range(of: Data(audioName.utf8)) != nil)
     #expect(archive.range(of: Data("complete-user-readable-data".utf8)) != nil)
 
+    let oversizedAudioName = "A1000000-0000-4000-8000-000000000005.m4a"
+    try audio.write(to: audioDirectory.appending(path: oversizedAudioName))
+    let oversizedAttachment = try JournalAudioAttachment(
+      relativeFileName: oversizedAudioName,
+      durationMilliseconds: 1_000,
+      byteCount: Int64(WholeProductImporter.maximumArchiveBytes),
+      checksumSHA256: checksum,
+      recordedAt: start
+    )
+    let oversizedEntry = try JournalEntry(
+      id: UUID(uuidString: "A1000000-0000-4000-8000-000000000005")!,
+      profileGenerationID: profile.profileGenerationID,
+      linkedPracticeEventID: event.id,
+      createdAt: start,
+      sourceInstallationID: profile.installationID,
+      revision: 1,
+      modifiedAt: start,
+      text: "A reflection whose declared audio exceeds the complete archive limit.",
+      textLocaleIdentifier: "en-US",
+      audioAttachment: oversizedAttachment
+    )
+    let oversizedSnapshot = ProductDataExportSnapshot(
+      profile: snapshot.profile,
+      journey: snapshot.journey,
+      events: snapshot.events,
+      customization: snapshot.customization,
+      journalEntries: [oversizedEntry],
+      favoritePracticeIDs: snapshot.favoritePracticeIDs,
+      syncStatus: snapshot.syncStatus,
+      exportedAt: snapshot.exportedAt
+    )
+    let oversizedOutput = directory.appending(path: "oversized.zip")
+    #expect(throws: ProductDataExportError.archiveTooLarge) {
+      try WholeProductExporter.export(
+        snapshot: oversizedSnapshot,
+        audioDirectory: audioDirectory,
+        outputURL: oversizedOutput
+      )
+    }
+    #expect(!FileManager.default.fileExists(atPath: oversizedOutput.path))
+
     #if os(macOS)
       let validator = Process()
       validator.executableURL = URL(fileURLWithPath: "/usr/bin/unzip")
@@ -715,7 +756,12 @@ struct FilePersistenceTests {
     let controls = try ProductDataController(store: store, dataDirectory: root)
     let profileRepository = CoreDataLocalProfileRepository(store: store)
     let eventRepository = CoreDataPracticeEventRepository(store: store)
-    let journalRepository = CoreDataJournalEntryRepository(store: store)
+    let journalRepository = CoreDataJournalEntryRepository(
+      store: store,
+      audioDirectory: audioDirectory
+    )
+    let customizationRepository = CoreDataGardenCustomizationRepository(store: store)
+    let favoritesRepository = CoreDataGuidedFavoritesRepository(store: store)
     let start = Date(timeIntervalSince1970: 1_786_320_000)
     let profile = try LocalProfile(
       profileGenerationID: ArriveWithinFixtures.generationID,
@@ -753,14 +799,85 @@ struct FilePersistenceTests {
     try await profileRepository.save(profile)
     _ = try await eventRepository.insertIfAbsent(event)
     _ = try await journalRepository.save(entry, expectedRevision: nil)
+    let savedCustomization = GardenCustomization(selectedVariantByMilestone: [1: "m01-b"])
+    try await customizationRepository.save(
+      savedCustomization,
+      profileGenerationID: profile.profileGenerationID
+    )
+    try await favoritesRepository.saveFavoritePracticeIDs(["G01"])
     try Data("session".utf8).write(to: root.appending(path: "session-state-v1.json"))
     try Data("preferences".utf8).write(
       to: root.appending(path: "meditation-preferences-v1.json")
     )
+    let settingsURL = root.appending(path: "app-settings-v1.json")
+    let remindersURL = root.appending(path: "weekly-reminders-v1.json")
+    try Data("settings".utf8).write(to: settingsURL)
+    try Data("reminders".utf8).write(to: remindersURL)
+    let draftsURL = root.appending(path: "journal-drafts-v1.json")
+    try Data("private draft".utf8).write(to: draftsURL)
 
     let export = try await controls.exportAll(profile: profile, at: start)
     #expect(FileManager.default.fileExists(atPath: export.path))
     #expect(try await controls.counts().practiceEvents == 1)
+
+    let exportedArchive = try Data(contentsOf: export)
+    let laterEvent = try ArriveWithinFixtures.event(
+      ordinal: 2,
+      localDate: "2026-08-11",
+      start: start.addingTimeInterval(86_400)
+    )
+    _ = try await eventRepository.insertIfAbsent(laterEvent)
+    try await customizationRepository.save(
+      GardenCustomization(selectedVariantByMilestone: [2: "m02-a"]),
+      profileGenerationID: profile.profileGenerationID
+    )
+    try await favoritesRepository.saveFavoritePracticeIDs(["G02"])
+    try Data("active session".utf8).write(
+      to: root.appending(path: "session-state-v1.json")
+    )
+    try Data("new unfinished draft".utf8).write(to: draftsURL)
+
+    do {
+      _ = try await controls.prepareRestore(from: Data([0x50, 0x4B, 0x03]))
+      Issue.record("A malformed archive should not be prepared for replacement.")
+    } catch is WholeProductImportError {
+      // Rejection happens before ProductDataController reaches the store.
+    }
+    #expect(try await eventRepository.allEvents(profileGenerationID: profile.profileGenerationID).count == 2)
+    #expect(try await favoritesRepository.loadFavoritePracticeIDs() == ["G02"])
+
+    let preparedRestore = try await controls.prepareRestore(from: exportedArchive)
+    #expect(preparedRestore.voiceFileCount == 1)
+    #expect(preparedRestore.journalAudioByEntryID.values.first == audio)
+    let restore = try await controls.restoreAll(
+      preparedRestore,
+      at: start.addingTimeInterval(172_800)
+    )
+    #expect(!restore.cleanupPending)
+    #expect(try await profileRepository.load() == profile)
+    #expect(try await controls.counts().profileGenerations == 1)
+    #expect(try await controls.counts().practiceEvents == 1)
+    #expect(try await eventRepository.allEvents(profileGenerationID: profile.profileGenerationID) == [event])
+    #expect(try await customizationRepository.load(profileGenerationID: profile.profileGenerationID) == savedCustomization)
+    #expect(try await favoritesRepository.loadFavoritePracticeIDs() == ["G01"])
+    #expect(!FileManager.default.fileExists(atPath: root.appending(path: "session-state-v1.json").path))
+    #expect(!FileManager.default.fileExists(atPath: draftsURL.path))
+    #expect(!FileManager.default.fileExists(atPath: export.path))
+    #expect(try Data(contentsOf: settingsURL) == Data("settings".utf8))
+    #expect(try Data(contentsOf: remindersURL) == Data("reminders".utf8))
+    #expect(try Data(contentsOf: root.appending(path: "meditation-preferences-v1.json")) == Data("preferences".utf8))
+    let rawRestoredEntries = try await store.journalEntries(
+      profileGenerationID: profile.profileGenerationID,
+      includingDeleted: false
+    )
+    let rawRestoredEntry = try #require(rawRestoredEntries.first)
+    #expect(try await store.journalAudioData(for: rawRestoredEntry) == audio)
+    let restoredEntries = try await journalRepository.entries(
+      profileGenerationID: profile.profileGenerationID,
+      includingDeleted: false
+    )
+    #expect(restoredEntries.count == 1)
+    #expect(try Data(contentsOf: audioDirectory.appending(path: audioName)) == audio)
 
     let reset = try await controls.resetGarden(
       profile: profile,
@@ -774,6 +891,7 @@ struct FilePersistenceTests {
     #expect(!FileManager.default.fileExists(atPath: audioDirectory.appending(path: audioName).path))
     #expect(!FileManager.default.fileExists(atPath: export.path))
     #expect(!FileManager.default.fileExists(atPath: root.appending(path: "session-state-v1.json").path))
+    #expect(!FileManager.default.fileExists(atPath: draftsURL.path))
     #expect(FileManager.default.fileExists(atPath: root.appending(path: "meditation-preferences-v1.json").path))
     #expect(try await eventRepository.allEvents(profileGenerationID: profile.profileGenerationID).isEmpty)
 
@@ -787,6 +905,7 @@ struct FilePersistenceTests {
     let markerRemainsPending = await controls.hasPendingPrivateCloudDeletion()
     #expect(!markerRemainsPending)
     #expect(!FileManager.default.fileExists(atPath: obsoleteMarker.path))
+    try Data("private draft".utf8).write(to: draftsURL)
 
     let deletion = try await controls.deleteAllData()
     #expect(deletion == .localDeletionComplete)
@@ -794,6 +913,7 @@ struct FilePersistenceTests {
     #expect(try await controls.counts().practiceEvents == 0)
     #expect(!FileManager.default.fileExists(atPath: export.path))
     #expect(!FileManager.default.fileExists(atPath: root.appending(path: "meditation-preferences-v1.json").path))
+    #expect(!FileManager.default.fileExists(atPath: draftsURL.path))
   }
 
   @Test("Baseline build 1 data upgrades deterministically to selected build 7")

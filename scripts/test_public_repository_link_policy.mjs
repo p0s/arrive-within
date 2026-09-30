@@ -5,6 +5,7 @@ import {
   isIntentionalPublicRepositorySurface,
   maskIntentionalPublicRepositoryURLs,
   publicAnalyticsOptOutCookie,
+  privateLocalDirectory,
   publicRepositoryURL,
   repositoryOwnerHandle,
 } from "./lib/public-repository-link-policy.mjs";
@@ -61,6 +62,26 @@ assert.equal(
   true,
 );
 const githubSecretFixture = `ghp_${"A".repeat(36)}`;
+const privateIgnoreRule = `${privateLocalDirectory}/`;
+for (const source of [privateIgnoreRule, `# private configuration\n${privateIgnoreRule}\n`, `${privateIgnoreRule}\r\n`]) {
+  assert.deepEqual(detectPublicPrivacySignatures(source, ".gitignore"), []);
+}
+for (const nearMatch of [
+  `/${privateIgnoreRule}`, `!${privateIgnoreRule}`, `${privateIgnoreRule}extra`,
+  `# ${privateIgnoreRule}`, ` ${privateIgnoreRule}`, `${privateIgnoreRule} `,
+  `${privateIgnoreRule}\n${repositoryOwnerHandle}`,
+  `${privateIgnoreRule}\runrelated`, `prefix\u2028${privateIgnoreRule}`,
+  `${privateIgnoreRule}\u2029suffix`, `${privateIgnoreRule}\r`,
+]) {
+  assert.equal(detectPublicPrivacySignatures(nearMatch, ".gitignore").includes("owner-handle"), true);
+}
+for (const surface of ["nested/.gitignore", "docs/example.md", `${privateLocalDirectory}/app-store-defaults.json`]) {
+  assert.equal(detectPublicPrivacySignatures(privateIgnoreRule, surface).includes("owner-handle"), true);
+}
+assert.equal(
+  detectPublicPrivacySignatures(`${privateIgnoreRule}\n${githubSecretFixture}`, ".gitignore").includes("github-token"),
+  true,
+);
 assert.equal(
   detectPublicPrivacySignatures(`${publicAnalyticsOptOutCookie} ${githubSecretFixture}`, "Website/src/analytics.mjs").includes("github-token"),
   true,

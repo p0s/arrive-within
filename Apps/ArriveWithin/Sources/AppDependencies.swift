@@ -94,6 +94,7 @@ struct AppDependencies {
   let guidedFavoritesRepository: any GuidedFavoritesRepository
   let gardenCustomizationRepository: any GardenCustomizationRepository
   let journalRepository: any JournalEntryRepository
+  let journalTextDraftRepository: any JournalTextDraftRepository
   let weeklyReminderRepository: any WeeklyReminderScheduleRepository
   let productStore: CoreDataProductStore?
   let productDataController: ProductDataController?
@@ -110,6 +111,8 @@ struct AppDependencies {
   let hapticController: any MeditationHapticControlling
   let journalAudioRecorder: any JournalAudioRecordingControlling
   let journalTranscriber: any JournalTranscribing
+  let marketingCaptureFixture: UITestMarketingCaptureFixture?
+  let marketingCaptureReportURL: URL?
 
   init(
     profileRepository: any LocalProfileRepository,
@@ -123,6 +126,7 @@ struct AppDependencies {
     gardenCustomizationRepository: any GardenCustomizationRepository =
       EphemeralGardenCustomizationRepository(),
     journalRepository: any JournalEntryRepository = EphemeralJournalEntryRepository(),
+    journalTextDraftRepository: (any JournalTextDraftRepository)? = nil,
     weeklyReminderRepository: any WeeklyReminderScheduleRepository =
       EphemeralWeeklyReminderScheduleRepository(),
     productStore: CoreDataProductStore? = nil,
@@ -139,7 +143,9 @@ struct AppDependencies {
       NoOpWeeklyReminderNotificationController(),
     hapticController: any MeditationHapticControlling,
     journalAudioRecorder: any JournalAudioRecordingControlling = UnavailableJournalAudioRecorder(),
-    journalTranscriber: any JournalTranscribing = UnavailableJournalTranscriber()
+    journalTranscriber: any JournalTranscribing = UnavailableJournalTranscriber(),
+    marketingCaptureFixture: UITestMarketingCaptureFixture? = nil,
+    marketingCaptureReportURL: URL? = nil
   ) {
     self.profileRepository = profileRepository
     self.eventRepository = eventRepository
@@ -150,6 +156,10 @@ struct AppDependencies {
     self.guidedFavoritesRepository = guidedFavoritesRepository
     self.gardenCustomizationRepository = gardenCustomizationRepository
     self.journalRepository = journalRepository
+    self.journalTextDraftRepository = journalTextDraftRepository
+      ?? FileJournalTextDraftRepository(
+        fileURL: dataDirectory.appending(path: "journal-drafts-v1.json")
+      )
     self.weeklyReminderRepository = weeklyReminderRepository
     self.productStore = productStore
     self.productDataController = productDataController
@@ -173,6 +183,8 @@ struct AppDependencies {
     self.hapticController = hapticController
     self.journalAudioRecorder = journalAudioRecorder
     self.journalTranscriber = journalTranscriber
+    self.marketingCaptureFixture = marketingCaptureFixture
+    self.marketingCaptureReportURL = marketingCaptureReportURL
   }
 
   static func live(arguments: [String] = ProcessInfo.processInfo.arguments) -> Self {
@@ -180,7 +192,14 @@ struct AppDependencies {
       for: .applicationSupportDirectory,
       in: .userDomainMask
     )[0]
+    let marketingCaptureFixture: UITestMarketingCaptureFixture?
+    let marketingCaptureReportURL: URL?
     #if DEBUG
+      do {
+        marketingCaptureFixture = try UITestMarketingCaptureFixture.parse(arguments: arguments)
+      } catch {
+        preconditionFailure("Invalid physical marketing capture fixture.")
+      }
       let verificationRoot: URL?
       do {
         verificationRoot = try AppDataDirectoryPreparer.verificationDirectory(
@@ -191,10 +210,44 @@ struct AppDependencies {
       }
       let root =
         verificationRoot ?? support.appending(path: "ArriveWithin", directoryHint: .isDirectory)
-      if verificationRoot == nil && arguments.contains("-ui-test-reset") {
-        try? FileManager.default.removeItem(at: root)
+      if arguments.contains("-ui-test-reset") {
+        let resetRoot = verificationRoot ?? root
+        if FileManager.default.fileExists(atPath: resetRoot.path) {
+          do {
+            let values = try resetRoot.resourceValues(forKeys: [.isDirectoryKey, .isSymbolicLinkKey])
+            guard values.isDirectory == true, values.isSymbolicLink != true else {
+              preconditionFailure("The isolated UI-test reset root is unsafe.")
+            }
+            try FileManager.default.removeItem(at: resetRoot)
+          } catch {
+            preconditionFailure("The isolated UI-test namespace could not be reset.")
+          }
+        }
+      }
+      if marketingCaptureFixture != nil {
+        let reportDirectory = support.appending(
+          path: "ArriveWithinMarketingCaptureReports", directoryHint: .isDirectory
+        )
+        do {
+          try AppDataDirectoryPreparer.prepare(reportDirectory)
+          let reportURL = reportDirectory.appending(path: "marketing-capture.json")
+          if FileManager.default.fileExists(atPath: reportURL.path) {
+            let values = try reportURL.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey])
+            guard values.isRegularFile == true, values.isSymbolicLink != true else {
+              preconditionFailure("The existing marketing capture report is unsafe.")
+            }
+            try FileManager.default.removeItem(at: reportURL)
+          }
+          marketingCaptureReportURL = reportURL
+        } catch {
+          preconditionFailure("Physical marketing capture report directory is unsafe.")
+        }
+      } else {
+        marketingCaptureReportURL = nil
       }
     #else
+      marketingCaptureFixture = nil
+      marketingCaptureReportURL = nil
       let root = support.appending(path: "ArriveWithin", directoryHint: .isDirectory)
     #endif
     do {
@@ -240,6 +293,25 @@ struct AppDependencies {
     let sessionRepository = FileMeditationSessionRepository(
       fileURL: root.appending(path: "session-state-v1.json")
     )
+    let localJournalTextDraftRepository = FileJournalTextDraftRepository(
+      fileURL: root.appending(path: "journal-drafts-v1.json")
+    )
+    let journalTextDraftRepository: any JournalTextDraftRepository
+    #if DEBUG
+      let failFirstDraftDeletion = arguments.contains("-ui-test-journal-draft-delete-fails-once")
+      let failFirstDraftSave = arguments.contains("-ui-test-journal-draft-save-fails-once")
+      if failFirstDraftDeletion || failFirstDraftSave {
+        journalTextDraftRepository = UITestFailingJournalTextDraftRepository(
+          base: localJournalTextDraftRepository,
+          failFirstDeletion: failFirstDraftDeletion,
+          failFirstSave: failFirstDraftSave
+        )
+      } else {
+        journalTextDraftRepository = localJournalTextDraftRepository
+      }
+    #else
+      journalTextDraftRepository = localJournalTextDraftRepository
+    #endif
     let audioController: any MeditationAudioControlling =
       (try? NativeMeditationAudioController()) ?? UnavailableMeditationAudioController()
 
@@ -284,6 +356,7 @@ struct AppDependencies {
         store: productStore,
         audioDirectory: root.appending(path: "journal-audio", directoryHint: .isDirectory)
       ),
+      journalTextDraftRepository: journalTextDraftRepository,
       weeklyReminderRepository: FileWeeklyReminderScheduleRepository(
         fileURL: root.appending(path: "weekly-reminders-v1.json")
       ),
@@ -299,7 +372,9 @@ struct AppDependencies {
       weeklyReminderNotificationController: weeklyReminderController(arguments: arguments),
       hapticController: NativeMeditationHapticController(),
       journalAudioRecorder: journalAudioRecorder,
-      journalTranscriber: NativeOnDeviceJournalTranscriber()
+      journalTranscriber: NativeOnDeviceJournalTranscriber(),
+      marketingCaptureFixture: marketingCaptureFixture,
+      marketingCaptureReportURL: marketingCaptureReportURL
     )
   }
 
@@ -380,6 +455,13 @@ struct AppDependencies {
 
   #if DEBUG
     private static func testClock(arguments: [String]) -> (any SessionClock)? {
+      do {
+        if let fixture = try MarketingCaptureClockFixture.parse(arguments: arguments) {
+          return FixedSessionClock(wallClock: fixture.date)
+        }
+      } catch {
+        preconditionFailure("Invalid simulator marketing clock fixture.")
+      }
       if let flagIndex = arguments.firstIndex(of: "-ui-test-wall-clock-epoch"),
         arguments.indices.contains(flagIndex + 1),
         let epoch = TimeInterval(arguments[flagIndex + 1])
@@ -397,6 +479,58 @@ struct AppDependencies {
     }
   #endif
 }
+
+#if DEBUG
+private actor UITestFailingJournalTextDraftRepository: JournalTextDraftRepository {
+  private let base: any JournalTextDraftRepository
+  private let failFirstDeletion: Bool
+  private let failFirstSave: Bool
+  private var hasFailedFirstDeletion = false
+  private var hasFailedFirstSave = false
+
+  init(
+    base: any JournalTextDraftRepository,
+    failFirstDeletion: Bool,
+    failFirstSave: Bool
+  ) {
+    self.base = base
+    self.failFirstDeletion = failFirstDeletion
+    self.failFirstSave = failFirstSave
+  }
+
+  func load(editorKey: String, profileGenerationID: UUID) async throws -> JournalTextDraft? {
+    try await base.load(editorKey: editorKey, profileGenerationID: profileGenerationID)
+  }
+
+  func save(_ draft: JournalTextDraft) async throws {
+    if failFirstSave, !hasFailedFirstSave {
+      hasFailedFirstSave = true
+      throw JournalTextDraftError.couldNotPersist
+    }
+    try await base.save(draft)
+  }
+
+  func delete(editorKey: String, profileGenerationID: UUID) async throws {
+    if failFirstDeletion, !hasFailedFirstDeletion {
+      hasFailedFirstDeletion = true
+      throw JournalTextDraftError.couldNotPersist
+    }
+    try await base.delete(editorKey: editorKey, profileGenerationID: profileGenerationID)
+  }
+
+  func deleteEntryDrafts(entryIDs: Set<UUID>, profileGenerationID: UUID) async throws {
+    if failFirstDeletion, !hasFailedFirstDeletion {
+      hasFailedFirstDeletion = true
+      throw JournalTextDraftError.couldNotPersist
+    }
+    try await base.deleteEntryDrafts(entryIDs: entryIDs, profileGenerationID: profileGenerationID)
+  }
+
+  func deleteAll() async throws {
+    try await base.deleteAll()
+  }
+}
+#endif
 
 #if DEBUG
   private struct FixedSessionClock: SessionClock, Sendable {

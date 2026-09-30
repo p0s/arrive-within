@@ -7,6 +7,7 @@ const deviceAliases = [
 export const publicRepositoryURL = ["https://github.com", ownerHandle, "arrive-within"].join("/");
 export const repositoryOwnerFragment = [ownerHandle, "arrive-within"].join("/");
 export const repositoryOwnerHandle = ownerHandle;
+export const privateLocalDirectory = `.${ownerHandle}-local`;
 export const publicAnalyticsOptOutCookie = [repositoryOwnerHandle, "_analytics_optout"].join("");
 
 const exactSourceSurfaces = new Set([
@@ -65,6 +66,14 @@ function privacyPatterns() {
 
 export function detectPublicPrivacySignatures(source, displayPath) {
   let maskedSource = maskIntentionalPublicRepositoryURLs(source, displayPath);
+  // Only the root ignore rule is public; the directory's contents remain private.
+  if (displayPath === ".gitignore") {
+    const privateIgnoreRule = `${privateLocalDirectory}/`;
+    maskedSource = maskedSource.split("\n").map((line, index, lines) => {
+      const hasLF = index < lines.length - 1;
+      return line === privateIgnoreRule || (hasLF && line === `${privateIgnoreRule}\r`) ? "" : line;
+    }).join("\n");
+  }
   if (publicAnalyticsCookieSurfaces.has(displayPath)) {
     const publicCookiePattern = new RegExp(`(?<![A-Za-z0-9_-])${escapeRegExp(publicAnalyticsOptOutCookie)}(?![A-Za-z0-9_-])`, "g");
     maskedSource = maskedSource.replace(publicCookiePattern, "");

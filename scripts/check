@@ -88,6 +88,18 @@ print "== App Store screenshot source and output matrix =="
   node --import tsx scripts/validate-plan.ts
   node --import tsx scripts/validate-narrative-alternatives.ts
   node --import tsx scripts/test-capture-drift-policy.ts
+  node --import tsx scripts/test-capture-evidence.ts
+  node --import tsx scripts/test-simulator-capture-contract.ts
+  node --import tsx scripts/test-capture-set-provenance.ts
+  node --import tsx scripts/test-capture-source-commit.ts
+  node --import tsx scripts/test-capture-source-inputs.ts
+  node --import tsx scripts/test-physical-profile-paths.ts
+  node --import tsx scripts/test-physical-build-provenance.ts
+  node --import tsx scripts/test-private-artifact-paths.ts
+  node --import tsx scripts/test-physical-capture-clock.ts
+  python3 scripts/test-physical-capture-contract.py
+  python3 ../../scripts/test_verify_marketing_capture_project.py
+  node --import tsx scripts/test-reproducibility-inventory.ts
   node --import tsx scripts/validate-captures.ts
   node --import tsx scripts/validate-export-matrix.ts
   node --import tsx scripts/verify-reproducibility.ts --check

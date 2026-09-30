@@ -28,6 +28,15 @@ for (const [prefix, exportedName, role] of [["AppIcon60x60", "phone-120.png", "p
   const bytes = await readFile(path.join(input, file));
   const metadata = await sharp(bytes).metadata();
   if (metadata.space !== "srgb") throw new Error(`${file}: RGB required`);
+  const { data: rgba, info: rgbaInfo } = await sharp(bytes).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  let minimumAlpha = 255;
+  let transparentPixelCount = 0;
+  for (let offset = 3; offset < rgba.length; offset += rgbaInfo.channels) {
+    const alpha = rgba[offset];
+    minimumAlpha = Math.min(minimumAlpha, alpha);
+    if (alpha < 255) transparentPixelCount++;
+  }
+  if (transparentPixelCount > 0) throw new Error(`${file}: compiled compatibility icon contains ${transparentPixelCount} transparent pixels`);
   const { data, info } = await sharp(bytes).removeAlpha().raw().toBuffer({ resolveWithObject: true });
   let green = 0, total = 0;
   for (let y = Math.ceil(info.height * 0.55); y < info.height * 0.75; y++) {
@@ -41,7 +50,8 @@ for (const [prefix, exportedName, role] of [["AppIcon60x60", "phone-120.png", "p
   if (fraction < 0.2) throw new Error(`${file}: sprout hidden by layer order/effects (${fraction})`);
   await writeFile(path.join(root, output, exportedName), bytes);
   outputs.push({ path: `${output}/${exportedName}`, role, width: metadata.width, height: metadata.height,
-    colorSpace: "RGB", alpha: metadata.hasAlpha, sha256: hash(bytes), sproutGreenPixelFraction: Number(fraction.toFixed(4)) });
+    colorSpace: "RGB", alpha: metadata.hasAlpha, minimumAlpha, transparentPixelCount,
+    fullyOpaque: transparentPixelCount === 0, sha256: hash(bytes), sproutGreenPixelFraction: Number(fraction.toFixed(4)) });
 }
 const appearances = [...new Set(stacks.map((item) => item.Appearance))].sort();
 if (!appearances.includes("UIAppearanceLight") || !appearances.includes("UIAppearanceDark") || !appearances.includes("ISAppearanceTintable")) {
@@ -57,7 +67,7 @@ const record = { schemaVersion: 2, validatedAt: "2026-09-15", validationLevel: "
   targetFamilies: ["phone", "pad"], compiledStacks: ["light", "dark", "tintable"],
   compatibilityOutputs: outputs, assetsCarSha256: hash(await readFile(path.join(input, "Assets.car"))),
   marketingIcons: marketingIcons.map((item) => ({ idiom: item.Idiom, appearance: item.Appearance ?? "Any", opaque: item.Opaque, colorModel: item.ColorModel })),
-  compatibilityFormatNote: "Xcode 27 emits masked RGBA small compatibility PNGs. Their alpha is reported without alteration. Compiled 1024 marketing renditions and all derived marketing masters are opaque RGB; archive acceptance remains a separate release gate.",
+  compatibilityFormatNote: "Xcode 27 emits RGBA small compatibility PNGs with every alpha sample at 255 and zero transparent pixels. Apple permits an alpha channel when the icon contains no transparent regions. Compiled 1024 marketing renditions and all derived marketing masters are opaque RGB; archive acceptance remains a separate release gate.",
   claimBoundary: "Current-source Apple asset-compiler output only. Both compatibility icons inspected; no complete app build, archive, Home Screen, physical device, TestFlight, or App Store claim.",
 };
 await writeFile(path.join(root, "docs/brand/icon-build-validation.json"), `${JSON.stringify(record, null, 2)}\n`);

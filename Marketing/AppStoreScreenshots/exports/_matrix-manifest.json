@@ -3,7 +3,7 @@
   "product": "Arrive Within",
   "generatedAt": null,
   "generationTimePolicy": "omitted-for-byte-reproducibility",
-  "sourceRevision": "aed3e83d30d6290cb99731be79675fcfbeb7941168ec960479e08148b1293925",
+  "sourceRevision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
   "narrative": {
     "id": "current",
     "title": "Frozen current narrative",
@@ -24,7 +24,9 @@
       "id": "ipad-13",
       "orientation": "portrait",
       "width": 2064,
-      "height": 2752
+      "height": 2752,
+      "apple_display": "13-inch iPad screenshot required for apps that run on iPad",
+      "apple_screenshot_specification": "https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications"
     }
   ],
   "setCount": 4,
@@ -55,8 +57,8 @@
     }
   },
   "mechanicalValidation": "pass",
-  "humanVisualReview": "approved",
-  "uploadAuthorization": "authorized-for-app-store-version-1.0-after-current-source-validation",
+  "humanVisualReview": "pending",
+  "uploadAuthorization": "candidate-only-human-review-pending-not-upload-authorized",
   "sets": [
     {
       "locale": "en-US",
@@ -79,56 +81,56 @@
         }
       },
       "humanVisualReview": {
-        "state": "approved",
-        "reviewer": "app-store-screenshot-style-review",
-        "reviewedAt": "2026-08-30",
-        "notes": "English and German iPhone and iPad contact sheets plus representative full-resolution exports were inspected against the current-source recapture. The selected Tonal Wash pilot retains one unclipped left-aligned headline block, tight headline-to-product spacing, large straight device frames, legible localized real app UI, and no substituted or invented product imagery."
+        "state": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "notes": "Fresh source captures require inspection of every locale/device contact sheet before approval."
       },
       "artifacts": [
         {
           "filename": "01-growth-rhythm-en-us-iphone-6.9-1320x2868.png",
-          "bytes": 358832,
-          "sha256": "69f9b7b50e45d229dc195ad39f3c7eaae57f63760fad7325691d539f07170363"
+          "bytes": 406707,
+          "sha256": "2de7c579125c7b26b210a351f90bb9ec6ec2d772847a765546b6abb7d0cdd561"
         },
         {
           "filename": "02-growth-take-root-en-us-iphone-6.9-1320x2868.png",
-          "bytes": 351369,
-          "sha256": "4823a46580b5e94a427ca7b6593aadad779bbba42734abc59029b95eaaaaabe0"
+          "bytes": 441312,
+          "sha256": "a11f158bbfa8dd5d76f5479f377d6e07b09c5360ffa45bfa510e3551c46205ae"
         },
         {
           "filename": "03-growth-arrive-en-us-iphone-6.9-1320x2868.png",
-          "bytes": 352539,
-          "sha256": "ca0d3ea000e017b9c0140c321706a10271b5a1f4bb698b594c8fc9f11bc4312e"
+          "bytes": 343673,
+          "sha256": "c7a70f95579e2a1f791b22e06f95a3d9adf8f809a56cb399e33b164e7becd04e"
         },
         {
           "filename": "04-growth-stays-en-us-iphone-6.9-1320x2868.png",
-          "bytes": 375295,
-          "sha256": "21d4bbad5a09dd8f1b2ba3f908a418a3ec56c454806fd2ce032147ebb029f589"
+          "bytes": 374502,
+          "sha256": "a982a05dc99938bb8ebc6be0d9b74bf270fe6cf08a820c1cf12007574a9caab5"
         },
         {
           "filename": "05-growth-reflect-en-us-iphone-6.9-1320x2868.png",
-          "bytes": 267206,
-          "sha256": "9f30498cf7a6d01e300c85ce1f2c994d7fb309d546b50a54e31d975e9ac5c0c2"
+          "bytes": 282391,
+          "sha256": "024c6d1746212e58db593b6a7d8951908f8823fceae8dedbb1816364c63933fa"
         },
         {
           "filename": "06-growth-refuge-en-us-iphone-6.9-1320x2868.png",
-          "bytes": 360733,
-          "sha256": "54339162370ebc537c0c1a085f172963e1772c4ea5fdde998de4628f68e97cd1"
+          "bytes": 351235,
+          "sha256": "5fdc530e08adee8fb48015ff059006929455d8ab50ec8037e14a9fda89acf9ac"
         },
         {
           "filename": "_contact-sheet.jpg",
-          "bytes": 365584,
-          "sha256": "3b4b7326fcb0f0a4e1c6bbc63c0bc8882ad07f6233a54324224ac49626562d92"
+          "bytes": 381243,
+          "sha256": "564620b3b8249b6211eb8c5c6a4b249204dfce326f1fdafb914f91d78af8d2c6"
         },
         {
           "filename": "_manifest.json",
-          "bytes": 9305,
-          "sha256": "8d1d386682ef6130767144b0be9732a694f78e8ba8800df250326ffde773de58"
+          "bytes": 22895,
+          "sha256": "8d971c44cf0f3eddb1edbf134b5e50b700504d9fe97f6287e44676d836618ad6"
         },
         {
           "filename": "_validation.json",
-          "bytes": 3322,
-          "sha256": "b41686146ad86ae7a4d76d31c8fd3ce5058d8db0414ecda15f17e8f48c6102d4"
+          "bytes": 5135,
+          "sha256": "7c57f23bb65deec46853762693cc7255041dba3d4a61e4c7afe19b20c67ba9fd"
         },
         {
           "filename": "_validation.txt",
@@ -137,8 +139,8 @@
         },
         {
           "filename": "arrive-within-app-store-en-us-iphone-6.9.zip",
-          "bytes": 2320783,
-          "sha256": "f71578142df00f579b238db743387b1572b31f0d4dd9db77a0006e5a2294c336"
+          "bytes": 2474353,
+          "sha256": "18905c09be047552ccad497f64097f60a8fa11b6f653a3f22adbbe710fa098ce"
         }
       ]
     },
@@ -163,56 +165,56 @@
         }
       },
       "humanVisualReview": {
-        "state": "approved",
-        "reviewer": "app-store-screenshot-style-review",
-        "reviewedAt": "2026-08-30",
-        "notes": "English and German iPhone and iPad contact sheets plus representative full-resolution exports were inspected against the current-source recapture. The selected Tonal Wash pilot retains one unclipped left-aligned headline block, tight headline-to-product spacing, large straight device frames, legible localized real app UI, and no substituted or invented product imagery."
+        "state": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "notes": "Fresh source captures require inspection of every locale/device contact sheet before approval."
       },
       "artifacts": [
         {
           "filename": "01-growth-rhythm-en-us-ipad-13-2064x2752.png",
-          "bytes": 400734,
-          "sha256": "fe2ea1643a12bb2741067e75757e7e36c975e8762f17f61d975ce30fef0ec973"
+          "bytes": 424931,
+          "sha256": "e0881cda88169be56d24acf87378260c66652d81324a7fe2e6089ec5ba29ce0b"
         },
         {
           "filename": "02-growth-take-root-en-us-ipad-13-2064x2752.png",
-          "bytes": 446169,
-          "sha256": "382d2b652a03c1d35cc054a3d0f23ceb21acc89e4efb84c0e3793a2b83c57199"
+          "bytes": 596779,
+          "sha256": "091931c205bb94133a956cf6e1505f702bb613ea6bf8150ae9edcd4a53a6771d"
         },
         {
           "filename": "03-growth-arrive-en-us-ipad-13-2064x2752.png",
-          "bytes": 494682,
-          "sha256": "2dadc92f124ca2f7cdd393b66433d5348b8134dd98a2b32798f8a4d2ff1c2d13"
+          "bytes": 488592,
+          "sha256": "ee17cdbfa13a245882f1908eca843c44afa14d9399cb37ddca18ca6803f2e0c7"
         },
         {
           "filename": "04-growth-stays-en-us-ipad-13-2064x2752.png",
-          "bytes": 425515,
-          "sha256": "88e7ec1668382fbd3f41a22b004f000bb871b0e25a7ac7969a00997b2cc6eb25"
+          "bytes": 458173,
+          "sha256": "bcf6c94f709d13db2c7ae60fbeb53027fcd5fafde22b7c306faa737382154567"
         },
         {
           "filename": "05-growth-reflect-en-us-ipad-13-2064x2752.png",
-          "bytes": 362626,
-          "sha256": "f179578128f5b3d66608cf3bd2846e158f0433c00f43945a1f4ff7be431233bc"
+          "bytes": 371385,
+          "sha256": "c5ee6249dbb4b3a3af8da359965c82f0eeece4fecbd653356ef9c4c006e05954"
         },
         {
           "filename": "06-growth-refuge-en-us-ipad-13-2064x2752.png",
-          "bytes": 506171,
-          "sha256": "f99d40116a6e2a30fe37f71ad0e751a7b3777a3e17460454adfee27b97d2d019"
+          "bytes": 499454,
+          "sha256": "608f03db046dfa933a9290fbfc06455e8850a8c537f92717e1cfb04bae9402f2"
         },
         {
           "filename": "_contact-sheet.jpg",
-          "bytes": 249175,
-          "sha256": "a0a32c00b3c937be36791c83e456fea9260f6e139658b9d505b58dfbc29f6ac7"
+          "bytes": 254732,
+          "sha256": "2732a03598b04ce71f2526196a207392a85b054bab620fd6ad5b12518c84d0ab"
         },
         {
           "filename": "_manifest.json",
-          "bytes": 9274,
-          "sha256": "059fcfc4b527c751e53825330b6caa294869eb5579af153ed731e711ac5a5d7e"
+          "bytes": 22796,
+          "sha256": "c5ebeddd152f43650198ea381b5438bd9641ff4eb43848914a684c861c91ae95"
         },
         {
           "filename": "_validation.json",
-          "bytes": 3315,
-          "sha256": "eeddef3e8e99fbac072943a3880a85f95ff0bf34f437fb46e29b9d7a3ae476fe"
+          "bytes": 5117,
+          "sha256": "78ad229714c2aa6964876532cdc5b615eb2b999f992fd3bb89c36bc723a9a600"
         },
         {
           "filename": "_validation.txt",
@@ -221,8 +223,8 @@
         },
         {
           "filename": "arrive-within-app-store-en-us-ipad-13.zip",
-          "bytes": 2736770,
-          "sha256": "0c9ccb4c0b5b08cb0f5e2ab645112ee186698e2667b26dda74c1e08e7b5d5089"
+          "bytes": 2948078,
+          "sha256": "c0d9c0c4f9a0b8c8ee5a67f08ed4427c170c09067e45fd9d50aa02be4babd586"
         }
       ]
     },
@@ -247,56 +249,56 @@
         }
       },
       "humanVisualReview": {
-        "state": "approved",
-        "reviewer": "app-store-screenshot-style-review",
-        "reviewedAt": "2026-08-30",
-        "notes": "English and German iPhone and iPad contact sheets plus representative full-resolution exports were inspected against the current-source recapture. The selected Tonal Wash pilot retains one unclipped left-aligned headline block, tight headline-to-product spacing, large straight device frames, legible localized real app UI, and no substituted or invented product imagery."
+        "state": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "notes": "Fresh source captures require inspection of every locale/device contact sheet before approval."
       },
       "artifacts": [
         {
           "filename": "01-growth-rhythm-de-de-iphone-6.9-1320x2868.png",
-          "bytes": 365193,
-          "sha256": "bf3b55bf9abb120e321f58d45e09c92fbcd8a2625dc312aa9c271553dc47fe60"
+          "bytes": 401514,
+          "sha256": "e636895f231ac0cb7ee45026f3e7c78b36dd1331e99d21f003f547e6c1201911"
         },
         {
           "filename": "02-growth-take-root-de-de-iphone-6.9-1320x2868.png",
-          "bytes": 373852,
-          "sha256": "355acbc5f6d64549b5b14414088cd4f1d9866aeaf7b9d163b7aa2744f95b18ba"
+          "bytes": 466243,
+          "sha256": "b09ac3577ba8dee1beb1212b50e69c43c2c49691784d0695b7ea964c6d941bf8"
         },
         {
           "filename": "03-growth-arrive-de-de-iphone-6.9-1320x2868.png",
-          "bytes": 359619,
-          "sha256": "8103fb5db4053251cb43de207c9440d5718f91a2c5a833e68e6d1149dbc5e904"
+          "bytes": 349486,
+          "sha256": "8e4b6c8f9011e027b74f71b64d9b494c33b7ed640b3b34a1f40d0117b7442f71"
         },
         {
           "filename": "04-growth-stays-de-de-iphone-6.9-1320x2868.png",
-          "bytes": 392212,
-          "sha256": "9f15f1987f5471ef07808197ba3a795313cf25c32f79aa8af82844e71a9bd65f"
+          "bytes": 391639,
+          "sha256": "41aa8cec1aa13fa2cb894ccd82c85aa0e2460f280f3c3db49725702bdde2e795"
         },
         {
           "filename": "05-growth-reflect-de-de-iphone-6.9-1320x2868.png",
-          "bytes": 301171,
-          "sha256": "9880d85c71aa4fa09e667da197895e7d93c3658d5ca79e6bf9dd8543c2c417da"
+          "bytes": 324232,
+          "sha256": "9b35610f1a1a99b097b8ca18d2aadb2758ce0e651ecf1d6506862dba8ee3384c"
         },
         {
           "filename": "06-growth-refuge-de-de-iphone-6.9-1320x2868.png",
-          "bytes": 364936,
-          "sha256": "7263c101a925bd1ef720744955dc7844c2eceb1301b2031b556c8dc097c035b9"
+          "bytes": 354314,
+          "sha256": "8ae51756fb90946d65beeff2ddea2d7cd8e14b97e7015771d86dfc4b5fe5aa6d"
         },
         {
           "filename": "_contact-sheet.jpg",
-          "bytes": 386404,
-          "sha256": "bda805da7ae33e31cfad4c5753250bf2c09b0d5b9e0b837c43141e748b7bf5d5"
+          "bytes": 399502,
+          "sha256": "9966864395f819efbcbc81fda5435c81e5d440bed22195adfe6692a6710ddc4a"
         },
         {
           "filename": "_manifest.json",
-          "bytes": 9303,
-          "sha256": "9a250f2884dab5360d1c5e19a3bf837675c7cb3d33a579a659f433b5d839f555"
+          "bytes": 22878,
+          "sha256": "59907137a1b5341a9ddd4789c5ddec55db28576da9c455f0c581aa1f5aa79ed9"
         },
         {
           "filename": "_validation.json",
-          "bytes": 3322,
-          "sha256": "09e997aab6b96cf3dce7deda8c08ed6d8c0b8f4f02e5be1d46db29686f54d809"
+          "bytes": 5136,
+          "sha256": "5a3ac7dbcc42e992ed1b3a345132c494be24b7a81c76690f0b41a14fd4654082"
         },
         {
           "filename": "_validation.txt",
@@ -305,8 +307,8 @@
         },
         {
           "filename": "arrive-within-app-store-de-de-iphone-6.9.zip",
-          "bytes": 2433861,
-          "sha256": "35db44fab30363ca017cfcfbeb62856e468762de37681e2aa50632853fc215a5"
+          "bytes": 2581217,
+          "sha256": "43a7c2607c4702d4961573178e64a3c44e5c8bae3b9604347f8afaeb01eda73d"
         }
       ]
     },
@@ -331,56 +333,56 @@
         }
       },
       "humanVisualReview": {
-        "state": "approved",
-        "reviewer": "app-store-screenshot-style-review",
-        "reviewedAt": "2026-08-30",
-        "notes": "English and German iPhone and iPad contact sheets plus representative full-resolution exports were inspected against the current-source recapture. The selected Tonal Wash pilot retains one unclipped left-aligned headline block, tight headline-to-product spacing, large straight device frames, legible localized real app UI, and no substituted or invented product imagery."
+        "state": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "notes": "Fresh source captures require inspection of every locale/device contact sheet before approval."
       },
       "artifacts": [
         {
           "filename": "01-growth-rhythm-de-de-ipad-13-2064x2752.png",
-          "bytes": 401419,
-          "sha256": "341c1a7bc8fe18cf23db98277bc982cc41f82195ccbbbda5c9b176daf2846cc1"
+          "bytes": 429736,
+          "sha256": "7148d0d2a24e10a3b8587ef9ea6132d7e518a0927c65fe8e5258522b5fae1880"
         },
         {
           "filename": "02-growth-take-root-de-de-ipad-13-2064x2752.png",
-          "bytes": 467071,
-          "sha256": "fdd71cdaca569b057e9eec7a8b89ee1452e6be41b0091803a0f9e5734c430374"
+          "bytes": 617345,
+          "sha256": "5a7e277c14fe86c9b4a62bec129e7b654e82bb54857f1dd2410ca488aaed9899"
         },
         {
           "filename": "03-growth-arrive-de-de-ipad-13-2064x2752.png",
-          "bytes": 497306,
-          "sha256": "63abc3e2f6cb07fc539fe7334c85b143054e0b734c694228362be768b7a16039"
+          "bytes": 490935,
+          "sha256": "51b8934e4fb36bfbe2b15d71f4c49684496952531348e80e3b4bcf32d8c54186"
         },
         {
           "filename": "04-growth-stays-de-de-ipad-13-2064x2752.png",
-          "bytes": 437997,
-          "sha256": "d05466dcaba6294934c1ade9b0c9b96ed1a3197dd2a9f6eaccb4e1a48938438b"
+          "bytes": 493625,
+          "sha256": "df3a3242d45e0de77712e25fafd2fd6c41915575795c265554ab88c203f6d9f0"
         },
         {
           "filename": "05-growth-reflect-de-de-ipad-13-2064x2752.png",
-          "bytes": 386590,
-          "sha256": "5ddacbb4034c3666e114066249ece843a06823091574f030aa45de4646e8c9fa"
+          "bytes": 398610,
+          "sha256": "a83d0f784897e6686c43cb309380ea5adaee053c07ae1553504601449074ec33"
         },
         {
           "filename": "06-growth-refuge-de-de-ipad-13-2064x2752.png",
-          "bytes": 504150,
-          "sha256": "fef2df5b354df1a0ab8e41f56eb81b50090ab68b8d90ac05f433b69775915a05"
+          "bytes": 497342,
+          "sha256": "85953b64234a88759acb5d92f6c335a8d3b99de0d5f381ba1d91531080526716"
         },
         {
           "filename": "_contact-sheet.jpg",
-          "bytes": 257468,
-          "sha256": "f8f5d0b75aaeba339f769c00b6575f9ae23d57d68b372fcf231069aac9445790"
+          "bytes": 264320,
+          "sha256": "4de98cd6880c3d5c8b828e5614de8bfb26e4d219b1781c433037272871448d97"
         },
         {
           "filename": "_manifest.json",
-          "bytes": 9272,
-          "sha256": "8264f210c5feac2e4f3b081bf4ede1a60062b16ec74becdc93fb46b5a8d668e0"
+          "bytes": 22778,
+          "sha256": "5f3d50fb7c714f995b4069f86759a576c9a2d6a812f81faa77124f4879530573"
         },
         {
           "filename": "_validation.json",
-          "bytes": 3315,
-          "sha256": "1a7151d4937f4ec608deb4d5baa4f9e5f883ab69d214dd563d9b330f10fd5360"
+          "bytes": 5117,
+          "sha256": "99414a3b5166e71aba1103a36b720a81b5dd1326e0bf1c1a7cfc9754f63f68e0"
         },
         {
           "filename": "_validation.txt",
@@ -389,8 +391,8 @@
         },
         {
           "filename": "arrive-within-app-store-de-de-ipad-13.zip",
-          "bytes": 2807011,
-          "sha256": "a6cc1919e019f1f62546b4dc3a4a5a84c6ff41a12885490fd0e8ddb0ff2b25e0"
+          "bytes": 3048358,
+          "sha256": "2cb351e75732bae7a734445f86754d884b0d81174ed7edb733fe1d374545d5e8"
         }
       ]
     }

@@ -97,7 +97,7 @@ const infoPlist = parsePlist("Apps/ArriveWithin/Resources/Info.plist");
 
 equal("metadata.locales", Object.keys(localeMetadata).sort(), ["de-DE", "en-US"]);
 equal("metadata.plan-locales", [...screenshotPlan.locales].sort(), ["de-DE", "en-US"]);
-record("metadata.shared-live", shared.schema_version === 2 && shared.state === "public-1.0-build-16-post-1.0-build-18-valid" && shared.release_attachable === true, "shared metadata must bind public build 16 and the current valid post-1.0 candidate while preserving the verified public URL binding");
+record("metadata.shared-live", shared.schema_version === 2 && shared.state === "public-1.0-build-16-app-store-1.0.1-build-18-ready-for-sale" && shared.release_attachable === true, "shared metadata must bind public build 16, released App Store build 18, and the verified public URL binding");
 record("metadata.rules-date", shared.current_rules?.verified_at === "2026-08-10", "current Apple-rule verification date must be explicit");
 
 const expectedRuleURLs = {
@@ -396,7 +396,7 @@ record(
   "release-train.candidate-current-state",
   releaseTrain.schema_version === 2
     && releaseTrain.candidate_manifest === null
-    && releaseTrain.status === "public-1.0-build16-post-1.0-build18-valid-internal-physical-core-verified"
+    && releaseTrain.status === "public-1.0-build16-app-store-1.0.1-build18-live-candidate-code-pending"
     && releaseTrain.replacement_candidate?.marketing_version === "1.0"
     && releaseTrain.replacement_candidate?.build_number === 16
     && releaseTrain.replacement_candidate?.apple_state === "READY_FOR_SALE"
@@ -419,7 +419,7 @@ record(
     && releaseTrain.stages[8].readback?.includes("COMPLETE")
     && releaseTrain.stages[9].status === "verified-automatic-release-completed"
     && releaseTrain.stages[9].readback?.includes("without a separate manual-release mutation")
-    && releaseTrain.post_1_0_live_activity_candidate?.status === "verified-existing-candidate-core-physical-evidence-complete-system-matrix-partial"
+    && releaseTrain.post_1_0_live_activity_candidate?.status === "verified-public-1.0.1-live-build18-physical-core-system-matrix-partial"
     && releaseTrain.post_1_0_live_activity_candidate?.marketing_version === "1.0.1"
     && releaseTrain.post_1_0_live_activity_candidate?.build_number === 18
     && releaseTrain.post_1_0_live_activity_candidate?.source_commit === "28d5d75a5ed9d515898c779627c98dae61f608aa"
@@ -437,6 +437,19 @@ record(
     && releaseTrain.post_1_0_live_activity_candidate?.physical_runtime_readback?.includes("Compact Dynamic Island")
     && releaseTrain.post_1_0_live_activity_candidate?.remaining_physical_matrix?.includes("Lock Screen")
     && releaseTrain.post_1_0_live_activity_candidate?.release_mutations_performed_during_readback?.length === 0
+    && releaseTrain.current_live_readback?.observed_at === "2026-09-25"
+    && releaseTrain.current_live_readback?.marketing_version === "1.0.1"
+    && releaseTrain.current_live_readback?.build_number === "18"
+    && releaseTrain.current_live_readback?.apple_build_id === "dccf3c83-99c9-4671-aad6-9cd2f7fbfa9f"
+    && releaseTrain.current_live_readback?.app_store_version_id === "12c493d0-a7d2-4773-a599-4d4c0e8d4c55"
+    && releaseTrain.current_live_readback?.app_store_state === "READY_FOR_SALE"
+    && releaseTrain.current_live_readback?.app_version_state === "READY_FOR_DISTRIBUTION"
+    && releaseTrain.current_live_readback?.review_submission_state === "COMPLETE"
+    && releaseTrain.current_live_readback?.review_in_flight === false
+    && releaseTrain.current_live_readback?.release_mutations_performed_during_readback?.length === 0
+    && releaseTrain.owner_reported_storefront_asset_issues?.second_screenshot === "published-slide-2-still-shows-two-dark-gardens"
+    && releaseTrain.owner_reported_storefront_asset_issues?.icon === "published-icon-is-the-older-mark"
+    && releaseTrain.owner_reported_storefront_asset_issues?.evidence?.includes("Owner report")
     && releaseTrain.baseline_internal_testflight?.build_number === 1
     && releaseTrain.baseline_internal_testflight?.apple_processing === "VALID"
     && releaseTrain.baseline_internal_testflight?.internal_distribution === "IN_BETA_TESTING"
@@ -514,7 +527,7 @@ const sourceHashes = Object.fromEntries([
 
 const report = {
   schema_version: 1,
-  status: failures.length === 0 ? "passed-source-contract-public-1.0-build16-post-1.0-build18" : "failed",
+  status: failures.length === 0 ? "passed-source-contract-public-1.0-build16-app-store-1.0.1-build18" : "failed",
   release_ready: false,
   source_contract_passed: failures.length === 0,
   candidate_bound: true,
@@ -527,7 +540,7 @@ const report = {
   blockers,
   failures,
   checks,
-  claim_boundary: "This deterministic source check validates the repository's exact public build-16 binding and the recorded post-1.0 build-18 provenance/evidence contract. It does not itself reproduce frozen binaries, live ASC/TestFlight/storefront/GitHub state, physical-device runtime, or the remaining Lock Screen, expanded Dynamic Island, authorization-disabled, assistive-technology, and energy rows.",
+  claim_boundary: "This deterministic source check validates the repository's exact public build-16 binding, the recorded 1.0.1 build-18 provenance/evidence contract, and the separately recorded 2026-09-25 App Store Connect readback. It does not itself reproduce frozen binaries, live ASC/TestFlight/storefront/GitHub state, physical-device runtime, or the remaining Lock Screen, expanded Dynamic Island, authorization-disabled, assistive-technology, and energy rows.",
 };
 
 if (process.argv.includes("--write-report")) {

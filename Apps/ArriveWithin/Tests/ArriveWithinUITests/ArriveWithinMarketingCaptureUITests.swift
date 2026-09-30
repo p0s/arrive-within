@@ -1,3 +1,5 @@
+#if DEBUG
+import Foundation
 import XCTest
 
 @MainActor
@@ -22,39 +24,72 @@ final class ArriveWithinMarketingCaptureUITests: XCTestCase {
     )
   }
 
+  func testCaptureGardenDayEnglish() throws {
+    try captureGardenDay(locale: "en-US", language: "en")
+  }
+
+  func testCaptureGardenDayGerman() throws {
+    try captureGardenDay(locale: "de-DE", language: "de")
+  }
+
+  private func captureGardenDay(locale: String, language: String) throws {
+    XCUIDevice.shared.orientation = .portrait
+    let app = launchApp(language: language, journeyDay: 30, appearance: "light", clockFixtureID: "day-v1")
+    enterGarden(app)
+    XCTAssertTrue(app.webViews["garden.renderer.ready"].waitForExistence(timeout: 12))
+    try attach("marketing-\(locale)-garden-day", app: app)
+    app.terminate()
+  }
+
   private func captureMarketingStates(
     locale: String,
     language: String,
     journalText: String
   ) throws {
     XCUIDevice.shared.orientation = .portrait
-
-    let seedApp = launchApp(language: language)
+    let seedApp = launchApp(language: language, appearance: "dark")
     enterGarden(seedApp)
     XCTAssertTrue(seedApp.webViews["garden.renderer.ready"].waitForExistence(timeout: 12))
-    attach("marketing-\(locale)-garden-seed", app: seedApp)
+    try attach("marketing-\(locale)-garden-seed", app: seedApp)
     seedApp.terminate()
 
-    let app = launchApp(language: language, journeyDay: 30)
+    let duskGardenApp = launchApp(language: language, journeyDay: 30, appearance: "dark")
+    enterGarden(duskGardenApp)
+    XCTAssertTrue(duskGardenApp.webViews["garden.renderer.ready"].waitForExistence(timeout: 12))
+    try attach("marketing-\(locale)-garden-hero", app: duskGardenApp)
+    duskGardenApp.terminate()
+
+    let app = launchApp(language: language, journeyDay: 30, appearance: "light")
     enterGarden(app)
-    XCTAssertTrue(app.webViews["garden.renderer.ready"].waitForExistence(timeout: 12))
-    attach("marketing-\(locale)-garden-hero", app: app)
 
     selectSection("journey", app: app)
     let calendar = app.descendants(matching: .any)["journey.calendar"]
     reveal(calendar, in: app)
     XCTAssertTrue(calendar.waitForExistence(timeout: 6))
-    attach("marketing-\(locale)-journey-calendar", app: app)
+    let previousMonth = app.buttons["journey.calendar.previous"]
+    revealForCapture([previousMonth], in: app)
+    XCTAssertTrue(previousMonth.isEnabled)
+    previousMonth.tap()
+    // The fixture's thirty practice days run from July 3 through August 1.
+    // Show the populated month through the real calendar navigation.
+    revealForCapture([
+      calendar,
+      app.staticTexts["journey.calendar.month"],
+      app.buttons["journey.calendar.day.2026-07-01"],
+      app.buttons["journey.calendar.day.2026-07-31"],
+    ], in: app)
+    try attach("marketing-\(locale)-journey-calendar", app: app)
 
     let finalMilestone = app.descendants(matching: .any)["journey.milestone.15"]
-    reveal(finalMilestone, in: app)
+    revealForCapture([finalMilestone], in: app)
     XCTAssertTrue(finalMilestone.waitForExistence(timeout: 6))
-    attach("marketing-\(locale)-journey-milestones", app: app)
+    try attach("marketing-\(locale)-journey-milestones", app: app)
 
     app.terminate()
 
     let journalApp = launchApp(
       language: language,
+      appearance: "light",
       extraArguments: ["-ui-test-journal-recorder-synthetic"]
     )
     enterGarden(journalApp)
@@ -68,13 +103,15 @@ final class ArriveWithinMarketingCaptureUITests: XCTestCase {
     let keyboardDone = journalApp.buttons["journal.editor.keyboard.done"]
     XCTAssertTrue(keyboardDone.waitForExistence(timeout: 5))
     keyboardDone.tap()
-    attach("marketing-\(locale)-journal", app: journalApp)
+    try attach("marketing-\(locale)-journal", app: journalApp)
     journalApp.terminate()
   }
 
   private func launchApp(
     language: String,
     journeyDay: Int? = nil,
+    appearance: String,
+    clockFixtureID: String = "dusk-v1",
     extraArguments: [String] = []
   ) -> XCUIApplication {
     let app = XCUIApplication()
@@ -84,6 +121,9 @@ final class ArriveWithinMarketingCaptureUITests: XCTestCase {
       "-ui-test-language", language,
       "-ui-test-reduce-motion",
       "-ui-test-disable-autocorrection",
+      "-ui-test-capture-provenance",
+      "-ui-test-marketing-clock", clockFixtureID,
+      "-ui-test-\(appearance)-appearance",
     ]
     app.launchArguments.append(contentsOf: extraArguments)
     if let journeyDay {
@@ -123,10 +163,122 @@ final class ArriveWithinMarketingCaptureUITests: XCTestCase {
     }
   }
 
-  private func attach(_ name: String, app: XCUIApplication) {
+  private func revealForCapture(_ elements: [XCUIElement], in app: XCUIApplication) {
+    let scrollContainer = app.scrollViews.containing(.any, identifier: elements[0].identifier).firstMatch
+    XCTAssertTrue(scrollContainer.exists)
+    XCTAssertTrue(scrollContainer.frame.height.isFinite && scrollContainer.frame.height > 0)
+    let frame = app.frame
+    let navigationBar = app.navigationBars.firstMatch
+    let tabBar = app.tabBars.firstMatch
+    let top = navigationBar.exists ? navigationBar.frame.maxY + 12 : frame.minY + 90
+    let bottom = tabBar.exists ? tabBar.frame.minY - 12 : frame.maxY - 40
+    let visibleArea = CGRect(x: frame.minX + 16, y: top, width: frame.width - 32, height: bottom - top)
+
+    for _ in 0..<14 {
+      let populatedFrames = elements.filter(\.exists).map(\.frame)
+      let allExist = populatedFrames.count == elements.count
+      let focalArea = populatedFrames.reduce(CGRect.null) { $0.union($1) }
+      if allExist { XCTAssertLessThanOrEqual(focalArea.height, visibleArea.height, "Capture focal area must fit the viewport") }
+      if allExist && visibleArea.contains(focalArea) { return }
+
+      let displacement: CGFloat
+      if !allExist || focalArea.maxY > visibleArea.maxY {
+        displacement = min(
+          allExist ? focalArea.maxY - visibleArea.maxY + 12 : scrollContainer.frame.height * 0.2,
+          scrollContainer.frame.height * 0.3
+        )
+      } else {
+        displacement = -min(visibleArea.minY - focalArea.minY + 12, scrollContainer.frame.height * 0.3)
+      }
+      let start = scrollContainer.coordinate(withNormalizedOffset: CGVector(dx: 0.75, dy: 0.65))
+      let end = scrollContainer.coordinate(withNormalizedOffset: CGVector(
+        dx: 0.75,
+        dy: 0.65 - displacement / scrollContainer.frame.height
+      ))
+      start.press(forDuration: 0.05, thenDragTo: end)
+    }
+    for element in elements {
+      XCTAssertTrue(element.exists && visibleArea.contains(element.frame), "Capture focal element must be fully visible: \(element.identifier)")
+    }
+  }
+
+  private func attach(_ name: String, app: XCUIApplication) throws {
+    let locale = name.contains("marketing-de-DE-") ? "de-DE" : "en-US"
+    let captureID = String(name.dropFirst("marketing-\(locale)-".count))
+    let expectedAppearance = ["garden-seed", "garden-hero"].contains(captureID) ? "dark" : "light"
+    let provenance = app.descendants(matching: .any)["marketing.capture.provenance"]
+    let hasCaptureProvenance = provenance.waitForExistence(timeout: 3)
+    guard hasCaptureProvenance else {
+      throw NSError(
+        domain: "ArriveWithinMarketingCapture",
+        code: 1,
+        userInfo: [NSLocalizedDescriptionKey: "App is missing build-bound capture provenance"]
+      )
+    }
+    var fields: [String: String] = [:]
+    for component in provenance.label.split(separator: ";") {
+      let parts = component.split(separator: "=", maxSplits: 1)
+      guard parts.count == 2 else {
+        throw NSError(
+          domain: "ArriveWithinMarketingCapture",
+          code: 2,
+          userInfo: [NSLocalizedDescriptionKey: "App capture provenance contains a malformed field"]
+        )
+      }
+      let key = String(parts[0])
+      guard fields[key] == nil else {
+        throw NSError(
+          domain: "ArriveWithinMarketingCapture",
+          code: 3,
+          userInfo: [NSLocalizedDescriptionKey: "App capture provenance contains a duplicate field"]
+        )
+      }
+      fields[key] = String(parts[1])
+    }
+    XCTAssertEqual(fields["bundle_id"], "com.philipps.arrivewithin.ios")
+    XCTAssertEqual(fields["marketing_version"], "1.0.2")
+    XCTAssertEqual(fields["build_number"], "19")
+    XCTAssertEqual(fields["appearance"], expectedAppearance, "Captured app color scheme must match the selected screenshot state")
+    XCTAssertTrue(fields["source_commit"].map { $0.range(of: "^[a-f0-9]{40}$", options: .regularExpression) != nil } ?? false)
+    XCTAssertTrue(fields["source_revision"].map { $0.range(of: "^[a-f0-9]{64}$", options: .regularExpression) != nil } ?? false)
+    let fixture = try MarketingCaptureClockFixture.load(
+      id: captureID == "garden-day" ? "day-v1" : "dusk-v1",
+      bundle: Bundle(for: Self.self)
+    )
+    XCTAssertEqual(fields["clock_fixture_id"], fixture.id)
+    XCTAssertEqual(fields["clock_epoch"], String(Int64(fixture.epoch)))
+    XCTAssertEqual(fields["timezone"], fixture.timezone)
+    XCTAssertEqual(fields["garden_phase"], fixture.gardenPhase, "The rendered Garden phase must come from the injected native clock")
+    let capturedAt = Date()
+    let timestampFormatter = ISO8601DateFormatter()
+    timestampFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
     let screenshot = XCTAttachment(screenshot: app.screenshot())
     screenshot.name = name
     screenshot.lifetime = .keepAlways
     add(screenshot)
+
+    let proof: [String: String] = [
+      "schema": "arrive-within-capture-build-proof/v2",
+      "capture_id": captureID,
+      "locale": locale,
+      "bundle_id": fields["bundle_id"] ?? "",
+      "marketing_version": fields["marketing_version"] ?? "",
+      "build_number": fields["build_number"] ?? "",
+      "appearance": fields["appearance"] ?? "",
+      "source_commit": fields["source_commit"] ?? "",
+      "source_revision": fields["source_revision"] ?? "",
+      "clock_fixture_id": fields["clock_fixture_id"] ?? "",
+      "clock_epoch": fields["clock_epoch"] ?? "",
+      "timezone": fields["timezone"] ?? "",
+      "garden_phase": fields["garden_phase"] ?? "",
+      "captured_at": timestampFormatter.string(from: capturedAt),
+      "system_timezone": TimeZone.current.identifier,
+    ]
+    let proofData = try JSONSerialization.data(withJSONObject: proof, options: [.sortedKeys])
+    let proofAttachment = XCTAttachment(data: proofData, uniformTypeIdentifier: "public.json")
+    proofAttachment.name = "capture-source-proof-\(locale)-\(captureID)"
+    proofAttachment.lifetime = .keepAlways
+    add(proofAttachment)
   }
 }
+#endif

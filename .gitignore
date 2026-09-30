@@ -1,6 +1,9 @@
 # Private product authority and Codex context (never public)
 /SPEC.md
 /AGENTS.md
+**/SPEC.md
+**/AGENTS.md
+**/CLAUDE.md
 /.codex/
 /GOAL.md
 /LOCAL_*.md
@@ -141,3 +144,4 @@ tmp/
 temp/
 /.asc/
 /.agents/
+.p0s-local/

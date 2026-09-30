@@ -13,7 +13,7 @@ import {
   resolvePublicBaseURL,
   sha256,
 } from "./lib.mjs";
-import { repositoryURL } from "../src/content.mjs";
+import { appStoreURL, repositoryURL } from "../src/content.mjs";
 
 const expectedRoutes = ["/", "/de", "/support", "/de/support", "/privacy", "/de/privacy", "/open-source", "/de/open-source"];
 const routeFiles = {
@@ -98,13 +98,32 @@ async function main() {
   }
 
   const provenance = JSON.parse(await readFile(path.join(ROOT, "src", "assets", "provenance.json"), "utf8"));
+  const publicMediaManifest = JSON.parse(await readFile(path.join(path.resolve(ROOT, ".."), "Marketing", "PublicMedia", "output", "manifest.json"), "utf8"));
+  const screenshotsRoot = path.resolve(ROOT, "..", "Marketing", "AppStoreScreenshots");
+  const screenshotCaptures = JSON.parse(await readFile(path.join(screenshotsRoot, "source-captures.json"), "utf8"));
+  const screenshotManifestPath = path.resolve(screenshotsRoot, screenshotCaptures.source_manifest_path);
+  if (!screenshotManifestPath.startsWith(`${screenshotsRoot}${path.sep}`)) throw new Error("App Store screenshot source manifest must remain inside Marketing/AppStoreScreenshots");
+  const screenshotManifest = JSON.parse(await readFile(screenshotManifestPath, "utf8"));
+  const screenshotCandidate = JSON.parse(await readFile(path.join(screenshotsRoot, "exports", "_candidate-manifest.json"), "utf8"));
+  const screenshotAssets = provenance.assets.filter((asset) => asset.source.startsWith("Marketing/AppStoreScreenshots/"));
+  const screenshotManifestSha256 = sha256(await readFile(screenshotManifestPath));
   if (
     provenance.schema_version !== 1 ||
     provenance.assets.length !== 11 ||
-    provenance.public_media_source_state !== "current-source-renderer-media-regenerated-and-reviewed-locally" ||
-    provenance.public_media_source_revision !== "e001e54e6cbecd30a8080dd5e3f9014650bcc253ca28cbe86c27185b231fc284" ||
-    !provenance.public_media_review.includes("pavilion") ||
-    !provenance.public_media_next_action.includes("future renderer changes")
+    screenshotAssets.length !== 8 ||
+    provenance.source_revision !== screenshotCaptures.source_revision ||
+    screenshotCaptures.source_manifest_sha256 !== screenshotManifestSha256 ||
+    provenance.capture_source_manifest_sha256 !== screenshotManifestSha256 ||
+    screenshotManifest.source_revision !== screenshotCaptures.source_revision ||
+    screenshotCandidate.sourceRevision !== screenshotCaptures.source_revision ||
+    screenshotCandidate.status !== "candidate-complete-human-review-pending" ||
+    provenance.app_store_ui_review_state !== "pending-owner-visual-review" ||
+    !provenance.app_store_ui_next_action.includes("before App Store Connect upload") ||
+    provenance.public_media_source_state !== "current-source-renderer-media-generated-review-pending" ||
+    provenance.public_media_source_revision !== publicMediaManifest.source.renderer_source_sha256 ||
+    provenance.public_media_review_state !== "pending-owner-visual-review" ||
+    !provenance.public_media_review.includes("owner visual review is pending") ||
+    !provenance.public_media_next_action.includes("before any website deployment")
   ) throw new Error("website asset provenance must bind the current Garden renderer media and review boundary");
   for (const asset of provenance.assets) {
     const canonicalSource = path.join(path.resolve(ROOT, ".."), asset.source);
@@ -178,6 +197,9 @@ async function main() {
     if (html.includes("https://www.arrivewithin.com")) throw new Error(`${route}: canonical HTML must not point to www`);
     if (!html.includes(`property="og:image" content="${publicBaseURL}/assets/social-preview.png"`)) throw new Error(`${route}: missing canonical social preview`);
     if (!html.includes(`href="${repositoryURL}"`)) throw new Error(`${route}: missing canonical public repository link`);
+    if (route === "/" && !html.includes(`href="${appStoreURL}"`)) {
+      throw new Error("homepage must link to the verified public App Store listing");
+    }
     if (!html.includes('property="og:site_name" content="Arrive Within"') || !html.includes('property="og:image:alt"')) throw new Error(`${route}: incomplete social metadata`);
     if (!html.includes('rel="icon" type="image/png" sizes="40x40" href="/assets/brand-icon-40.png"')) throw new Error(`${route}: missing browser icon`);
     if (!html.includes('rel="apple-touch-icon" sizes="180x180" href="/assets/brand-icon-180.png"')) throw new Error(`${route}: missing Apple touch icon`);
@@ -222,7 +244,7 @@ async function main() {
     for (const match of html.matchAll(/\bhref="([^"]+)"/g)) {
       const href = match[1];
       if (href.startsWith("https://")) {
-        if (href !== repositoryURL && new URL(href).origin !== publicBaseURL) {
+        if (href !== repositoryURL && href !== appStoreURL && new URL(href).origin !== publicBaseURL) {
           throw new Error(`${route}: unapproved external link ${href}`);
         }
         continue;
@@ -244,8 +266,8 @@ async function main() {
   const guidedCopy = {
     "/": ["Three quiet ways to begin.", "42 original English or German practices"],
     "/de": ["Drei ruhige Wege zu beginnen.", "42 originalen englischen oder deutschen Meditationen"],
-    "/support": ["Version 1.0 includes 42 original guided practices", "packaged for offline playback"],
-    "/de/support": ["Version 1.0 enthält 42 originale geführte Meditationen", "Offline-Wiedergabe"],
+    "/support": ["live 1.0.1 app and 1.0.2 candidate include 42 original guided practices", "packaged for offline playback"],
+    "/de/support": ["Die veröffentlichte Version 1.0.1 und die Kandidatin 1.0.2 enthalten 42 originale", "Offline-Wiedergabe"],
   };
   for (const [route, phrases] of Object.entries(guidedCopy)) {
     const html = await readFile(path.join(DIST, routeFiles[route]), "utf8");
@@ -255,10 +277,10 @@ async function main() {
   }
   const privacyEnglish = await readFile(path.join(DIST, routeFiles["/privacy"]), "utf8");
   const privacyGerman = await readFile(path.join(DIST, routeFiles["/de/privacy"]), "utf8");
-  for (const phrase of ["No third-party analytics", "Cloudflare edge", "HTTP 200", "no account, backend, or cloud sync", "Microphone access", "excluded from backup", "13-month policy", "30 days after live removal"]) {
+  for (const phrase of ["No third-party analytics", "Cloudflare edge", "HTTP 200", "no account, backend, or cloud sync", "Microphone access", "excluded from backup", "choose a complete archive in Files", "without uploading it", "13-month policy", "30 days after live removal"]) {
     if (!privacyEnglish.includes(phrase)) throw new Error(`English privacy page missing: ${phrase}`);
   }
-  for (const phrase of ["Keine Drittanbieter-Analyse", "Cloudflare-Edge", "HTTP 200", "weder Konto, Backend noch Cloud-Synchronisierung", "Mikrofonzugriff", "von Backups ausgeschlossen", "13 Monaten", "30 Tagen nach der Entfernung"]) {
+  for (const phrase of ["Keine Drittanbieter-Analyse", "Cloudflare-Edge", "HTTP 200", "weder Konto, Backend noch Cloud-Synchronisierung", "Mikrofonzugriff", "von Backups ausgeschlossen", "vollständiges Archiv auswählen und lokal wiederherstellen", "ohne sie hochzuladen", "13 Monaten", "30 Tagen nach der Entfernung"]) {
     if (!privacyGerman.includes(phrase)) throw new Error(`German privacy page missing: ${phrase}`);
   }
   const generatedHeaders = await readFile(path.join(DIST, "_headers"), "utf8");

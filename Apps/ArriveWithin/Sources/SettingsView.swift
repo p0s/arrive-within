@@ -1,5 +1,7 @@
+import ArriveWithinPersistence
 import Foundation
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct SettingsView: View {
   @Bindable var model: AppModel
@@ -104,6 +106,8 @@ private struct DataAndSyncView: View {
   @Environment(\.locale) private var locale
   @State private var showResetConfirmation = false
   @State private var showDeleteConfirmation = false
+  @State private var showRestoreImporter = false
+  @State private var showRestoreConfirmation = false
   @State private var exportToShare: AppOwnedShareItem?
   @State private var exportPendingCleanup: URL?
 
@@ -150,7 +154,7 @@ private struct DataAndSyncView: View {
         } label: {
           Label("data.export.action", systemImage: "square.and.arrow.up")
         }
-        .disabled(model.isPerformingDataAction || model.profile == nil)
+        .disabled(!model.canReplaceProductData || model.profile == nil)
         .accessibilityIdentifier("data.export.action")
 
         if let export = model.completeDataExportURL {
@@ -172,10 +176,33 @@ private struct DataAndSyncView: View {
       }
 
       Section {
+        Button {
+          showRestoreImporter = true
+        } label: {
+          Label("data.restore.action", systemImage: "square.and.arrow.down")
+        }
+        .disabled(!model.canReplaceProductData)
+        .accessibilityIdentifier("data.restore.action")
+
+        Text("data.restore.detail")
+          .font(.footnote)
+          .foregroundStyle(.secondary)
+          .fixedSize(horizontal: false, vertical: true)
+
+        if model.isPerformingDataAction, model.preparedProductDataRestore == nil {
+          Label("data.restore.validating", systemImage: "hourglass")
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+        }
+      } header: {
+        Text("data.restore.title")
+      }
+
+      Section {
         Button("data.reset.action", role: .destructive) {
           showResetConfirmation = true
         }
-        .disabled(model.isPerformingDataAction || model.activeSession != nil)
+        .disabled(!model.canReplaceProductData)
         .accessibilityIdentifier("data.reset.action")
 
         Text("data.reset.detail")
@@ -186,7 +213,7 @@ private struct DataAndSyncView: View {
         Button("data.delete.action", role: .destructive) {
           showDeleteConfirmation = true
         }
-        .disabled(model.isPerformingDataAction || model.activeSession != nil)
+        .disabled(!model.canReplaceProductData)
         .accessibilityIdentifier("data.delete.action")
 
         Text("data.delete.detail")
@@ -204,6 +231,12 @@ private struct DataAndSyncView: View {
       }
     }
     .navigationTitle("data.title")
+    .fileImporter(
+      isPresented: $showRestoreImporter,
+      allowedContentTypes: [.zip],
+      allowsMultipleSelection: false,
+      onCompletion: handleRestoreSelection
+    )
     .sheet(item: $exportToShare, onDismiss: {
       if let url = exportPendingCleanup { model.discardOwnedExport(url) }
       exportPendingCleanup = nil
@@ -238,6 +271,18 @@ private struct DataAndSyncView: View {
     } message: {
       Text("data.delete.confirm.body")
     }
+    .confirmationDialog(
+      "data.restore.confirm.title",
+      isPresented: $showRestoreConfirmation,
+      titleVisibility: .visible
+    ) {
+      Button("data.restore.confirm.action", role: .destructive) {
+        Task { await model.restoreProductData() }
+      }
+      Button("common.cancel", role: .cancel) { model.cancelProductDataRestore() }
+    } message: {
+      Text(restoreConfirmationBody)
+    }
     .alert(
       noticeTitle,
       isPresented: Binding(
@@ -264,12 +309,68 @@ private struct DataAndSyncView: View {
   private var noticeTitle: LocalizedStringKey {
     switch model.dataNotice {
     case .exportFailed: "data.export.failed"
+    case .exportTooLarge: "data.export.tooLarge"
     case .resetComplete: "data.reset.complete"
     case .resetCleanupPending: "data.reset.cleanupPending"
     case .resetFailed: "data.reset.failed"
     case .deletionComplete: "data.delete.complete"
     case .deletionFailed: "data.delete.failed"
+    case .restoreInvalid: "data.restore.invalid"
+    case .restoreFailed: "data.restore.failed"
+    case .restoreComplete: "data.restore.complete"
+    case .restoreCleanupPending: "data.restore.cleanupPending"
     case nil: "common.error"
+    }
+  }
+
+  private var restoreConfirmationBody: String {
+    guard let restore = model.preparedProductDataRestore else {
+      return AppLocalization.string("data.restore.confirm.body.fallback", locale: model.appLocale)
+    }
+    let format = AppLocalization.string("data.restore.confirm.body", locale: model.appLocale)
+    return String(
+      format: format,
+      locale: model.appLocale,
+      arguments: [
+        restore.practiceCount.formatted(.number.locale(model.appLocale)),
+        restore.journalCount.formatted(.number.locale(model.appLocale)),
+        restore.voiceFileCount.formatted(.number.locale(model.appLocale)),
+      ]
+    )
+  }
+
+  private func handleRestoreSelection(_ result: Result<[URL], Error>) {
+    guard case .success(let urls) = result, let url = urls.first else { return }
+    model.cancelProductDataRestore()
+    Task {
+      guard url.startAccessingSecurityScopedResource() else {
+        model.reportInvalidProductDataRestore()
+        return
+      }
+      defer { url.stopAccessingSecurityScopedResource() }
+      do {
+        let values = try url.resourceValues(
+          forKeys: [.isRegularFileKey, .isSymbolicLinkKey, .fileSizeKey]
+        )
+        guard values.isRegularFile == true,
+          values.isSymbolicLink != true,
+          let size = values.fileSize,
+          size > 0,
+          size <= WholeProductImporter.maximumArchiveBytes
+        else {
+          model.reportInvalidProductDataRestore()
+          return
+        }
+        let archive = try await Task.detached(priority: .userInitiated) {
+          try Data(contentsOf: url, options: [.mappedIfSafe])
+        }.value
+        await model.prepareProductDataRestore(from: archive)
+        if model.preparedProductDataRestore != nil {
+          showRestoreConfirmation = true
+        }
+      } catch {
+        model.reportInvalidProductDataRestore()
+      }
     }
   }
 }

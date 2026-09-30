@@ -13,6 +13,6 @@
     "current app-source revision binding",
     "external network request count is zero"
   ],
-  "humanVisualReview": "approved",
-  "uploadAuthorization": "authorized-for-app-store-version-1.0-after-current-source-validation"
+  "humanVisualReview": "pending",
+  "uploadAuthorization": "candidate-only-human-review-pending-not-upload-authorized"
 }

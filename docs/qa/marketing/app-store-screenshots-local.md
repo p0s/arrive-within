@@ -1,8 +1,23 @@
 # Local App Store screenshot matrix
 
-Status: Clean Editorial / Tonal Wash pilot mechanically verified and visually approved on 2026-08-30. The public version 1.0 listing remains untouched with its previously approved live screenshots unchanged.
+Status: No submission-ready 24-image candidate is ready. The files on disk are historical and do not meet the current source-bound schema 6 contract. Their slide 2 seed is light appearance and does not prove the requested dark-seed/light-Garden composition. Fresh captures from four iPhone/iPad simulator xcresults are pending. Physical hardware, TestFlight, and release checks remain separate evidence. The corrected icon artwork is present; archive, Home Screen, TestFlight, and storefront icon readback are pending. App Store Connect has not been changed. Exact replacement images require owner visual review before screenshot upload.
 
-## Frozen output
+## Current simulator capture protocol
+
+Fresh marketing capture uses iPhone 17 Pro and iPad Pro 13-inch (M5) simulators on iOS 26.5. Each device has one selected-state/dusk xcresult and one Garden-day/day xcresult; each result contains exactly two passing tests, English and German. The selected-state run captures Garden hero, Garden seed, Journey calendar, Journey milestones, and Journal. The other run captures Garden-day.
+
+The shared app clock fixture is independent of the simulator system clock and needs no real-time day/dusk wait:
+
+| Fixture | UTC instant | Asia/Singapore | Garden phase | Use |
+|---|---|---|---|---|
+| `day-v1` | `2026-08-01T01:41:00Z` | `2026-08-01 09:41` | day | Garden-day |
+| `dusk-v1` | `2026-08-01T09:41:00Z` | `2026-08-01 17:41` | dusk | Every selected-state capture, including Journey and Journal |
+
+The simulator status bar is captured as rendered and receives no override. Source proof binds the shared fixture ID and epoch, Garden timezone/phase, fixture-derived local date/time, actual XCTest capture timestamp, and observed system timezone. The public evidence retains product model/platform/OS, safe bundle names, and hashes while omitting pool identifiers, custom pool device names, and private result paths.
+
+Schema 6 accepts exactly four simulator result bundles for the current signed source revision. It does not accept physical-device screenshots as marketing inputs. Physical hardware and TestFlight tests continue under their separate release contracts.
+
+## Historical output
 
 - Six selected Garden/growth slides in the approved order for `en-US` and `de-DE`: light-mode Journey rhythm, Garden growth, Garden hero, milestones, reflection, and refuge; daily-practice and private-depth remain non-shipping matrices with human review pending.
 - iPhone 6.9-inch portrait at `1320×2868` and iPad 13-inch portrait at `2064×2752`.
@@ -13,7 +28,7 @@ Status: Clean Editorial / Tonal Wash pilot mechanically verified and visually ap
 
 ## Actual rendered UI provenance
 
-The inputs are attachments from the guarded `ArriveWithinMarketingCaptureUITests` English and German tests, not a mock app surface. They preserve the actual visible simulator status from each exact passed run; no synthetic status-bar overlay is claimed.
+The prior inputs were attachments from guarded `ArriveWithinMarketingCaptureUITests` English and German runs, not a mock app surface. The records below describe historical results only and are not proof for the current candidate.
 
 | Device | Result bundle | Test result | Tree SHA-256 |
 |---|---|---|---|
@@ -34,7 +49,7 @@ Playwright blocks every non-local request by parsed exact-origin equality. Final
 
 The Tonal Wash exporter uses an explicit integer-sized full-page clip because fractional document offsets could otherwise produce a one-pixel localized output drift. It still disables GPU and Skia runtime optimizations, and the final device treatment is straight, unrotated, and free of decorative connector geometry. This changes no app UI, source capture, or product claim.
 
-The generator remains pinned to patched Sharp 0.35.3 with exact-origin and bounded attachment-path controls. The current-source guarded iPhone/iPad captures replaced the historical export only after both result bundles passed and ingestion re-bound their exact provenance.
+The generator is pinned to patched Sharp 0.35.3 with exact-origin and bounded attachment-path controls. At the time of the build-19 refresh, guarded iPhone/iPad result bundles passed and their captures replaced the then-current historical export. That historical provenance no longer binds the current working tree.
 
 The two non-shipping alternatives may reuse only Garden, Journey, and Journal captures whose visible pixels remain compatible with the local-only V1. They never use obsolete guided-library, Practice chooser, or iCloud screenshots. They were not regenerated in this build-17 refresh; their review state remains `pending` and upload authority remains `candidate-only-not-selected`.
 
@@ -42,4 +57,19 @@ The two non-shipping alternatives may reuse only Garden, Journey, and Journal ca
 
 The selected matrix uses Garden growth, Journey rhythm/milestones, and private reflection only. It makes no guided-narration or iCloud-convergence claim; narration remains a separate binary/runtime proof boundary.
 
-All four current contact sheets and representative full-resolution slide 1 images were inspected for clipping, English/German fit, actual-UI provenance, Garden prominence, and legibility. Slide 1 is genuinely light mode in both locales and device families; slide 2 presents the truthful Garden before/after state in straight frames without a growth connector. Every local per-set and matrix human-review field reads `approved`. These files remain local and unsubmitted; no claim is made that App Store Connect contains them.
+The prior four contact sheets and representative full-resolution slide 1 images were inspected for clipping, English/German fit, actual-UI provenance, Garden prominence, and legibility. Slide 1 is genuinely light mode in both locales and device families. That prior matrix was approved and remains historical evidence, not approval of the revised outputs.
+
+## Superseded build 19 export
+
+On 2026-09-25, a local matrix was exported against app version 1.0.2 (build 19), source revision `27192a1de32b40c6ee66494a45f81bc28b87e7cbc680f3d11b904f00baa2a810`. Its iPhone images are `1320×2868` and its iPad 11-inch images are `1488×2266`. These are historical outputs, not current candidate evidence: the source revision predates the current working tree, and the source captures do not prove the requested dark Garden seed. The prior iPad 13 captures remain pinned in `source-captures.json` as `stale-incomplete` and are missing `garden-day`.
+
+The exact guarded pool result bundles contain four passed tests each, with no failures or skips:
+
+| Route | Result bundle | Tree SHA-256 |
+|---|---|---|
+| iPhone 17 Pro, iOS 26.5 | `20260925T035715Z-634-bd122961c1.xcresult` | `5de862a6d413153569bca840ca06af614d92fc5909813f727364ff194b358601` |
+| iPad Pro 11-inch (M5), iOS 26.5 | `20260925T044923Z-634-5cc5a56f7c.xcresult` | `bc1788e19626ca6430a1eebe18a6f2af48db094ccf32f696430000e773267f88` |
+
+Both locale Garden-day captures use the unmodified Asia/Singapore simulator clock. Their visible status times are 12:37/12:37 on iPhone and 12:51/12:52 on iPad. The source manifest is `Marketing/AppStoreScreenshots/capture-source-manifest-v1.0.2-build-19.json`, SHA-256 `5dd09760f9d7b2961688e51b20af293b6be402be3780098779a203bafbbd84c4`. Each selected-state test records the runtime warning `Invalid frame dimension (negative or non-finite).`; both Garden-day methods have no runtime warnings. The warnings are preserved by test identifier in `source-captures.json` and each export manifest.
+
+The candidate validator passed the historical export’s dimensions, opacity, hashes, normalization, contact sheets, ZIP contents, network checks, and geometry. That technical result does not make those files current-source evidence. The prior visual statement that slide 2 had a dark rear Garden seed was incorrect: the source file currently on disk is light, and the 16:31 status time does not prove the required night capture. Replace these exports only after fresh source-bound captures and complete matrix validation. Owner visual review and screenshot upload remain pending; upload authorization remains `candidate-only-human-review-pending-not-upload-authorized`, and no App Store Connect mutation was made.

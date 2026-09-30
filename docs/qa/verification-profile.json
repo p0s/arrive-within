@@ -63,6 +63,462 @@
         "covered_by_offline": false
       }
     ],
-    "physical": []
-  }
+    "physical": [
+      {
+        "id": "appstore-ipad13-en-garden-seed",
+        "scenario_id": "SCN-019",
+        "family": "iPad",
+        "required": true,
+        "build_adapter": "scripts/app_store_physical_build_adapter.py",
+        "fixture_id": "appstore-ipad13-en-garden-seed",
+        "fixture": {
+          "arguments": [
+            "-ui-test-marketing-capture",
+            "garden-seed",
+            "-ui-test-language",
+            "en",
+            "-ui-test-namespace",
+            "32573d67-6eb3-5806-871c-693679d46712",
+            "-ui-test-reset",
+            "-ui-test-reduce-motion",
+            "-ui-test-disable-autocorrection",
+            "-ui-test-seed",
+            "18092026",
+            "-ui-test-dark-appearance"
+          ]
+        },
+        "report": {
+          "domain_type": "appDataContainer",
+          "domain_identifier": "com.philipps.arrivewithin.ios",
+          "source": "Library/Application Support/ArriveWithinMarketingCaptureReports/marketing-capture.json",
+          "filename_prefix": "marketing-capture",
+          "validator": "Marketing/AppStoreScreenshots/scripts/physical-report-validators/appstore-ipad13-en-garden-seed.py",
+          "copy_attempts": 5,
+          "freshness_seconds": 180,
+          "started_at_field": "startedAt"
+        },
+        "source_policy": "clean-commit",
+        "screenshots": 1
+      },
+      {
+        "id": "appstore-ipad13-de-garden-seed",
+        "scenario_id": "SCN-019",
+        "family": "iPad",
+        "required": true,
+        "build_adapter": "scripts/app_store_physical_build_adapter.py",
+        "fixture_id": "appstore-ipad13-de-garden-seed",
+        "fixture": {
+          "arguments": [
+            "-ui-test-marketing-capture",
+            "garden-seed",
+            "-ui-test-language",
+            "de",
+            "-ui-test-namespace",
+            "f5dd9b46-98bd-52d0-a4f2-f207179daeb9",
+            "-ui-test-reset",
+            "-ui-test-reduce-motion",
+            "-ui-test-disable-autocorrection",
+            "-ui-test-seed",
+            "18092026",
+            "-ui-test-dark-appearance"
+          ]
+        },
+        "report": {
+          "domain_type": "appDataContainer",
+          "domain_identifier": "com.philipps.arrivewithin.ios",
+          "source": "Library/Application Support/ArriveWithinMarketingCaptureReports/marketing-capture.json",
+          "filename_prefix": "marketing-capture",
+          "validator": "Marketing/AppStoreScreenshots/scripts/physical-report-validators/appstore-ipad13-de-garden-seed.py",
+          "copy_attempts": 5,
+          "freshness_seconds": 180,
+          "started_at_field": "startedAt"
+        },
+        "source_policy": "clean-commit",
+        "screenshots": 1
+      },
+      {
+        "id": "appstore-ipad13-en-garden-hero",
+        "scenario_id": "SCN-019",
+        "family": "iPad",
+        "required": true,
+        "build_adapter": "scripts/app_store_physical_build_adapter.py",
+        "fixture_id": "appstore-ipad13-en-garden-hero",
+        "fixture": {
+          "arguments": [
+            "-ui-test-marketing-capture",
+            "garden-hero",
+            "-ui-test-language",
+            "en",
+            "-ui-test-namespace",
+            "0e051326-9fa8-55e6-8070-62449c9a3205",
+            "-ui-test-reset",
+            "-ui-test-reduce-motion",
+            "-ui-test-disable-autocorrection",
+            "-ui-test-seed",
+            "18092026",
+            "-ui-test-dark-appearance",
+            "-ui-test-journey-day",
+            "30"
+          ]
+        },
+        "report": {
+          "domain_type": "appDataContainer",
+          "domain_identifier": "com.philipps.arrivewithin.ios",
+          "source": "Library/Application Support/ArriveWithinMarketingCaptureReports/marketing-capture.json",
+          "filename_prefix": "marketing-capture",
+          "validator": "Marketing/AppStoreScreenshots/scripts/physical-report-validators/appstore-ipad13-en-garden-hero.py",
+          "copy_attempts": 5,
+          "freshness_seconds": 180,
+          "started_at_field": "startedAt"
+        },
+        "source_policy": "clean-commit",
+        "screenshots": 1
+      },
+      {
+        "id": "appstore-ipad13-de-garden-hero",
+        "scenario_id": "SCN-019",
+        "family": "iPad",
+        "required": true,
+        "build_adapter": "scripts/app_store_physical_build_adapter.py",
+        "fixture_id": "appstore-ipad13-de-garden-hero",
+        "fixture": {
+          "arguments": [
+            "-ui-test-marketing-capture",
+            "garden-hero",
+            "-ui-test-language",
+            "de",
+            "-ui-test-namespace",
+            "3f6e225e-f72e-59b1-9d1c-f4978557fdd6",
+            "-ui-test-reset",
+            "-ui-test-reduce-motion",
+            "-ui-test-disable-autocorrection",
+            "-ui-test-seed",
+            "18092026",
+            "-ui-test-dark-appearance",
+            "-ui-test-journey-day",
+            "30"
+          ]
+        },
+        "report": {
+          "domain_type": "appDataContainer",
+          "domain_identifier": "com.philipps.arrivewithin.ios",
+          "source": "Library/Application Support/ArriveWithinMarketingCaptureReports/marketing-capture.json",
+          "filename_prefix": "marketing-capture",
+          "validator": "Marketing/AppStoreScreenshots/scripts/physical-report-validators/appstore-ipad13-de-garden-hero.py",
+          "copy_attempts": 5,
+          "freshness_seconds": 180,
+          "started_at_field": "startedAt"
+        },
+        "source_policy": "clean-commit",
+        "screenshots": 1
+      },
+      {
+        "id": "appstore-ipad13-en-garden-day",
+        "scenario_id": "SCN-020",
+        "family": "iPad",
+        "required": true,
+        "build_adapter": "scripts/app_store_physical_build_adapter.py",
+        "fixture_id": "appstore-ipad13-en-garden-day",
+        "fixture": {
+          "arguments": [
+            "-ui-test-marketing-capture",
+            "garden-day",
+            "-ui-test-language",
+            "en",
+            "-ui-test-namespace",
+            "f8ad0a65-2e16-5889-bd2d-bcdf1c19355e",
+            "-ui-test-reset",
+            "-ui-test-reduce-motion",
+            "-ui-test-disable-autocorrection",
+            "-ui-test-seed",
+            "18092026",
+            "-ui-test-light-appearance",
+            "-ui-test-journey-day",
+            "30"
+          ]
+        },
+        "report": {
+          "domain_type": "appDataContainer",
+          "domain_identifier": "com.philipps.arrivewithin.ios",
+          "source": "Library/Application Support/ArriveWithinMarketingCaptureReports/marketing-capture.json",
+          "filename_prefix": "marketing-capture",
+          "validator": "Marketing/AppStoreScreenshots/scripts/physical-report-validators/appstore-ipad13-en-garden-day.py",
+          "copy_attempts": 5,
+          "freshness_seconds": 180,
+          "started_at_field": "startedAt"
+        },
+        "source_policy": "clean-commit",
+        "screenshots": 1
+      },
+      {
+        "id": "appstore-ipad13-de-garden-day",
+        "scenario_id": "SCN-020",
+        "family": "iPad",
+        "required": true,
+        "build_adapter": "scripts/app_store_physical_build_adapter.py",
+        "fixture_id": "appstore-ipad13-de-garden-day",
+        "fixture": {
+          "arguments": [
+            "-ui-test-marketing-capture",
+            "garden-day",
+            "-ui-test-language",
+            "de",
+            "-ui-test-namespace",
+            "cd0319d2-674a-5ba7-9a5f-6717e2d41bfc",
+            "-ui-test-reset",
+            "-ui-test-reduce-motion",
+            "-ui-test-disable-autocorrection",
+            "-ui-test-seed",
+            "18092026",
+            "-ui-test-light-appearance",
+            "-ui-test-journey-day",
+            "30"
+          ]
+        },
+        "report": {
+          "domain_type": "appDataContainer",
+          "domain_identifier": "com.philipps.arrivewithin.ios",
+          "source": "Library/Application Support/ArriveWithinMarketingCaptureReports/marketing-capture.json",
+          "filename_prefix": "marketing-capture",
+          "validator": "Marketing/AppStoreScreenshots/scripts/physical-report-validators/appstore-ipad13-de-garden-day.py",
+          "copy_attempts": 5,
+          "freshness_seconds": 180,
+          "started_at_field": "startedAt"
+        },
+        "source_policy": "clean-commit",
+        "screenshots": 1
+      },
+      {
+        "id": "appstore-ipad13-en-journey-calendar",
+        "scenario_id": "SCN-020",
+        "family": "iPad",
+        "required": true,
+        "build_adapter": "scripts/app_store_physical_build_adapter.py",
+        "fixture_id": "appstore-ipad13-en-journey-calendar",
+        "fixture": {
+          "arguments": [
+            "-ui-test-marketing-capture",
+            "journey-calendar",
+            "-ui-test-language",
+            "en",
+            "-ui-test-namespace",
+            "9f9faeef-7512-5284-af37-f60d101b1de7",
+            "-ui-test-reset",
+            "-ui-test-reduce-motion",
+            "-ui-test-disable-autocorrection",
+            "-ui-test-seed",
+            "18092026",
+            "-ui-test-light-appearance",
+            "-ui-test-journey-day",
+            "30"
+          ]
+        },
+        "report": {
+          "domain_type": "appDataContainer",
+          "domain_identifier": "com.philipps.arrivewithin.ios",
+          "source": "Library/Application Support/ArriveWithinMarketingCaptureReports/marketing-capture.json",
+          "filename_prefix": "marketing-capture",
+          "validator": "Marketing/AppStoreScreenshots/scripts/physical-report-validators/appstore-ipad13-en-journey-calendar.py",
+          "copy_attempts": 5,
+          "freshness_seconds": 180,
+          "started_at_field": "startedAt"
+        },
+        "source_policy": "clean-commit",
+        "screenshots": 1
+      },
+      {
+        "id": "appstore-ipad13-de-journey-calendar",
+        "scenario_id": "SCN-020",
+        "family": "iPad",
+        "required": true,
+        "build_adapter": "scripts/app_store_physical_build_adapter.py",
+        "fixture_id": "appstore-ipad13-de-journey-calendar",
+        "fixture": {
+          "arguments": [
+            "-ui-test-marketing-capture",
+            "journey-calendar",
+            "-ui-test-language",
+            "de",
+            "-ui-test-namespace",
+            "27726e22-82a8-59fa-8438-d69b9616fe82",
+            "-ui-test-reset",
+            "-ui-test-reduce-motion",
+            "-ui-test-disable-autocorrection",
+            "-ui-test-seed",
+            "18092026",
+            "-ui-test-light-appearance",
+            "-ui-test-journey-day",
+            "30"
+          ]
+        },
+        "report": {
+          "domain_type": "appDataContainer",
+          "domain_identifier": "com.philipps.arrivewithin.ios",
+          "source": "Library/Application Support/ArriveWithinMarketingCaptureReports/marketing-capture.json",
+          "filename_prefix": "marketing-capture",
+          "validator": "Marketing/AppStoreScreenshots/scripts/physical-report-validators/appstore-ipad13-de-journey-calendar.py",
+          "copy_attempts": 5,
+          "freshness_seconds": 180,
+          "started_at_field": "startedAt"
+        },
+        "source_policy": "clean-commit",
+        "screenshots": 1
+      },
+      {
+        "id": "appstore-ipad13-en-journey-milestones",
+        "scenario_id": "SCN-020",
+        "family": "iPad",
+        "required": true,
+        "build_adapter": "scripts/app_store_physical_build_adapter.py",
+        "fixture_id": "appstore-ipad13-en-journey-milestones",
+        "fixture": {
+          "arguments": [
+            "-ui-test-marketing-capture",
+            "journey-milestones",
+            "-ui-test-language",
+            "en",
+            "-ui-test-namespace",
+            "156997c1-d601-5731-b66a-a948736ab51d",
+            "-ui-test-reset",
+            "-ui-test-reduce-motion",
+            "-ui-test-disable-autocorrection",
+            "-ui-test-seed",
+            "18092026",
+            "-ui-test-light-appearance",
+            "-ui-test-journey-day",
+            "30"
+          ]
+        },
+        "report": {
+          "domain_type": "appDataContainer",
+          "domain_identifier": "com.philipps.arrivewithin.ios",
+          "source": "Library/Application Support/ArriveWithinMarketingCaptureReports/marketing-capture.json",
+          "filename_prefix": "marketing-capture",
+          "validator": "Marketing/AppStoreScreenshots/scripts/physical-report-validators/appstore-ipad13-en-journey-milestones.py",
+          "copy_attempts": 5,
+          "freshness_seconds": 180,
+          "started_at_field": "startedAt"
+        },
+        "source_policy": "clean-commit",
+        "screenshots": 1
+      },
+      {
+        "id": "appstore-ipad13-de-journey-milestones",
+        "scenario_id": "SCN-020",
+        "family": "iPad",
+        "required": true,
+        "build_adapter": "scripts/app_store_physical_build_adapter.py",
+        "fixture_id": "appstore-ipad13-de-journey-milestones",
+        "fixture": {
+          "arguments": [
+            "-ui-test-marketing-capture",
+            "journey-milestones",
+            "-ui-test-language",
+            "de",
+            "-ui-test-namespace",
+            "6ba425b5-28af-55bc-be7b-d2694556702a",
+            "-ui-test-reset",
+            "-ui-test-reduce-motion",
+            "-ui-test-disable-autocorrection",
+            "-ui-test-seed",
+            "18092026",
+            "-ui-test-light-appearance",
+            "-ui-test-journey-day",
+            "30"
+          ]
+        },
+        "report": {
+          "domain_type": "appDataContainer",
+          "domain_identifier": "com.philipps.arrivewithin.ios",
+          "source": "Library/Application Support/ArriveWithinMarketingCaptureReports/marketing-capture.json",
+          "filename_prefix": "marketing-capture",
+          "validator": "Marketing/AppStoreScreenshots/scripts/physical-report-validators/appstore-ipad13-de-journey-milestones.py",
+          "copy_attempts": 5,
+          "freshness_seconds": 180,
+          "started_at_field": "startedAt"
+        },
+        "source_policy": "clean-commit",
+        "screenshots": 1
+      },
+      {
+        "id": "appstore-ipad13-en-journal",
+        "scenario_id": "SCN-020",
+        "family": "iPad",
+        "required": true,
+        "build_adapter": "scripts/app_store_physical_build_adapter.py",
+        "fixture_id": "appstore-ipad13-en-journal",
+        "fixture": {
+          "arguments": [
+            "-ui-test-marketing-capture",
+            "journal",
+            "-ui-test-language",
+            "en",
+            "-ui-test-namespace",
+            "5f074d39-18bf-50aa-ae4e-18a6a5b577f8",
+            "-ui-test-reset",
+            "-ui-test-reduce-motion",
+            "-ui-test-disable-autocorrection",
+            "-ui-test-seed",
+            "18092026",
+            "-ui-test-light-appearance",
+            "-ui-test-journey-day",
+            "30"
+          ]
+        },
+        "report": {
+          "domain_type": "appDataContainer",
+          "domain_identifier": "com.philipps.arrivewithin.ios",
+          "source": "Library/Application Support/ArriveWithinMarketingCaptureReports/marketing-capture.json",
+          "filename_prefix": "marketing-capture",
+          "validator": "Marketing/AppStoreScreenshots/scripts/physical-report-validators/appstore-ipad13-en-journal.py",
+          "copy_attempts": 5,
+          "freshness_seconds": 180,
+          "started_at_field": "startedAt"
+        },
+        "source_policy": "clean-commit",
+        "screenshots": 1
+      },
+      {
+        "id": "appstore-ipad13-de-journal",
+        "scenario_id": "SCN-020",
+        "family": "iPad",
+        "required": true,
+        "build_adapter": "scripts/app_store_physical_build_adapter.py",
+        "fixture_id": "appstore-ipad13-de-journal",
+        "fixture": {
+          "arguments": [
+            "-ui-test-marketing-capture",
+            "journal",
+            "-ui-test-language",
+            "de",
+            "-ui-test-namespace",
+            "e1beab35-f330-5804-bea9-4fa04e961a68",
+            "-ui-test-reset",
+            "-ui-test-reduce-motion",
+            "-ui-test-disable-autocorrection",
+            "-ui-test-seed",
+            "18092026",
+            "-ui-test-light-appearance",
+            "-ui-test-journey-day",
+            "30"
+          ]
+        },
+        "report": {
+          "domain_type": "appDataContainer",
+          "domain_identifier": "com.philipps.arrivewithin.ios",
+          "source": "Library/Application Support/ArriveWithinMarketingCaptureReports/marketing-capture.json",
+          "filename_prefix": "marketing-capture",
+          "validator": "Marketing/AppStoreScreenshots/scripts/physical-report-validators/appstore-ipad13-de-journal.py",
+          "copy_attempts": 5,
+          "freshness_seconds": 180,
+          "started_at_field": "startedAt"
+        },
+        "source_policy": "clean-commit",
+        "screenshots": 1
+      }
+    ]
+  },
+  "required_capabilities": [
+    "physical-fixture"
+  ]
 }

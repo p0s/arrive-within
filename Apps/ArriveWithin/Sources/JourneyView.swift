@@ -4,30 +4,44 @@ import SwiftUI
 struct JourneyView: View {
   let model: AppModel
   @Environment(\.locale) private var locale
+  @Environment(\.colorScheme) private var colorScheme
 
   var body: some View {
-    ScrollView {
-      VStack(alignment: .leading, spacing: AppTheme.Spacing.generous) {
-        if let projection = model.journeyProjection {
-          progress(projection)
-          statistics(projection.statistics)
-          if let currentPracticeDay = projection.currentPracticeDay {
-            PracticeCalendarView(
-              history: projection.history,
-              currentPracticeDay: currentPracticeDay
-            )
+    ScrollViewReader { proxy in
+      ScrollView {
+        VStack(alignment: .leading, spacing: AppTheme.Spacing.generous) {
+          if let projection = model.journeyProjection {
+            progress(projection)
+            statistics(projection.statistics)
+            if let currentPracticeDay = projection.currentPracticeDay {
+              PracticeCalendarView(
+                history: projection.history,
+                currentPracticeDay: currentPracticeDay
+              )
+            }
+            history(projection.history)
+            milestones(projection)
           }
-          history(projection.history)
-          milestones(projection)
         }
+        .padding(AppTheme.Spacing.generous)
+        .frame(maxWidth: AppTheme.maximumReadableWidth)
+        .frame(maxWidth: .infinity)
       }
-      .padding(AppTheme.Spacing.generous)
-      .frame(maxWidth: AppTheme.maximumReadableWidth)
-      .frame(maxWidth: .infinity)
+      .background(Color("LaunchBackground").ignoresSafeArea())
+      .navigationTitle("journey.title")
+      .navigationBarTitleDisplayMode(.inline)
+      .task {
+        #if DEBUG
+          guard model.isPhysicalMarketingMilestoneCapture else { return }
+          try? await Task.sleep(for: .milliseconds(300))
+          proxy.scrollTo("journey.milestone.15", anchor: .center)
+          model.reportMarketingCaptureSurfaceAppeared(
+            "journey-milestones",
+            actualAppearance: colorScheme == .dark ? "dark" : "light"
+          )
+        #endif
+      }
     }
-    .background(Color("LaunchBackground").ignoresSafeArea())
-    .navigationTitle("journey.title")
-    .navigationBarTitleDisplayMode(.inline)
   }
 
   private func progress(_ projection: JourneyProjection) -> some View {
@@ -215,9 +229,10 @@ struct JourneyView: View {
         .frame(width: 28)
 
       VStack(alignment: .leading, spacing: 4) {
-        Text(localizedTitle(milestone))
-          .font(.headline)
-          .accessibilityIdentifier(String(format: "journey.milestone.%02d", milestone.id))
+          Text(localizedTitle(milestone))
+            .font(.headline)
+            .id(String(format: "journey.milestone.%02d", milestone.id))
+            .accessibilityIdentifier(String(format: "journey.milestone.%02d", milestone.id))
         Text(localizedWorldChange(milestone))
           .font(.subheadline)
           .foregroundStyle(.secondary)

@@ -44,30 +44,51 @@ enum PremiumGardenPurchaseError: Error, Equatable {
 @MainActor
 protocol PremiumGardenPurchaseClient: AnyObject {
   func refresh() async -> PremiumGardenAccessSnapshot
+  func loadProduct() async -> PremiumGardenAccessSnapshot
   func purchase() async throws -> PremiumGardenPurchaseOutcome
   func restore() async throws -> PremiumGardenAccessSnapshot
   func entitlementUpdates() -> AsyncStream<Void>
 }
 
+extension PremiumGardenPurchaseClient {
+  func loadProduct() async -> PremiumGardenAccessSnapshot { await refresh() }
+}
+
 @MainActor
 final class StoreKitPremiumGardenPurchaseClient: PremiumGardenPurchaseClient {
   private var product: Product?
+  private let productLoader: @MainActor () async -> Product?
+  private let ownershipLoader: @MainActor () async -> Bool
+
+  init(
+    productLoader: (@MainActor () async -> Product?)? = nil,
+    ownershipLoader: (@MainActor () async -> Bool)? = nil
+  ) {
+    self.productLoader = productLoader ?? {
+      try? await Product.products(for: [PremiumGardenProduct.id]).first
+    }
+    self.ownershipLoader = ownershipLoader ?? { await Self.currentOwnership() }
+  }
 
   func refresh() async -> PremiumGardenAccessSnapshot {
-    async let owned = ownsProduct()
-    if product == nil {
-      product = try? await Product.products(for: [PremiumGardenProduct.id]).first
-    }
-    return PremiumGardenAccessSnapshot(
-      isOwned: await owned,
+    // Local ownership refresh must never wait for the storefront catalog.
+    PremiumGardenAccessSnapshot(
+      isOwned: await ownershipLoader(),
       productIsAvailable: product != nil,
       displayPrice: product?.displayPrice
     )
   }
 
+  func loadProduct() async -> PremiumGardenAccessSnapshot {
+    if product == nil {
+      product = await productLoader()
+    }
+    return await refresh()
+  }
+
   func purchase() async throws -> PremiumGardenPurchaseOutcome {
     if product == nil {
-      product = try? await Product.products(for: [PremiumGardenProduct.id]).first
+      product = await productLoader()
     }
     guard let product else { throw PremiumGardenPurchaseError.productUnavailable }
     switch try await product.purchase() {
@@ -109,7 +130,7 @@ final class StoreKitPremiumGardenPurchaseClient: PremiumGardenPurchaseClient {
     }
   }
 
-  private func ownsProduct() async -> Bool {
+  private static func currentOwnership() async -> Bool {
     for await result in Transaction.currentEntitlements {
       guard case .verified(let transaction) = result,
         transaction.productID == PremiumGardenProduct.id,
