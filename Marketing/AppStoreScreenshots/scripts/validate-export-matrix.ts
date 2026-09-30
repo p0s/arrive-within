@@ -34,6 +34,14 @@ type ManifestItem = {
 type Geometry = {
   headlineBounds: { x: number; y: number; width: number; height: number };
   proofBounds: { x: number; y: number; width: number; height: number };
+  primaryMockupAnchor: {
+    expectedTopPercent: number;
+    actualTop: number;
+    actualTopPercent: number;
+    frameTops: number[];
+    maxFrameTopDelta: number;
+    tolerancePixels: number;
+  };
   headlineToProofGap: number;
   headlineToProofGapRatio: number;
   proofHeight: number;
@@ -76,13 +84,25 @@ type GeometrySummary = {
   headlineToProofGapPercent: { min: number; max: number };
   proofHeightPercent: { min: number; max: number };
   proofLowerEdgePercent: { min: number; max: number };
+  primaryMockupTopPixels: { min: number; max: number };
+  primaryMockupTopCanvasHeightPercent: { min: number; max: number };
+  primaryMockupMaximumFrameTopDeltaPixels: number;
 };
 
 function range(values: number[]): { min: number; max: number } {
   return { min: Math.min(...values), max: Math.max(...values) };
 }
 
-function assertGeometry(geometry: Geometry, context: string): void {
+function assertGeometry(
+  geometry: Geometry,
+  context: string,
+  expectation: { canvasHeight: number; topPercent: number; tolerancePixels: number; expectedFrameCount: number },
+): void {
+  const anchor = geometry.primaryMockupAnchor;
+  const expectedTop = expectation.canvasHeight * expectation.topPercent / 100;
+  const frameTops = anchor?.frameTops ?? [];
+  const measuredTop = frameTops.length > 0 ? Math.min(...frameTops) : Number.NaN;
+  const frameTopDelta = frameTops.length > 0 ? Math.max(...frameTops) - measuredTop : Number.NaN;
   const bounds = [geometry.headlineBounds, geometry.proofBounds];
   if (
     bounds.some((box) =>
@@ -97,6 +117,21 @@ function assertGeometry(geometry: Geometry, context: string): void {
     !Number.isFinite(geometry.headlineToProofGap)
     || !Number.isFinite(geometry.proofHeight)
     || !Number.isFinite(geometry.proofLowerEdge)
+    || !anchor
+    || !Number.isFinite(anchor.expectedTopPercent)
+    || !Number.isFinite(anchor.actualTop)
+    || !Number.isFinite(anchor.actualTopPercent)
+    || !Number.isFinite(anchor.maxFrameTopDelta)
+    || !Number.isFinite(anchor.tolerancePixels)
+    || frameTops.length !== expectation.expectedFrameCount
+    || frameTops.some((top) => !Number.isFinite(top) || Math.abs(top - expectedTop) > expectation.tolerancePixels)
+    || anchor.expectedTopPercent !== expectation.topPercent
+    || Math.abs(anchor.actualTop - expectedTop) > expectation.tolerancePixels
+    || Math.abs(anchor.actualTopPercent - expectation.topPercent) > expectation.tolerancePixels / expectation.canvasHeight * 100
+    || Math.abs(anchor.actualTop - measuredTop) > 0.01
+    || Math.abs(anchor.maxFrameTopDelta - frameTopDelta) > 0.01
+    || anchor.maxFrameTopDelta > expectation.tolerancePixels
+    || anchor.tolerancePixels !== expectation.tolerancePixels
     || geometry.headlineToProofGapRatio < 0.04
     || geometry.headlineToProofGapRatio > 0.07
     || geometry.proofHeightRatio < 0.6
@@ -127,9 +162,10 @@ async function validateSet(
   device: DeviceId,
   width: number,
   height: number,
-  slides: Array<Pick<NarrativeSlide, "index" | "id">>,
+  slides: Array<Pick<NarrativeSlide, "index" | "id" | "composition">>,
   narrative: { id: string; title: string } | null,
   expectedUploadAuthorization: string,
+  expectedAnchor: { topPercent: number; tolerancePixels: number },
 ): Promise<SetResult> {
   const captures = await loadSourceCaptures();
   const root = setRoot(locale, device, narrative?.id ?? null);
@@ -199,7 +235,11 @@ async function validateSet(
     ) {
       throw new Error(`${locale}/${device}: manifest item ${index + 1} mismatch`);
     }
-    assertGeometry(item.geometry, `${locale}/${device}/${item.filename}`);
+    assertGeometry(item.geometry, `${locale}/${device}/${item.filename}`, {
+      canvasHeight: height,
+      ...expectedAnchor,
+      expectedFrameCount: slide.composition === "garden-growth" || slide.composition === "garden-growth-day" ? 2 : 1,
+    });
     const absolute = path.join(root, item.filename);
     const validation = await validateOpaqueRgbPng(absolute, width, height);
     if (validation.status !== "pass") throw new Error(`${locale}/${device}/${item.filename}: ${validation.errors.join("; ")}`);
@@ -244,7 +284,12 @@ async function validateSet(
     validation.results.some((item, index) => {
       if (item.status !== "pass" || item.file !== expectedPngNames[index]) return true;
       try {
-        assertGeometry(item.geometry, `${locale}/${device}/${item.file}`);
+        assertGeometry(item.geometry, `${locale}/${device}/${item.file}`, {
+          canvasHeight: height,
+          ...expectedAnchor,
+          expectedFrameCount:
+            slides[index].composition === "garden-growth" || slides[index].composition === "garden-growth-day" ? 2 : 1,
+        });
         return false;
       } catch {
         return true;
@@ -285,6 +330,9 @@ async function validateSet(
       headlineToProofGapPercent: range(manifest.items.map((item) => item.geometry.headlineToProofGapRatio * 100)),
       proofHeightPercent: range(manifest.items.map((item) => item.geometry.proofHeightRatio * 100)),
       proofLowerEdgePercent: range(manifest.items.map((item) => item.geometry.proofLowerEdgeRatio * 100)),
+      primaryMockupTopPixels: range(manifest.items.map((item) => item.geometry.primaryMockupAnchor.actualTop)),
+      primaryMockupTopCanvasHeightPercent: range(manifest.items.map((item) => item.geometry.primaryMockupAnchor.actualTopPercent)),
+      primaryMockupMaximumFrameTopDeltaPixels: Math.max(...manifest.items.map((item) => item.geometry.primaryMockupAnchor.maxFrameTopDelta)),
     },
     humanVisualReview: manifest.humanVisualReview,
     artifacts: await Promise.all(expectedFiles.map((filename) => artifact(root, filename))),
@@ -327,12 +375,54 @@ async function main() {
           slides,
           narrative ?? null,
           expectedUploadAuthorization,
+          {
+            topPercent: plan.layout_geometry.primary_mockup_top_canvas_height_percent[device.id],
+            tolerancePixels: plan.layout_geometry.primary_mockup_top_tolerance_pixels,
+          },
         ),
       );
     }
   }
   const imageCount = sets.reduce((sum, set) => sum + set.imageCount, 0);
   const expectedImageCount = slides.length * plan.locales.length * plan.devices.length;
+  const primaryMockupTopAnchorsByDevice = Object.fromEntries(plan.devices.map((device) => {
+    const deviceSets = sets.filter((set) => set.device === device.id);
+    if (deviceSets.length !== plan.locales.length) {
+      throw new Error(`${device.id}: primary mockup anchor evidence is missing a locale set`);
+    }
+    const measuredTopPixels = range(deviceSets.flatMap((set) => [
+      set.geometry.primaryMockupTopPixels.min,
+      set.geometry.primaryMockupTopPixels.max,
+    ]));
+    const measuredTopCanvasHeightPercent = range(deviceSets.flatMap((set) => [
+      set.geometry.primaryMockupTopCanvasHeightPercent.min,
+      set.geometry.primaryMockupTopCanvasHeightPercent.max,
+    ]));
+    const maximumFrameTopDeltaPixels = Math.max(
+      ...deviceSets.map((set) => set.geometry.primaryMockupMaximumFrameTopDeltaPixels),
+    );
+    const tolerancePixels = plan.layout_geometry.primary_mockup_top_tolerance_pixels;
+    if (measuredTopPixels.max - measuredTopPixels.min > tolerancePixels || maximumFrameTopDeltaPixels > tolerancePixels) {
+      throw new Error(`${device.id}: primary mockup top drifts across slides, locales, or comparison frames`);
+    }
+    return [device.id, {
+      expectedTopCanvasHeightPercent: plan.layout_geometry.primary_mockup_top_canvas_height_percent[device.id],
+      tolerancePixels,
+      measuredTopPixels,
+      measuredTopCanvasHeightPercent,
+      maximumFrameTopDeltaPixels,
+      localeSets: deviceSets.length,
+      slidesPerSet: slides.length,
+    }];
+  })) as Record<DeviceId, {
+    expectedTopCanvasHeightPercent: number;
+    tolerancePixels: number;
+    measuredTopPixels: { min: number; max: number };
+    measuredTopCanvasHeightPercent: { min: number; max: number };
+    maximumFrameTopDeltaPixels: number;
+    localeSets: number;
+    slidesPerSet: number;
+  }>;
   if (candidateOnly) {
     if (sets.length !== 4 || imageCount !== expectedImageCount) {
       throw new Error(`selected candidate matrix mismatch: ${sets.length} sets and ${imageCount} images`);
@@ -351,6 +441,7 @@ async function main() {
           sha256: item.sha256,
           headlineBounds: item.geometry.headlineBounds,
           proofBounds: item.geometry.proofBounds,
+          primaryMockupAnchor: item.geometry.primaryMockupAnchor,
           headlineToProofGapRatio: item.geometry.headlineToProofGapRatio,
           proofHeightRatio: item.geometry.proofHeightRatio,
           proofLowerEdgeRatio: item.geometry.proofLowerEdgeRatio,
@@ -366,6 +457,7 @@ async function main() {
       expectedMatrix: { setCount: 4, imageCount: expectedImageCount, locales: plan.locales, devices: plan.devices },
       completedCandidate: { setCount: sets.length, imageCount, sets },
       slideGeometryResults: slideGeometries,
+      primaryMockupTopAnchorsByDevice,
       fullMatrixStatus: "complete-human-review-pending",
       runtimeWarningProvenance,
       humanVisualReview: "pending",
@@ -384,6 +476,7 @@ async function main() {
         "contact-sheet dimensions and SHA-256 readback",
         "ZIP contents and byte readback",
         "headline and proof bounds are recorded and meet the geometry contract for all 24 candidate images",
+        "primary mockup tops match the plan-defined device-class anchors across all slides and locales, including both slide-2 frames",
         captures.schema_version === 6
           ? "Garden-day iPhone and iPad 13 source captures are current, source-bound fixed-clock, opaque RGB Simulator captures"
           : "Garden-day iPhone and iPad 13 source captures are current, real-clock, opaque RGB captures",
@@ -417,8 +510,8 @@ async function main() {
     await writeFile(path.join(exportsRoot, "_candidate-manifest.json"), `${JSON.stringify(candidate, null, 2)}\n`);
     await writeFile(path.join(exportsRoot, "_candidate-validation.json"), `${JSON.stringify(candidateValidation, null, 2)}\n`);
     await writeFile(path.join(exportsRoot, "_candidate-validation.txt"), `PASS ${imageCount} candidate images across ${sets.length} locale/device sets\nHUMAN_VISUAL_REVIEW PENDING\nUPLOAD NOT AUTHORIZED\n`);
-    await writeFile(path.join(exportsRoot, "_matrix-manifest.json"), `${JSON.stringify(candidateMatrix, null, 2)}\n`);
-    await writeFile(path.join(exportsRoot, "_matrix-validation.json"), `${JSON.stringify({ schemaVersion: 1, status: "candidate-pass-human-review-pending", blockers: [], humanVisualReview: "pending", uploadAuthorization: "candidate-only-human-review-pending-not-upload-authorized" }, null, 2)}\n`);
+    await writeFile(path.join(exportsRoot, "_matrix-manifest.json"), `${JSON.stringify({ ...candidateMatrix, primaryMockupTopAnchorsByDevice }, null, 2)}\n`);
+    await writeFile(path.join(exportsRoot, "_matrix-validation.json"), `${JSON.stringify({ schemaVersion: 1, status: "candidate-pass-human-review-pending", blockers: [], primaryMockupTopAnchorsByDevice, humanVisualReview: "pending", uploadAuthorization: "candidate-only-human-review-pending-not-upload-authorized" }, null, 2)}\n`);
     await writeFile(path.join(exportsRoot, "_matrix-validation.txt"), `PASS ${imageCount} current candidate images across ${sets.length} locale/device sets\nHUMAN_VISUAL_REVIEW PENDING\nUPLOAD NOT AUTHORIZED\n`);
     process.stdout.write(`Candidate validation passed: ${sets.length} locale/device sets × ${slides.length} slides = ${imageCount}; human visual review pending.\n`);
     return;
@@ -433,6 +526,8 @@ async function main() {
       headlineToProofGapPercent: [4, 7],
       minimumProofHeightPercent: 60,
       proofLowerEdgePercent: [94, 104],
+      primaryMockupTopCanvasHeightPercent: plan.layout_geometry.primary_mockup_top_canvas_height_percent,
+      primaryMockupTopTolerancePixels: plan.layout_geometry.primary_mockup_top_tolerance_pixels,
     },
     headlineToProofGapPercent: range(sets.flatMap((set) => [set.geometry.headlineToProofGapPercent.min, set.geometry.headlineToProofGapPercent.max])),
     proofHeightPercent: range(sets.flatMap((set) => [set.geometry.proofHeightPercent.min, set.geometry.proofHeightPercent.max])),
@@ -452,6 +547,7 @@ async function main() {
     setCount: sets.length,
     imageCount,
     geometry,
+    primaryMockupTopAnchorsByDevice,
     mechanicalValidation: "pass",
     humanVisualReview: reviewStates.length === 1 ? reviewStates[0] : "mixed",
     uploadAuthorization: expectedUploadAuthorization,
@@ -469,9 +565,11 @@ async function main() {
       "contact-sheet SHA-256 readback",
       "deterministic ZIP contents and byte readback",
       "4-7% headline-to-proof gap, at least 60% proof height, and 94-104% proof lower edge on every rendered slide",
+      "plan-defined primary mockup top anchors match across slides and locales, including both comparison frames",
       "current app-source revision binding",
       "external network request count is zero",
     ],
+    primaryMockupTopAnchorsByDevice,
     humanVisualReview: matrix.humanVisualReview,
     uploadAuthorization: expectedUploadAuthorization,
   };

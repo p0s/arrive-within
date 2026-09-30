@@ -1,5 +1,6 @@
 import planDocument from "../../screenshot-plan.json";
 import alternativesDocument from "../../narrative-alternatives.json";
+import type { CSSProperties } from "react";
 
 type DeviceId = "iphone-6.9" | "ipad-13";
 type LocaleId = "en-US" | "de-DE";
@@ -58,6 +59,7 @@ function DeviceCapture({
     <div
       className={`device-frame ${device.startsWith("ipad-") ? "tablet" : "phone"} ${className}`}
       data-product-proof={productProof ? "" : undefined}
+      data-primary-mockup=""
     >
       <div className="device-screen">
         <img
@@ -131,9 +133,14 @@ export default async function ScreenshotStudio({
           className={`slide slide-${slide.index} ${device} ${device.startsWith("ipad-") ? "ipad-layout" : ""}`}
           data-export-slide={slide.id}
           data-runtime-surface={slide.runtime_surface}
+          data-primary-mockup-anchor-percent={plan.layout_geometry.primary_mockup_top_canvas_height_percent[device]}
           key={slide.id}
           lang={locale.slice(0, 2)}
-          style={{ height: spec.height, width: spec.width }}
+          style={{
+            "--primary-mockup-top": `${plan.layout_geometry.primary_mockup_top_canvas_height_percent[device]}%`,
+            height: spec.height,
+            width: spec.width,
+          } as CSSProperties}
         >
           <header>
             <h1 data-headline>

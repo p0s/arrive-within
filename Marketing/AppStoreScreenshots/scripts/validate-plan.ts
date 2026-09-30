@@ -20,6 +20,17 @@ async function main() {
       && error.message === "slide 2 accepted a dark seed beside a dark hero instead of the light Garden-day source"
     ) throw error;
   }
+  const driftedPrimaryMockupAnchor = structuredClone(plan);
+  driftedPrimaryMockupAnchor.layout_geometry.primary_mockup_top_canvas_height_percent["iphone-6.9"] = 20;
+  try {
+    assertPlan(driftedPrimaryMockupAnchor);
+    throw new Error("screenshot plan accepted a device-class primary mockup anchor drift");
+  } catch (error) {
+    if (
+      error instanceof Error
+      && error.message === "screenshot plan accepted a device-class primary mockup anchor drift"
+    ) throw error;
+  }
   const origin = "http://127.0.0.1:3000";
   const credentialSeparator = String.fromCharCode(64);
   if (
@@ -43,7 +54,7 @@ async function main() {
     }
   }
   process.stdout.write(
-    `Screenshot plan passed: ${plan.slides.length} slides × ${plan.locales.length} locales × ${plan.devices.length} devices = ${plan.expected_final_images} final images; slide 2 rejects a dark/dark pair.\n`,
+    `Screenshot plan passed: ${plan.slides.length} slides × ${plan.locales.length} locales × ${plan.devices.length} devices = ${plan.expected_final_images} final images; slide 2 rejects a dark/dark pair; device-class mockup anchors reject drift.\n`,
   );
 }
 

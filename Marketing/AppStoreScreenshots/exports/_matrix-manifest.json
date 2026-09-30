@@ -41,10 +41,15 @@
       "proofLowerEdgePercent": [
         94,
         104
-      ]
+      ],
+      "primaryMockupTopCanvasHeightPercent": {
+        "iphone-6.9": 19.3,
+        "ipad-13": 20
+      },
+      "primaryMockupTopTolerancePixels": 1
     },
     "headlineToProofGapPercent": {
-      "min": 4.008673291492329,
+      "min": 4.065877789400279,
       "max": 6.941902022315202
     },
     "proofHeightPercent": {
@@ -54,6 +59,38 @@
     "proofLowerEdgePercent": {
       "min": 94.05563546025104,
       "max": 103.87331940406976
+    }
+  },
+  "primaryMockupTopAnchorsByDevice": {
+    "iphone-6.9": {
+      "expectedTopCanvasHeightPercent": 19.3,
+      "tolerancePixels": 1,
+      "measuredTopPixels": {
+        "min": 553.515625,
+        "max": 553.515625
+      },
+      "measuredTopCanvasHeightPercent": {
+        "min": 19.299707984658298,
+        "max": 19.299707984658298
+      },
+      "maximumFrameTopDeltaPixels": 0,
+      "localeSets": 2,
+      "slidesPerSet": 6
+    },
+    "ipad-13": {
+      "expectedTopCanvasHeightPercent": 20,
+      "tolerancePixels": 1,
+      "measuredTopPixels": {
+        "min": 550.390625,
+        "max": 550.390625
+      },
+      "measuredTopCanvasHeightPercent": {
+        "min": 19.999659338662788,
+        "max": 19.999659338662788
+      },
+      "maximumFrameTopDeltaPixels": 0,
+      "localeSets": 2,
+      "slidesPerSet": 6
     }
   },
   "mechanicalValidation": "pass",
@@ -78,7 +115,16 @@
         "proofLowerEdgePercent": {
           "min": 94.05563546025104,
           "max": 100.59601638772664
-        }
+        },
+        "primaryMockupTopPixels": {
+          "min": 553.515625,
+          "max": 553.515625
+        },
+        "primaryMockupTopCanvasHeightPercent": {
+          "min": 19.299707984658298,
+          "max": 19.299707984658298
+        },
+        "primaryMockupMaximumFrameTopDeltaPixels": 0
       },
       "humanVisualReview": {
         "state": "pending",
@@ -124,13 +170,13 @@
         },
         {
           "filename": "_manifest.json",
-          "bytes": 22895,
-          "sha256": "8d971c44cf0f3eddb1edbf134b5e50b700504d9fe97f6287e44676d836618ad6"
+          "bytes": 24671,
+          "sha256": "5b69482afe7084406a38c4969bc2fa4053ca866273657da5acdc9f2637f7655e"
         },
         {
           "filename": "_validation.json",
-          "bytes": 5135,
-          "sha256": "7c57f23bb65deec46853762693cc7255041dba3d4a61e4c7afe19b20c67ba9fd"
+          "bytes": 6911,
+          "sha256": "aa5245e2a837c708979f5b99e47115ec82e133a9fb69fecf6ab6075acffa52a9"
         },
         {
           "filename": "_validation.txt",
@@ -139,8 +185,8 @@
         },
         {
           "filename": "arrive-within-app-store-en-us-iphone-6.9.zip",
-          "bytes": 2474353,
-          "sha256": "18905c09be047552ccad497f64097f60a8fa11b6f653a3f22adbbe710fa098ce"
+          "bytes": 2474597,
+          "sha256": "a8f8e1dba8bcce901085470294ec9f91ec2780d5b29788b0c661c62bb919be22"
         }
       ]
     },
@@ -162,7 +208,16 @@
         "proofLowerEdgePercent": {
           "min": 96.32028978924419,
           "max": 103.87331940406976
-        }
+        },
+        "primaryMockupTopPixels": {
+          "min": 550.390625,
+          "max": 550.390625
+        },
+        "primaryMockupTopCanvasHeightPercent": {
+          "min": 19.999659338662788,
+          "max": 19.999659338662788
+        },
+        "primaryMockupMaximumFrameTopDeltaPixels": 0
       },
       "humanVisualReview": {
         "state": "pending",
@@ -208,13 +263,13 @@
         },
         {
           "filename": "_manifest.json",
-          "bytes": 22796,
-          "sha256": "c5ebeddd152f43650198ea381b5438bd9641ff4eb43848914a684c861c91ae95"
+          "bytes": 24560,
+          "sha256": "c7a968c70dbdc9fc017fd216d579022d3403b1f7b2206630aa4dc1117f6bcfa6"
         },
         {
           "filename": "_validation.json",
-          "bytes": 5117,
-          "sha256": "78ad229714c2aa6964876532cdc5b615eb2b999f992fd3bb89c36bc723a9a600"
+          "bytes": 6881,
+          "sha256": "f6a6620556971e4dd5508947b416c29571a13ccfa87c045c9fe2acd503faf5d3"
         },
         {
           "filename": "_validation.txt",
@@ -223,8 +278,8 @@
         },
         {
           "filename": "arrive-within-app-store-en-us-ipad-13.zip",
-          "bytes": 2948078,
-          "sha256": "c0d9c0c4f9a0b8c8ee5a67f08ed4427c170c09067e45fd9d50aa02be4babd586"
+          "bytes": 2948330,
+          "sha256": "7889d18b4cc0f5c0b2c9db219f5dee7fe4cde016b114d2b86e763d6dddfb8f8b"
         }
       ]
     },
@@ -236,7 +291,7 @@
       "imageCount": 6,
       "geometry": {
         "headlineToProofGapPercent": {
-          "min": 4.008673291492329,
+          "min": 4.065877789400279,
           "max": 6.941902022315202
         },
         "proofHeightPercent": {
@@ -245,8 +300,17 @@
         },
         "proofLowerEdgePercent": {
           "min": 94.05563546025104,
-          "max": 102.34592921896792
-        }
+          "max": 100.59601638772664
+        },
+        "primaryMockupTopPixels": {
+          "min": 553.515625,
+          "max": 553.515625
+        },
+        "primaryMockupTopCanvasHeightPercent": {
+          "min": 19.299707984658298,
+          "max": 19.299707984658298
+        },
+        "primaryMockupMaximumFrameTopDeltaPixels": 0
       },
       "humanVisualReview": {
         "state": "pending",
@@ -277,8 +341,8 @@
         },
         {
           "filename": "05-growth-reflect-de-de-iphone-6.9-1320x2868.png",
-          "bytes": 324232,
-          "sha256": "9b35610f1a1a99b097b8ca18d2aadb2758ce0e651ecf1d6506862dba8ee3384c"
+          "bytes": 318872,
+          "sha256": "0902b5416e0b5b4deeeed9bb2e049c29e278794800760cb921f84891a49664a1"
         },
         {
           "filename": "06-growth-refuge-de-de-iphone-6.9-1320x2868.png",
@@ -287,18 +351,18 @@
         },
         {
           "filename": "_contact-sheet.jpg",
-          "bytes": 399502,
-          "sha256": "9966864395f819efbcbc81fda5435c81e5d440bed22195adfe6692a6710ddc4a"
+          "bytes": 397393,
+          "sha256": "e40b19cc8339dae3e815946f90a7935981cb5c3ab19ca5de9ae5216c7c6f7a3d"
         },
         {
           "filename": "_manifest.json",
-          "bytes": 22878,
-          "sha256": "59907137a1b5341a9ddd4789c5ddec55db28576da9c455f0c581aa1f5aa79ed9"
+          "bytes": 24654,
+          "sha256": "7cd35305e1c99dc58ce598e62208568a84e2ec7554a70220e30ba5b2e5b41840"
         },
         {
           "filename": "_validation.json",
-          "bytes": 5136,
-          "sha256": "5a3ac7dbcc42e992ed1b3a345132c494be24b7a81c76690f0b41a14fd4654082"
+          "bytes": 6912,
+          "sha256": "cc5a257ef714811b83a13c437fdf36beeeaed995caa17d56a718bac759b9e871"
         },
         {
           "filename": "_validation.txt",
@@ -307,8 +371,8 @@
         },
         {
           "filename": "arrive-within-app-store-de-de-iphone-6.9.zip",
-          "bytes": 2581217,
-          "sha256": "43a7c2607c4702d4961573178e64a3c44e5c8bae3b9604347f8afaeb01eda73d"
+          "bytes": 2573988,
+          "sha256": "0ca214ee344344180b5564ba759e8ee5d43e160e2d29c5a672f7eb9aee9208c4"
         }
       ]
     },
@@ -330,7 +394,16 @@
         "proofLowerEdgePercent": {
           "min": 96.32028978924419,
           "max": 103.87331940406976
-        }
+        },
+        "primaryMockupTopPixels": {
+          "min": 550.390625,
+          "max": 550.390625
+        },
+        "primaryMockupTopCanvasHeightPercent": {
+          "min": 19.999659338662788,
+          "max": 19.999659338662788
+        },
+        "primaryMockupMaximumFrameTopDeltaPixels": 0
       },
       "humanVisualReview": {
         "state": "pending",
@@ -376,13 +449,13 @@
         },
         {
           "filename": "_manifest.json",
-          "bytes": 22778,
-          "sha256": "5f3d50fb7c714f995b4069f86759a576c9a2d6a812f81faa77124f4879530573"
+          "bytes": 24542,
+          "sha256": "e85ef01128f91271745cfa221df16e983ea4eea8367a13f64ebeb66ecdc7d4c6"
         },
         {
           "filename": "_validation.json",
-          "bytes": 5117,
-          "sha256": "99414a3b5166e71aba1103a36b720a81b5dd1326e0bf1c1a7cfc9754f63f68e0"
+          "bytes": 6881,
+          "sha256": "0cddaa75b79a3b5d811e0c91cd6d5801f83e978a234a68371595daea0f89a049"
         },
         {
           "filename": "_validation.txt",
@@ -391,8 +464,8 @@
         },
         {
           "filename": "arrive-within-app-store-de-de-ipad-13.zip",
-          "bytes": 3048358,
-          "sha256": "2cb351e75732bae7a734445f86754d884b0d81174ed7edb733fe1d374545d5e8"
+          "bytes": 3048608,
+          "sha256": "fec6b3ab4b0dc19cbf2fc95fe747745789379bb48a8fb86f28ced72b115e9f17"
         }
       ]
     }

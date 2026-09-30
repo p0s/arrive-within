@@ -51,6 +51,14 @@ type OutputItem = {
 type Geometry = {
   headlineBounds: { x: number; y: number; width: number; height: number };
   proofBounds: { x: number; y: number; width: number; height: number };
+  primaryMockupAnchor: {
+    expectedTopPercent: number;
+    actualTop: number;
+    actualTopPercent: number;
+    frameTops: number[];
+    maxFrameTopDelta: number;
+    tolerancePixels: number;
+  };
   headlineToProofGap: number;
   headlineToProofGapRatio: number;
   proofHeight: number;
@@ -174,6 +182,8 @@ async function main() {
     : null;
   if (options.narrative && !narrative) throw new Error(`unknown narrative ${options.narrative}`);
   const slides = narrative?.slides ?? plan.slides;
+  const primaryMockupTopPercent = plan.layout_geometry.primary_mockup_top_canvas_height_percent[options.device];
+  const primaryMockupTopTolerance = plan.layout_geometry.primary_mockup_top_tolerance_pixels;
   const requiredCaptureIDs = narrative
     ? [...new Set(narrative.slides.flatMap((slide) => slide.capture_ids))]
     : plan.required_capture_ids;
@@ -212,9 +222,9 @@ async function main() {
   const unexpectedPngs = (await readdir(root)).filter((file) => file.endsWith(".png") && !expectedPngNames.includes(file));
   if (unexpectedPngs.length) throw new Error(`refusing output set with stale/unexpected PNGs: ${unexpectedPngs.join(", ")}`);
 
-  // Rotated, overlapping device frames must rasterize identically across passes.
+  // Overlapping device frames must rasterize identically across passes.
   // SwiftShader's GPU antialiasing can vary by several channel values at the
-  // transformed edge, which is larger than the intentional LSB normalization.
+  // frame edge, which is larger than the intentional LSB normalization.
   const browser = await chromium.launch({ args: ["--disable-gpu", "--disable-skia-runtime-opts"] });
   const items: OutputItem[] = [];
   let blockedExternalRequests = 0;
@@ -276,6 +286,40 @@ async function main() {
       if (JSON.stringify(renderedCaptureIDs) !== JSON.stringify(expectedCaptureIDs)) {
         throw new Error(`${planned.id}: rendered source captures do not match the screenshot plan`);
       }
+      const anchorAttribute = Number(await slide.getAttribute("data-primary-mockup-anchor-percent"));
+      const cssAnchor = await slide.evaluate((element) =>
+        getComputedStyle(element).getPropertyValue("--primary-mockup-top").trim(),
+      );
+      if (anchorAttribute !== primaryMockupTopPercent || Number.parseFloat(cssAnchor) !== primaryMockupTopPercent) {
+        throw new Error(`${planned.id}: rendered primary mockup anchor does not match the screenshot plan`);
+      }
+      const primaryMockups = slide.locator("[data-primary-mockup]");
+      const isComparison = planned.composition === "garden-growth" || planned.composition === "garden-growth-day";
+      const expectedMockupCount = isComparison ? 2 : 1;
+      if (await primaryMockups.count() !== expectedMockupCount) {
+        throw new Error(`${planned.id}: expected ${expectedMockupCount} primary mockup frame(s)`);
+      }
+      const slideTop = (await slide.boundingBox())?.y;
+      const primaryMockupFrameTops = await primaryMockups.evaluateAll(
+        (elements) => elements.map((element) => {
+          const frameTop = element.getBoundingClientRect().top;
+          const renderedSlideTop = element.closest("[data-export-slide]")?.getBoundingClientRect().top;
+          if (renderedSlideTop === undefined) throw new Error("primary mockup has no slide anchor");
+          return frameTop - renderedSlideTop;
+        }),
+      );
+      if (slideTop === undefined || primaryMockupFrameTops.length !== expectedMockupCount) {
+        throw new Error(`${planned.id}: primary mockup anchor bounds could not be measured`);
+      }
+      const expectedMockupTop = options.height * primaryMockupTopPercent / 100;
+      const primaryMockupTop = Math.min(...primaryMockupFrameTops);
+      const maxFrameTopDelta = Math.max(...primaryMockupFrameTops) - primaryMockupTop;
+      const maxAnchorDelta = Math.max(...primaryMockupFrameTops.map((top) => Math.abs(top - expectedMockupTop)));
+      if (maxAnchorDelta > primaryMockupTopTolerance || maxFrameTopDelta > primaryMockupTopTolerance) {
+        throw new Error(
+          `${planned.id}: primary mockup top must match the shared ${primaryMockupTopPercent}% anchor within ${primaryMockupTopTolerance}px; got ${primaryMockupFrameTops.map((top) => top.toFixed(2)).join(", ")}px`,
+        );
+      }
       const headline = slide.locator("[data-headline]");
       const proof = slide.locator("[data-product-proof]");
       if (
@@ -306,6 +350,14 @@ async function main() {
           y: proofBounds.y - bounds.y,
           width: proofBounds.width,
           height: proofBounds.height,
+        },
+        primaryMockupAnchor: {
+          expectedTopPercent: primaryMockupTopPercent,
+          actualTop: primaryMockupTop,
+          actualTopPercent: primaryMockupTop / options.height * 100,
+          frameTops: primaryMockupFrameTops,
+          maxFrameTopDelta,
+          tolerancePixels: primaryMockupTopTolerance,
         },
         headlineToProofGap,
         headlineToProofGapRatio: headlineToProofGap / options.height,

@@ -27,6 +27,16 @@
           "width": 1104.828125,
           "height": 2331.578125
         },
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 19.3,
+          "actualTop": 553.515625,
+          "actualTopPercent": 19.299707984658298,
+          "frameTops": [
+            553.515625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
+        },
         "headlineToProofGap": 199.09375,
         "headlineToProofGapRatio": 0.06941902022315202,
         "proofHeight": 2331.578125,
@@ -56,6 +66,17 @@
           "y": 553.515625,
           "width": 1320,
           "height": 2144
+        },
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 19.3,
+          "actualTop": 553.515625,
+          "actualTopPercent": 19.299707984658298,
+          "frameTops": [
+            553.515625,
+            553.515625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
         },
         "headlineToProofGap": 199.09375,
         "headlineToProofGapRatio": 0.06941902022315202,
@@ -87,6 +108,16 @@
           "width": 1104.828125,
           "height": 2331.578125
         },
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 19.3,
+          "actualTop": 553.515625,
+          "actualTopPercent": 19.299707984658298,
+          "frameTops": [
+            553.515625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
+        },
         "headlineToProofGap": 199.09375,
         "headlineToProofGapRatio": 0.06941902022315202,
         "proofHeight": 2331.578125,
@@ -117,6 +148,16 @@
           "width": 1104.828125,
           "height": 2331.578125
         },
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 19.3,
+          "actualTop": 553.515625,
+          "actualTopPercent": 19.299707984658298,
+          "frameTops": [
+            553.515625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
+        },
         "headlineToProofGap": 199.09375,
         "headlineToProofGapRatio": 0.06941902022315202,
         "proofHeight": 2331.578125,
@@ -137,22 +178,32 @@
       "geometry": {
         "headlineBounds": {
           "x": 118.796875,
-          "y": 85.796875,
+          "y": 72.59375,
           "width": 1082.390625,
-          "height": 402.9375
+          "height": 364.3125
         },
         "proofBounds": {
           "x": 107.578125,
-          "y": 603.703125,
+          "y": 553.515625,
           "width": 1104.828125,
           "height": 2331.578125
         },
-        "headlineToProofGap": 114.96875,
-        "headlineToProofGapRatio": 0.04008673291492329,
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 19.3,
+          "actualTop": 553.515625,
+          "actualTopPercent": 19.299707984658298,
+          "frameTops": [
+            553.515625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
+        },
+        "headlineToProofGap": 116.609375,
+        "headlineToProofGapRatio": 0.04065877789400279,
         "proofHeight": 2331.578125,
         "proofHeightRatio": 0.8129630840306834,
-        "proofLowerEdge": 2935.28125,
-        "proofLowerEdgeRatio": 1.0234592921896792
+        "proofLowerEdge": 2885.09375,
+        "proofLowerEdgeRatio": 1.0059601638772664
       }
     },
     {
@@ -176,6 +227,16 @@
           "y": 553.515625,
           "width": 1104.828125,
           "height": 2331.578125
+        },
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 19.3,
+          "actualTop": 553.515625,
+          "actualTopPercent": 19.299707984658298,
+          "frameTops": [
+            553.515625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
         },
         "headlineToProofGap": 199.09375,
         "headlineToProofGapRatio": 0.06941902022315202,
