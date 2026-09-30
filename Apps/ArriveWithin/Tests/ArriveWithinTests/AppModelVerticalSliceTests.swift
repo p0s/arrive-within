@@ -7,9 +7,99 @@ import Testing
 
 @testable import ArriveWithin
 
+@MainActor
+private final class SuspendedCatalogPurchaseClient: PremiumGardenPurchaseClient {
+  private(set) var catalogRequests = 0
+  private var catalogContinuation: CheckedContinuation<PremiumGardenAccessSnapshot, Never>?
+  private var startedContinuation: CheckedContinuation<Void, Never>?
+  private var completedSnapshot: PremiumGardenAccessSnapshot?
+
+  func refresh() async -> PremiumGardenAccessSnapshot { .unavailable }
+
+  func loadProduct() async -> PremiumGardenAccessSnapshot {
+    catalogRequests += 1
+    if let completedSnapshot { return completedSnapshot }
+    return await withCheckedContinuation { continuation in
+      catalogContinuation = continuation
+      startedContinuation?.resume()
+      startedContinuation = nil
+    }
+  }
+
+  func waitForCatalogRequest() async {
+    guard catalogRequests == 0 else { return }
+    await withCheckedContinuation { startedContinuation = $0 }
+  }
+
+  func finishCatalogRequest() {
+    let snapshot = PremiumGardenAccessSnapshot(
+      isOwned: false, productIsAvailable: true, displayPrice: "$4.99"
+    )
+    completedSnapshot = snapshot
+    catalogContinuation?.resume(returning: snapshot)
+    catalogContinuation = nil
+  }
+
+  func purchase() async throws -> PremiumGardenPurchaseOutcome {
+    throw PremiumGardenPurchaseError.productUnavailable
+  }
+  func restore() async -> PremiumGardenAccessSnapshot { .unavailable }
+  func entitlementUpdates() -> AsyncStream<Void> { AsyncStream { $0.finish() } }
+}
+
 @Suite("Native timer-to-garden vertical slice")
 @MainActor
 struct AppModelVerticalSliceTests {
+  @Test("A cancelled styles view shares its pending catalog load with the reopened view")
+  func cancelledCatalogLoadIsSharedOnReentry() async {
+    let client = SuspendedCatalogPurchaseClient()
+    let events = InMemoryPracticeEventRepository()
+    let directory = FileManager.default.temporaryDirectory
+      .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let model = AppModel(dependencies: AppDependencies(
+      profileRepository: TestProfileRepository(),
+      eventRepository: events,
+      sessionRepository: TestSessionRepository(),
+      preferencesRepository: TestPreferencesRepository(),
+      premiumGardenPurchaseClient: client,
+      completionCoordinator: SessionCompletionCoordinator(repository: events),
+      clock: VirtualSessionClock(moment: SessionMoment(
+        monotonicMilliseconds: 1_000,
+        wallClock: Date(timeIntervalSince1970: 1_786_320_000)
+      )),
+      dataDirectory: directory,
+      audioController: NoOpMeditationAudioController(),
+      timerEndAlertController: NoOpTimerEndAlertController(),
+      hapticController: NoOpMeditationHapticController()
+    ))
+    await model.start()
+    #expect(model.launchPhase == .firstUse)
+    #expect(client.catalogRequests == 0)
+
+    let firstView = Task { await model.loadPremiumGardenProduct() }
+    await client.waitForCatalogRequest()
+    #expect(model.premiumGardenProductIsLoading)
+    firstView.cancel()
+    let reentry = AsyncStream<Void>.makeStream()
+    var entered = reentry.stream.makeAsyncIterator()
+    let reopenedView = Task { @MainActor in
+      reentry.continuation.yield(())
+      reentry.continuation.finish()
+      await model.loadPremiumGardenProduct()
+    }
+    _ = await entered.next()
+    client.finishCatalogRequest()
+    await firstView.value
+    await reopenedView.value
+
+    #expect(client.catalogRequests == 1)
+    #expect(!model.premiumGardenProductIsLoading)
+    #expect(model.premiumGardenAccess.productIsAvailable)
+    #expect(model.premiumGardenAccess.displayPrice == "$4.99")
+    #expect(!model.premiumGardenAccess.isOwned)
+  }
+
   @Test("A failed timer preference write is visible and does not start practice")
   func timerSettingsFailureDoesNotStart() async throws {
     let eventRepository = InMemoryPracticeEventRepository()

@@ -28,7 +28,7 @@
     "Marketing/AppStoreScreenshots/scripts/physical-capture-provenance.ts",
     "Marketing/AppStoreScreenshots/scripts/physical-report-validators"
   ],
-  "source_revision": "c0336167cb9231e89d40b2297d334361da597bbf2d36bc2a17eb8631881aab8c",
+  "source_revision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
   "files": [
     {
       "path": "Apps/ArriveWithin/Resources/AppIcon.icon/Assets/living-shoot.png",
@@ -157,8 +157,8 @@
     },
     {
       "path": "Apps/ArriveWithin/Sources/AppModel.swift",
-      "bytes": 76945,
-      "sha256": "7302fa33f5b32d285cb2236bcdbd5340b9a1d5d6ea9b6b87cf4b8bff3e2e5d52"
+      "bytes": 77683,
+      "sha256": "d67ca30fe7e25a38942f9c0f92bb062252b210e02be37d55d53e43be58fa37a9"
     },
     {
       "path": "Apps/ArriveWithin/Sources/AppOwnedShareSheet.swift",
@@ -272,13 +272,13 @@
     },
     {
       "path": "Apps/ArriveWithin/Sources/PremiumGardenStyles.swift",
-      "bytes": 4720,
-      "sha256": "54b87e44fb31162110b2c12eff0b5ae6838256de28d210c8130751e1e0c519b4"
+      "bytes": 5419,
+      "sha256": "d3b8f5a012eda3be9d25c81c19e174d39ece56f272c2f97353c323f4736e590e"
     },
     {
       "path": "Apps/ArriveWithin/Sources/PremiumGardenStylesView.swift",
-      "bytes": 9563,
-      "sha256": "d4955d4e0811f5b4b3af02f2a67efd2c1daa9ed90a47a48300cd265b5eb887af"
+      "bytes": 9701,
+      "sha256": "17041912daf31625ad51a90e05f0f575f3b5763f625a325aba8a9c86228cb145"
     },
     {
       "path": "Apps/ArriveWithin/Sources/ProductShell.swift",
@@ -307,8 +307,8 @@
     },
     {
       "path": "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinMarketingCaptureUITests.swift",
-      "bytes": 11752,
-      "sha256": "aeef28f68cacc70cd3bba65f4b8dcde98b8dcb13d44ef82b0ed0f263426db2b4"
+      "bytes": 11817,
+      "sha256": "7a76144bcb4ecda1a1359e4c07d3b7691515662034724e78f0e6f6a8aa05c56e"
     },
     {
       "path": "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinUITests.swift",

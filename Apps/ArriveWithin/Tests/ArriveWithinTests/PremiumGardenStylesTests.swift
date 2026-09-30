@@ -53,4 +53,33 @@ struct PremiumGardenStylesTests {
       _ = try await client.purchase()
     }
   }
+
+  @Test("Ownership refresh does not request the storefront", arguments: [false, true])
+  func ownershipRefreshDoesNotLoadCatalog(owned: Bool) async {
+    var catalogRequests = 0
+    let client = StoreKitPremiumGardenPurchaseClient(
+      productLoader: { catalogRequests += 1; return nil },
+      ownershipLoader: { owned }
+    )
+    let snapshot = await client.refresh()
+    #expect(snapshot.isOwned == owned)
+    #expect(!snapshot.productIsAvailable)
+    #expect(snapshot.displayPrice == nil)
+    #expect(catalogRequests == 0)
+  }
+
+  @Test("Explicit storefront loading requests the catalog and preserves verified ownership")
+  func catalogLoadingIsExplicit() async {
+    var catalogRequests = 0
+    let client = StoreKitPremiumGardenPurchaseClient(
+      productLoader: { catalogRequests += 1; return nil },
+      ownershipLoader: { true }
+    )
+    let snapshot = await client.loadProduct()
+    #expect(catalogRequests == 1)
+    #expect(snapshot.isOwned)
+    #expect(!snapshot.productIsAvailable)
+    _ = await client.refresh()
+    #expect(catalogRequests == 1)
+  }
 }

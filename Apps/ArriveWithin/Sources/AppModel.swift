@@ -111,6 +111,7 @@ final class AppModel {
   var premiumGardenAccess = PremiumGardenAccessSnapshot.unavailable
   var premiumGardenNotice: PremiumGardenNotice?
   var premiumGardenPurchaseIsInProgress = false
+  var premiumGardenProductIsLoading = false
   var settingsNotice: SettingsNotice?
   var guidedPractices: [GuidedPractice] = []
   var favoriteGuidedPracticeIDs: Set<String> = []
@@ -170,6 +171,7 @@ final class AppModel {
   @ObservationIgnored private var journalRecordingTicker: Task<Void, Never>?
   @ObservationIgnored private var rendererDiagnosticsRecorder = RendererDiagnosticsRecorder()
   @ObservationIgnored private var premiumGardenUpdatesTask: Task<Void, Never>?
+  @ObservationIgnored private var premiumGardenProductLoadTask: Task<Void, Never>?
   @ObservationIgnored private var isStartingPractice = false
   #if DEBUG
     @ObservationIgnored private var marketingCaptureSurfaceIsReady = false
@@ -1603,6 +1605,21 @@ final class AppModel {
 
   private func refreshPremiumGardenAccess() async {
     applyPremiumGardenAccess(await dependencies.premiumGardenPurchaseClient.refresh())
+  }
+
+  func loadPremiumGardenProduct() async {
+    if premiumGardenProductLoadTask == nil {
+      premiumGardenProductIsLoading = true
+      let client = dependencies.premiumGardenPurchaseClient
+      premiumGardenProductLoadTask = Task { @MainActor [weak self] in
+        let snapshot = await client.loadProduct()
+        self?.applyPremiumGardenAccess(snapshot)
+        self?.premiumGardenProductIsLoading = false
+        self?.premiumGardenProductLoadTask = nil
+      }
+    }
+    // The model owns this lookup; cancelling one view must not cancel or discard it.
+    await premiumGardenProductLoadTask?.value
   }
 
   private func applyPremiumGardenAccess(_ snapshot: PremiumGardenAccessSnapshot) {

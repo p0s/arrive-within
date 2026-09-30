@@ -81,7 +81,7 @@ final class ArriveWithinMarketingCaptureUITests: XCTestCase {
     try attach("marketing-\(locale)-journey-calendar", app: app)
 
     let finalMilestone = app.descendants(matching: .any)["journey.milestone.15"]
-    reveal(finalMilestone, in: app)
+    revealForCapture([finalMilestone], in: app)
     XCTAssertTrue(finalMilestone.waitForExistence(timeout: 6))
     try attach("marketing-\(locale)-journey-milestones", app: app)
 
@@ -164,7 +164,7 @@ final class ArriveWithinMarketingCaptureUITests: XCTestCase {
   }
 
   private func revealForCapture(_ elements: [XCUIElement], in app: XCUIApplication) {
-    let scrollContainer = app.scrollViews.firstMatch
+    let scrollContainer = app.scrollViews.containing(.any, identifier: elements[0].identifier).firstMatch
     XCTAssertTrue(scrollContainer.exists)
     XCTAssertTrue(scrollContainer.frame.height.isFinite && scrollContainer.frame.height > 0)
     let frame = app.frame
