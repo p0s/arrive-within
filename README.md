@@ -49,12 +49,12 @@ pnpm --dir Marketing/AppStoreScreenshots install --frozen-lockfile
 pnpm --dir Marketing/AppStoreScreenshots exec playwright install chromium
 ```
 
-Generate the Xcode project and run the portable checks:
+Build the renderer before generating the Xcode project, then run the portable checks:
 
 ```sh
+pnpm --dir Renderer verify
 xcodegen generate
 swift test --package-path Packages/ArriveWithinCore
-pnpm --dir Renderer verify
 python3 scripts/validate_guided_content.py
 node scripts/validate_localizations.mjs
 ```
