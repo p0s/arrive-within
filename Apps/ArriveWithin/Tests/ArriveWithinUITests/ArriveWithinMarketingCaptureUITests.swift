@@ -66,6 +66,18 @@ final class ArriveWithinMarketingCaptureUITests: XCTestCase {
     let calendar = app.descendants(matching: .any)["journey.calendar"]
     reveal(calendar, in: app)
     XCTAssertTrue(calendar.waitForExistence(timeout: 6))
+    let previousMonth = app.buttons["journey.calendar.previous"]
+    revealForCapture([previousMonth], in: app)
+    XCTAssertTrue(previousMonth.isEnabled)
+    previousMonth.tap()
+    // The fixture's thirty practice days run from July 3 through August 1.
+    // Show the populated month through the real calendar navigation.
+    revealForCapture([
+      calendar,
+      app.staticTexts["journey.calendar.month"],
+      app.buttons["journey.calendar.day.2026-07-01"],
+      app.buttons["journey.calendar.day.2026-07-31"],
+    ], in: app)
     try attach("marketing-\(locale)-journey-calendar", app: app)
 
     let finalMilestone = app.descendants(matching: .any)["journey.milestone.15"]
@@ -148,6 +160,45 @@ final class ArriveWithinMarketingCaptureUITests: XCTestCase {
         app.scrollViews.firstMatch,
       ].first(where: \.exists)
       (scrollContainer ?? app).swipeUp()
+    }
+  }
+
+  private func revealForCapture(_ elements: [XCUIElement], in app: XCUIApplication) {
+    let scrollContainer = app.scrollViews.firstMatch
+    XCTAssertTrue(scrollContainer.exists)
+    XCTAssertTrue(scrollContainer.frame.height.isFinite && scrollContainer.frame.height > 0)
+    let frame = app.frame
+    let navigationBar = app.navigationBars.firstMatch
+    let tabBar = app.tabBars.firstMatch
+    let top = navigationBar.exists ? navigationBar.frame.maxY + 12 : frame.minY + 90
+    let bottom = tabBar.exists ? tabBar.frame.minY - 12 : frame.maxY - 40
+    let visibleArea = CGRect(x: frame.minX + 16, y: top, width: frame.width - 32, height: bottom - top)
+
+    for _ in 0..<14 {
+      let populatedFrames = elements.filter(\.exists).map(\.frame)
+      let allExist = populatedFrames.count == elements.count
+      let focalArea = populatedFrames.reduce(CGRect.null) { $0.union($1) }
+      if allExist { XCTAssertLessThanOrEqual(focalArea.height, visibleArea.height, "Capture focal area must fit the viewport") }
+      if allExist && visibleArea.contains(focalArea) { return }
+
+      let displacement: CGFloat
+      if !allExist || focalArea.maxY > visibleArea.maxY {
+        displacement = min(
+          allExist ? focalArea.maxY - visibleArea.maxY + 12 : scrollContainer.frame.height * 0.2,
+          scrollContainer.frame.height * 0.3
+        )
+      } else {
+        displacement = -min(visibleArea.minY - focalArea.minY + 12, scrollContainer.frame.height * 0.3)
+      }
+      let start = scrollContainer.coordinate(withNormalizedOffset: CGVector(dx: 0.75, dy: 0.65))
+      let end = scrollContainer.coordinate(withNormalizedOffset: CGVector(
+        dx: 0.75,
+        dy: 0.65 - displacement / scrollContainer.frame.height
+      ))
+      start.press(forDuration: 0.05, thenDragTo: end)
+    }
+    for element in elements {
+      XCTAssertTrue(element.exists && visibleArea.contains(element.frame), "Capture focal element must be fully visible: \(element.identifier)")
     }
   }
 

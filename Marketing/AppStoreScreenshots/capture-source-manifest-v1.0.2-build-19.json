@@ -28,7 +28,7 @@
     "Marketing/AppStoreScreenshots/scripts/physical-capture-provenance.ts",
     "Marketing/AppStoreScreenshots/scripts/physical-report-validators"
   ],
-  "source_revision": "31819df7d597b0417d7b1d7ba32d0586d3e20c170d8d17868c5a7f9c23870678",
+  "source_revision": "c0336167cb9231e89d40b2297d334361da597bbf2d36bc2a17eb8631881aab8c",
   "files": [
     {
       "path": "Apps/ArriveWithin/Resources/AppIcon.icon/Assets/living-shoot.png",
@@ -307,8 +307,8 @@
     },
     {
       "path": "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinMarketingCaptureUITests.swift",
-      "bytes": 9232,
-      "sha256": "5281fa146ec8590203b549c2d0182cc420e75065d8e12e76b7b551b4d6d4175c"
+      "bytes": 11752,
+      "sha256": "aeef28f68cacc70cd3bba65f4b8dcde98b8dcb13d44ef82b0ed0f263426db2b4"
     },
     {
       "path": "Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinUITests.swift",
