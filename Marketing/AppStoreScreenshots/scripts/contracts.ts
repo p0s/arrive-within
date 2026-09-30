@@ -46,6 +46,8 @@ export type ScreenshotPlan = {
     headline_to_proof_gap_canvas_height_percent: [number, number];
     minimum_proof_canvas_height_percent: number;
     proof_lower_edge_canvas_height_percent: [number, number];
+    primary_mockup_top_canvas_height_percent: Record<DeviceId, number>;
+    primary_mockup_top_tolerance_pixels: number;
   };
   required_capture_ids: string[];
   renderer: string;
@@ -354,6 +356,13 @@ export function assertPlan(plan: ScreenshotPlan): void {
     || JSON.stringify(plan.layout_geometry.proof_lower_edge_canvas_height_percent) !== JSON.stringify([94, 104])
   ) {
     throw new Error("the Clean Editorial geometry contract must remain 4-7% gap, 60% proof height, and 94-104% lower edge");
+  }
+  if (
+    plan.layout_geometry.primary_mockup_top_canvas_height_percent["iphone-6.9"] !== 19.3
+    || plan.layout_geometry.primary_mockup_top_canvas_height_percent["ipad-13"] !== 20
+    || plan.layout_geometry.primary_mockup_top_tolerance_pixels !== 1
+  ) {
+    throw new Error("primary mockup tops must use the shared 19.3% iPhone and 20% iPad anchors with at most 1px variance");
   }
   if (plan.slides.length !== 6 || plan.slides.some((slide, index) => slide.index !== index + 1)) {
     throw new Error("slides must have exact indices 1 through 6");

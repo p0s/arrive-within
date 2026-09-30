@@ -99,7 +99,12 @@
   "layout_geometry": {
     "headline_to_proof_gap_canvas_height_percent": [4, 7],
     "minimum_proof_canvas_height_percent": 60,
-    "proof_lower_edge_canvas_height_percent": [94, 104]
+    "proof_lower_edge_canvas_height_percent": [94, 104],
+    "primary_mockup_top_canvas_height_percent": {
+      "iphone-6.9": 19.3,
+      "ipad-13": 20
+    },
+    "primary_mockup_top_tolerance_pixels": 1
   },
   "required_capture_ids": [
     "garden-hero",

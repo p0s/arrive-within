@@ -316,7 +316,7 @@
   },
   "contactSheet": {
     "filename": "_contact-sheet.jpg",
-    "sha256": "9966864395f819efbcbc81fda5435c81e5d440bed22195adfe6692a6710ddc4a",
+    "sha256": "e40b19cc8339dae3e815946f90a7935981cb5c3ab19ca5de9ae5216c7c6f7a3d",
     "width": 1440,
     "height": 1890,
     "encoding": "sharp 0.35.3 JPEG quality 92, 4:4:4 chroma subsampling, no metadata"
@@ -343,6 +343,16 @@
           "y": 553.515625,
           "width": 1104.828125,
           "height": 2331.578125
+        },
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 19.3,
+          "actualTop": 553.515625,
+          "actualTopPercent": 19.299707984658298,
+          "frameTops": [
+            553.515625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
         },
         "headlineToProofGap": 199.09375,
         "headlineToProofGapRatio": 0.06941902022315202,
@@ -374,6 +384,17 @@
           "width": 1320,
           "height": 2144
         },
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 19.3,
+          "actualTop": 553.515625,
+          "actualTopPercent": 19.299707984658298,
+          "frameTops": [
+            553.515625,
+            553.515625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
+        },
         "headlineToProofGap": 199.09375,
         "headlineToProofGapRatio": 0.06941902022315202,
         "proofHeight": 2144,
@@ -403,6 +424,16 @@
           "y": 553.515625,
           "width": 1104.828125,
           "height": 2331.578125
+        },
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 19.3,
+          "actualTop": 553.515625,
+          "actualTopPercent": 19.299707984658298,
+          "frameTops": [
+            553.515625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
         },
         "headlineToProofGap": 199.09375,
         "headlineToProofGapRatio": 0.06941902022315202,
@@ -434,6 +465,16 @@
           "width": 1104.828125,
           "height": 2331.578125
         },
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 19.3,
+          "actualTop": 553.515625,
+          "actualTopPercent": 19.299707984658298,
+          "frameTops": [
+            553.515625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
+        },
         "headlineToProofGap": 199.09375,
         "headlineToProofGapRatio": 0.06941902022315202,
         "proofHeight": 2331.578125,
@@ -444,7 +485,7 @@
     },
     {
       "filename": "05-growth-reflect-de-de-iphone-6.9-1320x2868.png",
-      "sha256": "9b35610f1a1a99b097b8ca18d2aadb2758ce0e651ecf1d6506862dba8ee3384c",
+      "sha256": "0902b5416e0b5b4deeeed9bb2e049c29e278794800760cb921f84891a49664a1",
       "slide": 5,
       "slideId": "growth-reflect",
       "idea": "Private reflection gives practice personal meaning",
@@ -454,22 +495,32 @@
       "geometry": {
         "headlineBounds": {
           "x": 118.796875,
-          "y": 85.796875,
+          "y": 72.59375,
           "width": 1082.390625,
-          "height": 402.9375
+          "height": 364.3125
         },
         "proofBounds": {
           "x": 107.578125,
-          "y": 603.703125,
+          "y": 553.515625,
           "width": 1104.828125,
           "height": 2331.578125
         },
-        "headlineToProofGap": 114.96875,
-        "headlineToProofGapRatio": 0.04008673291492329,
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 19.3,
+          "actualTop": 553.515625,
+          "actualTopPercent": 19.299707984658298,
+          "frameTops": [
+            553.515625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
+        },
+        "headlineToProofGap": 116.609375,
+        "headlineToProofGapRatio": 0.04065877789400279,
         "proofHeight": 2331.578125,
         "proofHeightRatio": 0.8129630840306834,
-        "proofLowerEdge": 2935.28125,
-        "proofLowerEdgeRatio": 1.0234592921896792
+        "proofLowerEdge": 2885.09375,
+        "proofLowerEdgeRatio": 1.0059601638772664
       }
     },
     {
@@ -493,6 +544,16 @@
           "y": 553.515625,
           "width": 1104.828125,
           "height": 2331.578125
+        },
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 19.3,
+          "actualTop": 553.515625,
+          "actualTopPercent": 19.299707984658298,
+          "frameTops": [
+            553.515625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
         },
         "headlineToProofGap": 199.09375,
         "headlineToProofGapRatio": 0.06941902022315202,

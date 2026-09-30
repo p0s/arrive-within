@@ -11,6 +11,7 @@ This tracked, localhost-only Next.js studio composes the frozen six-slide narrat
 - One localized headline block per slide; no product-name eyebrow, subtitle, or supporting-copy layer
 - Clean Editorial / Tonal Wash treatment with short left-aligned headlines, large straight device frames, and restrained app-palette washes
 - Machine-enforced composition with a 4–7% headline-to-proof gap, proof at least 60% of canvas height, and proof lower edge at 94–104%
+- Shared primary mockup top anchors at 19.3% of iPhone canvas height and 20% of iPad canvas height across every slide and locale; comparison frames share the same top
 - The selected story opens with the light-mode Journey calendar, pairs a dark Garden seed behind a light Garden on slide 2, and introduces the dark Garden hero on slide 3
 - Human visual review and release authorization remain separate gates
 
@@ -87,7 +88,7 @@ The selected six-slide story uses Garden growth, Journey rhythm/milestones, and 
    pnpm verify:reproducibility -- --url http://127.0.0.1:3000
    ```
 
-6. Inspect every `_contact-sheet.jpg` and each slide-2 render. The final matrix validator checks the 24-image locale/device matrix, opaque RGB dimensions, pixel normalization, hashes, contact sheets, ZIP contents, and geometry. Human review must approve the exact refreshed matrix before any separately authorized upload.
+6. Inspect every `_contact-sheet.jpg` and each slide-2 render. The final matrix validator checks the 24-image locale/device matrix, opaque RGB dimensions, pixel normalization, hashes, contact sheets, ZIP contents, and geometry. It records measured primary mockup anchors and rejects per-slide, per-locale, or comparison-frame drift. Human review must approve the exact refreshed matrix before any separately authorized upload.
 
 Physical-device, TestFlight, App Review, and other final release checks remain separate. They do not supply or gate the four marketing simulator bundles.
 

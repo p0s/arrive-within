@@ -67,7 +67,7 @@ h1 span { display: block; }
 .composition {
   position: absolute;
   z-index: 2;
-  top: 19.3%;
+  top: var(--primary-mockup-top, 19.3%);
   right: 5%;
   bottom: auto;
   left: 5%;
@@ -102,7 +102,7 @@ h1 span { display: block; }
 }
 
 .composition-garden-growth,
-.composition-garden-growth-day { top: 19.3%; right: 0; bottom: auto; left: 0; height: auto; }
+.composition-garden-growth-day { right: 0; bottom: auto; left: 0; height: auto; }
 .composition-garden-growth .product-proof,
 .composition-garden-growth-day .product-proof {
   position: relative;
@@ -150,14 +150,15 @@ h1 span { display: block; }
 .composition-language-settings .device-frame,
 .composition-accessibility-large-text .device-frame,
 .composition-journal .device-frame { width: 93%; }
-.slide-5[lang="de"] .composition { top: 21.05%; }
+.slide-5[lang="de"]:not(.ipad-layout) header { margin-top: 5.5%; }
+.slide-5[lang="de"]:not(.ipad-layout) h1 { font-size: 132px; }
+.slide-5[lang="de"]:not(.ipad-layout) h1 span:last-child { max-width: 80%; }
 .ipad-layout header { margin-top: 4.5%; }
 .ipad-layout h1 { font-size: 154px; }
-.ipad-layout .composition { top: 20%; right: 3%; bottom: auto; left: 3%; height: 80%; }
-.ipad-layout.slide-5[lang="de"] .composition { top: 20%; }
+.ipad-layout .composition { top: var(--primary-mockup-top, 20%); right: 3%; bottom: auto; left: 3%; height: 80%; }
 .ipad-layout .device-frame.tablet { width: 90%; }
 .slide.ipad-layout .composition.composition-garden-growth,
-.slide.ipad-layout .composition.composition-garden-growth-day { top: 20%; right: 0; bottom: auto; left: 0; height: auto; }
+.slide.ipad-layout .composition.composition-garden-growth-day { right: 0; bottom: auto; left: 0; height: auto; }
 .ipad-layout .composition-garden-growth .device-frame,
 .ipad-layout .composition-garden-growth-day .device-frame { width: 77%; border-radius: 86px; }
 .ipad-layout .composition-garden-growth .device-screen,
