@@ -1,0 +1,348 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-10-01",
+  "status": "submitted-waiting-for-review",
+  "bundle_id": "com.philipps.arrivewithin.ios",
+  "app_id": "6800192697",
+  "marketing_version": "1.0.2",
+  "build_number": 19,
+  "app_source_commit": "42afc7799256481fce84745150f1ff29eaa56f11",
+  "marketing_source_commit": "74283d0d7b9464991a7f2fab323594aabe9da57b",
+  "marketing_merge_commit": "1ed861cd90b7e4eceeea90e187f73f66aa0553eb",
+  "apple_build_id": "e00d910e-b2ec-44bb-b947-b479155a7147",
+  "app_store_version_id": "1e9b3165-016d-4510-b644-1db5b9e9f0c2",
+  "apple_processing": "VALID",
+  "app_store_eligible": true,
+  "internal_testflight": "verified-existing-internal-group",
+  "ipa_sha256": "669deeaa745d5884affb30135a8a65e5272ee74c997bdd6dedd500592abf96ee",
+  "ipa_bytes": 125469730,
+  "review_submission_id": "bdbb8994-0493-4be7-a445-bffda381ace7",
+  "submitted_at": "2026-10-01T01:59:53.745Z",
+  "review_submission_state": "WAITING_FOR_REVIEW",
+  "review_item_state": "READY_FOR_REVIEW",
+  "review_item_count": 1,
+  "review_item_version_id": "1e9b3165-016d-4510-b644-1db5b9e9f0c2",
+  "release_type": "MANUAL",
+  "public_release_performed": false,
+  "previous_public_version": "1.0.1",
+  "previous_public_build": 18,
+  "readiness": {
+    "errors": 0,
+    "warnings": 0,
+    "blocking": 0,
+    "published_privacy": "verified-in-authenticated-app-privacy-editor",
+    "required_agreements": "verified-active"
+  },
+  "screenshots": {
+    "owner_approved": true,
+    "count": 24,
+    "apple_md5_sizes_dimensions_order_verified": true,
+    "source_capture_revision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
+    "export_tree_sha256": "8a46d1b9f62d2a2f9ed80dfc3e8b438850a5998af9ad4420517a21aeb9fbeaf2",
+    "primary_frame_tops": {
+      "iphone_6_9": {
+        "pixels": 553.515625,
+        "canvas_percent": 19.3
+      },
+      "ipad_13": {
+        "pixels": 550.390625,
+        "canvas_percent": 20.0
+      },
+      "maximum_spread_pixels": 0
+    },
+    "sets": [
+      {
+        "locale": "en-US",
+        "device": "iphone-6.9",
+        "display_type": "APP_IPHONE_67",
+        "set_id": "747df657-b14e-469e-9dd0-4e52c219535f",
+        "contact_sheet_sha256": "564620b3b8249b6211eb8c5c6a4b249204dfce326f1fdafb914f91d78af8d2c6",
+        "delivery_state": "COMPLETE",
+        "items": [
+          {
+            "order": 1,
+            "filename": "01-growth-rhythm-en-us-iphone-6.9-1320x2868.png",
+            "bytes": 406707,
+            "sha256": "2de7c579125c7b26b210a351f90bb9ec6ec2d772847a765546b6abb7d0cdd561",
+            "apple_source_checksum_md5": "b54abef111f92139368f8d8849bb1cf7",
+            "width": 1320,
+            "height": 2868
+          },
+          {
+            "order": 2,
+            "filename": "02-growth-take-root-en-us-iphone-6.9-1320x2868.png",
+            "bytes": 441312,
+            "sha256": "a11f158bbfa8dd5d76f5479f377d6e07b09c5360ffa45bfa510e3551c46205ae",
+            "apple_source_checksum_md5": "b93068c3f85b825972e4b4348d8e34b1",
+            "width": 1320,
+            "height": 2868
+          },
+          {
+            "order": 3,
+            "filename": "03-growth-arrive-en-us-iphone-6.9-1320x2868.png",
+            "bytes": 343673,
+            "sha256": "c7a70f95579e2a1f791b22e06f95a3d9adf8f809a56cb399e33b164e7becd04e",
+            "apple_source_checksum_md5": "17445d461bb0a81cfc6eb55017c1f95b",
+            "width": 1320,
+            "height": 2868
+          },
+          {
+            "order": 4,
+            "filename": "04-growth-stays-en-us-iphone-6.9-1320x2868.png",
+            "bytes": 374502,
+            "sha256": "a982a05dc99938bb8ebc6be0d9b74bf270fe6cf08a820c1cf12007574a9caab5",
+            "apple_source_checksum_md5": "df1ea9e1c9ca79d59384e7d43b60a06a",
+            "width": 1320,
+            "height": 2868
+          },
+          {
+            "order": 5,
+            "filename": "05-growth-reflect-en-us-iphone-6.9-1320x2868.png",
+            "bytes": 282391,
+            "sha256": "024c6d1746212e58db593b6a7d8951908f8823fceae8dedbb1816364c63933fa",
+            "apple_source_checksum_md5": "64d4974381a81d275498a13e1db99ba1",
+            "width": 1320,
+            "height": 2868
+          },
+          {
+            "order": 6,
+            "filename": "06-growth-refuge-en-us-iphone-6.9-1320x2868.png",
+            "bytes": 351235,
+            "sha256": "5fdc530e08adee8fb48015ff059006929455d8ab50ec8037e14a9fda89acf9ac",
+            "apple_source_checksum_md5": "50ea6ec63bd17b38e884dd8c6991a841",
+            "width": 1320,
+            "height": 2868
+          }
+        ]
+      },
+      {
+        "locale": "en-US",
+        "device": "ipad-13",
+        "display_type": "APP_IPAD_PRO_3GEN_129",
+        "set_id": "5578c5a8-516b-4530-a04d-5a1d6772f729",
+        "contact_sheet_sha256": "2732a03598b04ce71f2526196a207392a85b054bab620fd6ad5b12518c84d0ab",
+        "delivery_state": "COMPLETE",
+        "items": [
+          {
+            "order": 1,
+            "filename": "01-growth-rhythm-en-us-ipad-13-2064x2752.png",
+            "bytes": 424931,
+            "sha256": "e0881cda88169be56d24acf87378260c66652d81324a7fe2e6089ec5ba29ce0b",
+            "apple_source_checksum_md5": "9b343cf759ccbbff5b23bdc8a741952a",
+            "width": 2064,
+            "height": 2752
+          },
+          {
+            "order": 2,
+            "filename": "02-growth-take-root-en-us-ipad-13-2064x2752.png",
+            "bytes": 596779,
+            "sha256": "091931c205bb94133a956cf6e1505f702bb613ea6bf8150ae9edcd4a53a6771d",
+            "apple_source_checksum_md5": "30642d9bec9b47e48744682046e35da8",
+            "width": 2064,
+            "height": 2752
+          },
+          {
+            "order": 3,
+            "filename": "03-growth-arrive-en-us-ipad-13-2064x2752.png",
+            "bytes": 488592,
+            "sha256": "ee17cdbfa13a245882f1908eca843c44afa14d9399cb37ddca18ca6803f2e0c7",
+            "apple_source_checksum_md5": "e3a80a629b955ba9ae96ef40a6152ed7",
+            "width": 2064,
+            "height": 2752
+          },
+          {
+            "order": 4,
+            "filename": "04-growth-stays-en-us-ipad-13-2064x2752.png",
+            "bytes": 458173,
+            "sha256": "bcf6c94f709d13db2c7ae60fbeb53027fcd5fafde22b7c306faa737382154567",
+            "apple_source_checksum_md5": "b5a6a59a2cea9401c197c29506806226",
+            "width": 2064,
+            "height": 2752
+          },
+          {
+            "order": 5,
+            "filename": "05-growth-reflect-en-us-ipad-13-2064x2752.png",
+            "bytes": 371385,
+            "sha256": "c5ee6249dbb4b3a3af8da359965c82f0eeece4fecbd653356ef9c4c006e05954",
+            "apple_source_checksum_md5": "4c9776ba45b7b9f9cf6f196e705dadf3",
+            "width": 2064,
+            "height": 2752
+          },
+          {
+            "order": 6,
+            "filename": "06-growth-refuge-en-us-ipad-13-2064x2752.png",
+            "bytes": 499454,
+            "sha256": "608f03db046dfa933a9290fbfc06455e8850a8c537f92717e1cfb04bae9402f2",
+            "apple_source_checksum_md5": "86528bf6fd34d7c9ac48870fcf7fc13c",
+            "width": 2064,
+            "height": 2752
+          }
+        ]
+      },
+      {
+        "locale": "de-DE",
+        "device": "iphone-6.9",
+        "display_type": "APP_IPHONE_67",
+        "set_id": "356ddf36-6efa-4696-880e-179a73db774e",
+        "contact_sheet_sha256": "e40b19cc8339dae3e815946f90a7935981cb5c3ab19ca5de9ae5216c7c6f7a3d",
+        "delivery_state": "COMPLETE",
+        "items": [
+          {
+            "order": 1,
+            "filename": "01-growth-rhythm-de-de-iphone-6.9-1320x2868.png",
+            "bytes": 401514,
+            "sha256": "e636895f231ac0cb7ee45026f3e7c78b36dd1331e99d21f003f547e6c1201911",
+            "apple_source_checksum_md5": "af4c3867e759fa99ed9d1a21dbf3958e",
+            "width": 1320,
+            "height": 2868
+          },
+          {
+            "order": 2,
+            "filename": "02-growth-take-root-de-de-iphone-6.9-1320x2868.png",
+            "bytes": 466243,
+            "sha256": "b09ac3577ba8dee1beb1212b50e69c43c2c49691784d0695b7ea964c6d941bf8",
+            "apple_source_checksum_md5": "3523402afd877c3343a1e5aecbf2df2b",
+            "width": 1320,
+            "height": 2868
+          },
+          {
+            "order": 3,
+            "filename": "03-growth-arrive-de-de-iphone-6.9-1320x2868.png",
+            "bytes": 349486,
+            "sha256": "8e4b6c8f9011e027b74f71b64d9b494c33b7ed640b3b34a1f40d0117b7442f71",
+            "apple_source_checksum_md5": "c686d2853b04002cc94d30ab60e181d5",
+            "width": 1320,
+            "height": 2868
+          },
+          {
+            "order": 4,
+            "filename": "04-growth-stays-de-de-iphone-6.9-1320x2868.png",
+            "bytes": 391639,
+            "sha256": "41aa8cec1aa13fa2cb894ccd82c85aa0e2460f280f3c3db49725702bdde2e795",
+            "apple_source_checksum_md5": "8c1000c2adb7e50e318a18a85ac4e61f",
+            "width": 1320,
+            "height": 2868
+          },
+          {
+            "order": 5,
+            "filename": "05-growth-reflect-de-de-iphone-6.9-1320x2868.png",
+            "bytes": 318872,
+            "sha256": "0902b5416e0b5b4deeeed9bb2e049c29e278794800760cb921f84891a49664a1",
+            "apple_source_checksum_md5": "785f84d7108c634c042d595d0d4300b6",
+            "width": 1320,
+            "height": 2868
+          },
+          {
+            "order": 6,
+            "filename": "06-growth-refuge-de-de-iphone-6.9-1320x2868.png",
+            "bytes": 354314,
+            "sha256": "8ae51756fb90946d65beeff2ddea2d7cd8e14b97e7015771d86dfc4b5fe5aa6d",
+            "apple_source_checksum_md5": "994de21024cb21f48f813ea13fe4c208",
+            "width": 1320,
+            "height": 2868
+          }
+        ]
+      },
+      {
+        "locale": "de-DE",
+        "device": "ipad-13",
+        "display_type": "APP_IPAD_PRO_3GEN_129",
+        "set_id": "e050db16-6eb1-4cbb-8d56-318fcd2d59c0",
+        "contact_sheet_sha256": "4de98cd6880c3d5c8b828e5614de8bfb26e4d219b1781c433037272871448d97",
+        "delivery_state": "COMPLETE",
+        "items": [
+          {
+            "order": 1,
+            "filename": "01-growth-rhythm-de-de-ipad-13-2064x2752.png",
+            "bytes": 429736,
+            "sha256": "7148d0d2a24e10a3b8587ef9ea6132d7e518a0927c65fe8e5258522b5fae1880",
+            "apple_source_checksum_md5": "6f1902c78f32312cebfb1279acaa0d7b",
+            "width": 2064,
+            "height": 2752
+          },
+          {
+            "order": 2,
+            "filename": "02-growth-take-root-de-de-ipad-13-2064x2752.png",
+            "bytes": 617345,
+            "sha256": "5a7e277c14fe86c9b4a62bec129e7b654e82bb54857f1dd2410ca488aaed9899",
+            "apple_source_checksum_md5": "87fb5897dbd6b3c4113c572fd19edfb0",
+            "width": 2064,
+            "height": 2752
+          },
+          {
+            "order": 3,
+            "filename": "03-growth-arrive-de-de-ipad-13-2064x2752.png",
+            "bytes": 490935,
+            "sha256": "51b8934e4fb36bfbe2b15d71f4c49684496952531348e80e3b4bcf32d8c54186",
+            "apple_source_checksum_md5": "9f654ada47b68e9729dbb7f52a6b285a",
+            "width": 2064,
+            "height": 2752
+          },
+          {
+            "order": 4,
+            "filename": "04-growth-stays-de-de-ipad-13-2064x2752.png",
+            "bytes": 493625,
+            "sha256": "df3a3242d45e0de77712e25fafd2fd6c41915575795c265554ab88c203f6d9f0",
+            "apple_source_checksum_md5": "a6722ef660770df2320260267b4d3b47",
+            "width": 2064,
+            "height": 2752
+          },
+          {
+            "order": 5,
+            "filename": "05-growth-reflect-de-de-ipad-13-2064x2752.png",
+            "bytes": 398610,
+            "sha256": "a83d0f784897e6686c43cb309380ea5adaee053c07ae1553504601449074ec33",
+            "apple_source_checksum_md5": "07a9f641fc7cead642320bcd376ed900",
+            "width": 2064,
+            "height": 2752
+          },
+          {
+            "order": 6,
+            "filename": "06-growth-refuge-de-de-ipad-13-2064x2752.png",
+            "bytes": 497342,
+            "sha256": "85953b64234a88759acb5d92f6c335a8d3b99de0d5f381ba1d91531080526716",
+            "apple_source_checksum_md5": "703a1dd7752a7a19fce94b09b9bf6d9b",
+            "width": 2064,
+            "height": 2752
+          }
+        ]
+      }
+    ]
+  },
+  "physical_runtime": {
+    "installed_version_build_verified": [
+      "iPhone",
+      "iPad"
+    ],
+    "real_three_minute_timer_completion": [
+      "iPhone",
+      "iPad"
+    ],
+    "garden_and_journey_completion_projection": [
+      "iPhone",
+      "iPad"
+    ],
+    "pause_resume_and_background_elapsed_hold": [
+      "iPad"
+    ],
+    "locales_inspected": [
+      "English",
+      "German"
+    ],
+    "sessions_closed": true,
+    "evidence_scope": "Bounded exact-build runtime observations, not a complete physical system or assistive-technology matrix.",
+    "cold_termination_proven": false,
+    "human_audio_audibility_inferred": false,
+    "known_minor_followup": "Singular minute/second accessibility duration wording uses the plural format; the visible numeric timer is unaffected."
+  },
+  "engineering_gates": {
+    "frozen_app_source_commit": "42afc7799256481fce84745150f1ff29eaa56f11",
+    "offline_goal_root": "passed",
+    "offline_goal_tracked_only_clone": "passed",
+    "concrete_iphone_ipad_release": "passed",
+    "archive_and_ipa_inspection": "361 checks each passed",
+    "formal_security_scan": "owner-waived-not-passed",
+    "independent_review": "cleared before source and marketing delivery"
+  },
+  "claim_boundary": "Exact 1.0.2 (19) is in internal TestFlight and submitted to App Review with 24 approved checksum-matched screenshots. Apple reports WAITING_FOR_REVIEW; approval and public release are not claimed. Version 1.0.1 (18) remains public. The compiled icon was inspected in the distribution artifact; a new storefront icon is not claimed. Apple supplied no server-side IPA checksum. Raw provider, physical and signing evidence stays private; this is a public-safe dated summary."
+}

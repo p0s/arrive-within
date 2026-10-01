@@ -19,7 +19,7 @@ const checks = [];
 const blockers = [
   "exact build-18 Lock Screen and expanded Dynamic Island presentation",
   "exact build-18 Live Activities-disabled, Dynamic Type, VoiceOver, and measured-energy rows",
-  "any App Review or public release mutation for version 1.0.1 remains separately authorized",
+  "version 1.0.2 App Review outcome and separately authorized manual public release",
 ];
 
 function pathFromRoot(path) {
@@ -92,6 +92,7 @@ const privacyWorksheet = json("docs/release/app-privacy-worksheet.json");
 const candidate = json("docs/release/candidate.example.json");
 const currentRelease = json("docs/release/current-release.example.json");
 const releaseTrain = json("docs/release/release-train.json");
+const build19Review = json("docs/qa/release/build-19-app-review.json");
 const privacyManifest = parsePlist("Apps/ArriveWithin/Resources/PrivacyInfo.xcprivacy");
 const infoPlist = parsePlist("Apps/ArriveWithin/Resources/Info.plist");
 
@@ -396,7 +397,7 @@ record(
   "release-train.candidate-current-state",
   releaseTrain.schema_version === 2
     && releaseTrain.candidate_manifest === null
-    && releaseTrain.status === "public-1.0-build16-app-store-1.0.1-build18-live-candidate-code-pending"
+    && releaseTrain.status === "public-1.0.1-build18-live-1.0.2-build19-waiting-for-review"
     && releaseTrain.replacement_candidate?.marketing_version === "1.0"
     && releaseTrain.replacement_candidate?.build_number === 16
     && releaseTrain.replacement_candidate?.apple_state === "READY_FOR_SALE"
@@ -513,6 +514,71 @@ record(
   "submitted listing media must remain bound to the exact approved export tree and live checksum readback",
 );
 
+record(
+  "release-train.build19-review-binding",
+  build19Review.schema_version === 1
+    && build19Review.observed_at === "2026-10-01"
+    && build19Review.marketing_version === "1.0.2"
+    && build19Review.build_number === 19
+    && build19Review.app_source_commit === "42afc7799256481fce84745150f1ff29eaa56f11"
+    && build19Review.marketing_source_commit === "74283d0d7b9464991a7f2fab323594aabe9da57b"
+    && build19Review.apple_build_id === "e00d910e-b2ec-44bb-b947-b479155a7147"
+    && build19Review.app_store_version_id === "1e9b3165-016d-4510-b644-1db5b9e9f0c2"
+    && build19Review.review_submission_id === "bdbb8994-0493-4be7-a445-bffda381ace7"
+    && build19Review.review_submission_state === "WAITING_FOR_REVIEW"
+    && build19Review.review_item_count === 1
+    && build19Review.review_item_version_id === build19Review.app_store_version_id
+    && build19Review.ipa_sha256 === "669deeaa745d5884affb30135a8a65e5272ee74c997bdd6dedd500592abf96ee"
+    && releaseTrain.current_candidate_readback?.review_submission_id === build19Review.review_submission_id
+    && releaseTrain.current_candidate_readback?.app_source_commit === build19Review.app_source_commit
+    && releaseTrain.current_candidate_readback?.apple_build_id === build19Review.apple_build_id
+    && releaseTrain.current_candidate_readback?.public_safe_report === "docs/qa/release/build-19-app-review.json",
+  "dated build-19 submission must bind the exact frozen app, marketing source, artifact and review item",
+);
+
+const build19Sets = build19Review.screenshots?.sets ?? [];
+equal("release-train.build19-screenshot-matrix", build19Sets.map((set) => `${set.locale}/${set.device}`).sort(), [
+  "de-DE/ipad-13", "de-DE/iphone-6.9", "en-US/ipad-13", "en-US/iphone-6.9",
+]);
+record(
+  "release-train.build19-screenshot-bytes",
+  build19Review.screenshots?.owner_approved === true
+    && build19Review.screenshots?.count === 24
+    && build19Review.screenshots?.apple_md5_sizes_dimensions_order_verified === true
+    && build19Sets.length === 4
+    && build19Sets.every((set) => {
+      const directory = `Marketing/AppStoreScreenshots/exports/${set.locale}/${set.device}`;
+      const dimensions = set.device === "iphone-6.9" ? [1320, 2868] : [2064, 2752];
+      return set.delivery_state === "COMPLETE"
+        && set.contact_sheet_sha256 === sha256File(`${directory}/_contact-sheet.jpg`)
+        && set.items?.length === 6
+        && set.items.every((item, index) => {
+          const bytes = readFileSync(pathFromRoot(`${directory}/${item.filename}`));
+          return item.order === index + 1
+            && item.filename.startsWith(`${String(index + 1).padStart(2, "0")}-`)
+            && item.bytes === bytes.length
+            && item.width === dimensions[0] && item.height === dimensions[1]
+            && item.sha256 === sha256Bytes(bytes)
+            && item.apple_source_checksum_md5 === createHash("md5").update(bytes).digest("hex");
+        });
+    }),
+  "the recorded 24-image Apple checksum observation must match the exact approved local PNG bytes and numbered order",
+);
+record(
+  "release-train.build19-public-boundary",
+  build19Review.release_type === "MANUAL"
+    && build19Review.public_release_performed === false
+    && build19Review.previous_public_version === "1.0.1"
+    && build19Review.previous_public_build === 18
+    && build19Review.physical_runtime?.sessions_closed === true
+    && build19Review.physical_runtime?.cold_termination_proven === false
+    && build19Review.physical_runtime?.human_audio_audibility_inferred === false
+    && build19Review.engineering_gates?.formal_security_scan === "owner-waived-not-passed"
+    && releaseTrain.current_candidate_readback?.release_type === "MANUAL"
+    && releaseTrain.current_candidate_readback?.public_release_performed === false,
+  "submission evidence must preserve manual release and explicitly bounded runtime/security claims",
+);
+
 const sourceHashes = Object.fromEntries([
   ...localePaths,
   "docs/release/metadata/shared.json",
@@ -520,6 +586,8 @@ const sourceHashes = Object.fromEntries([
   "docs/release/current-release.example.json",
   "docs/release/candidate.example.json",
   "docs/release/release-train.json",
+  "docs/qa/release/build-19-app-review.json",
+  "docs/qa/release/build-19-app-review.md",
   "Apps/ArriveWithin/Resources/PrivacyInfo.xcprivacy",
   "Apps/ArriveWithin/Resources/Info.plist",
   "Marketing/AppStoreScreenshots/screenshot-plan.json",
@@ -527,7 +595,7 @@ const sourceHashes = Object.fromEntries([
 
 const report = {
   schema_version: 1,
-  status: failures.length === 0 ? "passed-source-contract-public-1.0-build16-app-store-1.0.1-build18" : "failed",
+  status: failures.length === 0 ? "passed-source-contract-public-1.0.1-build18-build19-review-readback" : "failed",
   release_ready: false,
   source_contract_passed: failures.length === 0,
   candidate_bound: true,
@@ -540,7 +608,7 @@ const report = {
   blockers,
   failures,
   checks,
-  claim_boundary: "This deterministic source check validates the repository's exact public build-16 binding, the recorded 1.0.1 build-18 provenance/evidence contract, and the separately recorded 2026-09-25 App Store Connect readback. It does not itself reproduce frozen binaries, live ASC/TestFlight/storefront/GitHub state, physical-device runtime, or the remaining Lock Screen, expanded Dynamic Island, authorization-disabled, assistive-technology, and energy rows.",
+  claim_boundary: "This deterministic source check validates historical build-16/18 records and the dated 1.0.2 build-19 review receipt, including exact local screenshot bytes and the manual public-release boundary. It does not itself reproduce frozen binaries, query live ASC/TestFlight/storefront/GitHub state, or reproduce physical-device, human-audio, assistive-technology, and energy evidence.",
 };
 
 if (process.argv.includes("--write-report")) {
@@ -567,6 +635,6 @@ if (process.argv.includes("--write-report")) {
   writeFileSync(join(outputDirectory, "release-source-validation.txt"), textReport);
 }
 
-console.log(`Release source validation ${report.status}: ${report.checks_passed} passed, ${report.checks_failed} failed; public build 16 and the exact valid build-18 physical-evidence boundary remain bound.`);
+console.log(`Release source validation ${report.status}: ${report.checks_passed} passed, ${report.checks_failed} failed; historical public releases and the exact build-19 review receipt remain bound.`);
 for (const failure of failures) console.error(`error: ${failure}`);
 process.exitCode = failures.length === 0 ? 0 : 1;

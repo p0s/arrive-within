@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "status": "public-1.0-build16-app-store-1.0.1-build18-live-candidate-code-pending",
+  "status": "public-1.0.1-build18-live-1.0.2-build19-waiting-for-review",
   "narrated_update_status": "build-16-ready-for-sale-review-complete",
   "narration_status": "v4-84-owner-approved-promoted-packaged",
   "current_release_snapshot": "docs/release/current-release.example.json",
@@ -212,5 +212,23 @@
     {"order": 12, "id": "storefront-install-verify", "status": "verified-public-storefront-build-16-install-not-repeated", "authorization": "exact-app-release-and-public-readback-authorized-after-approval", "readback": "The public US App Store page at https://apps.apple.com/us/app/arrive-within-meditation/id6800192697 rendered Arrive Within: Meditation on 2026-08-30. A new storefront installation of public build 16 was not performed because exact internal build 18 was already installed for the authorized post-1.0 evidence run."},
     {"order": 13, "id": "public-repository-and-release-assets", "status": "verified-public-origin-main-signed-root", "authorization": "owner-authorized-git-initialization-staging-ssh-signed-initial-commit-exact-existing-origin-main-push-and-public-visibility; github-actions-tags-releases-and-unrelated-repository-settings-remain-separate", "readback": "GitHub initial publication readback confirmed the canonical repository is public with default branch main and origin/main byte-exact at SSH-signed root commit 6d7ba49967f3082e39dcb0437402a97593897276. The exact initial 689-file tracked tree and then-reachable one-commit history passed public/privacy/secret/size/license review, and a tracked-only clean clone reproduced the complete root gate plus unsigned universal Release build. The root remains immutable reachable history as later reviewed commits advance main. Signed narration PR 30 is merged in main at b993fd8533381e01557d9ee9da22322b4f4c8ecb, the exact source used for build 16, and the complete narrated-source gate passes. No GitHub Actions workflow or run exists. This post-build repository publication does not replace or retrofit Git lineage onto the immutable pre-Git source manifests for builds 1 through 7."}
   ],
-  "claim_boundary": "Public version 1.0 remains bound to exact build 16, signed source merge b993fd8533381e01557d9ee9da22322b4f4c8ecb, inspected archive/IPA hashes, 84 owner-approved narrated tracks, corrected bilingual metadata, 24 checksum-matched screenshots, and the approved non-consumable. The current public version is 1.0.1 build 18, Apple build dccf3c83-99c9-4671-aad6-9cd2f7fbfa9f; read-only App Store Connect state on 2026-09-25 reports processing VALID, READY_FOR_SALE, READY_FOR_DISTRIBUTION, and review COMPLETE. The exact build was physically verified on an authorized iPhone for compact Dynamic Island running, pause/resume, recovery, and end lifecycle. Lock Screen, expanded Dynamic Island, disabled authorization, Dynamic Type, VoiceOver, and energy remain unverified. The owner reports the current listing retains the older icon and the second screenshot with two dark Gardens. Candidate 1.0.2 is source work only and remains unregistered; its complete screenshot matrix, exact archive and icon proof, physical checks, and release actions are pending. No release mutation was performed during the 2026-09-25 readback."
+  "current_candidate_readback": {
+    "observed_at": "2026-10-01",
+    "marketing_version": "1.0.2",
+    "build_number": 19,
+    "app_source_commit": "42afc7799256481fce84745150f1ff29eaa56f11",
+    "marketing_source_commit": "74283d0d7b9464991a7f2fab323594aabe9da57b",
+    "apple_build_id": "e00d910e-b2ec-44bb-b947-b479155a7147",
+    "app_store_version_id": "1e9b3165-016d-4510-b644-1db5b9e9f0c2",
+    "review_submission_id": "bdbb8994-0493-4be7-a445-bffda381ace7",
+    "submitted_at": "2026-10-01T01:59:53.745Z",
+    "review_submission_state": "WAITING_FOR_REVIEW",
+    "release_type": "MANUAL",
+    "public_release_performed": false,
+    "screenshots_verified": 24,
+    "public_safe_report": "docs/qa/release/build-19-app-review.json",
+    "ipa_sha256": "669deeaa745d5884affb30135a8a65e5272ee74c997bdd6dedd500592abf96ee",
+    "physical_runtime_scope": "Exact-build bounded Timer/Garden/Journey on iPhone and iPad; iPad pause/resume/background. Full system, human audio and assistive-technology proof is not inferred."
+  },
+  "claim_boundary": "Public version 1.0.1 (18) remains live. The dated September 25 readback and historical build 16/18 ledgers are preserved. Exact 1.0.2 (19), from app source 42afc7799256481fce84745150f1ff29eaa56f11 and the inspected IPA, is in internal TestFlight and WAITING_FOR_REVIEW under submission bdbb8994-0493-4be7-a445-bffda381ace7. Its 24 approved English/German iPhone/iPad screenshots match Apple checksums, sizes, dimensions and ordering; the front Garden is light, the rear Garden is dark, and frame heights align. Bounded exact-build Timer completion and Garden/Journey projections passed on both device families. Full system, assistive-technology and human-audibility proof is not inferred. MANUAL release remains unchanged; approval and a new public icon/listing are not claimed. Dated proof is in docs/qa/release/build-19-app-review.json."
 }

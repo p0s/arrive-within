@@ -1,15 +1,15 @@
-status: passed-source-contract-public-1.0-build16-post-1.0-build18
+status: passed-source-contract-public-1.0.1-build18-build19-review-readback
 release_ready: false
 source_contract_passed: true
 candidate_bound: true
-checks_passed: 121
+checks_passed: 125
 checks_failed: 0
-shipping_source_file_count: 75
-shipping_source_sha256: afecf83b08b9e781506d59ffa6dfa522ab52b69b0ecef44bb6752638d8fe8241
+shipping_source_file_count: 80
+shipping_source_sha256: fe2d06dd65491872f0eda7786c066f3f01a5702b5dd5bd1374d7064c57c5c34e
 
 Remaining gates:
 - exact build-18 Lock Screen and expanded Dynamic Island presentation
 - exact build-18 Live Activities-disabled, Dynamic Type, VoiceOver, and measured-energy rows
-- any App Review or public release mutation for version 1.0.1 remains separately authorized
+- version 1.0.2 App Review outcome and separately authorized manual public release
 
-This deterministic source check validates the repository's exact public build-16 binding and the recorded post-1.0 build-18 provenance/evidence contract. It does not itself reproduce frozen binaries, live ASC/TestFlight/storefront/GitHub state, physical-device runtime, or the remaining Lock Screen, expanded Dynamic Island, authorization-disabled, assistive-technology, and energy rows.
+This deterministic source check validates historical build-16/18 records and the dated 1.0.2 build-19 review receipt, including exact local screenshot bytes and the manual public-release boundary. It does not itself reproduce frozen binaries, query live ASC/TestFlight/storefront/GitHub state, or reproduce physical-device, human-audio, assistive-technology, and energy evidence.

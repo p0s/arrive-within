@@ -1,30 +1,32 @@
 {
   "schema_version": 1,
-  "status": "passed-source-contract-public-1.0-build16-post-1.0-build18",
+  "status": "passed-source-contract-public-1.0.1-build18-build19-review-readback",
   "release_ready": false,
   "source_contract_passed": true,
   "candidate_bound": true,
   "apple_rules_verified_at": "2026-08-10",
-  "checks_passed": 121,
+  "checks_passed": 125,
   "checks_failed": 0,
-  "shipping_source_file_count": 75,
-  "shipping_source_sha256": "afecf83b08b9e781506d59ffa6dfa522ab52b69b0ecef44bb6752638d8fe8241",
+  "shipping_source_file_count": 80,
+  "shipping_source_sha256": "fe2d06dd65491872f0eda7786c066f3f01a5702b5dd5bd1374d7064c57c5c34e",
   "source_hashes": {
-    "docs/release/metadata/en-US.json": "7c6407782e9125c29f504a96c939c7ae19ef28a4770dc1a7cd6805ca45315386",
-    "docs/release/metadata/de-DE.json": "3e70e1fb55f3850b28b60ed3939cea4508c70ca93619701c75475d5acf9990b1",
-    "docs/release/metadata/shared.json": "505931c7bf3b04792f4b77159887208b71a263401913f5f3af3df1982c2bb14d",
+    "docs/release/metadata/en-US.json": "97167dee8382ced1af9ac1fd34f8570f1c5107bc02c2618805a83c7e826c72f7",
+    "docs/release/metadata/de-DE.json": "d6a3489dda0d769c01ee05d3ca8a406b5bf905de7ef512bb453861a9b18ce470",
+    "docs/release/metadata/shared.json": "58cce96b8fdb847cde47048503025cd34156d948a1665aef6c978ba9c0ef5336",
     "docs/release/app-privacy-worksheet.json": "9ec7e0269c76b93b7030be1988587acc90ef3ae3e4b1e7573c0b258d64b97652",
     "docs/release/current-release.example.json": "ec582d76079c089e4ef2bda1af5a1f37b02aae0163a83a4f8d818412f322db4c",
     "docs/release/candidate.example.json": "a1c209e5786e4bd846efadc40e537f9b4bc0b9d9fdeb898c8f9ac4ce65e1162c",
-    "docs/release/release-train.json": "5d045ecdec2463bfc64fa3b588d29cf62c940f0511a00427f1ac3d6689942708",
+    "docs/release/release-train.json": "c7a8c69fe0e3428a5cca6667a3e9ad01084e7471e8b3c1daad64e098e1b1f608",
+    "docs/qa/release/build-19-app-review.json": "56ad9a3124afee79ade1dfdcc72f4dee188ff8dc038613ee147f6b2d35fd3e2a",
+    "docs/qa/release/build-19-app-review.md": "88a44b653b5578e38123f7deac60bd4f0da39624e9d9ca9b3de37176ae302935",
     "Apps/ArriveWithin/Resources/PrivacyInfo.xcprivacy": "0562b6e4331f1fcffb4d7b7e3e11c240ebbf6dbef84ec1b66318408d9f2d524b",
-    "Apps/ArriveWithin/Resources/Info.plist": "cc2ff3758b5917c9975c6e4695b4625fa960e612f49581f44a382e9f080599a4",
-    "Marketing/AppStoreScreenshots/screenshot-plan.json": "f53eb84de0d8907c86038409998b8193146a6c761e6489b52300911a8b5302d4"
+    "Apps/ArriveWithin/Resources/Info.plist": "faaf226afbfb9c8327e55e9d062222baf730996cf5f15097acd8249dc3d81e4c",
+    "Marketing/AppStoreScreenshots/screenshot-plan.json": "3f26db82c0880fb1d5f56fea5bffa57ee95f6e0848fd70542cd6a3c5ed309914"
   },
   "blockers": [
     "exact build-18 Lock Screen and expanded Dynamic Island presentation",
     "exact build-18 Live Activities-disabled, Dynamic Type, VoiceOver, and measured-energy rows",
-    "any App Review or public release mutation for version 1.0.1 remains separately authorized"
+    "version 1.0.2 App Review outcome and separately authorized manual public release"
   ],
   "failures": [],
   "checks": [
@@ -41,7 +43,7 @@
     {
       "id": "metadata.shared-live",
       "passed": true,
-      "detail": "shared metadata must bind public build 16 and the current valid post-1.0 candidate while preserving the verified public URL binding"
+      "detail": "shared metadata must bind public build 16, released App Store build 18, and the verified public URL binding"
     },
     {
       "id": "metadata.rules-date",
@@ -126,7 +128,7 @@
     {
       "id": "metadata.en-US.screenshot-headlines",
       "passed": true,
-      "detail": "expected [\"Arrive in the moment\",\"Let practice take root\",\"See your practice rhythm\",\"Growth that stays\",\"Notice what changed\",\"A refuge that remembers\"]; found [\"Arrive in the moment\",\"Let practice take root\",\"See your practice rhythm\",\"Growth that stays\",\"Notice what changed\",\"A refuge that remembers\"]"
+      "detail": "expected [\"See your practice rhythm\",\"Let practice take root\",\"Arrive in the moment\",\"Growth that stays\",\"Notice what changed\",\"A refuge that remembers\"]; found [\"See your practice rhythm\",\"Let practice take root\",\"Arrive in the moment\",\"Growth that stays\",\"Notice what changed\",\"A refuge that remembers\"]"
     },
     {
       "id": "metadata.de-DE.submitted",
@@ -201,7 +203,7 @@
     {
       "id": "metadata.de-DE.screenshot-headlines",
       "passed": true,
-      "detail": "expected [\"Komm ganz hier an\",\"Lass deine Praxis Wurzeln schlagen\",\"Dein Rhythmus im Blick\",\"Wachstum, das bleibt\",\"Spür nach, was sich verändert\",\"Ein Ort, der sich erinnert\"]; found [\"Komm ganz hier an\",\"Lass deine Praxis Wurzeln schlagen\",\"Dein Rhythmus im Blick\",\"Wachstum, das bleibt\",\"Spür nach, was sich verändert\",\"Ein Ort, der sich erinnert\"]"
+      "detail": "expected [\"Dein Rhythmus im Blick\",\"Lass deine Praxis Wurzeln schlagen\",\"Komm ganz hier an\",\"Wachstum, das bleibt\",\"Spür nach, was sich verändert\",\"Ein Ort, der sich erinnert\"]; found [\"Dein Rhythmus im Blick\",\"Lass deine Praxis Wurzeln schlagen\",\"Komm ganz hier an\",\"Wachstum, das bleibt\",\"Spür nach, was sich verändert\",\"Ein Ort, der sich erinnert\"]"
     },
     {
       "id": "metadata.urls-bound",
@@ -632,7 +634,27 @@
       "id": "release-train.post-publication-garden-follow-up",
       "passed": true,
       "detail": "submitted listing media must remain bound to the exact approved export tree and live checksum readback"
+    },
+    {
+      "id": "release-train.build19-review-binding",
+      "passed": true,
+      "detail": "dated build-19 submission must bind the exact frozen app, marketing source, artifact and review item"
+    },
+    {
+      "id": "release-train.build19-screenshot-matrix",
+      "passed": true,
+      "detail": "expected [\"de-DE/ipad-13\",\"de-DE/iphone-6.9\",\"en-US/ipad-13\",\"en-US/iphone-6.9\"]; found [\"de-DE/ipad-13\",\"de-DE/iphone-6.9\",\"en-US/ipad-13\",\"en-US/iphone-6.9\"]"
+    },
+    {
+      "id": "release-train.build19-screenshot-bytes",
+      "passed": true,
+      "detail": "the recorded 24-image Apple checksum observation must match the exact approved local PNG bytes and numbered order"
+    },
+    {
+      "id": "release-train.build19-public-boundary",
+      "passed": true,
+      "detail": "submission evidence must preserve manual release and explicitly bounded runtime/security claims"
     }
   ],
-  "claim_boundary": "This deterministic source check validates the repository's exact public build-16 binding and the recorded post-1.0 build-18 provenance/evidence contract. It does not itself reproduce frozen binaries, live ASC/TestFlight/storefront/GitHub state, physical-device runtime, or the remaining Lock Screen, expanded Dynamic Island, authorization-disabled, assistive-technology, and energy rows."
+  "claim_boundary": "This deterministic source check validates historical build-16/18 records and the dated 1.0.2 build-19 review receipt, including exact local screenshot bytes and the manual public-release boundary. It does not itself reproduce frozen binaries, query live ASC/TestFlight/storefront/GitHub state, or reproduce physical-device, human-audio, assistive-technology, and energy evidence."
 }
