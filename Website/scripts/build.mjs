@@ -12,9 +12,11 @@ import {
   hashWebsiteSource,
   listFiles,
   resolvePublicBaseURL,
+  sha256,
 } from "./lib.mjs";
 
 const BASE_URL = resolvePublicBaseURL();
+const STYLESHEET_VERSION = sha256(await readFile(path.join(ROOT, "src", "site.css")));
 const ROUTES = [
   { locale: "en", page: "home", route: "/", output: "index.html" },
   { locale: "de", page: "home", route: "/de", output: "de/index.html" },
@@ -32,13 +34,16 @@ function routeFor(locale, page) {
   return route;
 }
 
-function asset(locale, name) {
-  const suffix = locale === "de" ? "de" : "en";
-  return `/assets/${name}-${suffix}`;
+function responsive(name, width) {
+  return `/assets/responsive/${name}-${width}.webp`;
+}
+
+function srcset(name, widths) {
+  return widths.map((width) => `${responsive(name, width)} ${width}w`).join(", ");
 }
 
 function brandMark() {
-  return '<img class="brand-mark" src="/assets/brand-icon-180.png" width="180" height="180" alt="" aria-hidden="true">';
+  return '<img class="brand-mark" src="/assets/brand-icon-40.png" srcset="/assets/brand-icon-40.png 40w, /assets/brand-icon-180.png 180w" sizes="(max-width: 520px) 36px, 38px" width="180" height="180" alt="" aria-hidden="true">';
 }
 
 function navigation(locale, activePage) {
@@ -81,8 +86,8 @@ function shell(locale, page, metaTitle, metaDescription, body) {
   const route = routeFor(locale, page);
   const alternateRoute = routeFor(counterpart, page);
   const socialImageAlt = locale === "de"
-    ? "Arrive Within mit einem gewachsenen nächtlichen Garten und dem Satz Meditation, die wächst."
-    : "Arrive Within with a mature night garden and the words Meditation that grows.";
+    ? "Arrive Within mit einem gewachsenen Garten und dem Satz Meditation, die wächst."
+    : "Arrive Within with a mature garden and the words Meditation that grows.";
   return `<!doctype html>
 <html lang="${locale}">
 <head>
@@ -117,7 +122,7 @@ function shell(locale, page, metaTitle, metaDescription, body) {
   <link rel="alternate" hreflang="x-default" href="${BASE_URL}${routeFor("en", page)}">
   <link rel="icon" type="image/png" sizes="40x40" href="/assets/brand-icon-40.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/brand-icon-180.png">
-  <link rel="stylesheet" href="/assets/site.css">
+  <link rel="stylesheet" href="/assets/site.css?v=${STYLESHEET_VERSION}">
   <title>${escapeHtml(metaTitle)}</title>
 </head>
 <body class="page-${page}">
@@ -133,14 +138,14 @@ function homePage(locale) {
   const home = content.home;
   const alt = locale === "de"
     ? {
-        hero: "Ein gewachsener Arrive Within Garten unter einem ruhigen Nachthimmel.",
+        hero: "Ein gewachsener Arrive Within Garten unter einem ruhigen Himmel.",
         gardenPhone: "Arrive Within auf dem iPhone mit einem gewachsenen Garten und der Aktion Meditieren.",
         gardenPad: "Der gewachsene Arrive Within Garten im angepassten iPad-Layout.",
         journey: "Der private Praxiskalender in Arrive Within zeigt einen ehrlichen Rhythmus ohne Streak-Druck.",
         journal: "Das private Arrive Within Journal mit Reflexionseditor auf dem iPad.",
       }
     : {
-        hero: "A mature Arrive Within garden beneath a quiet night sky.",
+        hero: "A mature Arrive Within garden beneath a quiet sky.",
         gardenPhone: "Arrive Within on iPhone showing a mature living garden and the Meditate action.",
         gardenPad: "The mature Arrive Within garden in the adaptive iPad layout.",
         journey: "The private Arrive Within practice calendar shows an honest rhythm without streak pressure.",
@@ -150,11 +155,14 @@ function homePage(locale) {
     .map((item, index) => `<li><span class="mode-number">0${index + 1}</span><h3>${escapeHtml(item.name)}</h3><p>${escapeHtml(item.text)}</p></li>`)
     .join("");
   const facts = home.growth.facts.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
+  const starter = home.starter;
+  const starterSteps = starter.steps.map((step) => `<li><h3>${escapeHtml(step.title)}</h3><p>${escapeHtml(step.text)}</p></li>`).join("");
+  const preview = starter.preview.paragraphs.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("");
   const body = `<main id="main">
     <section class="hero" aria-labelledby="hero-title">
       <picture class="hero-atmosphere">
-        <source media="(max-width: 640px)" srcset="${asset(locale, "garden")}-iphone.png">
-        <img src="/assets/garden-growth-poster.png" width="1280" height="720" alt="${escapeHtml(alt.hero)}" fetchpriority="high">
+        <source media="(max-width: 640px)" srcset="${srcset(`garden-${locale}-iphone`, [480, 960, 1206])}" sizes="100vw">
+        <img src="${responsive("garden-growth-poster", 1280)}" srcset="${srcset("garden-growth-poster", [640, 960, 1280])}" sizes="100vw" width="1280" height="720" alt="${escapeHtml(alt.hero)}" loading="eager" fetchpriority="high">
       </picture>
       <div class="hero-copy">
         <p class="eyebrow">${escapeHtml(home.eyebrow)}</p>
@@ -167,31 +175,36 @@ function homePage(locale) {
     <section class="growth-film-section" id="garden-film">
       <div class="section-heading"><p class="eyebrow">${escapeHtml(home.media.kicker)}</p><h2>${escapeHtml(home.media.title)}</h2><p>${escapeHtml(home.media.body)}</p></div>
       <figure class="growth-film">
-        <video controls preload="metadata" poster="/assets/garden-growth-poster.png" aria-label="${escapeHtml(home.media.label)}">
+        <video controls preload="metadata" poster="${responsive("garden-growth-poster", 1280)}" aria-label="${escapeHtml(home.media.label)}" aria-describedby="garden-film-description">
           <source src="/assets/garden-growth-v1.mp4" type="video/mp4">
           <a href="/assets/garden-growth-v1.mp4">${escapeHtml(home.media.fallback)}</a>
         </video>
+        <figcaption id="garden-film-description">${escapeHtml(home.media.description)}</figcaption>
       </figure>
     </section>
 
     <section class="growth-section" id="growth">
       <div class="section-copy"><p class="eyebrow">${escapeHtml(home.growth.kicker)}</p><h2>${escapeHtml(home.growth.title)}</h2><p>${escapeHtml(home.growth.body)}</p><ul class="fact-line">${facts}</ul></div>
-      <figure class="wide-device"><img loading="lazy" src="${asset(locale, "garden")}-ipad.png" width="2064" height="2752" alt="${escapeHtml(alt.gardenPad)}"></figure>
+      <figure class="wide-device"><img loading="lazy" src="${responsive(`garden-${locale}-ipad`, 960)}" srcset="${srcset(`garden-${locale}-ipad`, [480, 960, 1600, 2064])}" sizes="(max-width: 860px) calc(100vw - 48px), (max-width: 1248px) 45vw, 550px" width="2064" height="2752" alt="${escapeHtml(alt.gardenPad)}"></figure>
     </section>
 
     <section class="modes-section" id="practice">
       <div class="section-heading"><p class="eyebrow">${escapeHtml(home.modes.kicker)}</p><h2>${escapeHtml(home.modes.title)}</h2><p>${escapeHtml(home.modes.body)}</p></div>
       <ol class="mode-list">${modes}</ol>
+      <div class="starter-guide" id="start">
+        <div class="starter-intro"><p class="eyebrow">${escapeHtml(starter.kicker)}</p><h2>${escapeHtml(starter.title)}</h2><p>${escapeHtml(starter.intro)}</p><p>${escapeHtml(starter.privacy)}</p><a class="primary-action" href="${appStoreURL}">${escapeHtml(starter.action)}</a></div>
+        <div><ol class="starter-steps">${starterSteps}</ol><details class="practice-preview"><summary>${escapeHtml(starter.preview.title)}</summary><blockquote>${preview}</blockquote><p>${escapeHtml(starter.preview.note)}</p></details></div>
+      </div>
     </section>
 
     <section class="journey-section">
-      <figure class="journey-visual"><div class="device phone compact"><img loading="lazy" src="${asset(locale, "journey")}-iphone.png" width="1206" height="2622" alt="${escapeHtml(alt.journey)}"></div></figure>
+      <figure class="journey-visual"><div class="device phone compact"><img loading="lazy" src="${responsive(`journey-${locale}-iphone`, 720)}" srcset="${srcset(`journey-${locale}-iphone`, [360, 720, 1206])}" sizes="(max-width: 408px) calc(100vw - 64px), 336px" width="1206" height="2622" alt="${escapeHtml(alt.journey)}"></div></figure>
       <div class="section-copy"><p class="eyebrow">${escapeHtml(home.journey.kicker)}</p><h2>${escapeHtml(home.journey.title)}</h2><p>${escapeHtml(home.journey.body)}</p></div>
     </section>
 
     <section class="privacy-section">
       <div class="section-copy"><p class="eyebrow">${escapeHtml(home.privacy.kicker)}</p><h2>${escapeHtml(home.privacy.title)}</h2><p>${escapeHtml(home.privacy.body)}</p><a class="text-action on-dark" href="${routeFor(locale, "privacy")}">${escapeHtml(home.privacy.link)}</a></div>
-      <figure class="journal-visual"><img loading="lazy" src="${asset(locale, "journal")}-ipad.png" width="2064" height="2752" alt="${escapeHtml(alt.journal)}"></figure>
+      <figure class="journal-visual"><img loading="lazy" src="${responsive(`journal-${locale}-ipad`, 960)}" srcset="${srcset(`journal-${locale}-ipad`, [480, 960, 1600, 2064])}" sizes="(max-width: 860px) calc(100vw - 48px), (max-width: 1248px) 54vw, 670px" width="2064" height="2752" alt="${escapeHtml(alt.journal)}"></figure>
     </section>
 
     <section class="open-section">
@@ -255,10 +268,17 @@ async function main() {
   }
   await mkdir(path.join(DIST, "assets"), { recursive: true });
   await copyFile(path.join(ROOT, "src", "site.css"), path.join(DIST, "assets", "site.css"));
+  const pendingProvenance = JSON.parse(await readFile(path.join(ROOT, "src", "assets", "provenance.json"), "utf8"));
+  const excludedPendingAssets = new Set(["provenance.json", ...pendingProvenance.assets.map((asset) => asset.file)]);
   for (const relative of await listFiles(path.join(ROOT, "src", "assets"))) {
+    if (excludedPendingAssets.has(relative)) continue;
     const output = path.join(DIST, "assets", relative);
     await mkdir(path.dirname(output), { recursive: true });
     await copyFile(path.join(ROOT, "src", "assets", relative), output);
+  }
+  const publishedProvenance = JSON.parse(await readFile(path.join(ROOT, "published-media", "provenance.json"), "utf8"));
+  for (const relative of ["provenance.json", ...publishedProvenance.assets.map((asset) => asset.file)]) {
+    await copyFile(path.join(ROOT, "published-media", relative), path.join(DIST, "assets", relative));
   }
 
   const sitemapUrls = ROUTES.map((route) => `  <url><loc>${BASE_URL}${route.route}</loc></url>`).join("\n");
@@ -283,7 +303,6 @@ async function main() {
 `);
 
   const contentHash = await hashTree(DIST, new Set(["_build-manifest.json"]));
-  const assetProvenance = JSON.parse(await readFile(path.join(ROOT, "src", "assets", "provenance.json"), "utf8"));
   const manifest = {
     schema_version: 1,
     product: "Arrive Within",
@@ -294,7 +313,8 @@ async function main() {
     content_sha256: contentHash.sha256,
     source_file_count: sourceHash.files.length,
     output_file_count_excluding_manifest: contentHash.files.length,
-    capture_source_revision: assetProvenance.source_revision,
+    capture_source_revision: publishedProvenance.source_revision,
+    media_selection: "previously-public-reviewed-media",
     routes: ROUTES.map(({ route }) => route),
     host: {
       provider: "Cloudflare Workers Static Assets",

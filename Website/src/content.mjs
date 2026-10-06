@@ -27,12 +27,13 @@ export const siteContent = {
         body: "Follow the same garden from before the first practice through day 30.",
         label: "Garden-growth film showing the same garden from before the first practice through practice day 30.",
         fallback: "Open the garden-growth film",
+        description: "Silent visual preview: the same garden begins with a small tree and becomes fuller across 30 qualifying practice days. The tree, path, water, and shelter stay in one continuous world. The film compresses progress; it does not show a single session or 30 consecutive calendar days.",
       },
       growth: {
         kicker: "Practice becomes place",
         title: "Show up. See it take root.",
-        body: "Your first three minutes begin a tree. Later practices deepen the same tree and the world around it. Missed days remove nothing; progress comes only from completed practice.",
-        facts: ["One persistent garden", "30 practice-day milestones", "A truthful native fallback"],
+        body: "Complete at least three active minutes to begin a tree. Later completed practices deepen the same tree and the world around it. Paused time does not count. Missed days remove nothing; progress comes only from completed practice.",
+        facts: ["One persistent garden", "30 practice days", "Practice works offline"],
       },
       modes: {
         kicker: "Your practice, your shape",
@@ -43,6 +44,24 @@ export const siteContent = {
           { name: "Timer", text: "A dependable interval timer with calm bells, ambience, and saved preferences." },
           { name: "Stopwatch", text: "Sit without an endpoint. Finish when you are ready; the app never invents completion." },
         ],
+      },
+      starter: {
+        kicker: "Your first few minutes",
+        title: "Begin with a practice, not a streak.",
+        intro: "Everything you need to meditate is free: guided practices, timer, stopwatch, reflections, and the complete growing garden. One optional, one-time purchase changes the garden’s material style; it never buys or speeds up progress.",
+        steps: [
+          { title: "Choose a quiet start", text: "Try Arrive Here, a three-minute guided practice, or set the timer for a length that fits. Sit, stand, or lie down where you can stay safely still." },
+          { title: "Practice at your own pace", text: "English and German narration and transcripts are included for offline use after installation. You can pause, resume, or end when you need to." },
+          { title: "Finish and let it grow", text: "A completed session with at least three active minutes adds permanent growth. The first qualifying session of a practice day advances your journey; more sessions that day add growth without skipping days. A shorter completed sit can stay in history. Miss a day and keep everything that has grown." },
+        ],
+        preview: {
+          title: "Read an excerpt from Arrive Here",
+          source: "Content/guided/G01/script.en.md",
+          paragraphs: ["Choose a position that asks as little effort as possible. You can sit, stand, or lie down. If closing your eyes does not feel right, leave them open and let your gaze rest somewhere simple.", "Notice that the ground is already meeting you. Feel one or two places where your body is supported: feet on the floor, the seat beneath you, or the surface under your back."],
+          note: "An excerpt from the original three-minute practice. The complete narration and transcript are in the app; this website does not run or save a session.",
+        },
+        privacy: "No Arrive Within account or cloud sync is needed. Practice and reflections stay on your device unless you deliberately export and share them.",
+        action: "Start with Arrive Within",
       },
       journey: {
         kicker: "A rhythm without pressure",
@@ -142,12 +161,13 @@ export const siteContent = {
         body: "Begleite denselben Garten von vor der ersten Meditation bis zum 30. Praxistag.",
         label: "Gartenfilm, der denselben Garten von vor der ersten Meditation bis zum 30. Praxistag zeigt.",
         fallback: "Gartenfilm öffnen",
+        description: "Stumme Vorschau: Derselbe Garten beginnt mit einem kleinen Baum und wird über 30 qualifizierende Praxistage voller. Baum, Weg, Wasser und Unterstand bleiben Teil derselben Welt. Der Film fasst den Fortschritt zusammen; er zeigt weder eine einzelne Sitzung noch 30 aufeinanderfolgende Kalendertage.",
       },
       growth: {
         kicker: "Praxis wird zu einem Ort",
         title: "Komm wieder. Lass ihn Wurzeln schlagen.",
-        body: "Die ersten drei Minuten beginnen einen Baum. Weitere Meditationen vertiefen denselben Baum und seine Umgebung. Pausentage nehmen dir nichts; Fortschritt entsteht nur durch vollendete Praxis.",
-        facts: ["Ein bleibender Garten", "30 Meilensteine nach Praxistagen", "Eine ehrliche native Ersatzansicht"],
+        body: "Eine abgeschlossene Praxis mit mindestens drei aktiven Minuten lässt einen Baum entstehen. Weitere abgeschlossene Meditationen lassen denselben Baum und seine Umgebung wachsen. Pausenzeit zählt nicht mit. Ausgelassene Tage nehmen dir nichts; nur abgeschlossene Praxis bringt Fortschritt.",
+        facts: ["Ein bleibender Garten", "30 Praxistage", "Praxis auch offline"],
       },
       modes: {
         kicker: "Deine Praxis, deine Form",
@@ -158,6 +178,24 @@ export const siteContent = {
           { name: "Timer", text: "Ein verlässlicher Intervalltimer mit ruhigen Klängen, Atmosphäre und gespeicherten Einstellungen." },
           { name: "Stoppuhr", text: "Sitze ohne Endzeit. Du beendest die Praxis; die App erfindet keinen Abschluss." },
         ],
+      },
+      starter: {
+        kicker: "Deine ersten Minuten",
+        title: "Beginne mit einer Meditation, ohne Streak-Druck.",
+        intro: "Alles für deine Meditation bleibt kostenlos: geführte Übungen, Timer, Stoppuhr, Reflexionen und der vollständige wachsende Garten. Ein optionaler Einmalkauf verändert den Materialstil des Gartens; Fortschritt lässt sich weder kaufen noch beschleunigen.",
+        steps: [
+          { title: "Wähle einen ruhigen Einstieg", text: "Probiere Hier ankommen, eine dreiminütige geführte Übung, oder stelle den Timer passend zu deinem Moment ein. Sitze, stehe oder liege an einem Ort, an dem du sicher in Ruhe bleiben kannst." },
+          { title: "Übe in deinem Tempo", text: "Englische und deutsche Audios und Transkripte sind nach der Installation offline verfügbar. Du kannst pausieren, fortsetzen oder aufhören, wenn du es brauchst." },
+          { title: "Schließe ab und lass es wachsen", text: "Eine abgeschlossene Sitzung mit mindestens drei aktiven Minuten bringt dauerhaftes Wachstum. Die erste qualifizierende Sitzung eines Praxistags bringt deinen Weg einen Tag weiter; zusätzliche Sitzungen lassen den Garten wachsen, ohne Tage zu überspringen. Eine kürzere abgeschlossene Übung kann im Verlauf bleiben. Wenn du einen Tag auslässt, bleibt alles Gewachsene erhalten." },
+        ],
+        preview: {
+          title: "Lies einen Auszug aus Hier ankommen",
+          source: "Content/guided/G01/script.de.md",
+          paragraphs: ["Wähle eine Haltung, die möglichst wenig Anstrengung verlangt. Du kannst sitzen, stehen oder liegen. Wenn es sich nicht gut anfühlt, die Augen zu schließen, lass sie offen und den Blick an einer ruhigen Stelle verweilen.", "Bemerke, dass der Boden dir bereits entgegenkommt. Spüre ein oder zwei Stellen, an denen dein Körper getragen wird: die Füße auf dem Boden, die Sitzfläche unter dir oder die Unterlage unter deinem Rücken."],
+          note: "Ein Auszug aus der originalen dreiminütigen Übung. Das vollständige Audio und Transkript findest du in der App; diese Website führt keine Sitzung aus und speichert keine Praxis.",
+        },
+        privacy: "Du brauchst weder ein Arrive-Within-Konto noch Cloud-Synchronisierung. Praxis und Reflexionen bleiben auf deinem Gerät, sofern du sie nicht bewusst exportierst und teilst.",
+        action: "Mit Arrive Within beginnen",
       },
       journey: {
         kicker: "Ein Rhythmus ohne Druck",
