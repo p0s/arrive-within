@@ -1,5 +1,5 @@
 import { createRequire } from "node:module";
-import { readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -9,7 +9,8 @@ const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(SCRIPT_DIR, "..");
 const REPOSITORY_ROOT = path.resolve(ROOT, "..");
 const DIST = path.join(ROOT, "dist");
-const REPORT = path.join(REPOSITORY_ROOT, "docs", "qa", "website", "browser-matrix.json");
+const EVIDENCE = path.join(REPOSITORY_ROOT, ".evidence", "website");
+const REPORT = path.join(EVIDENCE, "browser-matrix.json");
 const ORIGIN = UNBOUND_PUBLIC_BASE_URL;
 const ROUTES = ["/", "/de", "/support", "/de/support", "/privacy", "/de/privacy", "/open-source", "/de/open-source"];
 const VIEWPORTS = [
@@ -37,6 +38,7 @@ const contentTypes = new Map([
   [".png", "image/png"],
   [".txt", "text/plain; charset=utf-8"],
   [".xml", "application/xml; charset=utf-8"],
+  [".webp", "image/webp"],
 ]);
 
 function outputPathFor(requestUrl) {
@@ -106,6 +108,7 @@ async function inspectRoute(browser, route, viewport) {
   const context = await browser.newContext({
     locale: route.startsWith("/de") ? "de-DE" : "en-US",
     viewport: { width: viewport.width, height: viewport.height },
+    deviceScaleFactor: viewport.deviceScaleFactor ?? 1,
   });
   const page = await context.newPage();
   const browserMessages = [];
@@ -119,10 +122,25 @@ async function inspectRoute(browser, route, viewport) {
   await page.route("**/*", (requestRoute) => fulfillFromDist(requestRoute, externalRequests));
 
   const response = await page.goto(`${ORIGIN}${route}`, { waitUntil: "load" });
+  await page.keyboard.press("Tab");
+  const skipLinkWorks = await page.evaluate(() => document.activeElement.matches(".skip-link") && getComputedStyle(document.activeElement).clipPath === "none");
+  await page.keyboard.press("Enter");
+  if (!skipLinkWorks || new URL(page.url()).hash !== "#main") throw new Error(`${route}/${viewport.id}: keyboard skip link failed`);
   await page.locator(".brand-mark").first().evaluate(async (element) => {
     await /** @type {HTMLImageElement} */ (element).decode();
   });
   const expectedLanguage = route.startsWith("/de") ? "de" : "en";
+  if (route === "/" || route === "/de") {
+    for (const image of await page.locator("main img").all()) {
+      await image.scrollIntoViewIfNeeded();
+      await page.waitForFunction((element) => element.complete && element.naturalWidth > 0, await image.elementHandle(), { timeout: 10_000 });
+      await image.evaluate((element) => element.decode()).catch(async (error) => { throw new Error(`${route}/${viewport.id}: ${await image.getAttribute("src")}: ${error.message}`); });
+    }
+    await page.locator(".practice-preview summary").focus();
+    await page.keyboard.press("Enter");
+    await page.locator(".practice-preview[open]").waitFor();
+    await page.evaluate(() => window.scrollTo(0, 0));
+  }
   const facts = await page.evaluate(() => {
     const headerLinks = [...document.querySelectorAll(".navigation a")];
     const tapTargets = [...document.querySelectorAll(".navigation a, main a, .site-footer nav a")]
@@ -143,7 +161,7 @@ async function inspectRoute(browser, route, viewport) {
     const touchIcon = document.querySelector('link[rel="apple-touch-icon"]');
     return {
       brandIconCount: document.querySelectorAll("img.brand-mark").length,
-      brandIconsLoaded: [...document.querySelectorAll("img.brand-mark")].every((image) => image.complete && image.naturalWidth === 180 && image.naturalHeight === 180),
+      brandIconsLoaded: [...document.querySelectorAll("img.brand-mark")].every((image) => image.complete && image.naturalWidth > 0 && image.naturalWidth === image.naturalHeight && /^\/assets\/brand-icon-(40|180)\.png$/.test(new URL(image.currentSrc).pathname)),
       browserIconPath: icon ? new URL(/** @type {HTMLLinkElement} */ (icon).href).pathname : null,
       documentLanguage: document.documentElement.lang,
       footerVisible: Boolean(document.querySelector("footer")?.getBoundingClientRect().height),
@@ -161,6 +179,25 @@ async function inspectRoute(browser, route, viewport) {
       title: document.title,
       touchIconPath: touchIcon ? new URL(/** @type {HTMLLinkElement} */ (touchIcon).href).pathname : null,
       videoCount: document.querySelectorAll("video").length,
+      heroPriority: document.querySelector(".hero-atmosphere img")?.fetchPriority,
+      heroLoading: document.querySelector(".hero-atmosphere img")?.loading,
+      primaryStoreLink: document.querySelector(".hero .primary-action")?.getAttribute("href"),
+      previewOpenedWithKeyboard: document.querySelector(".practice-preview")?.open,
+      imageRequests: [...document.querySelectorAll("main img")].map((image) => ({ src: new URL(image.currentSrc).pathname, width: image.getBoundingClientRect().width, intrinsicWidth: image.naturalWidth })),
+      labelContrast: [...document.querySelectorAll(".growth-film-section .eyebrow, .growth-section .eyebrow, .modes-section .eyebrow, .journey-section .eyebrow, .mode-number, .article-hero .eyebrow, .starter-guide .eyebrow")].map((label) => {
+        const rgb = (value) => value.match(/[\d.]+/g).map(Number);
+        const foreground = rgb(getComputedStyle(label).color);
+        let parent = label;
+        let background;
+        while (parent) {
+          const color = rgb(getComputedStyle(parent).backgroundColor);
+          if (color.length === 3 || color[3] === 1) { background = color; break; }
+          parent = parent.parentElement;
+        }
+        const luminance = (color) => color.slice(0, 3).reduce((sum, channel, index) => { const value = channel / 255; return sum + (value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4) * [0.2126, 0.7152, 0.0722][index]; }, 0);
+        const values = [luminance(foreground), luminance(background ?? [248, 241, 223])].sort((a, b) => a - b);
+        return { text: label.textContent.trim(), ratio: Number(((values[1] + 0.05) / (values[0] + 0.05)).toFixed(2)) };
+      }),
     };
   });
 
@@ -184,12 +221,16 @@ async function inspectRoute(browser, route, viewport) {
           media.currentTime = seekTarget;
         });
       }
+      await media.play();
+      const playbackStarted = !media.paused;
+      media.pause();
       return {
         autoplay: media.autoplay,
         controls: media.controls,
         currentTime: Number(media.currentTime.toFixed(3)),
         duration: Number(media.duration.toFixed(3)),
         paused: media.paused,
+        playbackStarted,
         poster: new URL(media.poster).pathname,
         readyState: media.readyState,
         videoHeight: media.videoHeight,
@@ -210,14 +251,22 @@ async function inspectRoute(browser, route, viewport) {
   if (facts.headerLinkCount !== 6 || facts.hiddenHeaderLinks !== 0) failures.push(`header navigation exposure mismatch (${facts.headerLinkCount} links, ${facts.hiddenHeaderLinks} hidden)`);
   if (facts.tapTargetFailures.length) failures.push(`${facts.tapTargetFailures.length} visible links below 44x44 CSS pixels`);
   if (facts.overflowPixels > 1) failures.push(`horizontal overflow ${facts.overflowPixels}px`);
+  if (facts.labelContrast.some((label) => label.ratio < 4.5)) failures.push("label contrast below 4.5:1");
   if (browserMessages.length) failures.push(`${browserMessages.length} browser warnings/errors`);
   if (externalRequests.length) failures.push(`${externalRequests.length} external requests`);
   if (route === "/" || route === "/de") {
     if (facts.videoCount !== 1) failures.push(`video count ${facts.videoCount}`);
-    if (!video?.controls || video?.autoplay || !video?.paused) failures.push("video control/autoplay policy mismatch");
-    if (video?.poster !== "/assets/garden-growth-poster.png") failures.push("video poster mismatch");
+    if (!video?.controls || video?.autoplay || !video?.paused || !video?.playbackStarted) failures.push("video controls, deliberate playback/pause, or autoplay policy mismatch");
+    if (video?.poster !== "/assets/responsive/garden-growth-poster-1280.webp") failures.push("video poster mismatch");
     if (video?.videoWidth !== 1280 || video?.videoHeight !== 720) failures.push("video dimensions mismatch");
     if (!video || video.duration < 9 || video.duration > 11 || video.currentTime < 4.5) failures.push("video metadata/seek mismatch");
+    if (facts.heroPriority !== "high" || facts.heroLoading !== "eager") failures.push("hero loading priority mismatch");
+    if (facts.primaryStoreLink !== "https://apps.apple.com/app/id6800192697") failures.push("released store CTA mismatch");
+    if (!facts.previewOpenedWithKeyboard) failures.push("practice preview keyboard activation failed");
+    if (facts.imageRequests.some((image) => !image.src.endsWith(".webp"))) failures.push("main images must use responsive WebP derivatives");
+    await page.screenshot({ path: path.join(EVIDENCE, `home-${expectedLanguage}-${viewport.id}.png`), fullPage: true, animations: "disabled" });
+    await page.locator(".hero").screenshot({ path: path.join(EVIDENCE, `hero-${expectedLanguage}-${viewport.id}.png`), animations: "disabled" });
+    await page.locator("#start").screenshot({ path: path.join(EVIDENCE, `starter-${expectedLanguage}-${viewport.id}.png`), animations: "disabled" });
   } else if (facts.videoCount !== 0) {
     failures.push(`unexpected video count ${facts.videoCount}`);
   }
@@ -267,21 +316,44 @@ async function inspectReducedMotion(browser) {
   return { status: passed ? "passed" : "failed", facts, external_requests: externalRequests };
 }
 
+async function inspectTextZoom(browser, route) {
+  const context = await browser.newContext({ viewport: { width: 720, height: 1000 }, reducedMotion: "reduce" });
+  const page = await context.newPage();
+  const externalRequests = [];
+  await page.route("**/*", (requestRoute) => fulfillFromDist(requestRoute, externalRequests));
+  await page.goto(`${ORIGIN}${route}`, { waitUntil: "load" });
+  await page.evaluate(() => { document.documentElement.style.fontSize = "200%"; });
+  await page.locator(".practice-preview summary").focus();
+  await page.keyboard.press("Enter");
+  const facts = await page.evaluate(() => ({
+    rootFontSize: getComputedStyle(document.documentElement).fontSize,
+    overflowPixels: Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth),
+    previewOpen: document.querySelector(".practice-preview").open,
+    focusedSummary: document.activeElement.matches(".practice-preview summary"),
+  }));
+  await page.screenshot({ path: path.join(EVIDENCE, `home-${route === "/de" ? "de" : "en"}-text-zoom.png`), fullPage: true, animations: "disabled" });
+  await context.close();
+  return { route, method: "200% root text scaling at a 720 CSS-pixel viewport", status: facts.rootFontSize === "32px" && facts.overflowPixels <= 1 && facts.previewOpen && facts.focusedSummary && externalRequests.length === 0 ? "passed" : "failed", facts, external_requests: externalRequests };
+}
+
 async function main() {
   let browser;
   try {
+    await mkdir(EVIDENCE, { recursive: true });
     browser = await chromium.launch({ headless: true });
     const cases = [];
     for (const viewport of VIEWPORTS) {
       for (const route of ROUTES) cases.push(await inspectRoute(browser, route, viewport));
     }
+    for (const route of ["/", "/de"]) cases.push(await inspectRoute(browser, route, { id: "mobile-retina", width: 390, height: 844, deviceScaleFactor: 3 }));
     const languageRoundTrip = await inspectLanguageRoundTrip(browser);
     const reducedMotion = await inspectReducedMotion(browser);
+    const textZoom = await Promise.all([inspectTextZoom(browser, "/"), inspectTextZoom(browser, "/de")]);
     const failedCases = cases.filter((item) => item.status !== "passed");
     const homeVideoCases = cases.filter((item) => item.video);
     const report = {
       schema_version: 1,
-      status: failedCases.length || languageRoundTrip.status !== "passed" || reducedMotion.status !== "passed" ? "failed" : "passed",
+      status: failedCases.length || languageRoundTrip.status !== "passed" || reducedMotion.status !== "passed" || textZoom.some((item) => item.status !== "passed") ? "failed" : "passed",
       generated_at: null,
       generation_time_policy: "omitted-for-byte-reproducibility",
       browser: "Playwright Chromium 1.61.1",
@@ -292,6 +364,7 @@ async function main() {
       cases,
       language_round_trip: languageRoundTrip,
       reduced_motion: reducedMotion,
+      text_zoom: textZoom,
       summary: {
         cases_total: cases.length,
         cases_passed: cases.length - failedCases.length,

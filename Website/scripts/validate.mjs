@@ -13,7 +13,8 @@ import {
   resolvePublicBaseURL,
   sha256,
 } from "./lib.mjs";
-import { appStoreURL, repositoryURL } from "../src/content.mjs";
+import { appStoreURL, repositoryURL, siteContent } from "../src/content.mjs";
+import { assertPublishedMedia, loadMediaCandidate } from "./published-media.mjs";
 
 const expectedRoutes = ["/", "/de", "/support", "/de/support", "/privacy", "/de/privacy", "/open-source", "/de/open-source"];
 const routeFiles = {
@@ -82,6 +83,7 @@ async function main() {
     manifest.generation_time_policy !== "omitted-for-byte-reproducibility" ||
     manifest.source_sha256 !== currentSource.sha256 ||
     manifest.content_sha256 !== currentContent.sha256 ||
+    manifest.media_selection !== "previously-public-reviewed-media" ||
     JSON.stringify(manifest.routes) !== JSON.stringify(expectedRoutes) ||
     manifest.deployment_authorization !== "authorized-cloudflare-account-and-owner-domain" ||
     manifest.deployment_performed !== false ||
@@ -128,11 +130,9 @@ async function main() {
   for (const asset of provenance.assets) {
     const canonicalSource = path.join(path.resolve(ROOT, ".."), asset.source);
     const sourceFile = path.join(ROOT, "src", "assets", asset.file);
-    const outputFile = path.join(DIST, "assets", asset.file);
     if (
       sha256(await readFile(canonicalSource)) !== asset.sha256
       || sha256(await readFile(sourceFile)) !== asset.sha256
-      || sha256(await readFile(outputFile)) !== asset.sha256
     ) {
       throw new Error(`${asset.file}: website asset hash mismatch`);
     }
@@ -141,6 +141,9 @@ async function main() {
       || (!asset.source.startsWith("Marketing/AppStoreScreenshots/") && !asset.source.startsWith("Marketing/PublicMedia/"))
     ) throw new Error(`${asset.file}: incomplete public provenance`);
   }
+  // Candidate originals still bind their canonical app sources. Website output
+  // independently binds the exact previously-public reviewed media snapshot.
+  assertPublishedMedia(await loadMediaCandidate());
 
   const brandProvenance = JSON.parse(await readFile(path.join(ROOT, "src", "assets", "brand-provenance.json"), "utf8"));
   if (
@@ -175,6 +178,7 @@ async function main() {
   }
 
   const outputFiles = await listFiles(DIST);
+  const stylesheetVersion = sha256(await readFile(path.join(ROOT, "src", "site.css")));
   const sitemap = await readFile(path.join(DIST, "sitemap.xml"), "utf8");
   if (sitemap.includes("www.arrivewithin.com") || !sitemap.includes(`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`)) {
     throw new Error("sitemap must use the apex origin and the expected XML namespace");
@@ -190,6 +194,7 @@ async function main() {
     if (!outputFiles.includes(file)) throw new Error(`missing output for ${route}`);
     const html = await readFile(path.join(DIST, file), "utf8");
     const expectedLang = route.startsWith("/de") ? "de" : "en";
+    if (!html.includes(`rel="stylesheet" href="/assets/site.css?v=${stylesheetVersion}"`)) throw new Error(`${route}: stylesheet must bypass stale immutable browser caches`);
     if (!html.includes(`<html lang="${expectedLang}">`) || !html.includes('<main id="main"') || !html.includes('class="skip-link"')) {
       throw new Error(`${route}: missing language or accessibility landmarks`);
     }
@@ -197,8 +202,26 @@ async function main() {
     if (html.includes("https://www.arrivewithin.com")) throw new Error(`${route}: canonical HTML must not point to www`);
     if (!html.includes(`property="og:image" content="${publicBaseURL}/assets/social-preview.png"`)) throw new Error(`${route}: missing canonical social preview`);
     if (!html.includes(`href="${repositoryURL}"`)) throw new Error(`${route}: missing canonical public repository link`);
-    if (route === "/" && !html.includes(`href="${appStoreURL}"`)) {
-      throw new Error("homepage must link to the verified public App Store listing");
+    if (route === "/" || route === "/de") {
+      const home = siteContent[expectedLang].home;
+      if (!html.includes(`<a class="primary-action light" href="${appStoreURL}">${home.primaryAction}</a>`)
+          || !html.includes(siteContent[expectedLang].footer.status)
+          || /App Store availability has not been announced|Eine Verfügbarkeit im App Store wurde noch nicht angekündigt/.test(html)) {
+        throw new Error(`${route}: released availability and exact primary App Store CTA are required`);
+      }
+      const preview = home.starter.preview;
+      if (preview.source !== `Content/guided/G01/script.${expectedLang}.md`) throw new Error(`${route}: unexpected practice preview source`);
+      const script = await readFile(path.join(path.resolve(ROOT, ".."), preview.source), "utf8");
+      for (const paragraph of preview.paragraphs) {
+        if (!script.includes(paragraph) || !html.includes(paragraph)) throw new Error(`${route}: practice preview must match the original script`);
+      }
+      if (!html.includes('loading="eager" fetchpriority="high"')) throw new Error(`${route}: hero must remain eager and high priority`);
+    }
+    const counterpart = expectedLang === "en" ? "de" : "en";
+    const alternate = expectedLang === "de" ? route.slice(3) || "/" : `/de${route === "/" ? "" : route}`;
+    const english = expectedLang === "de" ? route.slice(3) || "/" : route;
+    for (const [language, target] of [[expectedLang, route], [counterpart, alternate], ["x-default", english]]) {
+      if (!html.includes(`rel="alternate" hreflang="${language}" href="${publicBaseURL}${target}"`)) throw new Error(`${route}: missing reciprocal ${language} alternate`);
     }
     if (!html.includes('property="og:site_name" content="Arrive Within"') || !html.includes('property="og:image:alt"')) throw new Error(`${route}: incomplete social metadata`);
     if (!html.includes('rel="icon" type="image/png" sizes="40x40" href="/assets/brand-icon-40.png"')) throw new Error(`${route}: missing browser icon`);
@@ -229,9 +252,12 @@ async function main() {
       if (!src?.startsWith("/assets/") || !altMatch || (!decorative && !alt.trim())) throw new Error(`${route}: every image needs a local source and an accessible alt contract`);
       if (!outputFiles.includes(src.slice(1))) throw new Error(`${route}: missing image ${src}`);
     }
-    for (const match of html.matchAll(/<source\b[^>]*\bsrcset="([^"]+)"[^>]*>/gi)) {
-      const srcset = match[1];
-      if (!srcset.startsWith("/assets/") || !outputFiles.includes(srcset.slice(1))) throw new Error(`${route}: missing local responsive image ${srcset}`);
+    for (const match of html.matchAll(/<(?:source|img)\b[^>]*\bsrcset="([^"]+)"[^>]*>/gi)) {
+      for (const item of match[1].split(",")) {
+        const candidate = item.trim().match(/^(\/assets\/[a-z0-9/.-]+) (\d+)w$/);
+        if (!candidate || !outputFiles.includes(candidate[1].slice(1))) throw new Error(`${route}: missing or invalid local responsive image ${item}`);
+      }
+      if (!/\bsizes="[^"]+"/.test(match[0])) throw new Error(`${route}: responsive images must specify layout sizes`);
     }
     for (const match of html.matchAll(/<video\b[^>]*>[\s\S]*?<\/video>/gi)) {
       const tag = match[0];
@@ -240,6 +266,7 @@ async function main() {
       const label = tag.match(/\baria-label="([^"]+)"/)?.[1];
       if (!poster?.startsWith("/assets/") || !source?.startsWith("/assets/") || !label?.trim()) throw new Error(`${route}: video needs local poster/source and an accessible label`);
       if (!outputFiles.includes(poster.slice(1)) || !outputFiles.includes(source.slice(1))) throw new Error(`${route}: missing local video media`);
+      if (!tag.includes('aria-describedby="garden-film-description"') || !html.includes(`<figcaption id="garden-film-description">${siteContent[expectedLang].home.media.description}</figcaption>`)) throw new Error(`${route}: silent growth film needs its visual text equivalent`);
     }
     for (const match of html.matchAll(/\bhref="([^"]+)"/g)) {
       const href = match[1];
@@ -326,7 +353,7 @@ async function main() {
   }
 
   const fullHash = await hashTree(DIST);
-  process.stdout.write(`Website validation passed: ${expectedRoutes.length} bilingual routes, 8 provenance-bound UI images, 3 provenance-bound public-media assets, 2 provenance-bound brand icons, ${fullHash.files.length} output files; build SHA-256 ${fullHash.sha256}. Production custom-domain configuration is present; this local build is not deployment proof.\n`);
+  process.stdout.write(`Website validation passed: ${expectedRoutes.length} bilingual routes, exact published media, 31 bound responsive images, 2 provenance-bound brand icons, released CTAs, script-bound previews, ${fullHash.files.length} output files; build SHA-256 ${fullHash.sha256}. Pending-review originals are excluded. Production custom-domain configuration is present; this local build is not deployment proof.\n`);
 }
 
 main().catch((error) => {
