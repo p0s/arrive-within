@@ -14,6 +14,7 @@ import {
   sha256,
 } from "./lib.mjs";
 import { appStoreURL, repositoryURL, siteContent } from "../src/content.mjs";
+import { INDEXNOW_KEY } from "../src/indexnow-key.mjs";
 import { assertPublishedMedia, loadMediaCandidate } from "./published-media.mjs";
 
 const expectedRoutes = ["/", "/de", "/support", "/de/support", "/privacy", "/de/privacy", "/open-source", "/de/open-source"];
@@ -189,6 +190,11 @@ async function main() {
   const robots = await readFile(path.join(DIST, "robots.txt"), "utf8");
   if (robots !== `User-agent: *\nAllow: /\nSitemap: ${publicBaseURL}/sitemap.xml\n`) {
     throw new Error("robots.txt must point to the canonical apex sitemap");
+  }
+  if (!/^[a-f\d]{8,128}$/i.test(INDEXNOW_KEY)) throw new Error("IndexNow key must contain 8 to 128 hexadecimal characters");
+  const publicKeyName = `${INDEXNOW_KEY}.txt`;
+  if (!outputFiles.includes(publicKeyName) || await readFile(path.join(DIST, publicKeyName), "utf8") !== INDEXNOW_KEY) {
+    throw new Error("public IndexNow key file must be served from the website root and contain only its key");
   }
   for (const [route, file] of Object.entries(routeFiles)) {
     if (!outputFiles.includes(file)) throw new Error(`missing output for ${route}`);

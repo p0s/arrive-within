@@ -26,10 +26,10 @@ node scripts/test-analytics.mjs
 node edge/worker.test.mjs
 ```
 
-Deploy through Wrangler from `Website`:
+Use the checked publisher from `Website` for production deployments:
 
 ```sh
-wrangler deploy --config edge/wrangler.toml
+node scripts/publish-edge.mjs --profile <saved-wrangler-profile>
 ```
 
 The checked-in Wrangler build hook runs `pnpm verify:edge` before upload. For
@@ -38,6 +38,17 @@ origin so the generated sitemap and robots file use `https://arrivewithin.com`.
 For local `wrangler dev`, it preserves the local origin behavior. The
 verification rebuilds and validates the site, sitemap, robots file, analytics
 behavior, and edge Worker.
+
+The build publishes the public IndexNow verification key at the root path
+`/<key>.txt`. The key is public verification data, not a secret. The publisher
+reads the current public sitemap and HTML pages, deploys through Wrangler, then
+reads them back and sends one bounded IndexNow request only for added, changed,
+or removed sitemap pages. It accepts at most 100 URLs per batch, checks the
+canonical host, HTTPS scheme, robots rules, canonical tags, and noindex state,
+and uses at most eight concurrent requests with a 12-second timeout. The
+initial submission of the existing eight page URLs is a separate one-time
+request; it is not repeated on unchanged deployments. Bing Webmaster Tools
+sitemap submission remains a separate pending action.
 
 This is a Wrangler CLI build hook; it does not create a GitHub push-triggered
 deployment. Cloudflare Workers Builds has separate build settings and does not

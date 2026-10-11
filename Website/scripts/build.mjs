@@ -2,6 +2,7 @@ import { copyFile, lstat, mkdir, readFile, rm, writeFile } from "node:fs/promise
 import path from "node:path";
 
 import { appStoreURL, repositoryURL, siteContent } from "../src/content.mjs";
+import { INDEXNOW_KEY } from "../src/indexnow-key.mjs";
 import {
   DIST,
   ROOT,
@@ -16,6 +17,7 @@ import {
 } from "./lib.mjs";
 
 const BASE_URL = resolvePublicBaseURL();
+if (!/^[a-f\d]{8,128}$/i.test(INDEXNOW_KEY)) throw new Error("IndexNow key must contain 8 to 128 hexadecimal characters");
 const STYLESHEET_VERSION = sha256(await readFile(path.join(ROOT, "src", "site.css")));
 const ROUTES = [
   { locale: "en", page: "home", route: "/", output: "index.html" },
@@ -284,6 +286,7 @@ async function main() {
   const sitemapUrls = ROUTES.map((route) => `  <url><loc>${BASE_URL}${route.route}</loc></url>`).join("\n");
   await writeFile(path.join(DIST, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapUrls}\n</urlset>\n`);
   await writeFile(path.join(DIST, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${BASE_URL}/sitemap.xml\n`);
+  await writeFile(path.join(DIST, `${INDEXNOW_KEY}.txt`), INDEXNOW_KEY);
   await writeFile(path.join(DIST, "404.html"), shell("en", "home", "Not found — Arrive Within", "The requested Arrive Within page was not found.", `<main id="main" class="article-shell"><header class="article-hero"><p class="eyebrow">404</p><h1>That path has not taken root.</h1><p class="lede">Return to the quiet place we know.</p><a class="primary-action" href="/">Return home</a></header></main>`));
   await writeFile(path.join(DIST, "_headers"), `/*
   Content-Security-Policy: default-src 'none'; img-src 'self'; media-src 'self'; style-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
