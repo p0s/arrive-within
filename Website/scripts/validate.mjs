@@ -14,6 +14,8 @@ import {
   sha256,
 } from "./lib.mjs";
 import { appStoreURL, repositoryURL, siteContent } from "../src/content.mjs";
+import { INDEXNOW_KEY } from "../src/indexnow-key.mjs";
+import { assertProductionWranglerConfig } from "./cloudflare-config.mjs";
 import { assertPublishedMedia, loadMediaCandidate } from "./published-media.mjs";
 
 const expectedRoutes = ["/", "/de", "/support", "/de/support", "/privacy", "/de/privacy", "/open-source", "/de/open-source"];
@@ -50,6 +52,11 @@ function inspectPng(file, bytes, size) {
 async function main() {
   assertToolchain();
   const publicBaseURL = resolvePublicBaseURL();
+  const cloudflareConfig = await readFile(path.join(ROOT, "edge", "wrangler.toml"), "utf8");
+  const wranglerBinding = assertProductionWranglerConfig(cloudflareConfig, {
+    workerName: "arrivewithin-web",
+    customDomains: ["arrivewithin.com", "www.arrivewithin.com"],
+  });
   if (resolvePublicBaseURL("") !== UNBOUND_PUBLIC_BASE_URL) {
     throw new Error("empty public-origin input must fail closed to the reserved local origin");
   }
@@ -90,7 +97,7 @@ async function main() {
     manifest.host?.provider !== "Cloudflare Workers Static Assets" ||
     manifest.host?.plan !== "existing-account-plan" ||
     manifest.host?.intended_project !== "arrivewithin-web" ||
-    manifest.host?.project_binding !== "authorized-account-0317b000520a8e6b237de500c592d67a-production-custom-domains" ||
+    manifest.host?.project_binding !== `authorized-account-${wranglerBinding.accountId}-production-custom-domains` ||
     manifest.host?.custom_domain !== "arrivewithin.com" ||
     manifest.host?.public_base_url !== publicBaseURL ||
     manifest.host?.public_base_url_state !== (publicBaseURL === UNBOUND_PUBLIC_BASE_URL ? "unbound-local-placeholder" : "deployment-bound") ||
@@ -189,6 +196,11 @@ async function main() {
   const robots = await readFile(path.join(DIST, "robots.txt"), "utf8");
   if (robots !== `User-agent: *\nAllow: /\nSitemap: ${publicBaseURL}/sitemap.xml\n`) {
     throw new Error("robots.txt must point to the canonical apex sitemap");
+  }
+  if (!/^[a-f\d]{8,128}$/i.test(INDEXNOW_KEY)) throw new Error("IndexNow key must contain 8 to 128 hexadecimal characters");
+  const publicKeyName = `${INDEXNOW_KEY}.txt`;
+  if (!outputFiles.includes(publicKeyName) || await readFile(path.join(DIST, publicKeyName), "utf8") !== INDEXNOW_KEY) {
+    throw new Error("public IndexNow key file must be served from the website root and contain only its key");
   }
   for (const [route, file] of Object.entries(routeFiles)) {
     if (!outputFiles.includes(file)) throw new Error(`missing output for ${route}`);
@@ -326,10 +338,8 @@ async function main() {
   }
   if (!headers.includes("media-src 'self'")) throw new Error("vercel.json must allow only same-origin website media");
 
-  const cloudflareConfig = await readFile(path.join(ROOT, "edge", "wrangler.toml"), "utf8");
   for (const required of [
     'name = "arrivewithin-web"',
-    'account_id = "0317b000520a8e6b237de500c592d67a"',
     "workers_dev = false",
     "preview_urls = false",
     'directory = "../dist"',

@@ -8,9 +8,9 @@ remain asset-first. The Worker counts a request only after the static
 asset binding returns HTTP 200 with an HTML content type. It has no browser
 tracker and does not proxy Vercel.
 
-The committed configuration targets account `0317b000520a8e6b237de500c592d67a`,
-sets `workers_dev = false` and `preview_urls = false`, and binds apex and www
-as Custom Domains. The Worker serves only the exact apex
+The committed configuration sets `workers_dev = false` and
+`preview_urls = false`, and binds apex and www as Custom Domains. The Worker
+serves only the exact apex
 `arrivewithin.com`; requests for `www.arrivewithin.com` redirect to the HTTPS
 apex while preserving path and query, and other hosts return 404.
 `ANALYTICS_SITE_HOSTNAME` is the only source-controlled analytics variable.
@@ -26,11 +26,36 @@ node scripts/test-analytics.mjs
 node edge/worker.test.mjs
 ```
 
-Deploy through Wrangler from `Website`:
+Use the checked publisher from `Website` for production deployments:
 
 ```sh
-wrangler deploy --config edge/wrangler.toml
+node scripts/publish-edge.mjs --profile Tightness_mannish146
 ```
+
+The fixed production target is the saved Wrangler profile `Tightness_mannish146`
+and Worker `arrivewithin-web`, with the existing apex/www custom domains. The
+publisher stores acknowledged public page hashes and bounded pending URL
+status in the ignored, user-private
+`Website/.indexnow-state/publisher-state.json` file in the checkout that runs
+it. Keep that state with the persistent production-publisher checkout.
+
+The queue records attempts before each request. Accepted batches remain marked
+until the full queue is acknowledged. HTTP 429 and 503 responses honor
+`Retry-After` (or wait at least one minute); other rejections and interrupted
+in-flight requests are held for review and are never replayed automatically.
+Use this command to retry due retained URLs without deployment:
+
+```sh
+node scripts/publish-edge.mjs --profile Tightness_mannish146 --retry-indexnow
+```
+
+It rebuilds the exact current source, verifies that the live manifest and pages
+match it, and submits only due retained entries. A normal deploy sends nothing
+when its public candidate is unchanged.
+Removed pages are notified only after the old route returns HTTP 404 or 410.
+Before IndexNow, the publisher also matches Wrangler's returned version ID to
+the provider status readback at 100% traffic. Preview/build-only commands do
+not run this publisher.
 
 The checked-in Wrangler build hook runs `pnpm verify:edge` before upload. For
 `deploy` and `versions upload`, its wrapper sets the canonical production
@@ -38,6 +63,16 @@ origin so the generated sitemap and robots file use `https://arrivewithin.com`.
 For local `wrangler dev`, it preserves the local origin behavior. The
 verification rebuilds and validates the site, sitemap, robots file, analytics
 behavior, and edge Worker.
+
+The build publishes the public IndexNow verification key at the root path
+`/<key>.txt`. The key is public verification data, not a secret. Page
+fingerprints include the page HTML and the build manifest's hash of every
+output asset and dependency. Before notification, a bounded live read must
+match those fingerprints. The publisher accepts at most 100 URLs per batch,
+checks the canonical host, HTTPS scheme, robots rules, canonical tags, and
+noindex state, and uses at most eight concurrent page reads with a 12-second
+timeout. Bing Webmaster Tools sitemap submission remains a separate pending
+action.
 
 This is a Wrangler CLI build hook; it does not create a GitHub push-triggered
 deployment. Cloudflare Workers Builds has separate build settings and does not

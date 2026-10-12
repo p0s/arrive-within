@@ -67,7 +67,7 @@ export async function hashTree(root, excludedTopLevel = new Set()) {
 }
 
 export async function hashWebsiteSource() {
-  const excluded = new Set(["dist", "node_modules", ".vercel"]);
+  const excluded = new Set(["dist", "node_modules", ".vercel", ".indexnow-state"]);
   for (const entry of await readdir(ROOT, { withFileTypes: true })) {
     if (entry.name === ".env" || entry.name.startsWith(".env.")) excluded.add(entry.name);
   }
