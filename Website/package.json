@@ -12,9 +12,10 @@
     "sync:brand": "node scripts/sync-brand-assets.mjs",
     "sync:responsive": "node scripts/generate-responsive-assets.mjs",
     "test:browser": "node scripts/validate-browser.mjs",
+    "test:indexnow": "node --test scripts/test-indexnow.mjs",
     "test": "node scripts/validate.mjs",
     "test:analytics": "node scripts/test-analytics.mjs",
-    "verify": "node scripts/build.mjs && node scripts/validate.mjs && node --test scripts/test-published-media.mjs && node scripts/test-analytics.mjs",
+    "verify": "node scripts/build.mjs && node scripts/validate.mjs && node --test scripts/test-published-media.mjs && node --test scripts/test-indexnow.mjs && node scripts/test-analytics.mjs",
     "verify:edge": "pnpm verify && node edge/worker.test.mjs"
   }
 }
