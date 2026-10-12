@@ -29,8 +29,33 @@ node edge/worker.test.mjs
 Use the checked publisher from `Website` for production deployments:
 
 ```sh
-node scripts/publish-edge.mjs --profile <saved-wrangler-profile>
+node scripts/publish-edge.mjs --profile Tightness_mannish146
 ```
+
+The fixed production target is the saved Wrangler profile `Tightness_mannish146`,
+account `0317b000520a8e6b237de500c592d67a`, Worker `arrivewithin-web`, and the
+existing apex/www custom domains. The publisher stores acknowledged public page
+hashes and bounded pending URL status in the ignored, user-private
+`Website/.indexnow-state/publisher-state.json` file in the checkout that runs
+it. Keep that state with the persistent production-publisher checkout.
+
+The queue records attempts before each request. Accepted batches remain marked
+until the full queue is acknowledged. HTTP 429 and 503 responses honor
+`Retry-After` (or wait at least one minute); other rejections and interrupted
+in-flight requests are held for review and are never replayed automatically.
+Use this command to retry due retained URLs without deployment:
+
+```sh
+node scripts/publish-edge.mjs --profile Tightness_mannish146 --retry-indexnow
+```
+
+It rebuilds the exact current source, verifies that the live manifest and pages
+match it, and submits only due retained entries. A normal deploy sends nothing
+when its public candidate is unchanged.
+Removed pages are notified only after the old route returns HTTP 404 or 410.
+Before IndexNow, the publisher also matches Wrangler's returned version ID to
+the provider status readback at 100% traffic. Preview/build-only commands do
+not run this publisher.
 
 The checked-in Wrangler build hook runs `pnpm verify:edge` before upload. For
 `deploy` and `versions upload`, its wrapper sets the canonical production
@@ -40,15 +65,14 @@ verification rebuilds and validates the site, sitemap, robots file, analytics
 behavior, and edge Worker.
 
 The build publishes the public IndexNow verification key at the root path
-`/<key>.txt`. The key is public verification data, not a secret. The publisher
-reads the current public sitemap and HTML pages, deploys through Wrangler, then
-reads them back and sends one bounded IndexNow request only for added, changed,
-or removed sitemap pages. It accepts at most 100 URLs per batch, checks the
-canonical host, HTTPS scheme, robots rules, canonical tags, and noindex state,
-and uses at most eight concurrent requests with a 12-second timeout. The
-initial submission of the existing eight page URLs is a separate one-time
-request; it is not repeated on unchanged deployments. Bing Webmaster Tools
-sitemap submission remains a separate pending action.
+`/<key>.txt`. The key is public verification data, not a secret. Page
+fingerprints include the page HTML and the build manifest's hash of every
+output asset and dependency. Before notification, a bounded live read must
+match those fingerprints. The publisher accepts at most 100 URLs per batch,
+checks the canonical host, HTTPS scheme, robots rules, canonical tags, and
+noindex state, and uses at most eight concurrent page reads with a 12-second
+timeout. Bing Webmaster Tools sitemap submission remains a separate pending
+action.
 
 This is a Wrangler CLI build hook; it does not create a GitHub push-triggered
 deployment. Cloudflare Workers Builds has separate build settings and does not
