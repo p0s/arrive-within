@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "auditionVersion": "chatterbox-cadence-accent-v3",
+  "rightsState": "approved-for-private-default-voice-audition",
+  "releaseRightsState": "pending-owner-cc-by-4.0-signoff",
+  "ownerDirection": {
+    "english": "default-en-identity-approved; E1-E2-rejected; later-F2-owner-selected",
+    "german": "C2-owner-selected-direction; fluent-German-review-remains-separate"
+  },
+  "source": {
+    "repository": "https://github.com/resemble-ai/chatterbox",
+    "commit": "5de7a54aa4e5e2baadb0182dde554908b48b85c2",
+    "packageVersion": "0.1.7",
+    "license": "MIT",
+    "perthCommit": "ce86c49d029f42272c1902eccb675556b9ed2330"
+  },
+  "model": {
+    "repository": "ResembleAI/chatterbox",
+    "revision": "5bb1f6ee58e50c3b8d408bc82a6d3740c2db6e18",
+    "englishModel": "ChatterboxTTS",
+    "germanModel": "ChatterboxMultilingualTTS",
+    "germanT3Model": "t3_mtl23ls_v3.safetensors",
+    "voiceReference": null,
+    "voiceLabels": {"en": "default-en", "de": "default-de-v3"}
+  },
+  "generation": {
+    "sampleRate": 24000,
+    "channels": 1,
+    "repetitionPenalty": 1.25,
+    "minP": 0.05,
+    "topP": 0.95,
+    "normalization": "none-complete-audition-assembly",
+    "timeStretch": "none"
+  },
+  "processRequirements": {
+    "english": "one English-only process may share newly regenerated sentence units between E1 and E2",
+    "german": "one fresh German-only process and freshly loaded multilingual model per candidate; language_id=de on every sentence call; no English text or generation state"
+  },
+  "excerpts": [
+    {
+      "id": "G01",
+      "language": "en",
+      "scriptSHA256": "0512bcaa57c773cbb43f57d514effde7d194940acc64476625d06927a8a5a01a",
+      "sentences": [
+        "Notice that the ground is already meeting you.",
+        "Feel one or two places where your body is supported: feet on the floor, the seat beneath you, or the surface under your back."
+      ]
+    },
+    {
+      "id": "G30",
+      "language": "en",
+      "scriptSHA256": "39ed104343e2718df6d1e812954d11a835dd1371e6950827bc99f43ef2a00361",
+      "sentences": [
+        "Grief can appear as sadness, numbness, anger, love, tiredness, relief, confusion, or nothing that has a name.",
+        "There is no correct feeling to find.",
+        "Notice only what is already present and manageable enough to meet."
+      ]
+    },
+    {
+      "id": "G01",
+      "language": "de",
+      "scriptSHA256": "770c11b6aef7a84a060a57b25943309ed98ae87ee00d20d965980882a90d6b4c",
+      "sentences": [
+        "Bemerke, dass der Boden dir bereits entgegenkommt.",
+        "Spüre ein oder zwei Stellen, an denen dein Körper getragen wird: die Füße auf dem Boden, die Sitzfläche unter dir oder die Unterlage unter deinem Rücken."
+      ]
+    },
+    {
+      "id": "G30",
+      "language": "de",
+      "scriptSHA256": "ca28bc289f223787dfbf5c314f204b76ec5023e132f3037a931e91cfe602caf3",
+      "sentences": [
+        "Trauer kann als Traurigkeit, Taubheit, Ärger, Liebe, Müdigkeit, Erleichterung, Verwirrung oder als etwas Namenloses erscheinen.",
+        "Es gibt kein richtiges Gefühl, das du finden musst.",
+        "Bemerke nur, was bereits da und gut genug zu tragen ist."
+      ]
+    }
+  ],
+  "variants": [
+    {
+      "id": "en-e1-slower-fluid-1100",
+      "language": "en",
+      "label": "English E1 — slower fluid, 1.1 s space",
+      "deliveryClaim": "same approved default-en identity; newly regenerated slower sentence delivery; not time-stretched",
+      "excerptIDs": ["G01", "G30"],
+      "seed": 20260824,
+      "sentenceGapMs": 1100,
+      "practiceTransitionGapMs": 1600,
+      "exaggeration": 0.22,
+      "cfgWeight": 0.28,
+      "temperature": 0.68
+    },
+    {
+      "id": "en-e2-slower-fluid-1350",
+      "language": "en",
+      "label": "English E2 — slower fluid, 1.35 s space",
+      "deliveryClaim": "same approved default-en identity and E1 sentence delivery; wider sentence spacing only; not time-stretched",
+      "excerptIDs": ["G01", "G30"],
+      "seed": 20260824,
+      "sentenceGapMs": 1350,
+      "practiceTransitionGapMs": 1900,
+      "exaggeration": 0.22,
+      "cfgWeight": 0.28,
+      "temperature": 0.68
+    },
+    {
+      "id": "de-c1-accent-stability",
+      "language": "de",
+      "label": "German C1 — isolated accent-stability seed",
+      "deliveryClaim": "C-like default V3 pacing; fresh German-only process; seed variant, not a distinct speaker",
+      "excerptIDs": ["G01", "G30"],
+      "seed": 20260830,
+      "sentenceGapMs": 750,
+      "practiceTransitionGapMs": 1200,
+      "exaggeration": 0.26,
+      "cfgWeight": 0.30,
+      "temperature": 0.72
+    },
+    {
+      "id": "de-c2-accent-stability",
+      "language": "de",
+      "label": "German C2 — isolated accent-stability seed",
+      "deliveryClaim": "C-like default V3 pacing; fresh German-only process; seed variant, not a distinct speaker",
+      "excerptIDs": ["G01", "G30"],
+      "seed": 20260831,
+      "sentenceGapMs": 750,
+      "practiceTransitionGapMs": 1200,
+      "exaggeration": 0.26,
+      "cfgWeight": 0.30,
+      "temperature": 0.72
+    },
+    {
+      "id": "de-c3-accent-stability",
+      "language": "de",
+      "label": "German C3 — isolated accent-stability seed",
+      "deliveryClaim": "C-like default V3 pacing; fresh German-only process; seed variant, not a distinct speaker",
+      "excerptIDs": ["G01", "G30"],
+      "seed": 20260832,
+      "sentenceGapMs": 750,
+      "practiceTransitionGapMs": 1200,
+      "exaggeration": 0.26,
+      "cfgWeight": 0.30,
+      "temperature": 0.72
+    }
+  ]
+}

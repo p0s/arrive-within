@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$repo_root"
+
+# Focused engineering checks; the full release gate remains scripts/check.
+node scripts/validate_localizations.mjs
+swift test --package-path Packages/ArriveWithinCore \
+  --scratch-path .build/verification-swift --no-parallel

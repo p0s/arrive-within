@@ -1,0 +1,49 @@
+name: Renderer performance or recovery
+description: Report garden frame pacing, startup, memory, thermal, context-loss, or fallback behavior.
+title: "[Renderer]: "
+labels: [renderer, performance]
+body:
+  - type: markdown
+    attributes:
+      value: Share only redacted evidence. Never include journal content, voice recordings, credentials, device identifiers, or signing/configuration values.
+  - type: input
+    id: revision
+    attributes:
+      label: Exact source revision/build
+    validations:
+      required: true
+  - type: input
+    id: hardware
+    attributes:
+      label: Exact device and OS
+      placeholder: iPad model, OS version, simulator or physical
+    validations:
+      required: true
+  - type: dropdown
+    id: tier
+    attributes:
+      label: Renderer quality tier
+      options: [low, balanced, high, adaptive or unknown]
+    validations:
+      required: true
+  - type: textarea
+    id: state
+    attributes:
+      label: Garden fixture and lifecycle state
+      description: Include practice-day/milestones, foreground/background, Reduce Motion, Low Power Mode, and thermal state if known.
+    validations:
+      required: true
+  - type: textarea
+    id: observation
+    attributes:
+      label: Reproduction and measured result
+      description: Report startup/frame/memory/thermal measurements separately from visual judgment.
+    validations:
+      required: true
+  - type: textarea
+    id: hero
+    attributes:
+      label: Central-tree integrity and fallback
+      description: Did the hero tree remain legible? Did recovery/native fallback remain functional?
+    validations:
+      required: true

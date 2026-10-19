@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "source": "Apps/ArriveWithin/Resources/AppIcon.icon",
+  "reviewedAt": "2026-08-10",
+  "reviewer": "agent-visual-inspection",
+  "sizes": {
+    "1024": "pass",
+    "180": "pass",
+    "60": "pass",
+    "40": "pass"
+  },
+  "platforms": {
+    "iOS": {
+      "default": "pass",
+      "dark": "pass",
+      "clear-light": "blocked-owner-eula",
+      "clear-dark": "blocked-owner-eula",
+      "tinted-light": "pass",
+      "tinted-dark": "pass"
+    },
+    "macOS": {
+      "default": "not-applicable",
+      "dark": "not-applicable",
+      "clear-light": "not-applicable",
+      "clear-dark": "not-applicable",
+      "tinted-light": "not-applicable",
+      "tinted-dark": "not-applicable"
+    },
+    "watchOS": {
+      "default": "not-applicable",
+      "circular-crop": "not-applicable"
+    }
+  },
+  "appearanceEvidence": {
+    "contactSheet": "docs/brand/app-icon-qa-contact-sheet.png",
+    "derivedManifest": "docs/brand/app-icon-derived/_manifest.json",
+    "compiledInspection": "docs/brand/icon-build-validation.json"
+  },
+  "ownerProductionReview": "pending"
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "status": "owner-selected",
+  "safe_baseline_direction": "verdant-atelier",
+  "selected_direction": "twilight-refuge",
+  "selected_modules": {
+    "tree_silhouette": "twilight-refuge",
+    "palette": "twilight-refuge",
+    "lighting": "twilight-refuge",
+    "water_treatment": "twilight-refuge",
+    "ground_flora": "twilight-refuge",
+    "particles": "twilight-refuge",
+    "camera_composition": "twilight-refuge",
+    "micro_growth": "twilight-refuge",
+    "milestone_reveal": "twilight-refuge"
+  },
+  "selection_date": "2026-08-11",
+  "shipping_authority": "Renderer/src/shipping-visual.ts",
+  "premium_profile_authority": "Renderer/src/render-style.ts",
+  "premium_material_profiles": [
+    "hand-drawn",
+    "stop-motion",
+    "crochet",
+    "claymation"
+  ],
+  "release_exclusive": true,
+  "unselected_source_policy": "Alternate compositions remain public design-lab source and stay unreachable. Premium profiles may enter the bundle only as material, palette, and cadence treatments over Twilight topology.",
+  "claim_boundary": "C — Twilight Refuge remains the owner-selected production composition and free default. Four premium material profiles share its authoritative world model, composition, object set, progression, phase, and accessibility meaning. A and B remain non-shipping design-lab references. App Store product creation, exact distributed-candidate proof, TestFlight, and App Store proof remain pending."
+}

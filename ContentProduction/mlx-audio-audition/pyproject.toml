@@ -1,0 +1,11 @@
+[project]
+name = "arrive-within-mlx-audio-audition"
+version = "0.1.0"
+requires-python = "==3.11.*"
+dependencies = [
+  "mlx-audio==0.4.8",
+  "mlx==0.31.1",
+  "mlx-lm==0.31.1",
+  "numpy==1.26.4",
+  "soundfile==0.13.1",
+]

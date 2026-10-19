@@ -1,0 +1,228 @@
+name: ArriveWithin
+attributes:
+  LastUpgradeCheck: 2660
+options:
+  minimumXcodeGenVersion: 2.46.0
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+  xcodeVersion: "26.6"
+  deploymentTarget:
+    iOS: "18.0"
+  developmentLanguage: en
+
+configs:
+  Debug: debug
+  Release: release
+
+settings:
+  base:
+    SWIFT_VERSION: 6.0
+    SWIFT_STRICT_CONCURRENCY: complete
+    GCC_TREAT_WARNINGS_AS_ERRORS: YES
+    SWIFT_TREAT_WARNINGS_AS_ERRORS: YES
+    CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: YES
+
+packages:
+  ArriveWithinCore:
+    path: Packages/ArriveWithinCore
+
+targets:
+  ArriveWithin:
+    type: application
+    platform: iOS
+    deploymentTarget: "18.0"
+    configFiles:
+      Debug: Config/Base.xcconfig
+      Release: Config/Base.xcconfig
+    sources:
+      - path: Apps/ArriveWithin/Sources
+      - path: Apps/ArriveWithin/Resources
+        buildPhase: resources
+        excludes:
+          - Info.plist
+      - path: Content/guided
+        type: folder
+        buildPhase: resources
+      - path: Renderer/dist
+        name: GardenRenderer
+        type: folder
+        buildPhase: resources
+      - path: THIRD_PARTY_NOTICES.md
+        buildPhase: resources
+    preBuildScripts:
+      - name: Finalize Garden renderer bundle
+        script: |
+          set -euo pipefail
+          RENDERER_ROOT="${SRCROOT}/Renderer"
+          RENDERER_NODE="/opt/homebrew/bin/node"
+          VITE_BIN="${RENDERER_ROOT}/node_modules/vite/bin/vite.js"
+          if [ ! -x "${RENDERER_NODE}" ] || [ ! -f "${VITE_BIN}" ]; then
+            echo "error: Renderer build dependencies are unavailable."
+            exit 1
+          fi
+          "${RENDERER_NODE}" "${RENDERER_ROOT}/scripts/build.mjs"
+        outputFiles:
+          - $(SRCROOT)/Renderer/dist/renderer.js
+          - $(SRCROOT)/Renderer/dist/renderer-manifest.json
+        basedOnDependencyAnalysis: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.philipps.arrivewithin.ios
+        PRODUCT_NAME: Arrive Within
+        EXECUTABLE_NAME: ArriveWithin
+        PRODUCT_MODULE_NAME: ArriveWithin
+        CODE_SIGN_STYLE: $(ARRIVE_WITHIN_APP_CODE_SIGN_STYLE)
+        PROVISIONING_PROFILE_SPECIFIER: $(ARRIVE_WITHIN_PROVISIONING_PROFILE_SPECIFIER)
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: Apps/ArriveWithin/Resources/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        MARKETING_VERSION: "1.0.2"
+        CURRENT_PROJECT_VERSION: 19
+        VERSIONING_SYSTEM: apple-generic
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SUPPORTED_PLATFORMS: iphoneos iphonesimulator
+        SUPPORTS_MACCATALYST: NO
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: NO
+        SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: NO
+      configs:
+        Release:
+          EXCLUDED_SOURCE_FILE_NAMES: MarketingCaptureClockFixtures.json
+    dependencies:
+      - target: ArriveWithinLiveActivity
+        embed: true
+      - package: ArriveWithinCore
+        product: ArriveWithinDomain
+      - package: ArriveWithinCore
+        product: ArriveWithinMeditation
+      - package: ArriveWithinCore
+        product: ArriveWithinPersistence
+      - package: ArriveWithinCore
+        product: ArriveWithinGardenBridge
+      - package: ArriveWithinCore
+        product: ArriveWithinContent
+
+  ArriveWithinLiveActivity:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "18.0"
+    configFiles:
+      Debug: Config/Base.xcconfig
+      Release: Config/Base.xcconfig
+    sources:
+      - path: Apps/ArriveWithinLiveActivity/Sources
+      - path: Apps/ArriveWithin/Sources/MeditationActivityAttributes.swift
+    settings:
+      base:
+        PRODUCT_NAME: ArriveWithinLiveActivity
+        PRODUCT_MODULE_NAME: ArriveWithinLiveActivity
+        PRODUCT_BUNDLE_IDENTIFIER: com.philipps.arrivewithin.ios.liveactivity
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: Apps/ArriveWithinLiveActivity/Resources/Info.plist
+        APPLICATION_EXTENSION_API_ONLY: YES
+        SKIP_INSTALL: YES
+        TARGETED_DEVICE_FAMILY: "1"
+        SUPPORTS_MACCATALYST: NO
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: NO
+        SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: NO
+
+  ArriveWithinTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "18.0"
+    configFiles:
+      Debug: Config/Base.xcconfig
+      Release: Config/Base.xcconfig
+    sources:
+      - path: Apps/ArriveWithin/Tests/ArriveWithinTests
+    settings:
+      base:
+        PRODUCT_NAME: $(TARGET_NAME)
+        PRODUCT_BUNDLE_IDENTIFIER: com.philipps.arrivewithin.ios.tests
+        CODE_SIGN_STYLE: Automatic
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/Arrive Within.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ArriveWithin
+        BUNDLE_LOADER: $(TEST_HOST)
+    dependencies:
+      - target: ArriveWithin
+      - package: ArriveWithinCore
+        product: ArriveWithinContent
+      - package: ArriveWithinCore
+        product: ArriveWithinDomain
+      - package: ArriveWithinCore
+        product: ArriveWithinMeditation
+      - package: ArriveWithinCore
+        product: ArriveWithinPersistence
+      - package: ArriveWithinCore
+        product: ArriveWithinTestSupport
+
+  ArriveWithinUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "18.0"
+    configFiles:
+      Debug: Config/Base.xcconfig
+      Release: Config/Base.xcconfig
+    sources:
+      - path: Apps/ArriveWithin/Tests/ArriveWithinUITests
+        excludes:
+          - ArriveWithinMarketingCaptureUITests.swift
+    settings:
+      base:
+        PRODUCT_NAME: $(TARGET_NAME)
+        PRODUCT_BUNDLE_IDENTIFIER: com.philipps.arrivewithin.ios.uitests
+        CODE_SIGN_STYLE: Automatic
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: ArriveWithin
+    dependencies:
+      - target: ArriveWithin
+
+  ArriveWithinMarketingCaptureUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "18.0"
+    configFiles:
+      Debug: Config/Base.xcconfig
+      Release: Config/Base.xcconfig
+    sources:
+      - path: Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinMarketingCaptureUITests.swift
+      - path: Apps/ArriveWithin/Sources/MarketingCaptureClockFixture.swift
+      - path: Apps/ArriveWithin/Resources/MarketingCaptureClockFixtures.json
+    settings:
+      base:
+        PRODUCT_NAME: $(TARGET_NAME)
+        PRODUCT_BUNDLE_IDENTIFIER: com.philipps.arrivewithin.ios.marketingcaptures.uitests
+        CODE_SIGN_STYLE: Automatic
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: ArriveWithin
+    dependencies:
+      - target: ArriveWithin
+
+schemes:
+  ArriveWithin:
+    build:
+      targets:
+        ArriveWithin: all
+        ArriveWithinTests: [test]
+        ArriveWithinUITests: [test]
+    run:
+      config: Debug
+      storeKitConfiguration: Config/PremiumGardenStyles.storekit
+    test:
+      gatherCoverageData: false
+      targets:
+        - name: ArriveWithinTests
+        - name: ArriveWithinUITests
+    profile:
+      config: Release
+    archive:
+      config: Release
+  ArriveWithinMarketingCaptures:
+    build:
+      targets:
+        ArriveWithin: all
+        ArriveWithinMarketingCaptureUITests: [test]
+    test:
+      gatherCoverageData: false
+      targets:
+        - name: ArriveWithinMarketingCaptureUITests

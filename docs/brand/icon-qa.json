@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "source": "Apps/ArriveWithin/Resources/AppIcon.icon",
+  "reviewedAt": "2026-09-15",
+  "reviewer": "agent-visual-inspection",
+  "sizes": {
+    "1024": "pass",
+    "180": "pass",
+    "60": "pass",
+    "40": "pass"
+  },
+  "platforms": {
+    "iOS": {
+      "default": "pass",
+      "dark": "pass",
+      "clear-light": "pending-runtime-review",
+      "clear-dark": "pending-runtime-review",
+      "tinted-light": "pass",
+      "tinted-dark": "pass"
+    },
+    "macOS": {
+      "default": "not-applicable",
+      "dark": "not-applicable",
+      "clear-light": "not-applicable",
+      "clear-dark": "not-applicable",
+      "tinted-light": "not-applicable",
+      "tinted-dark": "not-applicable"
+    },
+    "watchOS": {
+      "default": "not-applicable",
+      "circular-crop": "not-applicable"
+    }
+  },
+  "appearanceEvidence": {
+    "contactSheet": "docs/brand/app-icon-qa-contact-sheet.png",
+    "derivedManifest": "docs/brand/app-icon-derived/_manifest.json",
+    "compiledInspection": "docs/brand/icon-build-validation.json"
+  },
+  "ownerProductionReview": "pending",
+  "evidenceScope": "Derived Default/Dark/Tinted previews at 1024/180/60/40; Apple-compiled default phone/pad compatibility outputs. Appearance previews do not establish physical Home Screen or release proof.",
+  "canonicalSourceSha256": "096c86fe517af53d6f6ac97345afa9b56d1ddede352acf7cc45a6f60410d5271",
+  "iconComposerGUI": "Available with installed Xcode 27; no agreement was presented or accepted during this correction."
+}

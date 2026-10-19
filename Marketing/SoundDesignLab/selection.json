@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "status": "owner-selected-bundled-baseline-remastered-after-device-failure",
+  "selection_date": "2026-08-13",
+  "ambience_selection": {
+    "id": "still-air-v1",
+    "path": "Audio/still-air-v1.m4a",
+    "sha256": "d6c40f1cacf4c3714346cd85d38f28619b447b9029edb4c5094574c107f9a044"
+  },
+  "bell_family_selection": {
+    "id": "bundled-bell-v1",
+    "opening": {
+      "id": "opening-bell-v1",
+      "path": "Audio/opening-bell-v1.wav",
+      "sha256": "3e37e03dc80b50035a06cb055ad4b1df49670a142ef8a887a2fd9d26b29b0278"
+    },
+    "closing_and_interval": {
+      "id": "closing-bell-v1",
+      "path": "Audio/closing-bell-v1.wav",
+      "sha256": "cb736817872448631b88f4769c4698cfa044e1f81cb9218d7a76fc58f37eab5b"
+    }
+  },
+  "eligible_ambience_ids": [
+    "ambience-a-still-air",
+    "ambience-b-forest-breath",
+    "ambience-c-water-light"
+  ],
+  "eligible_bell_family_ids": ["bell-a-clear", "bell-b-warm", "bell-c-airy"],
+  "unselected_lab_candidate_ids": [
+    "ambience-a-still-air",
+    "ambience-b-forest-breath",
+    "ambience-c-water-light",
+    "bell-a-clear",
+    "bell-b-warm",
+    "bell-c-airy"
+  ],
+  "selection_effect": "The selected Still Air ambience and bell-v1 synthesis direction remain unchanged. After the owner reported that build 9's approximately -41 dBFS bell peaks were inaudible on a physical iPhone, both bell masters received deterministic output gain with limiter headroom, and Still Air received a device-audible harmonic lift; no lab candidate was promoted.",
+  "physical_qa": "Build 9 failed owner-observed physical iPhone bell audibility and completion stability. Replacement source has exact-candidate physical-device regression coverage for the audio-session startup path; it still requires exact-candidate human built-in-speaker audibility, route, interruption, lock/background, mix-balance, haptic, and energy review.",
+  "release_exclusion": "Every sound-lab candidate remains outside the app bundle; only the three hash-bound baseline assets named here are selected."
+}

@@ -1,0 +1,1377 @@
+{
+  "schema_version": 1,
+  "status": "passed-local-renderer-visual-matrix",
+  "checks_passed": 257,
+  "checks_failed": 0,
+  "milestone_count": 15,
+  "authored_variant_count": 30,
+  "frame_count": 30,
+  "comparison_metrics": [
+    {
+      "milestone_id": 1,
+      "changed_pixel_ratio": 0.010533854166666667,
+      "mean_absolute_channel_delta": 0.6272359664351852
+    },
+    {
+      "milestone_id": 2,
+      "changed_pixel_ratio": 0.010205078125,
+      "mean_absolute_channel_delta": 0.1776880787037037
+    },
+    {
+      "milestone_id": 3,
+      "changed_pixel_ratio": 0.030542534722222223,
+      "mean_absolute_channel_delta": 1.5221875
+    },
+    {
+      "milestone_id": 4,
+      "changed_pixel_ratio": 0.004886067708333333,
+      "mean_absolute_channel_delta": 0.016649305555555556
+    },
+    {
+      "milestone_id": 5,
+      "changed_pixel_ratio": 0.0027300347222222222,
+      "mean_absolute_channel_delta": 0.06323603877314815
+    },
+    {
+      "milestone_id": 6,
+      "changed_pixel_ratio": 0.0006412760416666666,
+      "mean_absolute_channel_delta": 0.0005490451388888888
+    },
+    {
+      "milestone_id": 7,
+      "changed_pixel_ratio": 0.00046983506944444443,
+      "mean_absolute_channel_delta": 0.00018699363425925925
+    },
+    {
+      "milestone_id": 8,
+      "changed_pixel_ratio": 0.00006401909722222223,
+      "mean_absolute_channel_delta": 0.00006221064814814815
+    },
+    {
+      "milestone_id": 9,
+      "changed_pixel_ratio": 0.000004340277777777778,
+      "mean_absolute_channel_delta": 0.0000014467592592592592
+    },
+    {
+      "milestone_id": 10,
+      "changed_pixel_ratio": 0.0007150607638888889,
+      "mean_absolute_channel_delta": 0.0013002748842592593
+    },
+    {
+      "milestone_id": 11,
+      "changed_pixel_ratio": 0.0003884548611111111,
+      "mean_absolute_channel_delta": 0.022700376157407408
+    },
+    {
+      "milestone_id": 12,
+      "changed_pixel_ratio": 0.008532986111111111,
+      "mean_absolute_channel_delta": 0.01913375289351852
+    },
+    {
+      "milestone_id": 13,
+      "changed_pixel_ratio": 0.00026041666666666666,
+      "mean_absolute_channel_delta": 0.005559895833333333
+    },
+    {
+      "milestone_id": 14,
+      "changed_pixel_ratio": 0.004690755208333334,
+      "mean_absolute_channel_delta": 0.003734809027777778
+    },
+    {
+      "milestone_id": 15,
+      "changed_pixel_ratio": 0.019315321180555556,
+      "mean_absolute_channel_delta": 0.4498484519675926
+    }
+  ],
+  "human_review": "pending",
+  "release_ready": false,
+  "manifest_sha256": "f08d274f8de02296eabb6e57c374f5f3db5dd68260dc1f8a3fbe7d9c3e5e8c1a",
+  "failures": [],
+  "checks": [
+    {
+      "id": "state",
+      "passed": true,
+      "detail": "matrix must remain human-review pending"
+    },
+    {
+      "id": "claim-boundary",
+      "passed": true,
+      "detail": "matrix must not overclaim art or release approval"
+    },
+    {
+      "id": "plan",
+      "passed": true,
+      "detail": "plan must contain exactly 15 milestones"
+    },
+    {
+      "id": "coverage",
+      "passed": true,
+      "detail": "all 15 A/B pairs must be captured"
+    },
+    {
+      "id": "network",
+      "passed": true,
+      "detail": "capture must block network and observe zero external requests"
+    },
+    {
+      "id": "bridge",
+      "passed": true,
+      "detail": "capture must use the shipping bridge at the locked viewport"
+    },
+    {
+      "id": "rights",
+      "passed": true,
+      "detail": "matrix may include only original product visuals"
+    },
+    {
+      "id": "generator-hash",
+      "passed": true,
+      "detail": "generator hash must match"
+    },
+    {
+      "id": "plan-hash",
+      "passed": true,
+      "detail": "plan hash must match"
+    },
+    {
+      "id": "schema-hash",
+      "passed": true,
+      "detail": "GardenState schema must match the regenerated source"
+    },
+    {
+      "id": "renderer-source-hash",
+      "passed": true,
+      "detail": "renderer source must match the regenerated source"
+    },
+    {
+      "id": "post-generation-boundary",
+      "passed": true,
+      "detail": "matrix must bind the exact current Garden renderer and schema without a deferred historical exception"
+    },
+    {
+      "id": "m1-pair",
+      "passed": true,
+      "detail": "milestone must contain ordered A and B frames"
+    },
+    {
+      "id": "m1-a-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m1-a-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m1-a-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m1-a-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m1-a-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m1-a-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m1-a-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m1-b-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m1-b-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m1-b-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m1-b-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m1-b-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m1-b-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m1-b-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m1-pair-distinct",
+      "passed": true,
+      "detail": "A and B must produce objectively distinct rendered pixels"
+    },
+    {
+      "id": "m2-pair",
+      "passed": true,
+      "detail": "milestone must contain ordered A and B frames"
+    },
+    {
+      "id": "m2-a-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m2-a-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m2-a-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m2-a-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m2-a-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m2-a-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m2-a-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m2-b-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m2-b-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m2-b-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m2-b-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m2-b-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m2-b-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m2-b-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m2-pair-distinct",
+      "passed": true,
+      "detail": "A and B must produce objectively distinct rendered pixels"
+    },
+    {
+      "id": "m3-pair",
+      "passed": true,
+      "detail": "milestone must contain ordered A and B frames"
+    },
+    {
+      "id": "m3-a-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m3-a-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m3-a-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m3-a-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m3-a-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m3-a-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m3-a-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m3-b-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m3-b-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m3-b-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m3-b-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m3-b-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m3-b-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m3-b-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m3-pair-distinct",
+      "passed": true,
+      "detail": "A and B must produce objectively distinct rendered pixels"
+    },
+    {
+      "id": "m4-pair",
+      "passed": true,
+      "detail": "milestone must contain ordered A and B frames"
+    },
+    {
+      "id": "m4-a-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m4-a-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m4-a-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m4-a-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m4-a-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m4-a-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m4-a-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m4-b-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m4-b-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m4-b-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m4-b-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m4-b-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m4-b-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m4-b-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m4-pair-distinct",
+      "passed": true,
+      "detail": "A and B must produce objectively distinct rendered pixels"
+    },
+    {
+      "id": "m5-pair",
+      "passed": true,
+      "detail": "milestone must contain ordered A and B frames"
+    },
+    {
+      "id": "m5-a-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m5-a-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m5-a-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m5-a-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m5-a-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m5-a-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m5-a-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m5-b-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m5-b-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m5-b-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m5-b-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m5-b-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m5-b-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m5-b-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m5-pair-distinct",
+      "passed": true,
+      "detail": "A and B must produce objectively distinct rendered pixels"
+    },
+    {
+      "id": "m6-pair",
+      "passed": true,
+      "detail": "milestone must contain ordered A and B frames"
+    },
+    {
+      "id": "m6-a-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m6-a-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m6-a-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m6-a-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m6-a-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m6-a-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m6-a-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m6-b-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m6-b-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m6-b-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m6-b-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m6-b-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m6-b-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m6-b-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m6-pair-distinct",
+      "passed": true,
+      "detail": "A and B must produce objectively distinct rendered pixels"
+    },
+    {
+      "id": "m7-pair",
+      "passed": true,
+      "detail": "milestone must contain ordered A and B frames"
+    },
+    {
+      "id": "m7-a-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m7-a-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m7-a-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m7-a-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m7-a-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m7-a-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m7-a-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m7-b-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m7-b-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m7-b-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m7-b-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m7-b-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m7-b-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m7-b-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m7-pair-distinct",
+      "passed": true,
+      "detail": "A and B must produce objectively distinct rendered pixels"
+    },
+    {
+      "id": "m8-pair",
+      "passed": true,
+      "detail": "milestone must contain ordered A and B frames"
+    },
+    {
+      "id": "m8-a-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m8-a-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m8-a-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m8-a-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m8-a-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m8-a-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m8-a-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m8-b-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m8-b-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m8-b-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m8-b-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m8-b-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m8-b-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m8-b-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m8-pair-distinct",
+      "passed": true,
+      "detail": "A and B must produce objectively distinct rendered pixels"
+    },
+    {
+      "id": "m9-pair",
+      "passed": true,
+      "detail": "milestone must contain ordered A and B frames"
+    },
+    {
+      "id": "m9-a-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m9-a-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m9-a-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m9-a-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m9-a-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m9-a-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m9-a-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m9-b-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m9-b-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m9-b-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m9-b-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m9-b-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m9-b-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m9-b-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m9-pair-distinct",
+      "passed": true,
+      "detail": "A and B must produce objectively distinct rendered pixels"
+    },
+    {
+      "id": "m10-pair",
+      "passed": true,
+      "detail": "milestone must contain ordered A and B frames"
+    },
+    {
+      "id": "m10-a-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m10-a-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m10-a-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m10-a-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m10-a-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m10-a-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m10-a-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m10-b-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m10-b-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m10-b-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m10-b-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m10-b-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m10-b-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m10-b-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m10-pair-distinct",
+      "passed": true,
+      "detail": "A and B must produce objectively distinct rendered pixels"
+    },
+    {
+      "id": "m11-pair",
+      "passed": true,
+      "detail": "milestone must contain ordered A and B frames"
+    },
+    {
+      "id": "m11-a-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m11-a-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m11-a-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m11-a-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m11-a-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m11-a-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m11-a-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m11-b-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m11-b-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m11-b-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m11-b-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m11-b-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m11-b-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m11-b-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m11-pair-distinct",
+      "passed": true,
+      "detail": "A and B must produce objectively distinct rendered pixels"
+    },
+    {
+      "id": "m12-pair",
+      "passed": true,
+      "detail": "milestone must contain ordered A and B frames"
+    },
+    {
+      "id": "m12-a-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m12-a-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m12-a-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m12-a-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m12-a-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m12-a-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m12-a-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m12-b-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m12-b-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m12-b-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m12-b-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m12-b-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m12-b-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m12-b-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m12-pair-distinct",
+      "passed": true,
+      "detail": "A and B must produce objectively distinct rendered pixels"
+    },
+    {
+      "id": "m13-pair",
+      "passed": true,
+      "detail": "milestone must contain ordered A and B frames"
+    },
+    {
+      "id": "m13-a-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m13-a-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m13-a-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m13-a-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m13-a-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m13-a-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m13-a-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m13-b-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m13-b-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m13-b-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m13-b-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m13-b-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m13-b-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m13-b-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m13-pair-distinct",
+      "passed": true,
+      "detail": "A and B must produce objectively distinct rendered pixels"
+    },
+    {
+      "id": "m14-pair",
+      "passed": true,
+      "detail": "milestone must contain ordered A and B frames"
+    },
+    {
+      "id": "m14-a-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m14-a-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m14-a-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m14-a-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m14-a-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m14-a-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m14-a-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m14-b-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m14-b-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m14-b-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m14-b-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m14-b-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m14-b-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m14-b-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m14-pair-distinct",
+      "passed": true,
+      "detail": "A and B must produce objectively distinct rendered pixels"
+    },
+    {
+      "id": "m15-pair",
+      "passed": true,
+      "detail": "milestone must contain ordered A and B frames"
+    },
+    {
+      "id": "m15-a-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m15-a-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m15-a-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m15-a-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m15-a-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m15-a-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m15-a-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m15-b-mapping",
+      "passed": true,
+      "detail": "frame metadata must match the plan"
+    },
+    {
+      "id": "m15-b-state",
+      "passed": true,
+      "detail": "state progression and planned local phase must match the milestone contract"
+    },
+    {
+      "id": "m15-b-variants",
+      "passed": true,
+      "detail": "state must unlock the exact authored variants and select the current A/B candidate"
+    },
+    {
+      "id": "m15-b-prior-selections",
+      "passed": true,
+      "detail": "A/B comparison must hold all prior milestones at A"
+    },
+    {
+      "id": "m15-b-state-hash",
+      "passed": true,
+      "detail": "embedded state hash must match"
+    },
+    {
+      "id": "m15-b-hash",
+      "passed": true,
+      "detail": "frame hash must match"
+    },
+    {
+      "id": "m15-b-image",
+      "passed": true,
+      "detail": "frame must be an opaque 1280 x 720 PNG"
+    },
+    {
+      "id": "m15-pair-distinct",
+      "passed": true,
+      "detail": "A and B must produce objectively distinct rendered pixels"
+    },
+    {
+      "id": "contact-a-hash",
+      "passed": true,
+      "detail": "contact-sheet bytes and hash must match"
+    },
+    {
+      "id": "contact-a-image",
+      "passed": true,
+      "detail": "contact sheet must be a 1280 x 522 JPEG"
+    },
+    {
+      "id": "contact-b-hash",
+      "passed": true,
+      "detail": "contact-sheet bytes and hash must match"
+    },
+    {
+      "id": "contact-b-image",
+      "passed": true,
+      "detail": "contact sheet must be a 1280 x 522 JPEG"
+    },
+    {
+      "id": "validation-text",
+      "passed": true,
+      "detail": "plain-text validation must preserve complete coverage and current-source claim boundaries"
+    }
+  ]
+}

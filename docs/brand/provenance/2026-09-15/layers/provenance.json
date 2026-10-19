@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "direction": "B — Quiet Threshold",
+  "generatedAt": "2026-09-15",
+  "generationTool": "OpenAI built-in image_gen",
+  "modelIdentifier": "not exposed by built-in tool",
+  "reference": {
+    "path": "docs/brand/provenance/2026-08-10/concept-board/direction-b.png",
+    "sha256": "c74bccc0b7f1ed489ae7fe696e31dffb2beaaf8c078597123b72190f87c03034",
+    "role": "Owner-selected app geometry and tactile material; only input to each separate layer call"
+  },
+  "transformation": "Sharp 0.35.3: alpha >32 subject bounds; Lanczos3 fit to selected 1024 composition; transparent padding; sRGB RGBA PNG. Raw outputs preserved unchanged.",
+  "rights": {
+    "repositoryMediaLicense": "CC BY 4.0",
+    "basis": "Same original first-party selected composition and output-rights basis as the 2026-08-10 production provenance",
+    "source": "docs/brand/provenance/2026-08-10/production/provenance.json"
+  },
+  "layers": [
+    {
+      "rawPath": "docs/brand/provenance/2026-09-15/layers/interior-raw.png",
+      "rawSha256": "6346e958f54c0d5843e06b20f3e0bd677b1846e61048822d7fd03aded807223e",
+      "rawDimensions": "1254x1254",
+      "promptPath": "docs/brand/provenance/2026-09-15/layers/interior-prompt.txt",
+      "promptSha256": "88fd0a7c56503e0aed88b5cf26f7801ecbb5e00e8d2aeff6b369bbdd1299bf07",
+      "crop": {
+        "left": 415,
+        "top": 373,
+        "width": 423,
+        "height": 621
+      },
+      "placement": {
+        "key": "interior",
+        "file": "threshold-interior.png",
+        "left": 366,
+        "top": 351,
+        "width": 288,
+        "height": 424
+      },
+      "output": "Apps/ArriveWithin/Resources/AppIcon.icon/Assets/threshold-interior.png",
+      "outputSha256": "f0bc3f6ba8d47256f05bfcc7435005d8f5b5e9a8162e428862ac20af43bbb13f"
+    },
+    {
+      "rawPath": "docs/brand/provenance/2026-09-15/layers/arch-raw.png",
+      "rawSha256": "7bb2628286d3a899b390a01b80e73b169ab9f285c2b8cf00394e416514411de3",
+      "rawDimensions": "1254x1254",
+      "promptPath": "docs/brand/provenance/2026-09-15/layers/arch-prompt.txt",
+      "promptSha256": "4cd16a2a59a13786ae8572eb55e8f6ec4e4e9ce0b79c8b04643677beba119399",
+      "crop": {
+        "left": 211,
+        "top": 195,
+        "width": 833,
+        "height": 864
+      },
+      "placement": {
+        "key": "arch",
+        "file": "threshold-arch.png",
+        "left": 238,
+        "top": 217,
+        "width": 546,
+        "height": 560
+      },
+      "output": "Apps/ArriveWithin/Resources/AppIcon.icon/Assets/threshold-arch.png",
+      "outputSha256": "ca8c85ff5b7301454b3d53108461da8246704048e4809ad4a6522bf182f25e8d"
+    },
+    {
+      "rawPath": "docs/brand/provenance/2026-09-15/layers/shoot-raw.png",
+      "rawSha256": "25d54a6a3f62abc6d915105b48c45c7d3ff064cf2facbc93ea8d40adc6235dee",
+      "rawDimensions": "1254x1254",
+      "promptPath": "docs/brand/provenance/2026-09-15/layers/shoot-prompt.txt",
+      "promptSha256": "cf191c098667ac04f88c4c41d61027e0b530df79f93495ecd7a6f6c42d36be22",
+      "crop": {
+        "left": 333,
+        "top": 515,
+        "width": 589,
+        "height": 538
+      },
+      "placement": {
+        "key": "shoot",
+        "file": "living-shoot.png",
+        "left": 393,
+        "top": 547,
+        "width": 235,
+        "height": 228
+      },
+      "output": "Apps/ArriveWithin/Resources/AppIcon.icon/Assets/living-shoot.png",
+      "outputSha256": "4e5877332415341ad1077490310d56dcc9662c16d49df5e2507d1e421ab56f34"
+    }
+  ]
+}

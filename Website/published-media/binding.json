@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "selection": "previously-public-reviewed-media",
+  "canonical_origin": "https://arrivewithin.com",
+  "verified_at": "2026-10-06T02:03:11Z",
+  "provenance_path": "/assets/provenance.json",
+  "provenance_sha256": "9fdf664be725a5c82a94684b7c04d9938cfb2fe288a8d71edad5dd7c0714446e",
+  "asset_count": 11,
+  "rights": "First-party Arrive Within media, CC-BY-4.0; retain the repository media license and attribution. The selected app icon remains a reserved trademark.",
+  "boundary": "Preserves the exact already-public reviewed film, UI, poster, and social assets. Pending-review refreshed source assets remain excluded from website output."
+}

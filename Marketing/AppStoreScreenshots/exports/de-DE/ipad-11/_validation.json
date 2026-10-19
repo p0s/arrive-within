@@ -1,0 +1,189 @@
+{
+  "schemaVersion": 1,
+  "status": "pass",
+  "expectedImages": 6,
+  "actualImages": 6,
+  "externalRequests": 0,
+  "results": [
+    {
+      "file": "01-growth-rhythm-de-de-ipad-11-1488x2266.png",
+      "status": "pass",
+      "width": 1488,
+      "height": 2266,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": [],
+      "geometry": {
+        "headlineBounds": {
+          "x": 133.921875,
+          "y": 66.953125,
+          "width": 1220.15625,
+          "height": 233.65625
+        },
+        "proofBounds": {
+          "x": 114.5625,
+          "y": 453.1875,
+          "width": 1258.875,
+          "height": 1799.375
+        },
+        "headlineToProofGap": 152.578125,
+        "headlineToProofGapRatio": 0.06733368270079435,
+        "proofHeight": 1799.375,
+        "proofHeightRatio": 0.7940754633715799,
+        "proofLowerEdge": 2252.5625,
+        "proofLowerEdgeRatio": 0.994069947043248
+      }
+    },
+    {
+      "file": "02-growth-take-root-de-de-ipad-11-1488x2266.png",
+      "status": "pass",
+      "width": 1488,
+      "height": 2266,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": [],
+      "geometry": {
+        "headlineBounds": {
+          "x": 133.921875,
+          "y": 66.953125,
+          "width": 1220.15625,
+          "height": 233.65625
+        },
+        "proofBounds": {
+          "x": 0,
+          "y": 453.1875,
+          "width": 1488,
+          "height": 1701.8125
+        },
+        "headlineToProofGap": 152.578125,
+        "headlineToProofGapRatio": 0.06733368270079435,
+        "proofHeight": 1701.8125,
+        "proofHeightRatio": 0.7510205207413946,
+        "proofLowerEdge": 2155,
+        "proofLowerEdgeRatio": 0.9510150044130626
+      }
+    },
+    {
+      "file": "03-growth-arrive-de-de-ipad-11-1488x2266.png",
+      "status": "pass",
+      "width": 1488,
+      "height": 2266,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": [],
+      "geometry": {
+        "headlineBounds": {
+          "x": 133.921875,
+          "y": 66.953125,
+          "width": 1220.15625,
+          "height": 233.65625
+        },
+        "proofBounds": {
+          "x": 114.5625,
+          "y": 453.1875,
+          "width": 1258.875,
+          "height": 1799.375
+        },
+        "headlineToProofGap": 152.578125,
+        "headlineToProofGapRatio": 0.06733368270079435,
+        "proofHeight": 1799.375,
+        "proofHeightRatio": 0.7940754633715799,
+        "proofLowerEdge": 2252.5625,
+        "proofLowerEdgeRatio": 0.994069947043248
+      }
+    },
+    {
+      "file": "04-growth-stays-de-de-ipad-11-1488x2266.png",
+      "status": "pass",
+      "width": 1488,
+      "height": 2266,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": [],
+      "geometry": {
+        "headlineBounds": {
+          "x": 133.921875,
+          "y": 66.953125,
+          "width": 1220.15625,
+          "height": 233.65625
+        },
+        "proofBounds": {
+          "x": 114.5625,
+          "y": 453.1875,
+          "width": 1258.875,
+          "height": 1799.375
+        },
+        "headlineToProofGap": 152.578125,
+        "headlineToProofGapRatio": 0.06733368270079435,
+        "proofHeight": 1799.375,
+        "proofHeightRatio": 0.7940754633715799,
+        "proofLowerEdge": 2252.5625,
+        "proofLowerEdgeRatio": 0.994069947043248
+      }
+    },
+    {
+      "file": "05-growth-reflect-de-de-ipad-11-1488x2266.png",
+      "status": "pass",
+      "width": 1488,
+      "height": 2266,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": [],
+      "geometry": {
+        "headlineBounds": {
+          "x": 133.921875,
+          "y": 66.953125,
+          "width": 1220.15625,
+          "height": 233.65625
+        },
+        "proofBounds": {
+          "x": 114.5625,
+          "y": 453.1875,
+          "width": 1258.875,
+          "height": 1799.375
+        },
+        "headlineToProofGap": 152.578125,
+        "headlineToProofGapRatio": 0.06733368270079435,
+        "proofHeight": 1799.375,
+        "proofHeightRatio": 0.7940754633715799,
+        "proofLowerEdge": 2252.5625,
+        "proofLowerEdgeRatio": 0.994069947043248
+      }
+    },
+    {
+      "file": "06-growth-refuge-de-de-ipad-11-1488x2266.png",
+      "status": "pass",
+      "width": 1488,
+      "height": 2266,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": [],
+      "geometry": {
+        "headlineBounds": {
+          "x": 133.921875,
+          "y": 66.953125,
+          "width": 1220.15625,
+          "height": 233.65625
+        },
+        "proofBounds": {
+          "x": 114.5625,
+          "y": 453.1875,
+          "width": 1258.875,
+          "height": 1799.375
+        },
+        "headlineToProofGap": 152.578125,
+        "headlineToProofGapRatio": 0.06733368270079435,
+        "proofHeight": 1799.375,
+        "proofHeightRatio": 0.7940754633715799,
+        "proofLowerEdge": 2252.5625,
+        "proofLowerEdgeRatio": 0.994069947043248
+      }
+    }
+  ]
+}

@@ -1,0 +1,2788 @@
+import * as THREE from "three";
+import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
+import type { GardenState } from "./types";
+import {
+  resolveDetailColor,
+  resolveVisualModel,
+  type GardenVisualDirection,
+} from "./visual-design";
+import {
+  deriveWorldModel,
+  type GardenBird,
+  type GardenDetail,
+  type GardenWorldModel,
+} from "./world-model";
+import { GardenStyleMaterialFactory } from "./style-material";
+
+export interface GardenSceneEvents {
+  contextLost(): void;
+  contextRestored(): void;
+  interaction(kind: "orbit" | "reset"): void;
+  performance(frameMilliseconds: number): void;
+}
+
+export interface GardenSceneController {
+  update(state: GardenState): void;
+  setVisualDirection(direction: GardenVisualDirection): void;
+  setActive(active: boolean): void;
+  resetView(): void;
+  diagnostics(): GardenRendererDiagnostics;
+  dispose(): void;
+}
+
+export interface GardenRendererDiagnostics {
+  direction: GardenVisualDirection["id"];
+  dayPhase: GardenWorldModel["dayPhase"];
+  orbitAngle: number;
+  toneMappingExposure: number;
+  hemisphereIntensity: number;
+  sunIntensity: number;
+  sunPosition: [number, number, number];
+  fillIntensity: number;
+  fillPosition: [number, number, number];
+  drawCalls: number;
+  triangles: number;
+  geometries: number;
+  textures: number;
+  programs: number;
+  rebuildCount: number;
+  context: "available" | "lost" | "disposed";
+  effectivePixelRatio: number;
+  worldRootCount: number;
+  worldFeatureCount: number;
+  worldDetailCount: number;
+  worldBirdCount: number;
+  worldGroundAnimalCount: number;
+  revealActive: boolean;
+  surfacePattern: string;
+  edgeMode: string;
+  shadingBands: number;
+  geometryTreatment: string;
+  styleDetailEnabled: boolean;
+  styleTextureCount: number;
+  motionCadence: number;
+}
+
+export function configureAnimatedWildlifeMesh(mesh: THREE.InstancedMesh): THREE.InstancedMesh {
+  // These few animated instances move beyond their creation-time bounds while the camera orbits.
+  mesh.frustumCulled = false;
+  return mesh;
+}
+
+const baseCameraPosition = new THREE.Vector3(5.7, 4.4, 8.6);
+
+export function createGardenScene(
+  canvas: HTMLCanvasElement,
+  initialState: GardenState,
+  events: GardenSceneEvents,
+  initialVisualDirection: GardenVisualDirection,
+): GardenSceneController {
+  const context = canvas.getContext("webgl2", {
+    alpha: false,
+    antialias: true,
+    depth: true,
+    powerPreference: "high-performance",
+    preserveDrawingBuffer: false,
+  });
+  if (context === null) {
+    throw new Error("WebGL2 is unavailable.");
+  }
+
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    context,
+    antialias: true,
+    powerPreference: "high-performance",
+  });
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFShadowMap;
+  // Garden geometry changes on growth events, while its frame-to-frame motion is subtle.
+  // Reuse the shadow map between those events instead of redrawing every caster each frame.
+  renderer.shadowMap.autoUpdate = false;
+  renderer.shadowMap.needsUpdate = true;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(31, 1, 0.1, 60);
+
+  let state = initialState;
+  let visualDirection = initialVisualDirection;
+  let visualSignature = gardenVisualSignature(state);
+  let model = deriveWorldModel(state);
+  let composition = cameraComposition(model, visualDirection);
+  const initialVisual = resolveVisualModel(model, visualDirection);
+  renderer.toneMappingExposure = initialVisual.exposure;
+
+  const hemisphere = new THREE.HemisphereLight(
+    initialVisual.hemisphereSkyColor,
+    initialVisual.hemisphereGroundColor,
+    initialVisual.hemisphereIntensity,
+  );
+  scene.add(hemisphere);
+  const sun = new THREE.DirectionalLight(initialVisual.sunColor, initialVisual.sunIntensity);
+  sun.position.set(-4.5, 8.5, 5.5);
+  sun.castShadow = true;
+  sun.shadow.camera.near = 1;
+  sun.shadow.camera.far = 24;
+  sun.shadow.camera.left = -7;
+  sun.shadow.camera.right = 7;
+  sun.shadow.camera.top = 7;
+  sun.shadow.camera.bottom = -7;
+  sun.shadow.bias = -0.0007;
+  scene.add(sun);
+  const fill = new THREE.PointLight(
+    initialVisual.fillColor,
+    initialVisual.fillIntensity,
+    18,
+    2,
+  );
+  fill.position.set(...visualDirection.lighting.fillPosition);
+  scene.add(fill);
+
+  camera.position.copy(composition.position);
+  camera.lookAt(composition.target);
+  const skyDome = buildSkyDome(model, visualDirection);
+  scene.add(skyDome);
+  let world = buildWorld(model, visualDirection);
+  scene.add(world.root);
+  configureQuality(renderer, sun, model, visualDirection);
+  configureAtmosphere(
+    renderer,
+    scene,
+    skyDome,
+    hemisphere,
+    sun,
+    fill,
+    model,
+    visualDirection,
+  );
+
+  let disposed = false;
+  let animationFrame = 0;
+  let lastRendered = 0;
+  let measuredFrames = 0;
+  let measuredMilliseconds = 0;
+  let orbitAngle = 0;
+  let contextIsLost = false;
+  let renderingIsActive = true;
+  let rebuildCount = 1;
+  let revealStartedAt: number | undefined;
+  let revealDuration = 0;
+  let revealScale = 1;
+  let viewportDistanceScale = 1;
+  let pointerStart: { id: number; x: number; angle: number } | undefined;
+
+  const resize = (): void => {
+    const width = Math.max(1, canvas.clientWidth);
+    const height = Math.max(1, canvas.clientHeight);
+    renderer.setSize(width, height, false);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    viewportDistanceScale = camera.aspect < 0.72 ? 1 + (0.72 - camera.aspect) * 0.58 : 1;
+    const radius = Math.hypot(composition.position.x, composition.position.z) * viewportDistanceScale;
+    camera.position.x = Math.sin(orbitAngle + 0.585) * radius;
+    camera.position.z = Math.cos(orbitAngle + 0.585) * radius;
+    camera.position.y = composition.position.y;
+    camera.lookAt(composition.target);
+  };
+  const resizeObserver = new ResizeObserver(resize);
+  resizeObserver.observe(canvas);
+  resize();
+
+  const updateCamera = (): void => {
+    const radius = Math.hypot(composition.position.x, composition.position.z) * viewportDistanceScale;
+    camera.position.x = Math.sin(orbitAngle + 0.585) * radius;
+    camera.position.z = Math.cos(orbitAngle + 0.585) * radius;
+    camera.position.y = composition.position.y;
+    camera.lookAt(composition.target);
+  };
+
+  const onPointerDown = (event: PointerEvent): void => {
+    if (state.reduceMotion) return;
+    pointerStart = { id: event.pointerId, x: event.clientX, angle: orbitAngle };
+    canvas.setPointerCapture(event.pointerId);
+  };
+  const onPointerMove = (event: PointerEvent): void => {
+    if (state.reduceMotion || pointerStart?.id !== event.pointerId) return;
+    orbitAngle = resolveGardenOrbitAngle(
+      pointerStart.angle,
+      event.clientX - pointerStart.x,
+      state.reduceMotion,
+    );
+    updateCamera();
+  };
+  const onPointerUp = (event: PointerEvent): void => {
+    if (pointerStart?.id !== event.pointerId) return;
+    if (Math.abs(event.clientX - pointerStart.x) > 4) events.interaction("orbit");
+    pointerStart = undefined;
+    canvas.releasePointerCapture(event.pointerId);
+  };
+  const onContextLost = (event: Event): void => {
+    event.preventDefault();
+    if (contextIsLost) return;
+    contextIsLost = true;
+    events.contextLost();
+  };
+  const onContextRestored = (): void => {
+    if (!contextIsLost) return;
+    contextIsLost = false;
+    renderer.resetState();
+    lastRendered = 0;
+    renderer.shadowMap.needsUpdate = true;
+    renderer.render(scene, camera);
+    events.contextRestored();
+  };
+  canvas.addEventListener("pointerdown", onPointerDown);
+  canvas.addEventListener("pointermove", onPointerMove);
+  canvas.addEventListener("pointerup", onPointerUp);
+  canvas.addEventListener("pointercancel", onPointerUp);
+  canvas.addEventListener("webglcontextlost", onContextLost);
+  canvas.addEventListener("webglcontextrestored", onContextRestored);
+
+  const animate = (now: number): void => {
+    if (disposed) return;
+    animationFrame = requestAnimationFrame(animate);
+    if (!renderingIsActive || document.hidden || contextIsLost) return;
+
+    const qualityFrameRate = state.qualityHint === "low" ? 30 : 60;
+    const styleCadence = world.styleMaterials.profile.motionCadence.framesPerSecond;
+    const targetFrameRate = state.reduceMotion
+      ? 12
+      : Math.min(qualityFrameRate, styleCadence, visualDirection.motion.framesPerSecond ?? qualityFrameRate);
+    const minimumFrameInterval = 1_000 / targetFrameRate;
+    if (now - lastRendered < minimumFrameInterval) return;
+
+    lastRendered = now;
+
+    const renderStarted = performance.now();
+    if (revealStartedAt !== undefined) {
+      if (state.reduceMotion) {
+        revealStartedAt = undefined;
+        world.root.scale.setScalar(1);
+        world.root.position.y = 0;
+      } else {
+        const progress = THREE.MathUtils.clamp((now - revealStartedAt) / revealDuration, 0, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const scale = THREE.MathUtils.lerp(revealScale, 1, eased);
+        world.root.scale.setScalar(scale);
+        world.root.position.y = THREE.MathUtils.lerp(-0.06, 0, eased);
+        if (progress >= 1) {
+          revealStartedAt = undefined;
+          renderer.shadowMap.needsUpdate = true;
+        }
+      }
+    }
+    if (!state.reduceMotion) {
+      const motionNow = Math.floor(now / (1_000 / styleCadence)) * (1_000 / styleCadence);
+      const breeze = Math.sin(motionNow * 0.00042) * model.windStrength;
+      world.canopy.rotation.z = breeze * visualDirection.motion.canopyAmplitude;
+      world.canopy.rotation.x = breeze * visualDirection.motion.canopyAmplitude * 0.42;
+      applyStyleMotion(world, motionNow);
+      world.particles.rotation.y = motionNow * 0.000025 * visualDirection.motion.particleSpeed;
+      animateBirds(world.birds, model, motionNow);
+      animateGroundWildlife(world.groundWildlife, motionNow);
+    }
+    renderer.render(scene, camera);
+    const frameMilliseconds = Math.min(100, performance.now() - renderStarted);
+    measuredFrames += 1;
+    measuredMilliseconds += frameMilliseconds;
+
+    if (measuredFrames >= 120) {
+      events.performance(measuredMilliseconds / measuredFrames);
+      measuredFrames = 0;
+      measuredMilliseconds = 0;
+    }
+  };
+  renderer.render(scene, camera);
+  animationFrame = requestAnimationFrame(animate);
+
+  return {
+    setVisualDirection(nextDirection): void {
+      if (nextDirection.id === visualDirection.id) return;
+      visualDirection = nextDirection;
+      composition = cameraComposition(model, visualDirection);
+      scene.remove(world.root);
+      disposeWorld(world);
+      world = buildWorld(model, visualDirection);
+      rebuildCount += 1;
+      scene.add(world.root);
+      configureQuality(renderer, sun, model, visualDirection);
+      configureAtmosphere(renderer, scene, skyDome, hemisphere, sun, fill, model, visualDirection);
+      fill.position.set(...visualDirection.lighting.fillPosition);
+      if (state.reduceMotion) {
+        world.root.scale.setScalar(1);
+        world.root.position.set(0, 0, 0);
+      }
+      updateCamera();
+      renderer.render(scene, camera);
+    },
+    update(nextState): void {
+      const previousState = state;
+      state = nextState;
+      const reduceMotionActivated = !previousState.reduceMotion && state.reduceMotion;
+      if (reduceMotionActivated) {
+        if (pointerStart !== undefined && canvas.hasPointerCapture(pointerStart.id)) {
+          canvas.releasePointerCapture(pointerStart.id);
+        }
+        pointerStart = undefined;
+        orbitAngle = resolveGardenOrbitAngle(orbitAngle, 0, true);
+        if (
+          revealStartedAt !== undefined
+          && settleGardenRevealForReducedMotion(world.root, true)
+        ) {
+          revealStartedAt = undefined;
+        }
+        settleGardenMotionPose(world, model);
+        renderer.shadowMap.needsUpdate = true;
+        if (renderingIsActive && !document.hidden && !contextIsLost) {
+          renderer.render(scene, camera);
+        }
+      }
+      const nextVisualSignature = gardenVisualSignature(state);
+      if (nextVisualSignature === visualSignature) return;
+      visualSignature = nextVisualSignature;
+      model = deriveWorldModel(state);
+      composition = cameraComposition(model, visualDirection);
+      scene.remove(world.root);
+      disposeWorld(world);
+      world = buildWorld(model, visualDirection);
+      rebuildCount += 1;
+      scene.add(world.root);
+      configureQuality(renderer, sun, model, visualDirection);
+      configureAtmosphere(
+        renderer,
+        scene,
+        skyDome,
+        hemisphere,
+        sun,
+        fill,
+        model,
+        visualDirection,
+      );
+      if (state.reduceMotion) {
+        orbitAngle = 0;
+        revealStartedAt = undefined;
+        world.root.scale.setScalar(1);
+        world.root.position.set(0, 0, 0);
+      }
+      updateCamera();
+      const grew = state.microGrowthOrdinal > previousState.microGrowthOrdinal;
+      if (!state.reduceMotion && grew) {
+        const major = state.highestMilestone > previousState.highestMilestone;
+        revealScale = major ? 0.93 : 0.978;
+        revealDuration = major ? 1_050 : 620;
+        revealStartedAt = performance.now();
+        world.root.scale.setScalar(revealScale);
+        world.root.position.y = -0.06;
+      }
+    },
+    setActive(active): void {
+      if (renderingIsActive === active) return;
+      renderingIsActive = active;
+      lastRendered = 0;
+      if (active && !contextIsLost) renderer.render(scene, camera);
+    },
+    resetView(): void {
+      orbitAngle = 0;
+      updateCamera();
+      events.interaction("reset");
+    },
+    diagnostics(): GardenRendererDiagnostics {
+      const programs = renderer.info.programs?.length ?? 0;
+      return {
+        direction: visualDirection.id,
+        dayPhase: model.dayPhase,
+        orbitAngle,
+        toneMappingExposure: renderer.toneMappingExposure,
+        hemisphereIntensity: hemisphere.intensity,
+        sunIntensity: sun.intensity,
+        sunPosition: [sun.position.x, sun.position.y, sun.position.z],
+        fillIntensity: fill.intensity,
+        fillPosition: [fill.position.x, fill.position.y, fill.position.z],
+        drawCalls: renderer.info.render.calls,
+        triangles: renderer.info.render.triangles,
+        geometries: renderer.info.memory.geometries,
+        textures: renderer.info.memory.textures,
+        programs,
+        rebuildCount,
+        context: disposed ? "disposed" : contextIsLost ? "lost" : "available",
+        effectivePixelRatio: renderer.getPixelRatio(),
+        worldRootCount: scene.children.filter((child) => child.name === "deterministic-garden-world").length,
+        worldFeatureCount: model.features.length,
+        worldDetailCount: model.details.length,
+        worldBirdCount: model.birds.length,
+        worldGroundAnimalCount: model.groundAnimals.length,
+        revealActive: revealStartedAt !== undefined,
+        surfacePattern: world.styleMaterials.profile.surfacePattern,
+        edgeMode: world.styleMaterials.profile.edgeMode,
+        shadingBands: world.styleMaterials.profile.shadingBands,
+        geometryTreatment: world.styleMaterials.profile.geometryTreatment,
+        styleDetailEnabled: world.styleMaterials.hasStyleDetail(),
+        styleTextureCount: world.root.userData.arriveWithinStyleTextureKeys instanceof Set
+          ? world.root.userData.arriveWithinStyleTextureKeys.size
+          : 0,
+        motionCadence: world.styleMaterials.profile.motionCadence.framesPerSecond,
+      };
+    },
+    dispose(): void {
+      if (disposed) return;
+      disposed = true;
+      cancelAnimationFrame(animationFrame);
+      resizeObserver.disconnect();
+      canvas.removeEventListener("pointerdown", onPointerDown);
+      canvas.removeEventListener("pointermove", onPointerMove);
+      canvas.removeEventListener("pointerup", onPointerUp);
+      canvas.removeEventListener("pointercancel", onPointerUp);
+      canvas.removeEventListener("webglcontextlost", onContextLost);
+      canvas.removeEventListener("webglcontextrestored", onContextRestored);
+      disposeWorld(world);
+      disposeObjectResources(skyDome);
+      renderer.dispose();
+    },
+  };
+}
+
+export function gardenVisualSignature(state: GardenState): string {
+  const customization = Object.entries(state.activeCustomization)
+    .sort(([left], [right]) => left.localeCompare(right));
+  return JSON.stringify({
+    gardenSeed: state.gardenSeed,
+    totalQualifyingSeconds: state.totalQualifyingSeconds,
+    journeyDay: state.journeyDay,
+    highestMilestone: state.highestMilestone,
+    activeCustomization: customization,
+    microGrowthOrdinal: state.microGrowthOrdinal,
+    localDayPhase: state.localDayPhase ?? "day",
+    qualityHint: state.qualityHint,
+  });
+}
+
+export function settleGardenRevealForReducedMotion(
+  root: THREE.Object3D,
+  reduceMotionActivated: boolean,
+): boolean {
+  if (!reduceMotionActivated) return false;
+  root.scale.setScalar(1);
+  root.position.y = 0;
+  return true;
+}
+
+export function resolveGardenOrbitAngle(
+  startAngle: number,
+  horizontalDelta: number,
+  reduceMotion: boolean,
+): number {
+  if (reduceMotion) return 0;
+  return THREE.MathUtils.clamp(startAngle + horizontalDelta * 0.004, -0.62, 0.62);
+}
+
+function cameraComposition(
+  model: GardenWorldModel,
+  direction: GardenVisualDirection,
+): { position: THREE.Vector3; target: THREE.Vector3 } {
+  const maturity = THREE.MathUtils.clamp((model.trunkHeight - 0.52) / 3.7, 0, 1);
+  const distanceScale = 0.7 + maturity * 0.72;
+  return {
+    position: new THREE.Vector3(
+      baseCameraPosition.x * distanceScale * direction.composition.cameraDistanceScale,
+      2.35 + maturity * 3.05 + direction.composition.cameraHeightOffset,
+      baseCameraPosition.z * distanceScale * direction.composition.cameraDistanceScale,
+    ),
+    target: new THREE.Vector3(
+      0,
+      0.48 + maturity * 2.02 + direction.composition.targetHeightOffset,
+      0,
+    ),
+  };
+}
+
+interface BuiltWorld {
+  root: THREE.Group;
+  canopy: THREE.Group;
+  particles: THREE.Points;
+  birds: THREE.Group;
+  groundWildlife: THREE.Group;
+  styleMaterials: GardenStyleMaterialFactory;
+  styleTargets: THREE.Object3D[];
+}
+
+function settleGardenMotionPose(world: BuiltWorld, model: GardenWorldModel): void {
+  world.canopy.rotation.x = 0;
+  world.canopy.rotation.z = 0;
+  world.particles.rotation.y = 0;
+  settleBirds(world.birds, model);
+  settleGroundWildlife(world.groundWildlife);
+  settleStyleMotion(world);
+}
+
+function disposeWorld(world: BuiltWorld): void {
+  disposeObjectResources(world.root);
+  world.styleMaterials.release();
+}
+
+function buildWorld(model: GardenWorldModel, direction: GardenVisualDirection): BuiltWorld {
+  const root = new THREE.Group();
+  root.name = "deterministic-garden-world";
+  const styleMaterials = new GardenStyleMaterialFactory(direction, root, qualityHintFor(model));
+  const visual = resolveVisualModel(model, direction);
+  const twilight = direction.id === "twilight-refuge";
+  const groundTexture = twilight
+    ? createProceduralGroundTexture(direction.id)
+    : styleMaterials.texture("ground");
+
+  root.add(buildGroundLayers(direction, visual.groundColor, groundTexture, styleMaterials, twilight));
+
+  root.add(twilight
+    ? buildHeroClearing(visual.groundColor)
+    : buildHeroClearing(visual.groundColor, styleMaterials));
+  if (model.features.includes("stones")) {
+    root.add(twilight
+      ? buildGardenPath(visual.groundColor)
+      : buildGardenPath(visual.groundColor, styleMaterials));
+  }
+
+  const canopy = buildCanopy(model, visual.foliageColors, direction, styleMaterials);
+  root.add(canopy);
+  const foliageAccents = buildFoliageAccents(model, visual.foliageColors, direction);
+  if (foliageAccents !== null) root.add(foliageAccents);
+  const branches = buildInstancedBranches(model, direction, styleMaterials);
+  if (branches !== null) root.add(branches);
+
+  const plantGeometry = groundPlantGeometry(direction.foliageForm);
+  const plantMaterial = twilight
+    ? new THREE.MeshStandardMaterial({
+      map: null,
+      roughness: 0.86,
+      metalness: 0,
+      flatShading: true,
+      side: THREE.DoubleSide,
+    })
+    : styleMaterials.standard("grass", { side: THREE.DoubleSide });
+  const plants = new THREE.InstancedMesh(plantGeometry, plantMaterial, model.groundPlants.length);
+  const transform = new THREE.Object3D();
+  model.groundPlants.forEach((plant, index) => {
+    transform.position.set(plant.x, direction.foliageForm === "paper-relief" ? 0.16 : 0.025, plant.z);
+    transform.scale.set(
+      plant.scale * (direction.foliageForm === "twilight-silhouette" ? 0.7 : 0.86),
+      plant.scale,
+      plant.scale * (direction.foliageForm === "paper-relief" ? 0.38 : 0.72),
+    );
+    transform.rotation.y = index * 2.399963;
+    transform.updateMatrix();
+    plants.setMatrixAt(index, transform.matrix);
+    plants.setColorAt(index, new THREE.Color(plant.color));
+  });
+  plants.instanceMatrix.needsUpdate = true;
+  plants.receiveShadow = true;
+  root.add(plants);
+
+  const fireflyDetails = model.details.filter((detail) => detail.kind === "fireflies");
+  const particlePositions = new Float32Array(model.quality.particleCount * 3);
+  for (let index = 0; index < model.quality.particleCount; index += 1) {
+    const detail = fireflyDetails[index % Math.max(1, fireflyDetails.length)];
+    const repeatOffset = fireflyDetails.length === 0
+      ? 0
+      : Math.floor(index / fireflyDetails.length) * 0.035;
+    const angle = index * 2.399963;
+    particlePositions[index * 3] = (detail?.x ?? Math.cos(angle) * (1.8 + (index % 4) * 0.38))
+      + Math.cos(angle) * repeatOffset;
+    particlePositions[index * 3 + 1] = detail?.y ?? 0.7 + (index % 7) * 0.42;
+    particlePositions[index * 3 + 2] = (detail?.z ?? Math.sin(angle) * (1.2 + (index % 3) * 0.44))
+      + Math.sin(angle) * repeatOffset;
+  }
+  const particleGeometry = new THREE.BufferGeometry();
+  particleGeometry.setAttribute("position", new THREE.BufferAttribute(particlePositions, 3));
+  const particleVisibility = visual.dayPhase === "day"
+    ? 0.06
+    : visual.dayPhase === "dawn"
+    ? 0.2
+    : visual.dayPhase === "dusk"
+    ? 0.68
+    : 1;
+  const particles = new THREE.Points(
+    particleGeometry,
+    new THREE.PointsMaterial({
+      color: visual.accentColor,
+      opacity: direction.composition.particleOpacity * particleVisibility,
+      size: direction.composition.particleSize,
+      transparent: true,
+    }),
+  );
+  root.add(particles);
+
+  for (const detailObject of buildDetailObjects(model, direction, styleMaterials)) {
+    root.add(detailObject);
+  }
+
+  const birds = buildBirds(model, direction, styleMaterials);
+  const groundWildlife = buildGroundWildlife(model, direction, styleMaterials);
+  root.add(birds, groundWildlife);
+
+  const styleTargets = [
+    canopy,
+    root.getObjectByName("space-iii-open-timber-pavilion"),
+  ].filter((target): target is THREE.Object3D => target !== undefined);
+  for (const target of styleTargets) {
+    target.userData.styleBasePosition = target.position.toArray();
+    target.userData.styleBaseRotation = [target.rotation.x, target.rotation.y, target.rotation.z];
+    target.userData.styleBaseScale = target.scale.toArray();
+  }
+  return { root, canopy, particles, birds, groundWildlife, styleMaterials, styleTargets };
+}
+
+function buildGroundLayers(
+  direction: GardenVisualDirection,
+  color: string,
+  texture: THREE.Texture | null,
+  styleMaterials: GardenStyleMaterialFactory,
+  twilight: boolean,
+): THREE.InstancedMesh {
+  const count = direction.composition.groundLayers;
+  const geometry = singleMaterialGeometry(organicGroundGeometry(
+    6.2,
+    6.65,
+    0.5,
+    direction.foliageForm === "paper-relief" ? 36 : 48,
+    0,
+  ));
+  const material = twilight
+    ? new THREE.MeshStandardMaterial({
+      color: "#ffffff",
+      map: texture,
+      roughness: 1,
+      metalness: 0,
+      flatShading: direction.foliageForm !== "painted-botanical",
+    })
+    : styleMaterials.standard("ground", { color: "#ffffff" });
+  const mesh = new THREE.InstancedMesh(geometry, material, count);
+  mesh.name = "garden-ground-layers";
+  const transform = new THREE.Object3D();
+  for (let layer = 0; layer < count; layer += 1) {
+    transform.position.set(0, -0.25 - layer * 0.07, 0);
+    const scale = 1 - layer * 0.014;
+    transform.scale.set(scale, 1, scale);
+    transform.updateMatrix();
+    mesh.setMatrixAt(layer, transform.matrix);
+    mesh.setColorAt(
+      layer,
+      new THREE.Color(color).offsetHSL(
+        0,
+        0,
+        layer * (direction.foliageForm === "paper-relief" ? 0.028 : -0.014),
+      ),
+    );
+  }
+  mesh.instanceMatrix.needsUpdate = true;
+  if (mesh.instanceColor !== null) mesh.instanceColor.needsUpdate = true;
+  mesh.receiveShadow = true;
+  return mesh;
+}
+
+function qualityHintFor(model: GardenWorldModel): "low" | "balanced" | "high" {
+  if (model.quality.pixelRatioLimit <= 1) return "low";
+  if (model.quality.pixelRatioLimit >= 2) return "high";
+  return "balanced";
+}
+
+function applyStyleMotion(world: BuiltWorld, now: number): void {
+  const cadence = world.styleMaterials.profile.motionCadence;
+  const seed = world.styleMaterials.profile.seeds.motion;
+  if (cadence.inkWobble > 0) {
+    world.canopy.rotation.z += Math.sin(now * 0.0017 + seed) * cadence.inkWobble;
+    world.canopy.rotation.x += Math.cos(now * 0.0013 + seed * 0.7) * cadence.inkWobble * 0.5;
+  }
+  for (const [index, target] of world.styleTargets.entries()) {
+    const basePosition = target.userData.styleBasePosition as number[] | undefined;
+    if (basePosition !== undefined && cadence.propJitter > 0) {
+      target.position.set(
+        (basePosition[0] ?? 0) + Math.sin(now * 0.0021 + seed + index) * cadence.propJitter,
+        (basePosition[1] ?? 0) + Math.cos(now * 0.0018 + seed * 0.6 + index) * cadence.propJitter * 0.45,
+        (basePosition[2] ?? 0) + Math.sin(now * 0.0015 + seed * 0.4 + index) * cadence.propJitter,
+      );
+    }
+    if (target === world.canopy && cadence.squashStretch > 0) {
+      const baseScale = target.userData.styleBaseScale as number[] | undefined;
+      if (baseScale !== undefined) {
+        const squash = Math.sin(now * 0.0011 + seed) * cadence.squashStretch;
+        target.scale.set(
+          (baseScale[0] ?? 1) * (1 - squash * 0.46),
+          (baseScale[1] ?? 1) * (1 + squash),
+          (baseScale[2] ?? 1) * (1 - squash * 0.24),
+        );
+      }
+    }
+  }
+}
+
+function settleStyleMotion(world: BuiltWorld): void {
+  for (const target of world.styleTargets) {
+    const position = target.userData.styleBasePosition as number[] | undefined;
+    const rotation = target.userData.styleBaseRotation as number[] | undefined;
+    const scale = target.userData.styleBaseScale as number[] | undefined;
+    if (position !== undefined) target.position.set(position[0] ?? 0, position[1] ?? 0, position[2] ?? 0);
+    if (rotation !== undefined) target.rotation.set(rotation[0] ?? 0, rotation[1] ?? 0, rotation[2] ?? 0);
+    if (scale !== undefined) target.scale.set(scale[0] ?? 1, scale[1] ?? 1, scale[2] ?? 1);
+  }
+}
+
+const instancedDetailKinds = new Set<GardenDetail["kind"]>([
+  "stones",
+  "undergrowth",
+  "fireflies",
+  "blossoms",
+  "drifting-life",
+  "clouds",
+  "ripples",
+  "warm-light",
+  "wind",
+  "twilight-stars",
+]);
+
+function buildDetailObjects(
+  model: GardenWorldModel,
+  direction: GardenVisualDirection,
+  styleMaterials: GardenStyleMaterialFactory,
+): THREE.Object3D[] {
+  const visual = resolveVisualModel(model, direction);
+  const details = model.details.filter((detail) => {
+    if (detail.kind === "twilight-stars") return visual.starOpacity > 0.01;
+    if (detail.kind === "fireflies") return false;
+    if (!styleMaterials.hasStyleDetail()) {
+      return !["undergrowth", "ripples", "blossoms", "wind", "drifting-life", "clouds"].includes(detail.kind);
+    }
+    return true;
+  });
+  const objects: THREE.Object3D[] = [];
+  for (const kind of instancedDetailKinds) {
+    const matching = details.filter((detail) => detail.kind === kind);
+    if (matching.length > 0) {
+      objects.push(buildInstancedDetailKind(kind, matching, direction, model, styleMaterials));
+    }
+  }
+
+  for (const detail of details) {
+    if (detail.kind !== "roots" && !instancedDetailKinds.has(detail.kind)) {
+      objects.push(buildDetail(detail, direction, model, styleMaterials));
+    }
+  }
+  return objects;
+}
+
+function buildInstancedBranches(
+  model: GardenWorldModel,
+  direction: GardenVisualDirection,
+  styleMaterials: GardenStyleMaterialFactory,
+): THREE.Object3D | null {
+  const trunkColor = resolveVisualModel(model, direction).trunkColor;
+  const segments = [
+    {
+      start: new THREE.Vector3(0, 0, 0),
+      end: new THREE.Vector3(0, model.trunkHeight, 0),
+      radius: model.trunkRadius,
+      color: trunkColor,
+    },
+    ...model.details.filter((detail) => detail.kind === "roots").map((detail) => ({
+      start: new THREE.Vector3(0, 0.065, 0),
+      end: new THREE.Vector3(detail.x, detail.y, detail.z),
+      radius: 0.045 * detail.scale,
+      color: resolveDetailColor(detail.color, detail.kind, direction),
+    })),
+    ...model.foliage.flatMap((cluster, index) =>
+      index > 0 && index % 2 === 0
+        ? [{
+        start: new THREE.Vector3(
+          cluster.x * 0.08,
+          Math.min(model.trunkHeight * 0.7, cluster.y * 0.64),
+          cluster.z * 0.08,
+        ),
+        end: new THREE.Vector3(cluster.x * 0.82, cluster.y * 0.94, cluster.z * 0.82),
+        radius: model.trunkRadius * (index % 4 === 0 ? 0.24 : 0.19),
+        color: trunkColor,
+      }]
+      : [],
+    ),
+  ];
+  if (segments.length === 0) return null;
+  const sides = direction.foliageForm === "painted-botanical" ? 14 : 10;
+  const mesh = buildInstancedCylinders(segments, styleMaterials, "trunk", sides);
+  mesh.name = "hero-trunk-roots-and-branches";
+  const group = new THREE.Group();
+  group.add(mesh);
+  if (styleMaterials.hasInkOutline()) {
+    const outline = new THREE.InstancedMesh(
+      mesh.geometry,
+      styleMaterials.outline("trunk"),
+      1,
+    );
+    const matrix = new THREE.Matrix4();
+    mesh.getMatrixAt(0, matrix);
+    matrix.scale(new THREE.Vector3(
+      direction.material?.outlineScale ?? 1.035,
+      direction.material?.outlineScale ?? 1.035,
+      direction.material?.outlineScale ?? 1.035,
+    ));
+    outline.setMatrixAt(0, matrix);
+    outline.instanceMatrix.needsUpdate = true;
+    outline.name = "hero-tree-ink-edge";
+    group.add(outline);
+  }
+  return group;
+}
+
+function buildInstancedCylinders(
+  segments: Array<{
+    start: THREE.Vector3;
+    end: THREE.Vector3;
+    radius: number;
+    color: string;
+  }>,
+  styleMaterials?: GardenStyleMaterialFactory,
+  role: "trunk" | "rock" = "rock",
+  sides = 10,
+): THREE.InstancedMesh {
+  const geometry = singleMaterialGeometry(new THREE.CylinderGeometry(0.56, 1, 1, sides));
+  const material = styleMaterials?.standard(role) ?? new THREE.MeshStandardMaterial({
+    color: "#ffffff",
+    roughness: 0.96,
+    metalness: 0,
+    flatShading: true,
+  });
+  const mesh = new THREE.InstancedMesh(geometry, material, segments.length);
+  const transform = new THREE.Object3D();
+  const up = new THREE.Vector3(0, 1, 0);
+  segments.forEach((segment, index) => {
+    const vector = segment.end.clone().sub(segment.start);
+    const length = vector.length();
+    transform.position.copy(segment.start).add(segment.end).multiplyScalar(0.5);
+    transform.quaternion.setFromUnitVectors(up, vector.normalize());
+    transform.scale.set(segment.radius, length, segment.radius);
+    transform.updateMatrix();
+    mesh.setMatrixAt(index, transform.matrix);
+    mesh.setColorAt(index, new THREE.Color(segment.color));
+  });
+  mesh.instanceMatrix.needsUpdate = true;
+  if (mesh.instanceColor !== null) mesh.instanceColor.needsUpdate = true;
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  return mesh;
+}
+
+function buildInstancedDetailKind(
+  kind: GardenDetail["kind"],
+  details: GardenDetail[],
+  direction: GardenVisualDirection,
+  model: GardenWorldModel,
+  styleMaterials: GardenStyleMaterialFactory,
+): THREE.Object3D {
+  if (kind === "clouds") return buildInstancedCloudBanks(details, direction, model);
+  const geometry = detailGeometry(kind, styleMaterials);
+  const material = detailMaterial(kind, model, direction, styleMaterials);
+  const mesh = new THREE.InstancedMesh(geometry, material, details.length);
+  const outline = kind === "stones" && styleMaterials.hasInkOutline()
+    ? new THREE.InstancedMesh(geometry, styleMaterials.outline("rock"), details.length)
+    : null;
+  const transform = new THREE.Object3D();
+  details.forEach((detail, index) => {
+    transform.position.set(detail.x, detail.y, detail.z);
+    transform.rotation.set(0, 0, 0);
+    transform.scale.setScalar(detail.scale);
+    switch (kind) {
+    case "stones":
+      transform.rotation.set(detail.rotation * 0.12, detail.rotation, detail.rotation * 0.08);
+      transform.scale.set(detail.scale, detail.scale * 0.36, detail.scale * 0.72);
+      break;
+    case "ripples":
+      transform.rotation.set(-Math.PI / 2, detail.rotation, 0);
+      transform.scale.set(detail.scale * 1.38, detail.scale, detail.scale);
+      break;
+    case "warm-light":
+      transform.position.y = 0.03;
+      transform.rotation.x = -Math.PI / 2;
+      transform.scale.setScalar(detail.scale * 0.62);
+      break;
+    case "wind":
+      transform.rotation.set(0.08, detail.rotation, detail.rotation * 0.06);
+      transform.scale.setScalar(detail.scale);
+      break;
+    case "undergrowth":
+      transform.position.y = 0.025;
+      transform.rotation.y = detail.rotation;
+      transform.scale.set(detail.scale, detail.scale, detail.scale);
+      break;
+    case "fireflies":
+      transform.position.y += Math.sin(detail.rotation * 3) * 1.3;
+      break;
+    case "blossoms": break;
+    case "drifting-life":
+      transform.rotation.set(detail.rotation, detail.rotation * 0.4, detail.rotation * 0.2);
+      break;
+    case "sanctuary":
+      transform.position.y += 1.4 + Math.abs(Math.cos(detail.rotation)) * 2.7;
+      break;
+    case "twilight-stars":
+      break;
+    default:
+      throw new Error(`Unsupported instanced garden detail: ${kind}`);
+    }
+    transform.updateMatrix();
+    mesh.setMatrixAt(index, transform.matrix);
+    if (outline !== null) {
+      const outlineMatrix = transform.matrix.clone();
+      outlineMatrix.scale(new THREE.Vector3(1.045, 1.045, 1.045));
+      outline.setMatrixAt(index, outlineMatrix);
+    }
+    mesh.setColorAt(
+      index,
+      new THREE.Color(resolveDetailColor(detail.color, detail.kind, direction)),
+    );
+  });
+  mesh.instanceMatrix.needsUpdate = true;
+  if (mesh.instanceColor !== null) mesh.instanceColor.needsUpdate = true;
+  if (outline !== null) outline.instanceMatrix.needsUpdate = true;
+  mesh.castShadow = ["stones", "undergrowth", "blossoms", "sanctuary"].includes(kind);
+  mesh.receiveShadow = kind === "stones";
+  if (outline !== null) {
+    const group = new THREE.Group();
+    group.name = "garden-rock-ink-edges";
+    group.add(outline, mesh);
+    return group;
+  }
+  return mesh;
+}
+
+function buildInstancedCloudBanks(
+  details: GardenDetail[],
+  direction: GardenVisualDirection,
+  model: GardenWorldModel,
+): THREE.InstancedMesh {
+  const texture = createCloudBankTexture();
+  const visual = resolveVisualModel(model, direction);
+  const opacity = visual.dayPhase === "day" ? 0.25 : visual.dayPhase === "night" ? 0.09 : 0.16;
+  const mesh = new THREE.InstancedMesh(
+    new THREE.PlaneGeometry(1, 1),
+    new THREE.MeshBasicMaterial({
+      map: texture,
+      color: "#ffffff",
+      transparent: true,
+      opacity,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+    }),
+    details.length,
+  );
+  mesh.name = "air-iii-authored-cloud-banks";
+  const transform = new THREE.Object3D();
+  for (const [index, detail] of details.entries()) {
+    transform.position.set(detail.x, detail.y, detail.z);
+    transform.rotation.set(0, 0, detail.rotation * 0.16);
+    transform.scale.set(
+      detail.scale * (index % 2 === 0 ? 3.65 : 3.05),
+      detail.scale * (index % 3 === 0 ? 0.92 : 1.06),
+      1,
+    );
+    transform.updateMatrix();
+    mesh.setMatrixAt(index, transform.matrix);
+    mesh.setColorAt(index, new THREE.Color(resolveDetailColor(detail.color, detail.kind, direction)));
+  }
+  mesh.instanceMatrix.needsUpdate = true;
+  if (mesh.instanceColor !== null) mesh.instanceColor.needsUpdate = true;
+  return mesh;
+}
+
+function createCloudBankTexture(): THREE.CanvasTexture {
+  const canvas = document.createElement("canvas");
+  canvas.width = 256;
+  canvas.height = 112;
+  const context = canvas.getContext("2d");
+  if (context === null) throw new Error("Garden cloud texture context is unavailable.");
+  context.shadowColor = "rgba(255, 255, 255, 0.28)";
+  context.shadowBlur = 13;
+  const gradient = context.createLinearGradient(0, 28, 0, 91);
+  gradient.addColorStop(0, "rgba(255, 255, 255, 0.78)");
+  gradient.addColorStop(0.68, "rgba(255, 255, 255, 0.92)");
+  gradient.addColorStop(1, "rgba(255, 255, 255, 0.22)");
+  context.fillStyle = gradient;
+  context.beginPath();
+  context.moveTo(24, 79);
+  context.bezierCurveTo(31, 61, 51, 55, 70, 60);
+  context.bezierCurveTo(78, 38, 104, 31, 126, 50);
+  context.bezierCurveTo(145, 31, 180, 37, 185, 61);
+  context.bezierCurveTo(207, 50, 230, 63, 232, 80);
+  context.bezierCurveTo(190, 91, 67, 92, 24, 79);
+  context.closePath();
+  context.fill();
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.needsUpdate = true;
+  return texture;
+}
+
+function detailGeometry(
+  kind: GardenDetail["kind"],
+  styleMaterials?: GardenStyleMaterialFactory,
+): THREE.BufferGeometry {
+  const treatment = styleMaterials?.profile.geometryTreatment;
+  switch (kind) {
+  case "stones":
+    return treatment === "rounded-inflated" || treatment === "moulded-clay"
+      ? new THREE.SphereGeometry(0.46, 12, 8)
+      : new THREE.DodecahedronGeometry(0.46, 0);
+  case "undergrowth": return gardenGrassTuftGeometry(7, 1.05, 0.16);
+  case "fireflies": return new THREE.SphereGeometry(1, 7, 5);
+  case "blossoms":
+  case "sanctuary":
+    return treatment === "rounded-inflated" || treatment === "moulded-clay"
+      ? new THREE.SphereGeometry(1, 12, 8)
+      : new THREE.DodecahedronGeometry(1, 0);
+  case "ripples": return new THREE.RingGeometry(0.38, 0.405, 36, 1, 0, Math.PI * 1.34);
+  case "warm-light": return new THREE.CircleGeometry(1, 28);
+  case "wind": {
+    const curve = new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3(-1, 0, 0),
+      new THREE.Vector3(0, 0.24, 0.14),
+      new THREE.Vector3(1, 0, 0.28),
+    );
+    return new THREE.TubeGeometry(curve, 24, 0.008, 3, false);
+  }
+  case "drifting-life": return floatingLeafGeometry();
+  case "clouds": return new THREE.SphereGeometry(1, 12, 7);
+  case "twilight-stars": return new THREE.SphereGeometry(1, 6, 4);
+  default: throw new Error(`Unsupported instanced garden detail: ${kind}`);
+  }
+}
+
+function detailMaterial(
+  kind: GardenDetail["kind"],
+  model: GardenWorldModel,
+  direction: GardenVisualDirection,
+  styleMaterials?: GardenStyleMaterialFactory,
+): THREE.Material {
+  const visual = resolveVisualModel(model, direction);
+  switch (kind) {
+  case "fireflies":
+    return styleMaterials?.basic("celestial", { color: "#ffffff" })
+      ?? new THREE.MeshBasicMaterial({ color: "#ffffff" });
+  case "twilight-stars":
+    return styleMaterials?.basic("celestial", {
+      color: "#ffffff",
+      transparent: true,
+      opacity: visual.starOpacity,
+      depthWrite: false,
+    }) ?? new THREE.MeshBasicMaterial({
+      color: "#ffffff",
+      transparent: true,
+      opacity: visual.starOpacity,
+      depthWrite: false,
+    });
+  case "clouds":
+    return styleMaterials?.basic("celestial", {
+      color: "#ffffff",
+      transparent: true,
+      opacity: visual.dayPhase === "day" ? 0.2 : visual.dayPhase === "night" ? 0.09 : 0.15,
+      depthWrite: false,
+    }) ?? new THREE.MeshBasicMaterial({
+      color: "#ffffff",
+      transparent: true,
+      opacity: visual.dayPhase === "day" ? 0.2 : visual.dayPhase === "night" ? 0.09 : 0.15,
+      depthWrite: false,
+    });
+  case "ripples":
+    return styleMaterials?.basic("water", {
+      color: "#ffffff",
+      transparent: true,
+      opacity: 0.28,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+    }) ?? new THREE.MeshBasicMaterial({
+      color: "#ffffff",
+      transparent: true,
+      opacity: 0.28,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+    });
+  case "warm-light":
+    return styleMaterials?.basic("celestial", {
+      color: "#ffffff",
+      transparent: true,
+      opacity: model.dayPhase === "day" ? 0.025 : 0.08,
+      depthWrite: false,
+    }) ?? new THREE.MeshBasicMaterial({
+      color: "#ffffff",
+      transparent: true,
+      opacity: model.dayPhase === "day" ? 0.025 : 0.08,
+      depthWrite: false,
+    });
+  case "wind":
+    return styleMaterials?.basic("celestial", {
+      color: "#ffffff",
+      transparent: true,
+      opacity: model.dayPhase === "day" ? 0.1 : 0.16,
+      depthWrite: false,
+    }) ?? new THREE.MeshBasicMaterial({
+      color: "#ffffff",
+      transparent: true,
+      opacity: model.dayPhase === "day" ? 0.1 : 0.16,
+      depthWrite: false,
+    });
+  case "drifting-life":
+    return styleMaterials?.standard("wildlife", direction.id === "twilight-refuge"
+      ? { color: "#ffffff", roughness: 0.92, side: THREE.DoubleSide }
+      : { color: "#ffffff", side: THREE.DoubleSide }) ?? new THREE.MeshStandardMaterial({
+      color: "#ffffff",
+      roughness: 0.92,
+      metalness: 0,
+      flatShading: true,
+      side: THREE.DoubleSide,
+    });
+  default:
+    return styleMaterials?.standard(kind === "stones" ? "rock" : "grass", {
+      color: "#ffffff",
+      side: kind === "undergrowth" ? THREE.DoubleSide : THREE.FrontSide,
+    }) ?? new THREE.MeshStandardMaterial({
+      color: "#ffffff",
+      roughness: 0.94,
+      metalness: 0,
+      flatShading: true,
+      side: kind === "undergrowth" ? THREE.DoubleSide : THREE.FrontSide,
+    });
+  }
+}
+
+function buildCanopy(
+  model: GardenWorldModel,
+  colors: string[],
+  direction: GardenVisualDirection,
+  styleMaterials: GardenStyleMaterialFactory,
+): THREE.Group {
+  const group = new THREE.Group();
+  group.name = "hero-canopy";
+  const treatment = styleMaterials.profile.geometryTreatment;
+  const leafCount = treatment === "cel-stepped"
+    ? 3
+    : direction.foliageForm === "painted-botanical" ? 5
+    : direction.foliageForm === "paper-relief" ? 5 : 1;
+  let geometry: THREE.BufferGeometry;
+  if (treatment === "cel-stepped" || direction.foliageForm === "paper-relief") {
+    const shape = new THREE.Shape();
+    shape.moveTo(0, -0.72);
+    shape.bezierCurveTo(0.72, -0.28, 0.76, 0.48, 0, 0.82);
+    shape.bezierCurveTo(-0.76, 0.48, -0.72, -0.28, 0, -0.72);
+    geometry = new THREE.ExtrudeGeometry(shape, {
+      depth: 0.055,
+      bevelEnabled: true,
+      bevelSegments: 1,
+      bevelSize: 0.025,
+      bevelThickness: 0.018,
+      curveSegments: 8,
+      steps: 1,
+    });
+    geometry.center();
+  } else {
+    geometry = treatment === "faceted-miniature"
+      ? new THREE.DodecahedronGeometry(1, 0)
+      : treatment === "rounded-inflated" || treatment === "moulded-clay"
+      ? new THREE.SphereGeometry(1, 12, 8)
+      : direction.foliageForm === "painted-botanical"
+      ? new THREE.IcosahedronGeometry(1, 2)
+      : organicCanopyLobeGeometry();
+  }
+  const material = direction.id === "twilight-refuge"
+    ? new THREE.MeshStandardMaterial({
+      map: createProceduralSurfaceTexture(direction.id),
+      roughness: 0.9,
+      metalness: 0,
+      flatShading: true,
+      side: THREE.FrontSide,
+    })
+    : styleMaterials.standard("canopy", {
+      side: treatment === "cel-stepped" || direction.foliageForm === "paper-relief"
+        ? THREE.DoubleSide
+        : THREE.FrontSide,
+    });
+  const leaves = new THREE.InstancedMesh(geometry, material, model.foliage.length * leafCount);
+  const cutEdges = styleMaterials.hasInkOutline() || direction.foliageForm === "paper-relief"
+    ? new THREE.InstancedMesh(
+      geometry,
+      styleMaterials.outline("canopy"),
+      model.foliage.length * leafCount,
+    )
+    : null;
+  const parent = new THREE.Object3D();
+  const leaf = new THREE.Object3D();
+  const matrix = new THREE.Matrix4();
+  let instance = 0;
+  for (const [clusterIndex, cluster] of model.foliage.entries()) {
+    parent.position.set(cluster.x, cluster.y, cluster.z);
+    parent.rotation.set(cluster.rotation * 0.08, cluster.rotation * 0.28, cluster.rotation * 0.05);
+    parent.scale.setScalar(cluster.scale);
+    parent.updateMatrix();
+    for (let leafIndex = 0; leafIndex < leafCount; leafIndex += 1) {
+      const angle = leafIndex * 2.399963 + cluster.rotation * 0.12;
+      const centeredLeafIndex = leafIndex - (leafCount - 1) / 2;
+      const leafColor = new THREE.Color(colors[clusterIndex] ?? cluster.color).offsetHSL(
+        centeredLeafIndex * 0.008,
+        0,
+        direction.foliageForm === "paper-relief"
+          ? centeredLeafIndex * 0.038
+          : direction.foliageForm === "painted-botanical"
+          ? centeredLeafIndex * 0.022
+          : -leafIndex * 0.018,
+      );
+      if (treatment === "cel-stepped" || direction.foliageForm === "paper-relief") {
+        leaf.position.set(
+          centeredLeafIndex * 0.38,
+          (leafIndex % 2) * 0.18,
+          centeredLeafIndex * 0.13,
+        );
+        leaf.rotation.set(0, 0, centeredLeafIndex * 0.36);
+        leaf.scale.set(0.9, 1.12, 1);
+      } else {
+        const radius = leafIndex === 0 ? 0 : 0.38;
+        leaf.position.set(
+          Math.cos(angle) * radius,
+          leafIndex === 0 ? 0 : Math.sin(angle * 0.7) * 0.16 + 0.08,
+          Math.sin(angle) * radius * 0.48,
+        );
+        const roundedScale = treatment === "rounded-inflated"
+          ? [1.08, 1.14, 0.94]
+          : treatment === "moulded-clay"
+          ? [1.08, 1.02, 0.98]
+          : direction.composition.canopyScale;
+        leaf.scale.set(
+          roundedScale[0] * (leafIndex === 0 ? 1.02 : 0.68),
+          roundedScale[1] * (leafIndex === 0 ? 1.06 : 0.72),
+          roundedScale[2] * (leafIndex === 0 ? 0.9 : 0.62),
+        );
+        leaf.rotation.set(angle * 0.06, angle * 0.3, angle * 0.1);
+      }
+      leaf.updateMatrix();
+      matrix.multiplyMatrices(parent.matrix, leaf.matrix);
+      leaves.setMatrixAt(instance, matrix);
+      leaves.setColorAt(instance, leafColor);
+      if (cutEdges !== null) {
+        const outlineMatrix = matrix.clone();
+        outlineMatrix.scale(new THREE.Vector3(
+          direction.material?.outlineScale ?? 1.026,
+          direction.material?.outlineScale ?? 1.026,
+          direction.material?.outlineScale ?? 1.026,
+        ));
+        cutEdges.setMatrixAt(instance, outlineMatrix);
+      }
+      instance += 1;
+    }
+  }
+  leaves.instanceMatrix.needsUpdate = true;
+  if (leaves.instanceColor !== null) leaves.instanceColor.needsUpdate = true;
+  leaves.castShadow = true;
+  leaves.receiveShadow = true;
+  if (cutEdges !== null) {
+    cutEdges.instanceMatrix.needsUpdate = true;
+    group.add(cutEdges);
+  }
+  group.add(leaves);
+  return group;
+}
+
+function organicCanopyLobeGeometry(): THREE.BufferGeometry {
+  const geometry = new THREE.IcosahedronGeometry(1, 1);
+  const positions = geometry.getAttribute("position");
+  for (let index = 0; index < positions.count; index += 1) {
+    const x = positions.getX(index);
+    const y = positions.getY(index);
+    const z = positions.getZ(index);
+    const crown = 1 + (y + 1) * 0.035;
+    positions.setXYZ(
+      index,
+      x * crown * (1 + Math.sin(y * 3.7 + z * 2.1) * 0.045),
+      y * (1 + Math.cos(x * 2.8 - z) * 0.035),
+      z * (0.92 + Math.sin(x * 3.1 + y) * 0.04),
+    );
+  }
+  positions.needsUpdate = true;
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
+function buildFoliageAccents(
+  model: GardenWorldModel,
+  colors: string[],
+  direction: GardenVisualDirection,
+): THREE.InstancedMesh | null {
+  if (direction.foliageForm !== "painted-botanical" || model.foliage.length === 0) return null;
+  const shape = new THREE.Shape();
+  shape.moveTo(0, -0.52);
+  shape.bezierCurveTo(0.34, -0.22, 0.38, 0.24, 0, 0.58);
+  shape.bezierCurveTo(-0.38, 0.24, -0.34, -0.22, 0, -0.52);
+  const geometry = new THREE.ShapeGeometry(shape, 6);
+  const material = new THREE.MeshStandardMaterial({
+    color: "#ffffff",
+    roughness: 0.88,
+    metalness: 0,
+    side: THREE.DoubleSide,
+  });
+  const countPerCluster = direction.foliageForm === "painted-botanical" ? 3 : 1;
+  const accents = new THREE.InstancedMesh(
+    geometry,
+    material,
+    model.foliage.length * countPerCluster,
+  );
+  const transform = new THREE.Object3D();
+  let instance = 0;
+  for (const [clusterIndex, cluster] of model.foliage.entries()) {
+    for (let leafIndex = 0; leafIndex < countPerCluster; leafIndex += 1) {
+      const angle = cluster.rotation + leafIndex * 2.399963;
+      const radius = cluster.scale * (0.44 + leafIndex * 0.08);
+      transform.position.set(
+        cluster.x + Math.cos(angle) * radius,
+        cluster.y + cluster.scale * (0.18 + leafIndex * 0.14),
+        cluster.z + Math.sin(angle) * radius * 0.58,
+      );
+      transform.rotation.set(-0.18 + leafIndex * 0.12, angle + Math.PI / 2, angle * 0.18);
+      const scale = cluster.scale * (direction.foliageForm === "painted-botanical" ? 0.34 : 0.28);
+      transform.scale.set(scale * 0.72, scale, scale);
+      transform.updateMatrix();
+      accents.setMatrixAt(instance, transform.matrix);
+      accents.setColorAt(
+        instance,
+        new THREE.Color(colors[clusterIndex] ?? cluster.color).offsetHSL(
+          0,
+          direction.foliageForm === "painted-botanical" ? 0.04 : -0.08,
+          direction.foliageForm === "painted-botanical" ? 0.08 : 0.02,
+        ),
+      );
+      instance += 1;
+    }
+  }
+  accents.instanceMatrix.needsUpdate = true;
+  if (accents.instanceColor !== null) accents.instanceColor.needsUpdate = true;
+  accents.castShadow = true;
+  return accents;
+}
+
+function createProceduralSurfaceTexture(
+  direction: GardenVisualDirection["id"],
+): THREE.CanvasTexture {
+  const canvas = document.createElement("canvas");
+  canvas.width = 128;
+  canvas.height = 128;
+  const context = canvas.getContext("2d");
+  if (context === null) throw new Error("Garden surface texture context is unavailable.");
+  context.fillStyle = "#ffffff";
+  context.fillRect(0, 0, 128, 128);
+  const treatment = materialTreatmentFor(direction);
+  let randomState = directionSeed(direction, 0xc1743);
+  const random = (): number => {
+    randomState ^= randomState << 13;
+    randomState ^= randomState >>> 17;
+    randomState ^= randomState << 5;
+    return (randomState >>> 0) / 0xffff_ffff;
+  };
+
+  if (treatment === "inked-paper" || direction === "paper-sanctuary") {
+    context.lineWidth = 0.65;
+    for (let index = 0; index < 86; index += 1) {
+      const y = random() * 128;
+      context.strokeStyle = `rgba(108, 92, 65, ${0.018 + random() * 0.045})`;
+      context.beginPath();
+      context.moveTo(0, y);
+      context.bezierCurveTo(34, y + random() * 3, 92, y - random() * 3, 128, y + random() * 2);
+      context.stroke();
+    }
+    context.strokeStyle = "rgba(82, 73, 52, 0.12)";
+    context.lineWidth = 1.1;
+    context.beginPath();
+    context.moveTo(64, 10);
+    context.bezierCurveTo(60, 42, 69, 84, 64, 118);
+    context.stroke();
+    context.strokeStyle = "rgba(45, 48, 43, 0.16)";
+    context.lineWidth = 0.72;
+    for (let index = 0; index < 18; index += 1) {
+      const offset = index * 8 + random() * 3;
+      context.beginPath();
+      context.moveTo(-8, offset);
+      context.lineTo(136, offset - 38);
+      context.stroke();
+    }
+  } else if (treatment === "crochet-yarn") {
+    context.strokeStyle = "rgba(75, 68, 58, 0.18)";
+    context.lineWidth = 1.5;
+    for (let row = 4; row < 132; row += 10) {
+      for (let column = 4; column < 132; column += 10) {
+        context.beginPath();
+        context.arc(column + (row % 20 === 4 ? 0 : 5), row, 3.8, 0.2, Math.PI * 1.82);
+        context.stroke();
+      }
+    }
+  } else if (treatment === "clay") {
+    context.strokeStyle = "rgba(79, 63, 56, 0.1)";
+    context.lineWidth = 0.85;
+    for (let radius = 12; radius < 78; radius += 6) {
+      context.beginPath();
+      context.ellipse(66, 64, radius, radius * 0.72, 0.18, 0.2, Math.PI * 1.84);
+      context.stroke();
+    }
+  } else {
+    const count = direction === "verdant-atelier" ? 120 : 72;
+    for (let index = 0; index < count; index += 1) {
+      const radius = 1 + random() * (direction === "verdant-atelier" ? 5 : 2.4);
+      context.fillStyle = direction === "verdant-atelier"
+        ? `rgba(67, 91, 48, ${0.015 + random() * 0.055})`
+        : `rgba(223, 181, 105, ${0.01 + random() * 0.035})`;
+      context.beginPath();
+      context.ellipse(random() * 128, random() * 128, radius * 1.8, radius, random() * Math.PI, 0, Math.PI * 2);
+      context.fill();
+    }
+    if (direction === "verdant-atelier") {
+      context.strokeStyle = "rgba(236, 244, 206, 0.1)";
+      context.lineWidth = 1;
+      for (let index = 0; index < 16; index += 1) {
+        const x = random() * 128;
+        const y = random() * 128;
+        context.beginPath();
+        context.moveTo(x - 8, y + 4);
+        context.quadraticCurveTo(x, y - 4, x + 11, y - 6);
+        context.stroke();
+      }
+    }
+  }
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(1.8, 1.8);
+  texture.repeat.setScalar(direction === "twilight-refuge" ? 1.8 : (gardenDirectionTextureScale(direction)));
+  texture.needsUpdate = true;
+  return texture;
+}
+
+function createProceduralGroundTexture(
+  direction: GardenVisualDirection["id"],
+): THREE.CanvasTexture {
+  const canvas = document.createElement("canvas");
+  canvas.width = 192;
+  canvas.height = 192;
+  const context = canvas.getContext("2d");
+  if (context === null) throw new Error("Garden ground texture context is unavailable.");
+  context.fillStyle = "#f5f3e8";
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  const treatment = materialTreatmentFor(direction);
+  let randomState = directionSeed(direction, 0x9a2f7);
+  const random = (): number => {
+    randomState ^= randomState << 13;
+    randomState ^= randomState >>> 17;
+    randomState ^= randomState << 5;
+    return (randomState >>> 0) / 0xffff_ffff;
+  };
+  const markCount = treatment === "crochet-yarn" ? 96 : direction === "paper-sanctuary" ? 105 : 150;
+  for (let index = 0; index < markCount; index += 1) {
+    const alpha = direction === "twilight-refuge" ? 0.035 : 0.028 + random() * 0.042;
+    context.fillStyle = direction === "twilight-refuge"
+      ? `rgba(42, 57, 71, ${alpha})`
+      : `rgba(88, 86, 57, ${alpha})`;
+    context.beginPath();
+    const radius = 0.7 + random() * (direction === "paper-sanctuary" ? 1.5 : 2.8);
+    context.ellipse(
+      random() * canvas.width,
+      random() * canvas.height,
+      radius * (1.4 + random()),
+      radius,
+      random() * Math.PI,
+      0,
+      Math.PI * 2,
+    );
+    context.fill();
+  }
+  if (direction === "paper-sanctuary") {
+    context.strokeStyle = "rgba(94, 79, 55, 0.055)";
+    context.lineWidth = 0.8;
+    for (let row = 18; row < canvas.height; row += 24) {
+      context.beginPath();
+      context.moveTo(0, row);
+      context.bezierCurveTo(48, row + 2, 132, row - 2, canvas.width, row + 1);
+      context.stroke();
+    }
+  }
+  if (treatment === "inked-paper") {
+    context.strokeStyle = "rgba(57, 57, 50, 0.11)";
+    context.lineWidth = 0.7;
+    for (let row = 0; row < canvas.height + 48; row += 14) {
+      context.beginPath();
+      context.moveTo(0, row);
+      context.lineTo(canvas.width, row - 46);
+      context.stroke();
+    }
+  } else if (treatment === "crochet-yarn") {
+    context.strokeStyle = "rgba(67, 62, 53, 0.14)";
+    context.lineWidth = 1.5;
+    for (let row = 5; row < canvas.height; row += 12) {
+      for (let column = 5; column < canvas.width; column += 12) {
+        context.beginPath();
+        context.arc(column + (row % 24 === 5 ? 0 : 6), row, 4.5, 0, Math.PI * 1.82);
+        context.stroke();
+      }
+    }
+  } else if (treatment === "clay") {
+    context.strokeStyle = "rgba(72, 62, 55, 0.07)";
+    context.lineWidth = 1;
+    for (let radius = 16; radius < 136; radius += 10) {
+      context.beginPath();
+      context.arc(96, 96, radius, 0.18, Math.PI * 1.84);
+      context.stroke();
+    }
+  } else if (treatment === "miniature-stop-motion") {
+    context.fillStyle = "rgba(76, 65, 54, 0.1)";
+    for (let index = 0; index < 58; index += 1) {
+      context.fillRect(random() * canvas.width, random() * canvas.height, 1.2, 1.2);
+    }
+  }
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.setScalar(direction === "twilight-refuge" ? 3.6 : gardenDirectionTextureScale(direction));
+  texture.needsUpdate = true;
+  return texture;
+}
+
+function directionSeed(direction: GardenVisualDirection["id"], fallback: number): number {
+  const seeds: Partial<Record<GardenVisualDirection["id"], number>> = {
+    "verdant-atelier": 0x4a31b,
+    "paper-sanctuary": 0x8f21d,
+    "hand-drawn": 0x51c3d,
+    "stop-motion": 0x72f19,
+    crochet: 0xa41e7,
+    claymation: 0xd29b3,
+  };
+  return seeds[direction] ?? fallback;
+}
+
+function materialTreatmentFor(direction: GardenVisualDirection["id"]): NonNullable<GardenVisualDirection["material"]>["treatment"] {
+  switch (direction) {
+  case "hand-drawn": return "inked-paper";
+  case "stop-motion": return "miniature-stop-motion";
+  case "crochet": return "crochet-yarn";
+  case "claymation": return "clay";
+  default: return "natural";
+  }
+}
+
+function gardenDirectionTextureScale(direction: GardenVisualDirection["id"]): number {
+  switch (direction) {
+  case "hand-drawn": return 2.4;
+  case "stop-motion": return 1.7;
+  case "crochet": return 3.2;
+  case "claymation": return 1.5;
+  default: return 1.8;
+  }
+}
+
+function organicGroundGeometry(
+  topRadius: number,
+  bottomRadius: number,
+  depth: number,
+  segments: number,
+  layer: number,
+): THREE.BufferGeometry {
+  const geometry = new THREE.CylinderGeometry(topRadius, bottomRadius, depth, segments, 1, false);
+  const positions = geometry.getAttribute("position");
+  for (let index = 0; index < positions.count; index += 1) {
+    const x = positions.getX(index);
+    const z = positions.getZ(index);
+    if (Math.hypot(x, z) < 0.05) continue;
+    const angle = Math.atan2(z, x);
+    const variation = 1
+      + Math.sin(angle * 3 + layer * 0.83) * 0.026
+      + Math.sin(angle * 7 - layer * 0.41) * 0.012;
+    positions.setX(index, x * variation);
+    positions.setZ(index, z * variation);
+  }
+  positions.needsUpdate = true;
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
+function buildHeroClearing(
+  groundColor: string,
+  styleMaterials?: GardenStyleMaterialFactory,
+): THREE.Mesh {
+  const shape = new THREE.Shape();
+  const segments = 40;
+  for (let index = 0; index < segments; index += 1) {
+    const angle = index / segments * Math.PI * 2;
+    const variation = 1 + Math.sin(angle * 3 + 0.8) * 0.035 + Math.sin(angle * 5) * 0.018;
+    const x = Math.cos(angle) * 2.36 * variation;
+    const y = Math.sin(angle) * 1.72 * variation;
+    if (index === 0) shape.moveTo(x, y);
+    else shape.lineTo(x, y);
+  }
+  shape.closePath();
+  const clearing = new THREE.Mesh(
+    new THREE.ShapeGeometry(shape, 8),
+    styleMaterials?.standard("ground", {
+      color: new THREE.Color(groundColor).lerp(new THREE.Color("#9da58c"), 0.13),
+      transparent: true,
+      opacity: 0.7,
+      side: THREE.DoubleSide,
+    }) ?? new THREE.MeshStandardMaterial({
+      color: new THREE.Color(groundColor).lerp(new THREE.Color("#9da58c"), 0.13),
+      roughness: 1,
+      metalness: 0,
+      transparent: true,
+      opacity: 0.7,
+      side: THREE.DoubleSide,
+    }),
+  );
+  clearing.name = "hero-clearing-tonal-field";
+  clearing.rotation.x = -Math.PI / 2;
+  clearing.position.y = 0.006;
+  clearing.receiveShadow = true;
+  return clearing;
+}
+
+function buildGardenPath(
+  groundColor: string,
+  styleMaterials?: GardenStyleMaterialFactory,
+): THREE.Object3D {
+  const curve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(5.35, 0.014, 2.18),
+    new THREE.Vector3(3.72, 0.015, 1.54),
+    new THREE.Vector3(2.25, 0.016, 0.86),
+    new THREE.Vector3(0.92, 0.017, 0.02),
+    new THREE.Vector3(-0.48, 0.016, -0.68),
+    new THREE.Vector3(-2.05, 0.015, -1.16),
+    new THREE.Vector3(-3.72, 0.014, -1.62),
+  ]);
+  const path = new THREE.Mesh(
+    streamRibbonGeometry(
+      curve,
+      44,
+      0.31,
+      (progress) => 0.18 + Math.sin(progress * Math.PI) * 0.82 + Math.sin(progress * 5.8) * 0.03,
+    ),
+    styleMaterials?.standard("path", {
+      color: new THREE.Color(groundColor).lerp(new THREE.Color("#b0aa91"), 0.35),
+      transparent: true,
+      opacity: 0.62,
+      side: THREE.DoubleSide,
+    }) ?? new THREE.MeshStandardMaterial({
+      color: new THREE.Color(groundColor).lerp(new THREE.Color("#b0aa91"), 0.35),
+      roughness: 1,
+      metalness: 0,
+      transparent: true,
+      opacity: 0.62,
+      side: THREE.DoubleSide,
+    }),
+  );
+  path.name = "earth-ii-sheltered-garden-path";
+  path.receiveShadow = true;
+  if (styleMaterials?.hasInkOutline()) {
+    const pathEdge = new THREE.LineSegments(
+      new THREE.EdgesGeometry(path.geometry, 22),
+      new THREE.LineBasicMaterial({ color: "#29455c", transparent: true, opacity: 0.82 }),
+    );
+    pathEdge.name = "garden-path-ink-edge";
+    const group = new THREE.Group();
+    group.add(path, pathEdge);
+    return group;
+  }
+  return path;
+}
+
+function organicPondGeometry(radius: number): THREE.ShapeGeometry {
+  const shape = new THREE.Shape();
+  const segments = 44;
+  for (let index = 0; index < segments; index += 1) {
+    const angle = index / segments * Math.PI * 2;
+    const variation = 1 + Math.sin(angle * 3 + 0.45) * 0.055 + Math.sin(angle * 6) * 0.018;
+    const x = Math.cos(angle) * radius * 1.18 * variation;
+    const y = Math.sin(angle) * radius * 0.76 * variation;
+    if (index === 0) shape.moveTo(x, y);
+    else shape.lineTo(x, y);
+  }
+  shape.closePath();
+  return new THREE.ShapeGeometry(shape, 8);
+}
+
+function groundPlantGeometry(form: GardenVisualDirection["foliageForm"]): THREE.BufferGeometry {
+  switch (form) {
+  case "painted-botanical":
+    return gardenGrassTuftGeometry(7, 0.76, 0.12);
+  case "paper-relief":
+    return new THREE.ConeGeometry(0.18, 0.74, 4);
+  case "twilight-silhouette":
+    return gardenGrassTuftGeometry(5, 0.7, 0.11);
+  }
+}
+
+function gardenGrassTuftGeometry(bladeCount: number, height: number, width: number): THREE.BufferGeometry {
+  const positions: number[] = [];
+  const indices: number[] = [];
+  for (let index = 0; index < bladeCount; index += 1) {
+    const angle = index / bladeCount * Math.PI * 2 + (index % 2) * 0.24;
+    const centerX = Math.cos(angle) * 0.045;
+    const centerZ = Math.sin(angle) * 0.045;
+    const tangentX = -Math.sin(angle) * width;
+    const tangentZ = Math.cos(angle) * width;
+    const bladeHeight = height * (0.76 + (index % 3) * 0.12);
+    const tipLean = 0.12 + (index % 2) * 0.05;
+    const start = positions.length / 3;
+    positions.push(
+      centerX + tangentX, 0, centerZ + tangentZ,
+      centerX - tangentX, 0, centerZ - tangentZ,
+      centerX + Math.cos(angle) * tipLean, bladeHeight, centerZ + Math.sin(angle) * tipLean,
+    );
+    indices.push(start, start + 1, start + 2);
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
+function buildDetail(
+  detail: GardenDetail,
+  direction: GardenVisualDirection,
+  model: GardenWorldModel,
+  styleMaterials: GardenStyleMaterialFactory,
+): THREE.Object3D {
+  const position = new THREE.Vector3(detail.x, detail.y, detail.z);
+  const color = resolveDetailColor(detail.color, detail.kind, direction);
+  switch (detail.kind) {
+  case "stones": {
+    const stone = new THREE.Mesh(
+      detailGeometry("stones", styleMaterials),
+      styleMaterials.standard("rock", { color }),
+    );
+    stone.position.copy(position);
+    stone.rotation.set(detail.rotation * 0.12, detail.rotation, detail.rotation * 0.08);
+    stone.scale.set(detail.scale, detail.scale * 0.36, detail.scale * 0.72);
+    stone.castShadow = true;
+    stone.receiveShadow = true;
+    return stone;
+  }
+  case "undergrowth": {
+    const plant = new THREE.Mesh(
+      gardenGrassTuftGeometry(7, 1.05, 0.16),
+      styleMaterials.standard("grass", { color, side: THREE.DoubleSide }),
+    );
+    plant.position.copy(position);
+    plant.position.y = 0.025;
+    plant.rotation.y = detail.rotation;
+    plant.scale.setScalar(detail.scale);
+    plant.castShadow = true;
+    return plant;
+  }
+  case "stream": {
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-5.9, 0.04, 2.92),
+      new THREE.Vector3(-4.48, 0.042, 2.56),
+      new THREE.Vector3(-3.12, 0.043, 2.86),
+      new THREE.Vector3(-1.62, 0.046, 2.34),
+      new THREE.Vector3(-0.34, 0.048, 2.53),
+      new THREE.Vector3(0.86, 0.049, 1.7),
+      new THREE.Vector3(1.82, 0.048, 1.08),
+      new THREE.Vector3(2.58, 0.046, 0.28),
+      new THREE.Vector3(3.16, 0.044, -0.68),
+      new THREE.Vector3(3.58, 0.043, -1.52),
+    ]);
+    const widthProfile = (progress: number): number =>
+      0.61 + Math.sin(progress * Math.PI) * 0.34 + Math.sin(progress * 8.2 + 0.8) * 0.065;
+    const visual = resolveVisualModel(model, direction);
+    const water = new THREE.Mesh(
+      streamRibbonGeometry(curve, 64, 0.22, widthProfile),
+      styleMaterials.standard("water", {
+        color: direction.id === "twilight-refuge"
+          ? new THREE.Color(color).lerp(new THREE.Color(visual.groundColor), 0.12)
+          : new THREE.Color(color)
+            .lerp(new THREE.Color(styleMaterials.profile.waterAccents.tint), 0.26)
+            .lerp(new THREE.Color(visual.groundColor), 0.12),
+        transparent: true,
+        opacity: direction.composition.waterOpacity * 0.72
+          * (direction.id === "twilight-refuge" ? 1 : styleMaterials.profile.waterAccents.opacity),
+        roughness: direction.id === "twilight-refuge"
+          ? 0.3
+          : styleMaterials.profile.materialRoles.water.roughness,
+        side: THREE.DoubleSide,
+      }),
+    );
+    water.name = "water-ii-meandering-stream";
+    water.receiveShadow = true;
+
+    const bank = new THREE.Mesh(
+      streamRibbonGeometry(curve, 64, 0.32, widthProfile),
+      styleMaterials.standard("ground", {
+        color: new THREE.Color(visual.groundColor).lerp(new THREE.Color("#475d55"), 0.32),
+        transparent: true,
+        opacity: 0.78,
+        side: THREE.DoubleSide,
+      }),
+    );
+    bank.name = "water-ii-soft-planted-bank";
+    bank.position.y = -0.008;
+    bank.receiveShadow = true;
+
+    const stream = new THREE.Group();
+    stream.name = "water-ii-stream-and-bank";
+    stream.add(bank, water);
+    stream.rotation.y = detail.rotation * 0.18;
+    return stream;
+  }
+  case "pond": {
+    const pond = new THREE.Mesh(
+      organicPondGeometry(1.45 * detail.scale),
+      styleMaterials.standard("water", {
+        color: direction.id === "twilight-refuge"
+          ? color
+          : new THREE.Color(color).lerp(new THREE.Color(styleMaterials.profile.waterAccents.tint), 0.26),
+        transparent: true,
+        opacity: direction.composition.waterOpacity
+          * (direction.id === "twilight-refuge" ? 1 : styleMaterials.profile.waterAccents.opacity),
+        roughness: direction.id === "twilight-refuge"
+          ? 0.28
+          : styleMaterials.profile.materialRoles.water.roughness,
+        side: THREE.DoubleSide,
+      }),
+    );
+    pond.position.copy(position);
+    pond.rotation.x = -Math.PI / 2;
+    pond.receiveShadow = true;
+    return pond;
+  }
+  case "ripples": {
+    const ripple = new THREE.Mesh(
+      new THREE.RingGeometry(
+        detail.scale * 0.38 * (direction.id === "twilight-refuge" ? 1 : styleMaterials.profile.waterAccents.rippleScale),
+        detail.scale * 0.405 * (direction.id === "twilight-refuge" ? 1 : styleMaterials.profile.waterAccents.rippleScale),
+        36,
+        1,
+        detail.rotation,
+        Math.PI * 1.34,
+      ),
+      styleMaterials.basic("water", {
+        color,
+        transparent: true,
+        opacity: 0.28,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+      }),
+    );
+    ripple.position.copy(position);
+    ripple.rotation.x = -Math.PI / 2;
+    ripple.scale.x = 1.38;
+    return ripple;
+  }
+  case "warm-light": {
+    const lightPatch = new THREE.Mesh(
+      new THREE.CircleGeometry(detail.scale * 0.62, 28),
+      styleMaterials.basic("celestial", {
+        color,
+        transparent: true,
+        opacity: model.dayPhase === "day" ? 0.025 : 0.08,
+        depthWrite: false,
+      }),
+    );
+    lightPatch.position.copy(position);
+    lightPatch.position.y = 0.03;
+    lightPatch.rotation.x = -Math.PI / 2;
+    return lightPatch;
+  }
+  case "fireflies": {
+    const firefly = new THREE.Mesh(
+      new THREE.SphereGeometry(detail.scale, 7, 5),
+      styleMaterials.basic("celestial", { color }),
+    );
+    firefly.position.copy(position);
+    firefly.position.y += Math.sin(detail.rotation * 3) * 1.3;
+    return firefly;
+  }
+  case "blossoms": {
+    const blossom = new THREE.Mesh(
+      detailGeometry("blossoms", styleMaterials),
+      styleMaterials.standard("wildlife", { color }),
+    );
+    blossom.position.copy(position);
+    blossom.position.y += Math.abs(Math.sin(detail.rotation)) * 1.9;
+    return blossom;
+  }
+  case "wind": {
+    const curve = new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3(-detail.scale, 0, 0),
+      new THREE.Vector3(0, detail.scale * 0.24, detail.scale * 0.14),
+      new THREE.Vector3(detail.scale, 0, detail.scale * 0.28),
+    );
+    const ribbon = new THREE.Mesh(
+      new THREE.TubeGeometry(curve, 24, 0.008, 3, false),
+      styleMaterials.basic("celestial", {
+        color,
+        transparent: true,
+        opacity: model.dayPhase === "day" ? 0.1 : 0.16,
+        depthWrite: false,
+      }),
+    );
+    ribbon.position.copy(position);
+    ribbon.rotation.set(0.08, detail.rotation, detail.rotation * 0.06);
+    return ribbon;
+  }
+  case "drifting-life": {
+    const leaf = new THREE.Mesh(
+      floatingLeafGeometry(),
+      styleMaterials.standard("wildlife", { color, side: THREE.DoubleSide }),
+    );
+    leaf.position.copy(position);
+    leaf.scale.setScalar(detail.scale);
+    leaf.rotation.set(detail.rotation, detail.rotation * 0.4, detail.rotation * 0.2);
+    return leaf;
+  }
+  case "clouds": {
+    const cloud = new THREE.Mesh(
+      new THREE.SphereGeometry(detail.scale, 12, 7),
+      styleMaterials.basic("celestial", {
+        color,
+        transparent: true,
+        opacity: 0.12,
+        depthWrite: false,
+      }),
+    );
+    cloud.position.copy(position);
+    cloud.scale.set(1.9, 0.48, 0.72);
+    return cloud;
+  }
+  case "twilight-stars": {
+    const star = new THREE.Mesh(
+      new THREE.SphereGeometry(detail.scale, 6, 4),
+      styleMaterials.basic("celestial", { color }),
+    );
+    star.position.copy(position);
+    return star;
+  }
+  case "moon": {
+    const visual = resolveVisualModel(model, direction);
+    const moon = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: createMoonTexture(),
+      color: "#ffffff",
+      transparent: true,
+      opacity: visual.moonOpacity,
+      depthWrite: false,
+    }));
+    moon.name = "space-ii-moon-and-halo";
+    moon.scale.setScalar(detail.scale * 3.25);
+    moon.position.copy(position);
+    return moon;
+  }
+  case "sanctuary": {
+    return buildGardenPavilion(detail, direction, model, styleMaterials);
+  }
+  default:
+    throw new Error(`Unsupported direct garden detail: ${detail.kind}`);
+  }
+}
+
+function createMoonTexture(): THREE.CanvasTexture {
+  const canvas = document.createElement("canvas");
+  canvas.width = 160;
+  canvas.height = 160;
+  const context = canvas.getContext("2d");
+  if (context === null) throw new Error("Garden moon halo texture context is unavailable.");
+  const halo = context.createRadialGradient(80, 80, 24, 80, 80, 79);
+  halo.addColorStop(0, "rgba(255, 246, 216, 0.12)");
+  halo.addColorStop(0.48, "rgba(255, 229, 178, 0.13)");
+  halo.addColorStop(0.76, "rgba(238, 188, 126, 0.055)");
+  halo.addColorStop(1, "rgba(238, 188, 126, 0)");
+  context.fillStyle = halo;
+  context.fillRect(0, 0, 160, 160);
+  const disc = context.createRadialGradient(68, 58, 8, 80, 80, 61);
+  disc.addColorStop(0, "rgba(255, 250, 226, 0.98)");
+  disc.addColorStop(0.72, "rgba(235, 227, 201, 0.96)");
+  disc.addColorStop(1, "rgba(198, 207, 201, 0.9)");
+  context.fillStyle = disc;
+  context.beginPath();
+  context.arc(80, 80, 60, 0, Math.PI * 2);
+  context.fill();
+  context.fillStyle = "rgba(111, 126, 127, 0.11)";
+  for (const [x, y, radius] of [[54, 62, 9], [101, 48, 6], [104, 94, 11], [65, 110, 5]] as const) {
+    context.beginPath();
+    context.arc(x, y, radius, 0, Math.PI * 2);
+    context.fill();
+  }
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.needsUpdate = true;
+  return texture;
+}
+
+interface GardenPartTransform {
+  position: [number, number, number];
+  rotation?: [number, number, number];
+  scale?: [number, number, number];
+}
+
+function singleMaterialGeometry(geometry: THREE.BufferGeometry): THREE.BufferGeometry {
+  geometry.clearGroups();
+  return geometry;
+}
+
+function uniformVertexColorGeometry(geometry: THREE.BufferGeometry, color: string): THREE.BufferGeometry {
+  const positions = geometry.getAttribute("position");
+  const value = new THREE.Color(color);
+  const colors = new Float32Array(positions.count * 3);
+  for (let index = 0; index < positions.count; index += 1) {
+    const offset = index * 3;
+    colors[offset] = value.r;
+    colors[offset + 1] = value.g;
+    colors[offset + 2] = value.b;
+  }
+  geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+  return geometry;
+}
+
+export function mergeStaticGeometry(parts: Array<GardenPartTransform & { geometry: THREE.BufferGeometry }>): THREE.BufferGeometry {
+  const transform = new THREE.Object3D();
+  const sourceGeometries = parts.map((part) => {
+    const geometry = singleMaterialGeometry(part.geometry.clone());
+    transform.position.set(...part.position);
+    transform.rotation.set(...(part.rotation ?? [0, 0, 0]));
+    transform.scale.set(...(part.scale ?? [1, 1, 1]));
+    transform.updateMatrix();
+    geometry.applyMatrix4(transform.matrix);
+    return geometry;
+  });
+  const indexedStates = new Set(sourceGeometries.map((geometry) => geometry.index !== null));
+  const geometries = indexedStates.size > 1
+    ? sourceGeometries.map((geometry) => {
+      if (geometry.index === null) return geometry;
+      return geometry.toNonIndexed();
+    })
+    : sourceGeometries;
+  try {
+    const merged = mergeGeometries(geometries, false);
+    if (merged === null) throw new Error("Pavilion geometry could not be merged.");
+    return merged;
+  } finally {
+    for (const geometry of new Set([...sourceGeometries, ...geometries])) geometry.dispose();
+    for (const geometry of new Set(parts.map((part) => part.geometry))) geometry.dispose();
+  }
+}
+
+function buildGardenPavilion(
+  detail: GardenDetail,
+  direction: GardenVisualDirection,
+  model: GardenWorldModel,
+  styleMaterials: GardenStyleMaterialFactory,
+): THREE.Group {
+  const pavilion = new THREE.Group();
+  pavilion.name = "space-iii-open-timber-pavilion";
+  const visual = resolveVisualModel(model, direction);
+  const twilight = direction.id === "twilight-refuge";
+  const timber = new THREE.Color(detail.color).lerp(new THREE.Color("#5e493a"), 0.64);
+  const timberMaterial = twilight
+    ? new THREE.MeshStandardMaterial({
+      color: timber,
+      map: null,
+      roughness: 0.92,
+      metalness: 0,
+      flatShading: true,
+    })
+    : styleMaterials.standard("pavilion", { color: timber });
+  const stoneMaterial = twilight
+    ? new THREE.MeshStandardMaterial({
+      color: new THREE.Color(visual.groundColor).offsetHSL(0, -0.08, 0.14),
+      map: null,
+      roughness: 1,
+      metalness: 0,
+      flatShading: true,
+    })
+    : styleMaterials.standard("rock", {
+      color: new THREE.Color(visual.groundColor).offsetHSL(0, -0.08, 0.14),
+    });
+  const roofMaterial = twilight
+    ? new THREE.MeshStandardMaterial({
+      color: visual.dayPhase === "day" ? "#3c4b4d" : "#2b393e",
+      map: null,
+      roughness: 0.94,
+      metalness: 0,
+      flatShading: true,
+      side: THREE.DoubleSide,
+    })
+    : styleMaterials.standard("pavilion", {
+      color: visual.dayPhase === "day" ? "#3c4b4d" : "#2b393e",
+      side: THREE.DoubleSide,
+    });
+
+  const plinth = new THREE.Mesh(singleMaterialGeometry(new THREE.BoxGeometry(2.5, 0.16, 1.5)), stoneMaterial);
+  plinth.position.y = 0.12;
+  plinth.castShadow = true;
+  plinth.receiveShadow = true;
+  pavilion.add(plinth);
+
+  const floor = new THREE.Mesh(
+    singleMaterialGeometry(new THREE.BoxGeometry(2.18, 0.1, 1.3)),
+    twilight
+      ? new THREE.MeshStandardMaterial({
+        color: timber.clone().offsetHSL(0, -0.04, 0.08),
+        roughness: 0.9,
+        metalness: 0,
+        flatShading: true,
+      })
+      : styleMaterials.standard("pavilion", {
+        color: timber.clone().offsetHSL(0, -0.04, 0.08),
+      }),
+  );
+  floor.position.y = 0.27;
+  floor.receiveShadow = true;
+  pavilion.add(floor);
+
+  const columnGeometry = new THREE.CylinderGeometry(0.052, 0.07, 1.34, 6);
+  const frontBeamGeometry = new THREE.BoxGeometry(2.26, 0.1, 0.085);
+  const sideBeamGeometry = new THREE.BoxGeometry(0.085, 0.085, 1.18);
+  const ridgeGeometry = new THREE.BoxGeometry(0.075, 0.07, 1.76);
+  const timberStructure = new THREE.Mesh(mergeStaticGeometry([
+    ...[-0.88, 0.88].flatMap((x) => [-0.49, 0.49].map((z) => ({
+      geometry: columnGeometry,
+      position: [x, 0.98, z] as [number, number, number],
+    }))),
+    ...[-0.5, 0.5].map((z) => ({
+      geometry: frontBeamGeometry,
+      position: [0, 1.61, z] as [number, number, number],
+    })),
+    ...[-0.92, 0.92].map((x) => ({
+      geometry: sideBeamGeometry,
+      position: [x, 1.56, 0] as [number, number, number],
+    })),
+    { geometry: ridgeGeometry, position: [0, 2.29, 0] },
+  ]), timberMaterial);
+  timberStructure.name = "pavilion-timber-structure";
+  timberStructure.castShadow = true;
+  pavilion.add(timberStructure);
+
+  const roofGeometry = new THREE.BufferGeometry();
+  roofGeometry.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute([
+      -1.45, 0, -0.88, 1.45, 0, -0.88, 0, 0.56, -0.88,
+      -1.45, 0, 0.88, 0, 0.56, 0.88, 1.45, 0, 0.88,
+      -1.45, 0, -0.88, 0, 0.56, -0.88, -1.45, 0, 0.88,
+      -1.45, 0, 0.88, 0, 0.56, -0.88, 0, 0.56, 0.88,
+      1.45, 0, -0.88, 1.45, 0, 0.88, 0, 0.56, -0.88,
+      1.45, 0, 0.88, 0, 0.56, 0.88, 0, 0.56, -0.88,
+    ], 3),
+  );
+  roofGeometry.computeVertexNormals();
+  const roof = new THREE.Mesh(roofGeometry, roofMaterial);
+  roof.position.y = 1.72;
+  roof.castShadow = true;
+  pavilion.add(roof);
+  if (styleMaterials.hasInkOutline()) {
+    const roofEdge = new THREE.LineSegments(
+      new THREE.EdgesGeometry(roofGeometry, 18),
+      new THREE.LineBasicMaterial({ color: "#29455c", transparent: true, opacity: 0.88 }),
+    );
+    roofEdge.name = "pavilion-ink-edge";
+    roofEdge.position.copy(roof.position);
+    pavilion.add(roofEdge);
+  }
+
+  const longFasciaGeometry = new THREE.BoxGeometry(2.96, 0.07, 0.07);
+  const sideFasciaGeometry = new THREE.BoxGeometry(0.07, 0.07, 1.76);
+  const fascia = new THREE.Mesh(mergeStaticGeometry([
+    ...[-0.88, 0.88].map((z) => ({
+      geometry: longFasciaGeometry,
+      position: [0, 1.705, z] as [number, number, number],
+    })),
+    ...[-1.45, 1.45].map((x) => ({
+      geometry: sideFasciaGeometry,
+      position: [x, 1.705, 0] as [number, number, number],
+    })),
+  ]), roofMaterial);
+  fascia.name = "pavilion-roof-fascia";
+  fascia.castShadow = true;
+  pavilion.add(fascia);
+
+  const interiorWarmth = new THREE.Mesh(
+    new THREE.PlaneGeometry(1.25, 0.72),
+    twilight
+      ? new THREE.MeshBasicMaterial({
+        color: visual.celestialGlowColor,
+        transparent: true,
+        opacity: visual.dayPhase === "day" ? 0.045 : 0.18,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+      })
+      : styleMaterials.basic("celestial", {
+        color: visual.celestialGlowColor,
+        transparent: true,
+        opacity: visual.dayPhase === "day" ? 0.045 : 0.18,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+      }),
+  );
+  interiorWarmth.name = "pavilion-quiet-interior-warmth";
+  interiorWarmth.position.set(0, 0.98, -0.53);
+  pavilion.add(interiorWarmth);
+
+  pavilion.position.set(detail.x, detail.y, detail.z);
+  pavilion.rotation.y = detail.rotation;
+  pavilion.scale.setScalar(detail.scale);
+  return pavilion;
+}
+
+function floatingLeafGeometry(): THREE.ShapeGeometry {
+  const shape = new THREE.Shape();
+  shape.moveTo(0, -0.86);
+  shape.bezierCurveTo(0.42, -0.38, 0.46, 0.34, 0, 0.92);
+  shape.bezierCurveTo(-0.46, 0.34, -0.42, -0.38, 0, -0.86);
+  return new THREE.ShapeGeometry(shape, 5);
+}
+
+interface InstancedBirdParts {
+  body: THREE.InstancedMesh;
+  bodyOutline: THREE.InstancedMesh | null;
+  wings: THREE.InstancedMesh;
+}
+
+const instancedBirdParts = new WeakMap<THREE.Group, InstancedBirdParts>();
+
+function buildBirds(
+  model: GardenWorldModel,
+  direction: GardenVisualDirection,
+  styleMaterials: GardenStyleMaterialFactory,
+): THREE.Group {
+  const flock = new THREE.Group();
+  flock.name = "air-ii-bird-flock";
+  if (model.birds.length === 0) return flock;
+
+  const treatment = styleMaterials.profile.geometryTreatment;
+  const birdGeometry = treatment === "faceted-miniature"
+    ? new THREE.DodecahedronGeometry(1, 0)
+    : new THREE.SphereGeometry(1, 8, 5);
+  const headGeometry = treatment === "faceted-miniature"
+    ? new THREE.DodecahedronGeometry(0.16, 0)
+    : new THREE.SphereGeometry(0.16, 7, 5);
+  const material = direction.id === "twilight-refuge"
+    ? new THREE.MeshBasicMaterial({ color: "#ffffff", side: THREE.DoubleSide })
+    : styleMaterials.standard("wildlife", { color: "#ffffff", side: THREE.DoubleSide });
+  const bodyMaterial = material.clone();
+  bodyMaterial.vertexColors = true;
+  bodyMaterial.needsUpdate = true;
+  const compositeBodyGeometry = mergeStaticGeometry([
+    {
+      geometry: uniformVertexColorGeometry(birdGeometry, "#ffffff"),
+      position: [0, 0, 0],
+      rotation: [0, 0, -0.08],
+      scale: [0.42, 0.15, 0.13],
+    },
+    {
+      geometry: uniformVertexColorGeometry(headGeometry, "#ffffff"),
+      position: [0.48, 0, 0],
+    },
+    {
+      geometry: uniformVertexColorGeometry(
+        singleMaterialGeometry(new THREE.ConeGeometry(0.075, 0.24, 5)),
+        "#a48b59",
+      ),
+      position: [0.64, 0, 0],
+      rotation: [0, 0, -Math.PI / 2],
+    },
+  ]);
+  const bodyOutlineGeometry = styleMaterials.hasInkOutline()
+    ? compositeBodyGeometry.clone().scale(1.05, 1.05, 1.05)
+    : null;
+  const bodyOutline = bodyOutlineGeometry === null
+    ? null
+    : configureAnimatedWildlifeMesh(
+      new THREE.InstancedMesh(bodyOutlineGeometry, styleMaterials.outline("wildlife"), model.birds.length),
+    );
+  const body = configureAnimatedWildlifeMesh(
+    new THREE.InstancedMesh(compositeBodyGeometry, bodyMaterial, model.birds.length),
+  );
+  const wings = configureAnimatedWildlifeMesh(new THREE.InstancedMesh(
+    birdWingGeometry(1), material, model.birds.length * 2,
+  ));
+  body.name = "air-ii-bird-bodies-and-heads";
+  wings.name = "air-ii-bird-wings";
+  if (bodyOutline !== null) bodyOutline.name = "air-ii-bird-body-edges";
+  if (bodyOutline !== null) flock.add(bodyOutline);
+  flock.add(body, wings);
+  for (const [index, bird] of model.birds.entries()) {
+    const color = new THREE.Color(bird.color);
+    body.setColorAt(index, color);
+    wings.setColorAt(index * 2, color);
+    wings.setColorAt(index * 2 + 1, color);
+  }
+  for (const mesh of [bodyOutline, body, wings]) {
+    if (mesh?.instanceColor !== null && mesh?.instanceColor !== undefined) {
+      mesh.instanceColor.needsUpdate = true;
+    }
+  }
+  const parts = { body, bodyOutline, wings };
+  instancedBirdParts.set(flock, parts);
+  setBirdInstanceMatrices(flock, model);
+  return flock;
+}
+
+export interface GardenBirdPresentation {
+  position: [number, number, number];
+  yaw: number;
+  roll: number;
+  wingFlap: number;
+  state: "crossing" | "settled";
+}
+
+export function resolveBirdPresentation(bird: GardenBird, now: number): GardenBirdPresentation {
+  const cycleDuration = 32_000 / THREE.MathUtils.clamp(bird.speed, 0.5, 1.5);
+  const phaseOffset = positiveModulo(bird.phase, Math.PI * 2) / (Math.PI * 2) * cycleDuration;
+  const elapsed = Math.max(0, now) + phaseOffset;
+  const cycleIndex = Math.floor(elapsed / cycleDuration);
+  const cycleProgress = (elapsed % cycleDuration) / cycleDuration;
+  const direction = cycleIndex % 2 === 0 ? 1 : -1;
+  const flightFraction = 0.25;
+  const startX = -bird.pathRadius * direction;
+  const endX = bird.pathRadius * direction;
+  const startZ = -0.7 + bird.pathDepth * 0.32 * direction;
+  const endZ = -0.7 - bird.pathDepth * 0.32 * direction;
+  const travelYaw = direction > 0 ? -0.25 : Math.PI + 0.25;
+  const returnYaw = direction > 0 ? Math.PI + 0.25 : -0.25;
+
+  if (cycleProgress < flightFraction) {
+    const flightProgress = cycleProgress / flightFraction;
+    const eased = flightProgress * flightProgress * (3 - 2 * flightProgress);
+    return {
+      position: [
+        THREE.MathUtils.lerp(startX, endX, eased),
+        bird.height + Math.sin(flightProgress * Math.PI) * 0.36,
+        THREE.MathUtils.lerp(startZ, endZ, eased),
+      ],
+      yaw: travelYaw,
+      roll: Math.sin(flightProgress * Math.PI) * 0.055 * direction,
+      wingFlap: Math.sin(flightProgress * Math.PI * 6) * 0.22,
+      state: "crossing",
+    };
+  }
+
+  const restProgress = (cycleProgress - flightFraction) / (1 - flightFraction);
+  const turnProgress = THREE.MathUtils.smoothstep(restProgress, 0.2, 0.8);
+  return {
+    position: [endX, bird.height, endZ],
+    yaw: interpolateAngle(travelYaw, returnYaw, turnProgress),
+    roll: 0,
+    wingFlap: 0,
+    state: "settled",
+  };
+}
+
+export function resolveBirdSettledPresentation(bird: GardenBird): GardenBirdPresentation {
+  const direction = positiveModulo(bird.phase, Math.PI * 2) < Math.PI ? 1 : -1;
+  return {
+    position: [
+      bird.pathRadius * direction,
+      bird.height,
+      -0.7 - bird.pathDepth * 0.32 * direction,
+    ],
+    yaw: direction > 0 ? Math.PI + 0.25 : -0.25,
+    roll: 0,
+    wingFlap: 0,
+    state: "settled",
+  };
+}
+
+function animateBirds(flock: THREE.Group, model: GardenWorldModel, now: number): void {
+  setBirdInstanceMatrices(flock, model, now);
+}
+
+function settleBirds(flock: THREE.Group, model: GardenWorldModel): void {
+  setBirdInstanceMatrices(flock, model);
+}
+
+function setBirdInstanceMatrices(
+  flock: THREE.Group,
+  model: GardenWorldModel,
+  now?: number,
+): void {
+  const parts = instancedBirdParts.get(flock);
+  if (parts === undefined) return;
+  const parent = new THREE.Object3D();
+  const part = new THREE.Object3D();
+  const matrix = new THREE.Matrix4();
+  const write = (
+    mesh: THREE.InstancedMesh,
+    index: number,
+    position: [number, number, number],
+    rotation: [number, number, number],
+    scale: [number, number, number],
+  ): void => {
+    part.position.set(...position);
+    part.rotation.set(...rotation);
+    part.scale.set(...scale);
+    part.updateMatrix();
+    matrix.multiplyMatrices(parent.matrix, part.matrix);
+    mesh.setMatrixAt(index, matrix);
+  };
+
+  for (const [index, bird] of model.birds.entries()) {
+    const presentation = now === undefined
+      ? resolveBirdSettledPresentation(bird)
+      : resolveBirdPresentation(bird, now);
+    parent.position.set(...presentation.position);
+    parent.rotation.set(0, presentation.yaw, presentation.roll);
+    parent.scale.setScalar(bird.scale);
+    parent.updateMatrix();
+    write(parts.body, index, [0, 0, 0], [0, 0, 0], [1, 1, 1]);
+    if (parts.bodyOutline !== null) {
+      write(parts.bodyOutline, index, [0, 0, 0], [0, 0, 0], [1, 1, 1]);
+    }
+    write(parts.wings, index * 2, [-0.08, 0.05, 0], [0.1 + presentation.wingFlap, 0, 0], [1, 1, 1]);
+    write(parts.wings, index * 2 + 1, [-0.08, 0.05, 0], [-0.1 - presentation.wingFlap, 0, 0], [1, 1, -1]);
+  }
+  for (const mesh of [parts.bodyOutline, parts.body, parts.wings]) {
+    if (mesh !== null) mesh.instanceMatrix.needsUpdate = true;
+  }
+}
+
+function positiveModulo(value: number, modulus: number): number {
+  return ((value % modulus) + modulus) % modulus;
+}
+
+function interpolateAngle(from: number, to: number, progress: number): number {
+  const delta = positiveModulo(to - from + Math.PI, Math.PI * 2) - Math.PI;
+  return from + delta * progress;
+}
+
+function birdWingGeometry(side: 1 | -1): THREE.BufferGeometry {
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute([
+      0, 0, 0,
+      -0.04, 0.2, side * 0.48,
+      -0.22, 0.38, side * 1.06,
+      -0.44, 0.15, side * 0.76,
+      -0.3, -0.045, side * 0.18,
+    ], 3),
+  );
+  geometry.setIndex([0, 1, 4, 1, 2, 3, 1, 3, 4]);
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
+function buildGroundWildlife(
+  model: GardenWorldModel,
+  direction: GardenVisualDirection,
+  styleMaterials: GardenStyleMaterialFactory,
+): THREE.Group {
+  return buildInstancedGroundWildlife(model, direction, styleMaterials);
+}
+
+interface InstancedHareParts {
+  bodyParts: THREE.InstancedMesh;
+  bodyOutline: THREE.InstancedMesh | null;
+  tails: THREE.InstancedMesh;
+}
+
+const instancedHareParts = new WeakMap<THREE.Group, InstancedHareParts>();
+
+function buildInstancedGroundWildlife(
+  model: GardenWorldModel,
+  direction: GardenVisualDirection,
+  styleMaterials: GardenStyleMaterialFactory,
+): THREE.Group {
+  const wildlife = new THREE.Group();
+  wildlife.name = "space-iii-grass-wildlife";
+  if (model.groundAnimals.length === 0) return wildlife;
+  const treatment = styleMaterials.profile.geometryTreatment;
+  const bodyGeometry = treatment === "faceted-miniature"
+    ? new THREE.DodecahedronGeometry(1, 0)
+    : new THREE.SphereGeometry(1, treatment === "rounded-inflated" || treatment === "moulded-clay" ? 12 : 9, 6);
+  const bodyMaterial = direction.id === "twilight-refuge"
+    ? new THREE.MeshStandardMaterial({ color: "#ffffff", roughness: 0.96, metalness: 0, flatShading: true })
+    : styleMaterials.standard("wildlife", { color: "#ffffff" });
+  const tailMaterial = direction.id === "twilight-refuge"
+    ? new THREE.MeshStandardMaterial({ color: "#a69b8b", roughness: 0.98, metalness: 0, flatShading: true })
+    : styleMaterials.standard("wildlife", { color: "#a69b8b" });
+  const bodyParts = configureAnimatedWildlifeMesh(
+    new THREE.InstancedMesh(bodyGeometry, bodyMaterial, model.groundAnimals.length * 5),
+  );
+  const bodyOutline = styleMaterials.hasInkOutline()
+    ? configureAnimatedWildlifeMesh(
+      new THREE.InstancedMesh(bodyGeometry, styleMaterials.outline("wildlife"), model.groundAnimals.length),
+    )
+    : null;
+  const tails = configureAnimatedWildlifeMesh(new THREE.InstancedMesh(
+    new THREE.SphereGeometry(0.11, 7, 5), tailMaterial, model.groundAnimals.length,
+  ));
+  bodyParts.name = "space-iii-hare-body-parts";
+  tails.name = "space-iii-hare-tails";
+  if (bodyOutline !== null) bodyOutline.name = "space-iii-hare-body-edges";
+  if (bodyOutline !== null) wildlife.add(bodyOutline);
+  wildlife.add(bodyParts, tails);
+  for (const [index, animal] of model.groundAnimals.entries()) {
+    const color = new THREE.Color(animal.color);
+    for (let part = 0; part < 5; part += 1) bodyParts.setColorAt(index * 5 + part, color);
+  }
+  for (const mesh of [bodyParts, bodyOutline, tails]) {
+    if (mesh?.instanceColor !== null && mesh?.instanceColor !== undefined) {
+      mesh.instanceColor.needsUpdate = true;
+    }
+    if (mesh !== null) mesh.castShadow = true;
+  }
+  instancedHareParts.set(wildlife, { bodyParts, bodyOutline, tails });
+  wildlife.userData.gardenWorldModel = model;
+  setHareInstanceMatrices(wildlife, model);
+  return wildlife;
+}
+
+function animateGroundWildlife(wildlife: THREE.Group, now: number): void {
+  const model = wildlife.userData.gardenWorldModel as GardenWorldModel | undefined;
+  if (model !== undefined) setHareInstanceMatrices(wildlife, model, now);
+}
+
+function settleGroundWildlife(wildlife: THREE.Group): void {
+  const model = wildlife.userData.gardenWorldModel as GardenWorldModel | undefined;
+  if (model !== undefined) setHareInstanceMatrices(wildlife, model);
+}
+
+function setHareInstanceMatrices(
+  wildlife: THREE.Group,
+  model: GardenWorldModel,
+  now?: number,
+): void {
+  const parts = instancedHareParts.get(wildlife);
+  if (parts === undefined) return;
+  wildlife.userData.gardenWorldModel = model;
+  const parent = new THREE.Object3D();
+  const part = new THREE.Object3D();
+  const matrix = new THREE.Matrix4();
+  const write = (
+    mesh: THREE.InstancedMesh,
+    index: number,
+    position: [number, number, number],
+    rotation: [number, number, number],
+    scale: [number, number, number],
+  ): void => {
+    part.position.set(...position);
+    part.rotation.set(...rotation);
+    part.scale.set(...scale);
+    part.updateMatrix();
+    matrix.multiplyMatrices(parent.matrix, part.matrix);
+    mesh.setMatrixAt(index, matrix);
+  };
+
+  for (const [index, animal] of model.groundAnimals.entries()) {
+    const phase = index * 2.41 + animal.rotation;
+    const bounce = now === undefined ? 0 : Math.sin(now * 0.0011 + phase) * 0.012;
+    const earYaw = now === undefined ? 0 : Math.sin(now * 0.0008 + phase) * 0.1;
+    parent.position.set(animal.x, 0.08, animal.z);
+    parent.rotation.set(0, animal.rotation, 0);
+    parent.scale.set(animal.scale, animal.scale * (1 + bounce), animal.scale);
+    parent.updateMatrix();
+
+    const seated = animal.pose === "seated";
+    const bodyPosition: [number, number, number] = [0, seated ? 0.38 : 0.27, 0];
+    const bodyScale: [number, number, number] = seated ? [0.25, 0.43, 0.23] : [0.41, 0.25, 0.24];
+    const haunchPosition: [number, number, number] = seated ? [-0.18, 0.23, 0] : [-0.28, 0.25, 0];
+    const haunchScale: [number, number, number] = seated ? [0.34, 0.27, 0.29] : [0.3, 0.28, 0.28];
+    const headPosition: [number, number, number] = seated ? [0.02, 0.73, 0] : [0.38, 0.25, 0];
+    const bodyIndex = index * 5;
+    write(parts.bodyParts, bodyIndex, bodyPosition, [0, 0, 0], bodyScale);
+    write(parts.bodyParts, bodyIndex + 1, haunchPosition, [0, 0, 0], haunchScale);
+    write(parts.bodyParts, bodyIndex + 2, headPosition, [0, 0, 0], [0.2, 0.22, 0.2]);
+    if (parts.bodyOutline !== null) {
+      write(parts.bodyOutline, index, bodyPosition, [0, 0, 0], [
+        bodyScale[0] * 1.045, bodyScale[1] * 1.045, bodyScale[2] * 1.045,
+      ]);
+    }
+    for (const [earIndex, z] of [-0.075, 0.075].entries()) {
+      write(
+        parts.bodyParts,
+        bodyIndex + 3 + earIndex,
+        [seated ? 0 : 0.39, seated ? 1.02 : 0.48, z],
+        [0, earIndex === 1 ? earYaw : 0, seated ? -0.08 + earIndex * 0.12 : -0.72 + earIndex * 0.1],
+        [0.07, 0.25, 0.055],
+      );
+    }
+    write(parts.tails, index, [-0.45, 0.32, 0], [0, 0, 0], [1, 1, 1]);
+  }
+  for (const mesh of [parts.bodyParts, parts.bodyOutline, parts.tails]) {
+    if (mesh !== null) mesh.instanceMatrix.needsUpdate = true;
+  }
+}
+
+function configureQuality(
+  renderer: THREE.WebGLRenderer,
+  sun: THREE.DirectionalLight,
+  model: GardenWorldModel,
+  direction: GardenVisualDirection,
+): void {
+  const visual = resolveVisualModel(model, direction);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, model.quality.pixelRatioLimit));
+  sun.color.set(visual.sunColor);
+  sun.intensity = visual.sunIntensity;
+  sun.shadow.mapSize.set(model.quality.shadowMapSize, model.quality.shadowMapSize);
+  if (sun.shadow.map !== null) {
+    sun.shadow.map.dispose();
+    sun.shadow.map = null;
+  }
+  renderer.shadowMap.needsUpdate = true;
+}
+
+function buildSkyDome(
+  model: GardenWorldModel,
+  direction: GardenVisualDirection,
+): THREE.Mesh<THREE.SphereGeometry, THREE.ShaderMaterial> {
+  const visual = resolveVisualModel(model, direction);
+  const material = new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    depthWrite: false,
+    fog: false,
+    uniforms: {
+      topColor: { value: new THREE.Color(visual.skyTopColor) },
+      horizonColor: { value: new THREE.Color(visual.skyColor) },
+      lowerColor: { value: new THREE.Color(visual.skyLowerColor) },
+      glowColor: { value: new THREE.Color(visual.celestialGlowColor) },
+      glowStrength: { value: visual.celestialGlowStrength },
+      glowDirection: { value: new THREE.Vector3(-0.46, 0.34, -0.82).normalize() },
+    },
+    vertexShader: `
+      varying float gardenHeight;
+      varying vec3 gardenDirection;
+      void main() {
+        gardenDirection = normalize(position);
+        gardenHeight = gardenDirection.y;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      varying float gardenHeight;
+      varying vec3 gardenDirection;
+      uniform vec3 topColor;
+      uniform vec3 horizonColor;
+      uniform vec3 lowerColor;
+      uniform vec3 glowColor;
+      uniform vec3 glowDirection;
+      uniform float glowStrength;
+      void main() {
+        float upperMix = smoothstep(-0.02, 0.72, gardenHeight);
+        float lowerMix = smoothstep(-0.45, 0.05, gardenHeight);
+        vec3 horizonToTop = mix(horizonColor, topColor, upperMix);
+        vec3 color = mix(lowerColor, horizonToTop, lowerMix);
+        float horizonHaze = exp(-abs(gardenHeight) * 8.0) * 0.09;
+        float glow = pow(max(dot(normalize(gardenDirection), glowDirection), 0.0), 42.0) * glowStrength;
+        color = mix(color, horizonColor, horizonHaze);
+        color += glowColor * glow;
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `,
+  });
+  const dome = new THREE.Mesh(new THREE.SphereGeometry(38, 32, 18), material);
+  dome.name = "garden-sky-gradient";
+  dome.frustumCulled = false;
+  dome.renderOrder = -100;
+  return dome;
+}
+
+function configureAtmosphere(
+  renderer: THREE.WebGLRenderer,
+  scene: THREE.Scene,
+  skyDome: THREE.Mesh<THREE.SphereGeometry, THREE.ShaderMaterial>,
+  hemisphere: THREE.HemisphereLight,
+  sun: THREE.DirectionalLight,
+  fill: THREE.PointLight,
+  model: GardenWorldModel,
+  direction: GardenVisualDirection,
+): void {
+  const visual = resolveVisualModel(model, direction);
+  renderer.toneMappingExposure = visual.exposure;
+  hemisphere.color.set(visual.hemisphereSkyColor);
+  hemisphere.groundColor.set(visual.hemisphereGroundColor);
+  hemisphere.intensity = visual.hemisphereIntensity;
+  sun.color.set(visual.sunColor);
+  sun.intensity = visual.sunIntensity;
+  fill.color.set(visual.fillColor);
+  fill.intensity = visual.fillIntensity;
+  scene.background = new THREE.Color(visual.fogColor);
+  const topColor = shaderColorUniform(skyDome.material, "topColor");
+  const horizonColor = shaderColorUniform(skyDome.material, "horizonColor");
+  const lowerColor = shaderColorUniform(skyDome.material, "lowerColor");
+  const glowColor = shaderColorUniform(skyDome.material, "glowColor");
+  topColor.set(visual.skyTopColor);
+  horizonColor.set(visual.skyColor);
+  lowerColor.set(visual.skyLowerColor);
+  glowColor.set(visual.celestialGlowColor);
+  const glowStrength = skyDome.material.uniforms.glowStrength;
+  if (glowStrength === undefined || typeof glowStrength.value !== "number") {
+    throw new Error("Garden shader glow strength is unavailable.");
+  }
+  glowStrength.value = visual.celestialGlowStrength;
+  scene.fog = new THREE.Fog(
+    visual.fogColor,
+    direction.lighting.fogNear,
+    direction.lighting.fogFar,
+  );
+}
+
+function shaderColorUniform(material: THREE.ShaderMaterial, name: string): THREE.Color {
+  const value = material.uniforms[name]?.value;
+  if (!(value instanceof THREE.Color)) {
+    throw new Error(`Garden shader color uniform ${name} is unavailable.`);
+  }
+  return value;
+}
+
+function streamRibbonGeometry(
+  curve: THREE.CatmullRomCurve3,
+  segments: number,
+  width: number,
+  widthProfile: (progress: number) => number = () => 1,
+): THREE.BufferGeometry {
+  const positions: number[] = [];
+  const indices: number[] = [];
+  for (let index = 0; index <= segments; index += 1) {
+    const progress = index / segments;
+    const point = curve.getPoint(progress);
+    const tangent = curve.getTangent(progress);
+    const localWidth = width * Math.max(0.18, widthProfile(progress));
+    const side = new THREE.Vector3(-tangent.z, 0, tangent.x).normalize().multiplyScalar(localWidth);
+    positions.push(point.x + side.x, point.y, point.z + side.z);
+    positions.push(point.x - side.x, point.y, point.z - side.z);
+    if (index < segments) {
+      const start = index * 2;
+      indices.push(start, start + 2, start + 1, start + 1, start + 2, start + 3);
+    }
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
+export function disposeObjectResources(root: THREE.Object3D): void {
+  const geometries = new Set<THREE.BufferGeometry>();
+  const materials = new Set<THREE.Material>();
+  const textures = new Set<THREE.Texture>();
+  const instancedMeshes = new Set<THREE.InstancedMesh>();
+  root.traverse((object) => {
+    if (object instanceof THREE.InstancedMesh) instancedMeshes.add(object);
+    if (object instanceof THREE.Mesh || object instanceof THREE.Points) {
+      geometries.add(object.geometry);
+    }
+    if (!(object instanceof THREE.Mesh || object instanceof THREE.Points || object instanceof THREE.Sprite)) return;
+    const objectMaterials = Array.isArray(object.material) ? object.material : [object.material];
+    for (const material of objectMaterials) materials.add(material);
+  });
+  for (const mesh of instancedMeshes) mesh.dispose();
+  for (const geometry of geometries) geometry.dispose();
+  for (const material of materials) {
+    for (const value of Object.values(material)) {
+      if (value instanceof THREE.Texture && value.userData.arriveWithinSharedStyleTexture !== true) {
+        textures.add(value);
+      }
+    }
+    material.dispose();
+  }
+  for (const texture of textures) texture.dispose();
+}

@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "status": "pass",
+  "expectedImages": 6,
+  "actualImages": 6,
+  "externalRequests": 0,
+  "results": [
+    {
+      "file": "01-growth-rhythm-de-de-iphone-6.9-1320x2868.png",
+      "status": "pass",
+      "width": 1320,
+      "height": 2868,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": [],
+      "geometry": {
+        "headlineBounds": {
+          "x": 118.796875,
+          "y": 85.796875,
+          "width": 1082.390625,
+          "height": 268.625
+        },
+        "proofBounds": {
+          "x": 107.578125,
+          "y": 553.515625,
+          "width": 1104.828125,
+          "height": 2331.578125
+        },
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 19.3,
+          "actualTop": 553.515625,
+          "actualTopPercent": 19.299707984658298,
+          "frameTops": [
+            553.515625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
+        },
+        "headlineToProofGap": 199.09375,
+        "headlineToProofGapRatio": 0.06941902022315202,
+        "proofHeight": 2331.578125,
+        "proofHeightRatio": 0.8129630840306834,
+        "proofLowerEdge": 2885.09375,
+        "proofLowerEdgeRatio": 1.0059601638772664
+      }
+    },
+    {
+      "file": "02-growth-take-root-de-de-iphone-6.9-1320x2868.png",
+      "status": "pass",
+      "width": 1320,
+      "height": 2868,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": [],
+      "geometry": {
+        "headlineBounds": {
+          "x": 118.796875,
+          "y": 85.796875,
+          "width": 1082.390625,
+          "height": 268.625
+        },
+        "proofBounds": {
+          "x": 0,
+          "y": 553.515625,
+          "width": 1320,
+          "height": 2144
+        },
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 19.3,
+          "actualTop": 553.515625,
+          "actualTopPercent": 19.299707984658298,
+          "frameTops": [
+            553.515625,
+            553.515625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
+        },
+        "headlineToProofGap": 199.09375,
+        "headlineToProofGapRatio": 0.06941902022315202,
+        "proofHeight": 2144,
+        "proofHeightRatio": 0.7475592747559274,
+        "proofLowerEdge": 2697.515625,
+        "proofLowerEdgeRatio": 0.9405563546025104
+      }
+    },
+    {
+      "file": "03-growth-arrive-de-de-iphone-6.9-1320x2868.png",
+      "status": "pass",
+      "width": 1320,
+      "height": 2868,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": [],
+      "geometry": {
+        "headlineBounds": {
+          "x": 118.796875,
+          "y": 85.796875,
+          "width": 1082.390625,
+          "height": 268.625
+        },
+        "proofBounds": {
+          "x": 107.578125,
+          "y": 553.515625,
+          "width": 1104.828125,
+          "height": 2331.578125
+        },
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 19.3,
+          "actualTop": 553.515625,
+          "actualTopPercent": 19.299707984658298,
+          "frameTops": [
+            553.515625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
+        },
+        "headlineToProofGap": 199.09375,
+        "headlineToProofGapRatio": 0.06941902022315202,
+        "proofHeight": 2331.578125,
+        "proofHeightRatio": 0.8129630840306834,
+        "proofLowerEdge": 2885.09375,
+        "proofLowerEdgeRatio": 1.0059601638772664
+      }
+    },
+    {
+      "file": "04-growth-stays-de-de-iphone-6.9-1320x2868.png",
+      "status": "pass",
+      "width": 1320,
+      "height": 2868,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": [],
+      "geometry": {
+        "headlineBounds": {
+          "x": 118.796875,
+          "y": 85.796875,
+          "width": 1082.390625,
+          "height": 268.625
+        },
+        "proofBounds": {
+          "x": 107.578125,
+          "y": 553.515625,
+          "width": 1104.828125,
+          "height": 2331.578125
+        },
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 19.3,
+          "actualTop": 553.515625,
+          "actualTopPercent": 19.299707984658298,
+          "frameTops": [
+            553.515625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
+        },
+        "headlineToProofGap": 199.09375,
+        "headlineToProofGapRatio": 0.06941902022315202,
+        "proofHeight": 2331.578125,
+        "proofHeightRatio": 0.8129630840306834,
+        "proofLowerEdge": 2885.09375,
+        "proofLowerEdgeRatio": 1.0059601638772664
+      }
+    },
+    {
+      "file": "05-growth-reflect-de-de-iphone-6.9-1320x2868.png",
+      "status": "pass",
+      "width": 1320,
+      "height": 2868,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": [],
+      "geometry": {
+        "headlineBounds": {
+          "x": 118.796875,
+          "y": 72.59375,
+          "width": 1082.390625,
+          "height": 364.3125
+        },
+        "proofBounds": {
+          "x": 107.578125,
+          "y": 553.515625,
+          "width": 1104.828125,
+          "height": 2331.578125
+        },
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 19.3,
+          "actualTop": 553.515625,
+          "actualTopPercent": 19.299707984658298,
+          "frameTops": [
+            553.515625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
+        },
+        "headlineToProofGap": 116.609375,
+        "headlineToProofGapRatio": 0.04065877789400279,
+        "proofHeight": 2331.578125,
+        "proofHeightRatio": 0.8129630840306834,
+        "proofLowerEdge": 2885.09375,
+        "proofLowerEdgeRatio": 1.0059601638772664
+      }
+    },
+    {
+      "file": "06-growth-refuge-de-de-iphone-6.9-1320x2868.png",
+      "status": "pass",
+      "width": 1320,
+      "height": 2868,
+      "format": "png",
+      "colorType": 2,
+      "opaqueRgb": true,
+      "errors": [],
+      "geometry": {
+        "headlineBounds": {
+          "x": 118.796875,
+          "y": 85.796875,
+          "width": 1082.390625,
+          "height": 268.625
+        },
+        "proofBounds": {
+          "x": 107.578125,
+          "y": 553.515625,
+          "width": 1104.828125,
+          "height": 2331.578125
+        },
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 19.3,
+          "actualTop": 553.515625,
+          "actualTopPercent": 19.299707984658298,
+          "frameTops": [
+            553.515625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
+        },
+        "headlineToProofGap": 199.09375,
+        "headlineToProofGapRatio": 0.06941902022315202,
+        "proofHeight": 2331.578125,
+        "proofHeightRatio": 0.8129630840306834,
+        "proofLowerEdge": 2885.09375,
+        "proofLowerEdgeRatio": 1.0059601638772664
+      }
+    }
+  ]
+}

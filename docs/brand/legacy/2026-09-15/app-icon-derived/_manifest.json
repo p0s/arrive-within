@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "selection": {
+    "date": "2026-08-10",
+    "direction": "B — Quiet Threshold"
+  },
+  "canonicalSource": "Apps/ArriveWithin/Resources/AppIcon.icon",
+  "canonicalSourceSha256": "187b0a4fee3db9520ac78fd5667e4e852a8eb3e41753f8c37cc315f324522220",
+  "sourceFiles": {
+    "icon.json": "0fd1daab62cf9e6e5c2436253272c54b15f044df962a1581db77bc92016d1b76",
+    "Assets/threshold-interior.svg": "be3bfa6ceb8db3f81863ba54c5d072d7ea482b732754c9b5404df4153d8c61bb",
+    "Assets/threshold-arch.svg": "bc5663eb27ce64335b22244dc184cf2686d6b161aa7a5f14b5127d3ce91bc047",
+    "Assets/living-shoot.svg": "70542195a21214fbe54348e8f3fe4049020d30aae57102d4f9d1a08e12ea570b"
+  },
+  "productionTarget": {
+    "path": "docs/brand/provenance/2026-08-10/production/quiet-threshold-production-raw.png",
+    "sha256": "f2f75e9934778ade9a1e47368e5e855c5de295d91bff02187865083fed878902",
+    "role": "image-generation visual target; canonical output is authored from named vector layers"
+  },
+  "transformations": {
+    "renderer": "Sharp 0.35.3",
+    "resizeKernel": "Lanczos3",
+    "alpha": "removed",
+    "defaultAndDarkColorSpace": "sRGB RGB",
+    "tintedColorSpace": "grayscale"
+  },
+  "artifacts": [
+    {
+      "path": "docs/brand/app-icon-derived/AppIcon-Default-1024.png",
+      "sha256": "168205452fd920652eaa3ede8ae053e99eae682554c69ffbc973dc9e35204fc4",
+      "size": 1024,
+      "variant": "default"
+    },
+    {
+      "path": "docs/brand/app-icon-derived/AppIcon-Default-180.png",
+      "sha256": "04feea75ed9f652b8c21175d87fa2a7541030b7382228e6d6c4e432b6bb2bbd4",
+      "size": 180,
+      "variant": "default"
+    },
+    {
+      "path": "docs/brand/app-icon-derived/AppIcon-Default-60.png",
+      "sha256": "8216137acb7ee71f60f90b56e94c019023f33cbf60c4df7af9a99b8956917de6",
+      "size": 60,
+      "variant": "default"
+    },
+    {
+      "path": "docs/brand/app-icon-derived/AppIcon-Default-40.png",
+      "sha256": "35e2be5edddbde0818b1c157a518cb6101c6ecba9c786360372705da8853ac2c",
+      "size": 40,
+      "variant": "default"
+    },
+    {
+      "path": "docs/brand/app-icon-derived/AppIcon-Dark-1024.png",
+      "sha256": "96555dc366e2d4a646128bf777ca84a0a6b9de89c1fdb45fc90bd59d4066ed80",
+      "size": 1024,
+      "variant": "dark"
+    },
+    {
+      "path": "docs/brand/app-icon-derived/AppIcon-Dark-180.png",
+      "sha256": "b094386c018d166eb4f1862babb35ddf50ec530d82a0b96f60e889b84daa5653",
+      "size": 180,
+      "variant": "dark"
+    },
+    {
+      "path": "docs/brand/app-icon-derived/AppIcon-Dark-60.png",
+      "sha256": "d19d9f7a29b1b878408723ed9622391e1f438fd99b7bfe4ffd0a919422f6a09b",
+      "size": 60,
+      "variant": "dark"
+    },
+    {
+      "path": "docs/brand/app-icon-derived/AppIcon-Dark-40.png",
+      "sha256": "36cfc05d3cde82f198dfad3a0ce8cf85ab53992a0a4a15ea27aede8bdc7af443",
+      "size": 40,
+      "variant": "dark"
+    },
+    {
+      "path": "docs/brand/app-icon-derived/AppIcon-Tinted-1024.png",
+      "sha256": "66b9069cd5d3bf69c408a8f452ab6dcfe8843d386d95c30ad4efe51f091732ca",
+      "size": 1024,
+      "variant": "tinted"
+    },
+    {
+      "path": "docs/brand/app-icon-derived/AppIcon-Tinted-180.png",
+      "sha256": "bcb0c737319434110c3c7b850dcb81c2b806c493c741cf418e449f3d3db3bf41",
+      "size": 180,
+      "variant": "tinted"
+    },
+    {
+      "path": "docs/brand/app-icon-derived/AppIcon-Tinted-60.png",
+      "sha256": "f6a7406a2bcf3cd0375523311c35f0af1dd45f2e2f5ad208f7181460776e832d",
+      "size": 60,
+      "variant": "tinted"
+    },
+    {
+      "path": "docs/brand/app-icon-derived/AppIcon-Tinted-40.png",
+      "sha256": "0f15b1c2442b5279e8842c0b04589b0a09d618eb2519113de9ac92fae377e3d2",
+      "size": 40,
+      "variant": "tinted"
+    }
+  ],
+  "contactSheet": {
+    "path": "docs/brand/app-icon-qa-contact-sheet.png",
+    "sha256": "7e2a3414056aa0fa6a6919fb34a79f5833bf5c735be516c41d5bcf59aac6eb54",
+    "width": 2280,
+    "height": 1390
+  }
+}

@@ -1,0 +1,42 @@
+name: English or German localization
+description: Report untranslated, unnatural, clipped, ambiguous, or contextually wrong UI copy.
+title: "[Localization]: "
+labels: [localization]
+body:
+  - type: markdown
+    attributes:
+      value: Share only redacted evidence. Never include journal content, voice recordings, credentials, device identifiers, or signing/configuration values.
+  - type: dropdown
+    id: language
+    attributes:
+      label: Affected language
+      options: [English, German, Both]
+    validations:
+      required: true
+  - type: input
+    id: location
+    attributes:
+      label: Screen, key, or metadata field
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context and current wording
+      description: Include device/width, content size, action/state, and screenshot if layout matters.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Natural proposed wording
+      description: Explain tone, grammar, terminology, and fit; do not submit raw machine translation.
+    validations:
+      required: true
+  - type: checkboxes
+    id: fluency
+    attributes:
+      label: Review status
+      options:
+        - label: I am fluent in the affected language or have clearly marked this as needing fluent review.
+          required: true

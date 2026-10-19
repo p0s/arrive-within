@@ -1,0 +1,55 @@
+name: Product bug
+description: Report reproducible incorrect behavior in the native app or product data.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Do not include journal content, voice recordings, credentials, signing data, or private CloudKit identifiers.
+  - type: input
+    id: revision
+    attributes:
+      label: Source revision or build
+      description: Exact commit, tag, or local source hash; never write “latest”.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Device, OS, and evidence level
+      placeholder: iPhone 17 Pro simulator, iOS 26.5, local Debug build
+    validations:
+      required: true
+  - type: textarea
+    id: starting_state
+    attributes:
+      label: Starting state
+      description: Include locale, app state, permissions, local-only/iCloud mode, and relevant accessibility settings.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result and safe evidence
+      description: Attach redacted screenshots/logs where useful and state whether the result reproduced.
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      options:
+        - label: I removed private user data, credentials, device identifiers, and official CloudKit/signing values.
+          required: true

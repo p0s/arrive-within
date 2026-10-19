@@ -1,0 +1,93 @@
+const ownerHandle = String.fromCharCode(112, 48, 115);
+const deviceAliases = [
+  String.fromCharCode(112, 115, 97, 110),
+  String.fromCharCode(112, 112, 97, 100),
+];
+
+export const publicRepositoryURL = ["https://github.com", ownerHandle, "arrive-within"].join("/");
+export const repositoryOwnerFragment = [ownerHandle, "arrive-within"].join("/");
+export const repositoryOwnerHandle = ownerHandle;
+export const privateLocalDirectory = `.${ownerHandle}-local`;
+export const publicAnalyticsOptOutCookie = [repositoryOwnerHandle, "_analytics_optout"].join("");
+
+const exactSourceSurfaces = new Set([
+  "README.md",
+  "Website/README.md",
+  "Website/src/content.mjs",
+  "docs/release/metadata/de-DE.json",
+  "docs/release/metadata/en-US.json",
+]);
+const publicAnalyticsCookieSurfaces = new Set([
+  "Website/edge/worker.test.mjs",
+  "Website/scripts/test-analytics.mjs",
+  "Website/src/analytics.mjs",
+]);
+
+export function isIntentionalPublicRepositorySurface(displayPath) {
+  return exactSourceSurfaces.has(displayPath)
+    || /^website-dist\/(?:[^/]+\/)*[^/]+\.html$/.test(displayPath);
+}
+
+export function maskIntentionalPublicRepositoryURLs(source, displayPath) {
+  if (!isIntentionalPublicRepositorySurface(displayPath)) return source;
+  const escaped = publicRepositoryURL.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const exactURL = new RegExp(`${escaped}(?=$|[\\s\"'<>\\)\\],.;\x60])`, "g");
+  return source.replace(exactURL, "");
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function privacyPatterns() {
+  const personalHome = ["", "(?:Users|home)", "[A-Za-z0-9._-]+", ""].join("/");
+  const privateRoot = ["", "private", ""].join("/");
+  const temporaryRoot = ["", "tmp", ""].join("/");
+  const fileScheme = ["file", ":", "//"].join("");
+  const teamIdentifierKey = String.fromCharCode(84, 101, 97, 109, 73, 100, 101, 110, 116, 105, 102, 105, 101, 114);
+  const prefixIdentifierKey = String.fromCharCode(65, 112, 112, 108, 105, 99, 97, 116, 105, 111, 110, 73, 100, 101, 110, 116, 105, 102, 105, 101, 114, 80, 114, 101, 102, 105, 120);
+  return [
+    { id: "owner-handle", pattern: new RegExp(escapeRegExp(repositoryOwnerHandle), "i") },
+    { id: "device-alias", pattern: new RegExp(`\\b(?:${deviceAliases.map(escapeRegExp).join("|")})\\b`, "i") },
+    { id: "personal-home", pattern: new RegExp(personalHome) },
+    { id: "private-absolute-path", pattern: new RegExp(`(?:^|[\\s\"'=])${escapeRegExp(privateRoot)}`) },
+    { id: "temporary-absolute-path", pattern: new RegExp(`(?:^|[\\s\"'=])${escapeRegExp(temporaryRoot)}`) },
+    { id: "file-scheme", pattern: new RegExp(escapeRegExp(fileScheme), "i") },
+    { id: "repository-owner-location", pattern: new RegExp(escapeRegExp(repositoryOwnerFragment), "i") },
+    { id: "private-key", pattern: /-----BEGIN (?:RSA |OPENSSH |EC |DSA )?PRIVATE KEY-----/ },
+    { id: "github-token", pattern: /\bgh[pousr]_[A-Za-z0-9]{20,}\b/ },
+    { id: "openai-token", pattern: /\bsk-[A-Za-z0-9_-]{20,}\b/ },
+    { id: "aws-key", pattern: /\bAKIA[0-9A-Z]{16}\b/ },
+    { id: "cloudflare-account-binding", pattern: /(?:\b(?:cloudflare[_-]?)?account[_-]?id[\s"'`]*[:=][\s"'`]*[a-f\d]{32}\b|\bauthorized-account-[a-f\d]{32}\b)/i },
+    { id: "wrangler-profile", pattern: /(?:\b(?:SAVED_PROFILE|WRANGLER_PROFILE|DEPLOYMENT_PROFILE)\s*[:=]\s*["'`][A-Za-z0-9_-]+|--profile(?:\s+|=)["'`]?[A-Za-z0-9_-]+|\bWrangler\s+profile\s+["'`][A-Za-z0-9_-]+)/i },
+    { id: "development-team-id", pattern: new RegExp(["DEVELOPMENT_TEAM", "\\s*=\\s*", "[A-Z0-9]{10}", "\\b"].join("")) },
+    { id: "provisioning-identifier", pattern: new RegExp([`(?:${teamIdentifierKey}|${prefixIdentifierKey}|com\\.apple\\.developer\\.team-identifier)`, "[^\\n]{0,80}", "(?:<string>|=|:)\\s*", "[A-Z0-9]{10}", "\\b"].join(""), "i") },
+    { id: "device-identifier-evidence", pattern: new RegExp(["(?:UDID|device[_ -]?identifier)", "[^\\n]{0,80}", "[0-9A-F]{8}-[0-9A-F-]{27,}"].join(""), "i") },
+  ];
+}
+
+export function detectPublicPrivacySignatures(source, displayPath) {
+  source = source.replace(/\\u([a-f\d]{4})/gi, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
+    .replace(/\\x([a-f\d]{2})/gi, (_, hex) => String.fromCharCode(parseInt(hex, 16)));
+  let maskedSource = maskIntentionalPublicRepositoryURLs(source, displayPath);
+  // Only the root ignore rule is public; the directory's contents remain private.
+  if (displayPath === ".gitignore") {
+    const privateIgnoreRule = `${privateLocalDirectory}/`;
+    maskedSource = maskedSource.split("\n").map((line, index, lines) => {
+      const hasLF = index < lines.length - 1;
+      return line === privateIgnoreRule || (hasLF && line === `${privateIgnoreRule}\r`) ? "" : line;
+    }).join("\n");
+  }
+  if (publicAnalyticsCookieSurfaces.has(displayPath)) {
+    const publicCookiePattern = new RegExp(`(?<![A-Za-z0-9_-])${escapeRegExp(publicAnalyticsOptOutCookie)}(?![A-Za-z0-9_-])`, "g");
+    maskedSource = maskedSource.replace(publicCookiePattern, "");
+  }
+  // The shared runner's public environment-variable name is tooling API, not an account value.
+  if (["scripts/verify", "docs/qa/VERIFICATION.md"].includes(displayPath)) {
+    const blueprintVariable = `${repositoryOwnerHandle.toUpperCase()}_IOS_BLUEPRINT_ROOT`;
+    maskedSource = maskedSource.replace(new RegExp(`\\b${blueprintVariable}\\b`, "g"), "");
+  }
+  return privacyPatterns()
+    .filter(({ pattern }) => pattern.test(maskedSource) || pattern.test(displayPath))
+    .map(({ id }) => id);
+}

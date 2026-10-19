@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "product": "Arrive Within",
+  "status": "owner-selected",
+  "generator": {
+    "mode": "OpenAI built-in image_gen",
+    "model_identifier": "not-exposed-by-built-in-tool",
+    "output_dimensions": "1254x1254",
+    "format": "PNG",
+    "color": "RGB",
+    "alpha": false
+  },
+  "rights": {
+    "input_reference": "First-party house-style reference; used only for material, lighting, restraint, and small-size clarity; not redistributed as an Arrive Within asset.",
+    "output_terms_checked": "2026-08-10",
+    "output_terms_source": "https://openai.com/policies/services-agreement/",
+    "output_terms_evidence": "Section 4.1 assigns OpenAI's output rights to the customer to the extent permitted by law; Sections 4.3-4.4 retain customer responsibility and warn output may not be unique.",
+    "public_redistribution_state": "Concept output rights supported; owner selection is complete. The selected output and authored production layers are designated for the repository media license, while publication and trademark/similarity review remain separate gates."
+  },
+  "style_reference": {
+    "role": "style-reference-only",
+    "name": "first-party app-icon house-style reference",
+    "sha256": "f0c503c4ec9b056cca70a7a48dfee3b9416ef19954b6bf7df67b8562f08150a7",
+    "copied_geometry_allowed": false,
+    "redistributed_here": false
+  },
+  "directions": [
+    {
+      "id": "A",
+      "name": "Living Rings",
+      "thesis": "direct tree-and-growth-ring emblem",
+      "prompt": "direction-a-prompt.txt",
+      "prompt_sha256": "b233015de20ede7ad31d1b26fc1591080bb3b1e21f38a37689c2b3e589a1ddfd",
+      "output": "direction-a.png",
+      "generated_at": "2026-08-10T01:31:31+08:00",
+      "sha256": "b199b774183507640b66961b8e615840a907a450968797b213b7906751589f6a",
+      "bytes": 2085718,
+      "review": "rejected-by-owner-after-concept-review"
+    },
+    {
+      "id": "B",
+      "name": "Quiet Threshold",
+      "thesis": "negative-space threshold revealing living growth",
+      "prompt": "direction-b-prompt.txt",
+      "prompt_sha256": "cb7e33d5276b171eda39b6a837f5a84e8bf276a7fc1e4112cbf2ae0dd134f4f8",
+      "output": "direction-b.png",
+      "generated_at": "2026-08-10T01:32:28+08:00",
+      "sha256": "c74bccc0b7f1ed489ae7fe696e31dffb2beaaf8c078597123b72190f87c03034",
+      "bytes": 2150081,
+      "review": "selected-by-owner"
+    },
+    {
+      "id": "C",
+      "name": "Rooted Light",
+      "thesis": "grounded seed/root base meeting a calm light disc",
+      "prompt": "direction-c-revision-2-prompt.txt",
+      "prompt_sha256": "c741bfe4475bf523feb6f30f4b4e9ce05c45674b8babce757a5baf2844f840be",
+      "output": "direction-c.png",
+      "generated_at": "2026-08-10T01:36:17+08:00",
+      "sha256": "7baabf1d3911a0948faaa3f1f7b431c55d71668411d726f3fcc66f1f5fab4b34",
+      "bytes": 1388996,
+      "review": "rejected-by-owner-after-concept-review"
+    }
+  ],
+  "rejected_attempts": [
+    {
+      "direction": "C",
+      "iteration": 1,
+      "prompt": "direction-c-prompt.txt",
+      "prompt_sha256": "bc2b7723c5842c0441ae76d2b30fbaaff3da51fd876963eb48dcb4a8a7556347",
+      "output": "direction-c-rejected-v1.png",
+      "generated_at": "2026-08-10T01:33:31+08:00",
+      "sha256": "c1660efd9dddd39b656010e617eb51182b0c884b6681d57307d0a3ce873875e9",
+      "bytes": 1301842,
+      "reason": "Rejected before owner presentation: the tall tapered seed could read as the prohibited flame motif."
+    },
+    {
+      "direction": "C",
+      "iteration": 2,
+      "prompt": "direction-c-revision-prompt.txt",
+      "prompt_sha256": "c2b4038f1f2070cbb66955b338e2ebfefe9196ee5a906862cadc3e27409e4e41",
+      "output": "direction-c-rejected-v2.png",
+      "generated_at": "2026-08-10T01:34:53+08:00",
+      "sha256": "d0158d28027834df45894afc3039c632c7332c5f2b77cc4c2f6113b6d215d0a4",
+      "bytes": 1465635,
+      "reason": "Rejected before owner presentation: the circular seed plus three protruding roots could read as a person or seated figure."
+    }
+  ],
+  "selection": {
+    "state": "selected-by-owner",
+    "selected_direction": "B",
+    "selected_at": "2026-08-10",
+    "owner_note": "Image 2 was verified against the selection sheet as B — Quiet Threshold: the green architectural threshold with the living shoot."
+  },
+  "production_boundary": "Direction B is the owner-selected composition authority. The canonical layered source and derived assets have separate provenance and QA records; archive, physical-device, TestFlight, App Store, publication, and final trademark/similarity evidence remain unclaimed."
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "inputs": [
+    "Marketing/AppStoreScreenshots/capture-source-inputs.json",
+    "project.yml",
+    "Config/Base.xcconfig",
+    "Config/Local.example.xcconfig",
+    "Apps/ArriveWithin/Sources",
+    "Apps/ArriveWithin/Resources",
+    "Apps/ArriveWithin/Tests/ArriveWithinUITests",
+    "Packages/ArriveWithinCore/Package.swift",
+    "Packages/ArriveWithinCore/Sources",
+    "Content/guided",
+    "Renderer/dist",
+    "docs/qa/verification-profile.json",
+    "scripts/app_store_physical_build_adapter.py",
+    "scripts/run_guarded_xcode_tests.sh",
+    "scripts/run_guarded_physical_xcode_tests.sh",
+    "scripts/verify",
+    "scripts/verify-offline",
+    "scripts/verify_marketing_capture_project.py",
+    "scripts/xcodebuild_runtime_test_preflight.zsh",
+    "Marketing/AppStoreScreenshots/scripts/physical_capture_contract.py",
+    "Marketing/AppStoreScreenshots/scripts/physical-capture-provenance.ts",
+    "Marketing/AppStoreScreenshots/scripts/physical-report-validators"
+  ]
+}

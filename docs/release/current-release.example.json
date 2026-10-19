@@ -1,0 +1,40 @@
+{
+  "schema_version": 2,
+  "status": "template-unreconciled",
+  "captured_at": null,
+  "source_of_truth": "live App Store Connect readback plus immutable prospective-public source provenance",
+  "app": {
+    "bundle_id": "com.philipps.arrivewithin.ios",
+    "asc_app_id": null,
+    "sku": null
+  },
+  "live_version": {
+    "marketing_version": null,
+    "build_number": null,
+    "asc_version_id": null,
+    "asc_build_id": null,
+    "state": null,
+    "source_provenance_mode": null,
+    "source_manifest_sha256": null,
+    "source_commit": null,
+    "source_tag": null,
+    "binary_sha256": null
+  },
+  "previous_live_boundary": {
+    "exists": null,
+    "marketing_version": null,
+    "build_number": null,
+    "source_provenance_mode": null,
+    "source_manifest_sha256": null,
+    "source_commit": null,
+    "source_tag": null,
+    "asc_build_id": null
+  },
+  "readback": {
+    "tool": null,
+    "request_scope": null,
+    "response_sha256": null,
+    "captured_by": null
+  },
+  "claim_boundary": "This template does not assert that an App Store record, live version, or previous-live version exists. A moving branch tip is never accepted as release provenance; a pre-Git candidate must bind a deterministic prospective-public source manifest."
+}

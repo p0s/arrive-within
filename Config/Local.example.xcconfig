@@ -1,0 +1,4 @@
+// Copy to ignored Config/Local.xcconfig only when an authorized maintainer
+// needs exact local signing. Version 1.0 does not activate CloudKit.
+// Never commit team IDs, profiles, container identifiers, or credentials.
+// DEVELOPMENT_TEAM = YOUR_DEVELOPMENT_TEAM

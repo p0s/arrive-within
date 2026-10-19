@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "status": "deterministic-safe-synthetic-product-state",
+  "renderer_contract": "Shared/GardenState.schema.json",
+  "garden_id": "10000000-0000-4000-8000-000000000001",
+  "profile_generation_id": "40000000-0000-4000-8000-000000000001",
+  "garden_seed": 424242,
+  "quality_hint": "high",
+  "reduce_motion": true,
+  "stages": [
+    {
+      "id": "00-seed",
+      "label": "Before the first practice",
+      "journey_day": 0,
+      "highest_milestone": 0,
+      "qualifying_session_count": 0,
+      "total_qualifying_seconds": 0,
+      "micro_growth_ordinal": 0
+    },
+    {
+      "id": "01-roots",
+      "label": "Practice day 1 · first permanent growth",
+      "journey_day": 1,
+      "highest_milestone": 0,
+      "qualifying_session_count": 1,
+      "total_qualifying_seconds": 180,
+      "micro_growth_ordinal": 1
+    },
+    {
+      "id": "05-water",
+      "label": "Practice day 5 · Earth II",
+      "journey_day": 5,
+      "highest_milestone": 2,
+      "qualifying_session_count": 5,
+      "total_qualifying_seconds": 1500,
+      "micro_growth_ordinal": 5
+    },
+    {
+      "id": "09-warmth",
+      "label": "Practice day 9 · Water I",
+      "journey_day": 9,
+      "highest_milestone": 4,
+      "qualifying_session_count": 12,
+      "total_qualifying_seconds": 4200,
+      "micro_growth_ordinal": 12
+    },
+    {
+      "id": "15-sanctuary",
+      "label": "Practice day 15 · Fire I",
+      "journey_day": 15,
+      "highest_milestone": 7,
+      "qualifying_session_count": 22,
+      "total_qualifying_seconds": 9000,
+      "micro_growth_ordinal": 22
+    },
+    {
+      "id": "30-living-world",
+      "label": "Practice day 30",
+      "journey_day": 30,
+      "highest_milestone": 15,
+      "qualifying_session_count": 42,
+      "total_qualifying_seconds": 18000,
+      "micro_growth_ordinal": 42
+    }
+  ]
+}

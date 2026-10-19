@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "method": "POST",
+  "path": "/v1/reports",
+  "content_type": "application/json",
+  "cache_control": "no-store",
+  "maximum_request_bytes": 32768,
+  "required_headers": ["Content-Type", "Idempotency-Key"],
+  "required_fields": ["reportId", "app", "category", "message"],
+  "optional_fields": ["replyEmail", "appContext"],
+  "app_context_fields": ["appVersion", "build", "operatingSystemVersion", "locale"],
+  "forbidden_implicit_fields": [
+    "network address",
+    "user agent",
+    "cookie",
+    "account identifier",
+    "device identifier",
+    "app activity",
+    "diagnostic attachment"
+  ],
+  "success": {"http_status": 202, "fields": ["reportId", "status"], "status": "accepted"},
+  "idempotency": "The same reportId and exact normalized payload is accepted once; changed reuse returns 409.",
+  "retention_days_maximum": 30
+}

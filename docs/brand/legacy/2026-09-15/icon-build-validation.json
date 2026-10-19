@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "validatedAt": "2026-08-10",
+  "configuration": "Release",
+  "destination": "generic iOS device",
+  "codeSigning": "disabled",
+  "result": "pass",
+  "sourceName": "AppIcon",
+  "targetFamilies": [
+    "phone",
+    "pad"
+  ],
+  "compiledStacks": [
+    "light",
+    "dark",
+    "tintable"
+  ],
+  "compatibilityOutputs": [
+    {
+      "role": "phone 60-point at 2x",
+      "width": 120,
+      "height": 120,
+      "colorSpace": "RGB",
+      "alpha": false,
+      "sha256": "143359110c0462f005218c2fee2cf3c9d711421b3f714d3c9c64b9035ec05cfd"
+    },
+    {
+      "role": "pad 76-point at 2x",
+      "width": 152,
+      "height": 152,
+      "colorSpace": "RGB",
+      "alpha": false,
+      "sha256": "cad8023d9b7d458eb1d69d3a2ee01debdd0254a76368833644e15254f3a4b174"
+    }
+  ],
+  "assetsCarSha256": "dd3443cbbd66e8d3240eb029ae396759c1693eb849faafcc9caacd5aabac8906",
+  "claimBoundary": "Local unsigned generic-device compilation only; no archive, simulator Home Screen, physical-device, TestFlight, App Store, or publication proof."
+}

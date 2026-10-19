@@ -1,0 +1,295 @@
+{
+  "schema_version": 1,
+  "source_selection": "previously-public-reviewed-media",
+  "generator": "scripts/generate-responsive-assets.mjs",
+  "transformation": {
+    "format": "webp",
+    "resize": "width-only, original aspect ratio, no enlargement",
+    "sharp": "0.35.3",
+    "quality": 90,
+    "effort": 6,
+    "smartSubsample": true
+  },
+  "rights": "Arrive Within media — Arrive Within contributors, CC BY 4.0. Resized and WebP encoded; original source hashes retained.",
+  "assets": [
+    {
+      "file": "responsive/garden-growth-poster-640.webp",
+      "source": "published-media/garden-growth-poster.png",
+      "source_sha256": "6f6b87dbd6a2d25c04a14b99bb2e019807f01c1ada60a4d3ae37fba2fa5f8b49",
+      "sha256": "1c4f2a64b4c8e97e9178d0052b0f33cacbc53d3c4775ac2e0e951b276be8b74a",
+      "width": 640,
+      "height": 360,
+      "bytes": 12050
+    },
+    {
+      "file": "responsive/garden-growth-poster-960.webp",
+      "source": "published-media/garden-growth-poster.png",
+      "source_sha256": "6f6b87dbd6a2d25c04a14b99bb2e019807f01c1ada60a4d3ae37fba2fa5f8b49",
+      "sha256": "89053ad28e795d98fd727bb5f69a1b403520f25f4a938fa156374b275b03f1a8",
+      "width": 960,
+      "height": 540,
+      "bytes": 22004
+    },
+    {
+      "file": "responsive/garden-growth-poster-1280.webp",
+      "source": "published-media/garden-growth-poster.png",
+      "source_sha256": "6f6b87dbd6a2d25c04a14b99bb2e019807f01c1ada60a4d3ae37fba2fa5f8b49",
+      "sha256": "fa2a787a8528a63da8b864a475a1c1ca2144e838590cb5ec782c8399fd61315a",
+      "width": 1280,
+      "height": 720,
+      "bytes": 32150
+    },
+    {
+      "file": "responsive/garden-en-iphone-480.webp",
+      "source": "published-media/garden-en-iphone.png",
+      "source_sha256": "ee58d89056b981597e59f584d6b0f5490ed249359247eb38a60b5c2a6a433b56",
+      "sha256": "ba6e53776359d4875cdc037fc49c571586d075066e23cf68d152d279a0c9d1a8",
+      "width": 480,
+      "height": 1044,
+      "bytes": 20174
+    },
+    {
+      "file": "responsive/garden-en-iphone-960.webp",
+      "source": "published-media/garden-en-iphone.png",
+      "source_sha256": "ee58d89056b981597e59f584d6b0f5490ed249359247eb38a60b5c2a6a433b56",
+      "sha256": "f429fec785fcaa4c8b8a60428fb2d59593a794dab4d03324e3e31efd20d2df06",
+      "width": 960,
+      "height": 2087,
+      "bytes": 44866
+    },
+    {
+      "file": "responsive/garden-en-iphone-1206.webp",
+      "source": "published-media/garden-en-iphone.png",
+      "source_sha256": "ee58d89056b981597e59f584d6b0f5490ed249359247eb38a60b5c2a6a433b56",
+      "sha256": "e8dfb79ccf87117263ed76186513ddbe23e8ffadca2dd4223841680d14d7f97b",
+      "width": 1206,
+      "height": 2622,
+      "bytes": 58080
+    },
+    {
+      "file": "responsive/journey-en-iphone-360.webp",
+      "source": "published-media/journey-en-iphone.png",
+      "source_sha256": "7f122413b447b168b901e3ca1c3924b411c2ddfb7498b8ed5f28c43f954ae973",
+      "sha256": "d17e65fd40d867faf4905a341e16a0446f473745f7a6d64a7341f7f5c08764f8",
+      "width": 360,
+      "height": 783,
+      "bytes": 25626
+    },
+    {
+      "file": "responsive/journey-en-iphone-720.webp",
+      "source": "published-media/journey-en-iphone.png",
+      "source_sha256": "7f122413b447b168b901e3ca1c3924b411c2ddfb7498b8ed5f28c43f954ae973",
+      "sha256": "f9847c3850318e22f90302b36c742d03b93aa8c0a4121eb9bbd8bc80bcea3460",
+      "width": 720,
+      "height": 1565,
+      "bytes": 59186
+    },
+    {
+      "file": "responsive/journey-en-iphone-1206.webp",
+      "source": "published-media/journey-en-iphone.png",
+      "source_sha256": "7f122413b447b168b901e3ca1c3924b411c2ddfb7498b8ed5f28c43f954ae973",
+      "sha256": "5e8ddcae9f444b51ddc8c54e71147c517173d49b4207a0abead3d5e5ddf05846",
+      "width": 1206,
+      "height": 2622,
+      "bytes": 96806
+    },
+    {
+      "file": "responsive/garden-en-ipad-480.webp",
+      "source": "published-media/garden-en-ipad.png",
+      "source_sha256": "07a71d2a31be7c34a47e945df6fe49cb95e88c9eee764fde063cb70b37b88e0c",
+      "sha256": "25f3afe7bf865cae94a4c3cb538e932c70e7b9706c8a270ec27a38db32ca8cad",
+      "width": 480,
+      "height": 640,
+      "bytes": 13498
+    },
+    {
+      "file": "responsive/garden-en-ipad-960.webp",
+      "source": "published-media/garden-en-ipad.png",
+      "source_sha256": "07a71d2a31be7c34a47e945df6fe49cb95e88c9eee764fde063cb70b37b88e0c",
+      "sha256": "e55018ca06996bcd83dfa851d129da3fb2935dea0d78bf1d622bbe6358b11df4",
+      "width": 960,
+      "height": 1280,
+      "bytes": 33156
+    },
+    {
+      "file": "responsive/garden-en-ipad-1600.webp",
+      "source": "published-media/garden-en-ipad.png",
+      "source_sha256": "07a71d2a31be7c34a47e945df6fe49cb95e88c9eee764fde063cb70b37b88e0c",
+      "sha256": "f7e601d275a53e34cf0329a8184eba797ddfc47e402647ef373144fa5ffd0772",
+      "width": 1600,
+      "height": 2133,
+      "bytes": 60602
+    },
+    {
+      "file": "responsive/garden-en-ipad-2064.webp",
+      "source": "published-media/garden-en-ipad.png",
+      "source_sha256": "07a71d2a31be7c34a47e945df6fe49cb95e88c9eee764fde063cb70b37b88e0c",
+      "sha256": "8624a41fcc83093a95dbe281b100fcbb679bde3f633875d3b2bdb06d1c7bcc39",
+      "width": 2064,
+      "height": 2752,
+      "bytes": 80988
+    },
+    {
+      "file": "responsive/journal-en-ipad-480.webp",
+      "source": "published-media/journal-en-ipad.png",
+      "source_sha256": "f0e76fa0bb0cb8a5bf85f715540a24c8a4ab2004c711e1db3e28fca6d45be4f2",
+      "sha256": "b1e761288d89f97a497d4d0caa63ee5281f3a294502a938b6441bd344e52ec51",
+      "width": 480,
+      "height": 640,
+      "bytes": 13916
+    },
+    {
+      "file": "responsive/journal-en-ipad-960.webp",
+      "source": "published-media/journal-en-ipad.png",
+      "source_sha256": "f0e76fa0bb0cb8a5bf85f715540a24c8a4ab2004c711e1db3e28fca6d45be4f2",
+      "sha256": "e4c770e4ea0b9bd63a5d0d75fb1a09febfb2660f3d154e9a81d48381a0142ca1",
+      "width": 960,
+      "height": 1280,
+      "bytes": 37744
+    },
+    {
+      "file": "responsive/journal-en-ipad-1600.webp",
+      "source": "published-media/journal-en-ipad.png",
+      "source_sha256": "f0e76fa0bb0cb8a5bf85f715540a24c8a4ab2004c711e1db3e28fca6d45be4f2",
+      "sha256": "3ad392f8929e088f50e88e723dcee629d99569666e4734fa3abc327f6d06a01a",
+      "width": 1600,
+      "height": 2133,
+      "bytes": 70646
+    },
+    {
+      "file": "responsive/journal-en-ipad-2064.webp",
+      "source": "published-media/journal-en-ipad.png",
+      "source_sha256": "f0e76fa0bb0cb8a5bf85f715540a24c8a4ab2004c711e1db3e28fca6d45be4f2",
+      "sha256": "3f97b5eba779e122f7f09b03860c5ca22eeecf3c6f8ba88a014c103de6032bee",
+      "width": 2064,
+      "height": 2752,
+      "bytes": 94626
+    },
+    {
+      "file": "responsive/garden-de-iphone-480.webp",
+      "source": "published-media/garden-de-iphone.png",
+      "source_sha256": "7d93eb7225e4e149892f15a962a8bf36a3ac67f8bcb28416c4a2f8877389e235",
+      "sha256": "29dd1881df317277d6bd1e40a1421448b99eafceca5683c89ab6b37925602a2b",
+      "width": 480,
+      "height": 1044,
+      "bytes": 20734
+    },
+    {
+      "file": "responsive/garden-de-iphone-960.webp",
+      "source": "published-media/garden-de-iphone.png",
+      "source_sha256": "7d93eb7225e4e149892f15a962a8bf36a3ac67f8bcb28416c4a2f8877389e235",
+      "sha256": "7db6732d998166dc5c9694257492c23b200bce85d5d3a7598d79291f791c12f4",
+      "width": 960,
+      "height": 2087,
+      "bytes": 45990
+    },
+    {
+      "file": "responsive/garden-de-iphone-1206.webp",
+      "source": "published-media/garden-de-iphone.png",
+      "source_sha256": "7d93eb7225e4e149892f15a962a8bf36a3ac67f8bcb28416c4a2f8877389e235",
+      "sha256": "87680c53b44ddd6ac3767bffa4b081ffc9bc59c2eca234a0614566a98d9db690",
+      "width": 1206,
+      "height": 2622,
+      "bytes": 59226
+    },
+    {
+      "file": "responsive/journey-de-iphone-360.webp",
+      "source": "published-media/journey-de-iphone.png",
+      "source_sha256": "28ccd4a2d0cd3d345e4f0d3acfaf70e100c625c7b35faa4760241f32366116f4",
+      "sha256": "74aa9b37331a2680bb04238f8e5ea9294132b51335f9a1fbd2b3b9ebf869a4d9",
+      "width": 360,
+      "height": 783,
+      "bytes": 27142
+    },
+    {
+      "file": "responsive/journey-de-iphone-720.webp",
+      "source": "published-media/journey-de-iphone.png",
+      "source_sha256": "28ccd4a2d0cd3d345e4f0d3acfaf70e100c625c7b35faa4760241f32366116f4",
+      "sha256": "159305052b7b9bfa07fba4c1aef63965f631f32e775aa796140685be9a9df439",
+      "width": 720,
+      "height": 1565,
+      "bytes": 62718
+    },
+    {
+      "file": "responsive/journey-de-iphone-1206.webp",
+      "source": "published-media/journey-de-iphone.png",
+      "source_sha256": "28ccd4a2d0cd3d345e4f0d3acfaf70e100c625c7b35faa4760241f32366116f4",
+      "sha256": "34e225762622c246c743bed26fbdc56f62e43c36beab760da6b43f5b00d2437a",
+      "width": 1206,
+      "height": 2622,
+      "bytes": 103250
+    },
+    {
+      "file": "responsive/garden-de-ipad-480.webp",
+      "source": "published-media/garden-de-ipad.png",
+      "source_sha256": "7b6e2cd43960c73e6c8cfd990a2f2b05516521746fea5d0e68700b4b1e8734d9",
+      "sha256": "15a527ce594556e1d07d4941f4e386ed7614c4c9b6ca7d9c6f758352e5086ccb",
+      "width": 480,
+      "height": 640,
+      "bytes": 13398
+    },
+    {
+      "file": "responsive/garden-de-ipad-960.webp",
+      "source": "published-media/garden-de-ipad.png",
+      "source_sha256": "7b6e2cd43960c73e6c8cfd990a2f2b05516521746fea5d0e68700b4b1e8734d9",
+      "sha256": "4b33c8ebc1f04efe30181f1dc2b9eea512d34bcf71a000347cf0ea18fedf71fc",
+      "width": 960,
+      "height": 1280,
+      "bytes": 33652
+    },
+    {
+      "file": "responsive/garden-de-ipad-1600.webp",
+      "source": "published-media/garden-de-ipad.png",
+      "source_sha256": "7b6e2cd43960c73e6c8cfd990a2f2b05516521746fea5d0e68700b4b1e8734d9",
+      "sha256": "4e1a943cab37e33df1eb918fae68efcff74a8e6687f3a5a592d8e1d7f4027f6f",
+      "width": 1600,
+      "height": 2133,
+      "bytes": 61286
+    },
+    {
+      "file": "responsive/garden-de-ipad-2064.webp",
+      "source": "published-media/garden-de-ipad.png",
+      "source_sha256": "7b6e2cd43960c73e6c8cfd990a2f2b05516521746fea5d0e68700b4b1e8734d9",
+      "sha256": "00a9a83576ae8f55313f22862bc0c94556fc23729671156d71e383f63145ae92",
+      "width": 2064,
+      "height": 2752,
+      "bytes": 81668
+    },
+    {
+      "file": "responsive/journal-de-ipad-480.webp",
+      "source": "published-media/journal-de-ipad.png",
+      "source_sha256": "f4444b2e80ad5f9fd6f29b978729a7221388e82463b6227691e3aa32a58245d4",
+      "sha256": "82f08b56afa6d3f0709fdd7fcb1aefd3228b8924d2bbbd98c8d9b7a5d3c687c7",
+      "width": 480,
+      "height": 640,
+      "bytes": 15454
+    },
+    {
+      "file": "responsive/journal-de-ipad-960.webp",
+      "source": "published-media/journal-de-ipad.png",
+      "source_sha256": "f4444b2e80ad5f9fd6f29b978729a7221388e82463b6227691e3aa32a58245d4",
+      "sha256": "5f2a7e08f651d7a6e32498454ac0c2f47bb6797f4fdd548c503aa7843cffe740",
+      "width": 960,
+      "height": 1280,
+      "bytes": 41690
+    },
+    {
+      "file": "responsive/journal-de-ipad-1600.webp",
+      "source": "published-media/journal-de-ipad.png",
+      "source_sha256": "f4444b2e80ad5f9fd6f29b978729a7221388e82463b6227691e3aa32a58245d4",
+      "sha256": "df16e593e6dfb5ac338fd9dc54d08fd2863c9a39cabbf701b874b41b87b97ef5",
+      "width": 1600,
+      "height": 2133,
+      "bytes": 77792
+    },
+    {
+      "file": "responsive/journal-de-ipad-2064.webp",
+      "source": "published-media/journal-de-ipad.png",
+      "source_sha256": "f4444b2e80ad5f9fd6f29b978729a7221388e82463b6227691e3aa32a58245d4",
+      "sha256": "fea43c3a637b39559121331168446f0430e1164ddac7fa2d01ff1ec59239e0a9",
+      "width": 2064,
+      "height": 2752,
+      "bytes": 104272
+    }
+  ]
+}

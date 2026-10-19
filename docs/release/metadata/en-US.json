@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "locale": "en-US",
+  "state": "build-16-live-metadata",
+  "release_attachable": true,
+  "name": "Arrive Within: Meditation",
+  "subtitle": "Meditation that grows",
+  "promotional_text": "Meditate in your own way and return to a living garden that truthfully reflects every completed practice.",
+  "description_paragraphs": [
+    "Arrive Within is a private, offline-first meditation garden. Choose from 42 guided meditations in English and German, a flexible timer, or an open-ended stopwatch. Every qualifying practice permanently grows one living tree and the world around it.",
+    "Guided sessions and transcripts are bundled with the app, so the core experience works without a network connection. Optional bells, quiet ambience, haptics, and truthful session recovery help you return after an interruption or relaunch.",
+    "Write or record an optional private reflection, review your journey and simple statistics, create calm local reminders, and export a readable copy of your data whenever you choose.",
+    "Your privacy stays yours. Arrive Within collects no user information. There are no ads, analytics, tracking, subscriptions, accounts, cloud sync, or social comparisons. Practice, preferences, progress, and journal data stay on your device unless you explicitly export them through the Apple system share sheet. Your journal is never analyzed.",
+    "Twilight is the complete free Garden. One optional one-time purchase unlocks four additional visual material styles; it never changes progress, practices, or content.",
+    "Arrive Within is open source. Explore the project and contribute at https://github.com/p0s/arrive-within."
+  ],
+  "keywords": "meditation,timer,stopwatch,mindfulness,breathing,journal,relax,focus,sleep,offline",
+  "whats_new": "Welcome to Arrive Within.",
+  "whats_new_applicability": "not-applicable-to-first-version-retained-as-first-update-source",
+  "screenshot_headlines": [
+    "See your practice rhythm",
+    "Let practice take root",
+    "Arrive in the moment",
+    "Growth that stays",
+    "Notice what changed",
+    "A refuge that remembers"
+  ],
+  "tester_instructions": "Start from a clean install. Begin the three-minute timer practice from first use, complete it, confirm one permanent Garden change, relaunch, then exercise timer, stopwatch, renderer fallback, Journal, Journey, Settings, English/German switching, and offline behavior. Do not enter personal journal content.",
+  "review_notes": "Arrive Within works without an account. Primary review path: open Meditate > Guided; the complete searchable list of 42 meditations is visible directly. Open G01 Arriving Breath, tap Start, and verify the bundled offline narration and player. Timer, stopwatch, Journal, Journey, and Settings are available through native navigation. The complete Twilight Garden is free. Settings > Garden Styles exposes one optional non-consumable purchase, Premium Garden Material Styles, which unlocks four visual styles together; Restore Purchases is provided. It never changes practice content or progress, and there is no subscription. Privacy: the app has no analytics SDKs, advertising SDKs, third-party analytics, tracking, account system, developer backend, or cloud sync. No data is automatically shared with the developer or any third party. Practice, preferences, progress, journal text, and optional voice reflections stay on device unless the user explicitly exports them through Apple's system share sheet. The app does not collect names, email addresses, location, photos, audio, advertising identifiers, or other personal or device data.",
+  "claim_dependencies": [
+    "exact build-16 package with 42 English and 42 German owner-approved narration tracks",
+    "exact local-only candidate with no CloudKit runtime or signing entitlement",
+    "one optional non-consumable Garden-style purchase and no subscription"
+  ]
+}

@@ -1,0 +1,226 @@
+import ArriveWithinContent
+import ArriveWithinDomain
+import ArriveWithinMeditation
+import CryptoKit
+import Foundation
+import Testing
+
+@testable import ArriveWithin
+
+@Suite("Bundled native audio contract")
+@MainActor
+struct BundledAudioContractTests {
+  @Test("Audio rebuilds preserve future interval and closing bells")
+  func rebuiltBellScheduleKeepsOnlyFutureCues() throws {
+    let audio = try MeditationAudioConfiguration(intervalBellMinutes: 1)
+    let session = try MeditationSession(
+      id: UUID(),
+      profileGenerationID: UUID(),
+      mode: .timer,
+      targetDurationMilliseconds: 180_000,
+      preparedAt: Date(),
+      configuration: MeditationSessionConfiguration(audio: audio)
+    )
+
+    #expect(
+      MeditationBellSchedule.remaining(for: session, elapsedMilliseconds: 0)
+        == MeditationBellSchedule(
+          intervalOffsetsMilliseconds: [60_000, 120_000],
+          closingOffsetMilliseconds: 180_000
+        )
+    )
+    #expect(
+      MeditationBellSchedule.remaining(for: session, elapsedMilliseconds: 75_000)
+        == MeditationBellSchedule(
+          intervalOffsetsMilliseconds: [45_000],
+          closingOffsetMilliseconds: 105_000
+        )
+    )
+    #expect(
+      MeditationBellSchedule.remaining(for: session, elapsedMilliseconds: 180_000)
+        == MeditationBellSchedule(
+          intervalOffsetsMilliseconds: [],
+          closingOffsetMilliseconds: nil
+        )
+    )
+  }
+
+  @Test("Every enabled procedural layer resolves through the signed manifest")
+  func proceduralAssetsVerify() throws {
+    let audio = try MeditationAudioConfiguration(
+      intervalBellMinutes: 1,
+      ambienceID: "still-air-v1",
+      ambienceVolume: 0.3
+    )
+    let session = try MeditationSession(
+      id: UUID(),
+      profileGenerationID: UUID(),
+      mode: .timer,
+      targetDurationMilliseconds: 180_000,
+      preparedAt: Date(),
+      configuration: MeditationSessionConfiguration(audio: audio)
+    )
+    let controller = try NativeMeditationAudioController(bundle: .main)
+
+    try controller.validate(session: session)
+    controller.stop()
+  }
+
+  #if !targetEnvironment(simulator)
+    @Test("A timer can start every enabled procedural audio layer on device")
+    func proceduralLayersStartOnDevice() async throws {
+      let audio = try MeditationAudioConfiguration(
+        intervalBellMinutes: 1,
+        ambienceID: "still-air-v1",
+        ambienceVolume: 0.3,
+        otherAudioPolicy: .mixWithOthers
+      )
+      let session = try MeditationSession(
+        id: UUID(),
+        profileGenerationID: UUID(),
+        mode: .timer,
+        targetDurationMilliseconds: 180_000,
+        preparedAt: Date(),
+        configuration: MeditationSessionConfiguration(audio: audio)
+      )
+      let controller = try NativeMeditationAudioController(bundle: .main)
+      defer { controller.stop() }
+      var systemEvents: [MeditationAudioSystemEvent] = []
+      controller.eventHandler = { systemEvents.append($0) }
+
+      try controller.begin(session: session)
+      try await Task.sleep(for: .milliseconds(250))
+      #expect(
+        systemEvents.isEmpty,
+        "Building the controller's own graph must not be reported as an external audio reset."
+      )
+    }
+  #endif
+
+  @Test("Release resource layout exposes all 84 hash-bound guided tracks")
+  func releaseBundleExposesCompleteGuidedNarration() throws {
+    let catalogURL = try #require(
+      Bundle.main.url(forResource: "catalog", withExtension: "json", subdirectory: "guided")
+    )
+    let document = try GuidedCatalogLoader.decode(Data(contentsOf: catalogURL))
+
+    #expect(document.practices.count == 42)
+    for practice in document.practices {
+      for language in GuidedLanguage.allCases {
+        #expect(practice.localized[language].editorialState.isPackagedForPlayback)
+        #expect(
+          BundledAudioAssetResolver.approvedNarrationURL(
+            bundle: .main,
+            contentID: practice.id,
+            languageCode: language.rawValue
+          ) != nil,
+          "Release resources must authorize \(practice.id)-\(language.rawValue)"
+        )
+      }
+    }
+  }
+
+  @Test("The app bundle contains the exact complete bilingual catalogue")
+  func guidedCatalogIsBundled() throws {
+    let url = try #require(
+      Bundle.main.url(
+        forResource: "catalog",
+        withExtension: "json",
+        subdirectory: "guided"
+      )
+    )
+    let document = try GuidedCatalogLoader.decode(Data(contentsOf: url))
+
+    #expect(document.practices.count == 42)
+    #expect(document.practices.map(\.id) == (1...42).map { String(format: "G%02d", $0) })
+  }
+
+  @Test("Narration bytes fail closed without approved hash-bound provenance")
+  func narrationRequiresApprovedProvenance() throws {
+    let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+    let bundleRoot = root.appendingPathComponent("Fixture.bundle")
+    let audioRoot = bundleRoot.appendingPathComponent("Audio")
+    let guidedRoot = bundleRoot.appendingPathComponent("guided/G01")
+    try FileManager.default.createDirectory(at: audioRoot, withIntermediateDirectories: true)
+    try FileManager.default.createDirectory(at: guidedRoot, withIntermediateDirectories: true)
+    let procedural = [
+      ("opening-bell-v1", "opening-bell.wav"),
+      ("closing-bell-v1", "closing-bell.wav"),
+      ("still-air-v1", "still-air.wav"),
+    ]
+    let bytes = Data("fixture".utf8)
+    let transcriptBytes = Data("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nFixture\n".utf8)
+    for (_, path) in procedural { try bytes.write(to: audioRoot.appendingPathComponent(path)) }
+    let sha256 = SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined()
+    let manifest: [String: Any] = [
+      "schema_version": 1,
+      "assets": procedural.map { ["id": $0.0, "path": $0.1, "sha256": sha256] },
+    ]
+    try JSONSerialization.data(withJSONObject: manifest).write(
+      to: audioRoot.appendingPathComponent("audio-assets.json")
+    )
+    try bytes.write(to: guidedRoot.appendingPathComponent("audio.en.m4a"))
+    try transcriptBytes.write(to: guidedRoot.appendingPathComponent("transcript.en.vtt"))
+    try Data("fallback".utf8).write(to: bundleRoot.appendingPathComponent("audio.en.m4a"))
+    try PropertyListSerialization.data(
+      fromPropertyList: [
+        "CFBundleIdentifier": "test.arrive-within.audio",
+        "CFBundleVersion": "1",
+        "CFBundlePackageType": "BNDL",
+      ],
+      format: .xml,
+      options: 0
+    ).write(to: bundleRoot.appendingPathComponent("Info.plist"))
+    defer { try? FileManager.default.removeItem(at: root) }
+
+    let bundle = try #require(Bundle(url: bundleRoot))
+    let resolver = try BundledAudioAssetResolver(bundle: bundle)
+    #expect(
+      bundle.url(forResource: "audio.en", withExtension: "m4a") != nil,
+      "Fixture must include a root fallback that may never authorize narration."
+    )
+    #expect(resolver.approvedNarrationURL(contentID: "G01", languageCode: "en") == nil)
+
+    let provenance: [String: Any] = [
+      "contentID": "G01",
+      "language": "en",
+      "audioSHA256": sha256,
+      "transcriptSHA256": SHA256.hash(data: transcriptBytes)
+        .map { String(format: "%02x", $0) }.joined(),
+      "rightsState": "approved",
+      "humanListeningState": "approved",
+      "scriptSafetyState": "approved",
+      "transcriptAlignmentState": "approved",
+      "productionMasterApproval": true,
+      "finishedTrackApproval": true,
+    ]
+    try JSONSerialization.data(withJSONObject: provenance).write(
+      to: guidedRoot.appendingPathComponent("provenance.en.json")
+    )
+    #expect(resolver.approvedNarrationURL(contentID: "G01", languageCode: "en") != nil)
+    #expect(
+      BundledAudioAssetResolver.packagedNarrationURL(
+        bundle: bundle, contentID: "G01", languageCode: "en") != nil
+    )
+
+    var tampered = provenance
+    tampered["audioSHA256"] = String(repeating: "0", count: 64)
+    try JSONSerialization.data(withJSONObject: tampered).write(
+      to: guidedRoot.appendingPathComponent("provenance.en.json")
+    )
+    #expect(resolver.approvedNarrationURL(contentID: "G01", languageCode: "en") == nil)
+    #expect(
+      BundledAudioAssetResolver.packagedNarrationURL(
+        bundle: bundle, contentID: "G01", languageCode: "en") == nil,
+      "The UI availability check must fail closed with the playback validator."
+    )
+
+    try JSONSerialization.data(withJSONObject: provenance).write(
+      to: guidedRoot.appendingPathComponent("provenance.en.json")
+    )
+    try Data("tampered transcript".utf8).write(
+      to: guidedRoot.appendingPathComponent("transcript.en.vtt")
+    )
+    #expect(resolver.approvedNarrationURL(contentID: "G01", languageCode: "en") == nil)
+  }
+}

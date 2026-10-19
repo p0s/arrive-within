@@ -1,0 +1,568 @@
+{
+  "schemaVersion": 1,
+  "product": "Arrive Within",
+  "generatedAt": null,
+  "generationTimePolicy": "omitted-for-byte-reproducibility",
+  "locale": "en-US",
+  "device": "ipad-13",
+  "theme": "forest-twilight",
+  "width": 2064,
+  "height": 2752,
+  "renderer": "Playwright Chromium element screenshots",
+  "pixelNormalization": "Deterministic RGB PNG encoding with each RGB least-significant bit cleared",
+  "copyState": "selected-garden-growth-tonal-wash-approved",
+  "narrative": {
+    "id": "current",
+    "title": "Frozen current narrative",
+    "ownerSelection": null
+  },
+  "humanVisualReview": {
+    "state": "pending",
+    "reviewer": null,
+    "reviewedAt": null,
+    "notes": "Fresh source captures require inspection of every locale/device contact sheet before approval."
+  },
+  "network": {
+    "policy": "Block all external requests; allow localhost only",
+    "externalRequests": 0
+  },
+  "sourceCaptures": {
+    "state": "candidate-ready",
+    "method": "Four guarded XCUITest simulator result bundles for iPhone 17 Pro and iPad Pro 13-inch (M5), with source-bound day/dusk app-clock fixtures; simulator system status is captured as rendered.",
+    "test": "ArriveWithinMarketingCaptureUITests: each selected/dusk and Garden-day/day bundle contains exactly the English and German test; every original screenshot is paired with source/build/clock proof from that same xcresult.",
+    "statusBarProfile": "Simulator system status captured as rendered; no status-bar override.",
+    "sourceRevision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
+    "sourceRevisionKind": "sha256-capture-source-manifest",
+    "sourceManifestPath": "capture-source-manifest-v1.0.2-build-19.json",
+    "resultBundle": {
+      "name": "ipad-13-selected-51bd6a93f1b807b9.xcresult",
+      "xcresult_tree_sha256": "51bd6a93f1b807b9f285db41e7a42441e0aa17ed4f032f100459dcf8ea7a6a8f",
+      "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()",
+      "runtime_warnings": [
+        "Invalid frame dimension (negative or non-finite)."
+      ]
+    },
+    "safeSyntheticData": true,
+    "setCompleteness": "full-locale-device-matrix",
+    "gardenGrowthSources": {
+      "back": {
+        "captureId": "garden-seed",
+        "path": "public/runtime-ui/en-US/ipad-13/garden-seed.png",
+        "sha256": "aa58679524c3eb455cb7e1028a82924186a06d5845e39f0221a8279cc1428124",
+        "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()",
+        "source_evidence": {
+          "device": "ipad-13",
+          "source_commit": "277db0c0a956bd1ead8852bff66f0d26e561fdff",
+          "build_proof_sha256": "3cca9baf2a9bf0b27ca5fabcefb2d0d617e296f8440a915fec0f130c4d2b9ebe",
+          "source_revision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
+          "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+          "source_manifest_sha256": "e4bfc19da7c5ca5c0dd95014ef44184e5aeefffbe0c58f386db9cae6aee19f63",
+          "result_bundle": {
+            "role": "selected",
+            "name": "ipad-13-selected-51bd6a93f1b807b9.xcresult",
+            "xcresult_tree_sha256": "51bd6a93f1b807b9f285db41e7a42441e0aa17ed4f032f100459dcf8ea7a6a8f"
+          },
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()",
+          "clock_fixture_id": "dusk-v1",
+          "clock_epoch": "1785577260",
+          "garden_local_date": "2026-08-01",
+          "garden_local_time": "17:41",
+          "timezone": "Asia/Singapore",
+          "garden_phase": "dusk",
+          "captured_at": "2026-09-30T06:07:19.994Z",
+          "system_timezone": "Asia/Singapore",
+          "appearance": "dark"
+        }
+      },
+      "front": {
+        "captureId": "garden-day",
+        "path": "public/runtime-ui/en-US/ipad-13/garden-day.png",
+        "sha256": "85c88c188db82794d4b73da685ad5ce3b28aff161af2bc445bb2588ab6628173",
+        "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayEnglish()",
+        "source_evidence": {
+          "device": "ipad-13",
+          "source_commit": "277db0c0a956bd1ead8852bff66f0d26e561fdff",
+          "build_proof_sha256": "fa535a4e4302589966949136aa4676cba587a7038b5065f071d7e7090cf15a18",
+          "source_revision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
+          "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+          "source_manifest_sha256": "e4bfc19da7c5ca5c0dd95014ef44184e5aeefffbe0c58f386db9cae6aee19f63",
+          "result_bundle": {
+            "role": "garden-day",
+            "name": "ipad-13-garden-day-d435ffff74baf6dc.xcresult",
+            "xcresult_tree_sha256": "d435ffff74baf6dc7f7e621c638d510c4d590baecd2ce0877d56a5a050fd286a"
+          },
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayEnglish()",
+          "clock_fixture_id": "day-v1",
+          "clock_epoch": "1785548460",
+          "garden_local_date": "2026-08-01",
+          "garden_local_time": "09:41",
+          "timezone": "Asia/Singapore",
+          "garden_phase": "day",
+          "captured_at": "2026-09-30T06:21:12.939Z",
+          "system_timezone": "Asia/Singapore",
+          "appearance": "light"
+        }
+      }
+    },
+    "currentSet": {
+      "locale": "en-US",
+      "device": "ipad-13",
+      "model": "iPad Pro 13-inch (M5)",
+      "os": "iOS 26.5 Simulator",
+      "width": 2064,
+      "height": 2752,
+      "result_bundle": {
+        "name": "ipad-13-selected-51bd6a93f1b807b9.xcresult",
+        "xcresult_tree_sha256": "51bd6a93f1b807b9f285db41e7a42441e0aa17ed4f032f100459dcf8ea7a6a8f",
+        "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()",
+        "runtime_warnings": [
+          "Invalid frame dimension (negative or non-finite)."
+        ]
+      },
+      "capture_source": {
+        "state": "current",
+        "source_revision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
+        "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+        "source_manifest_sha256": "e4bfc19da7c5ca5c0dd95014ef44184e5aeefffbe0c58f386db9cae6aee19f63",
+        "app_version": "1.0.2",
+        "build_number": "19",
+        "bound_capture_ids": [
+          "garden-hero",
+          "garden-day",
+          "garden-seed",
+          "journey-calendar",
+          "journey-milestones",
+          "journal"
+        ],
+        "missing_capture_ids": []
+      },
+      "captures": {
+        "garden-hero": {
+          "path": "public/runtime-ui/en-US/ipad-13/garden-hero.png",
+          "sha256": "8660c6aa7c8aa22e0d6f175b046c9741b65c16fc785444d8b4b8b2c8dadd2c96",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()",
+          "source_evidence": {
+            "device": "ipad-13",
+            "source_commit": "277db0c0a956bd1ead8852bff66f0d26e561fdff",
+            "build_proof_sha256": "347aa0b370af765d16b1a6aef65d29ac1e6e208dba1a0b9c0b92bb40515c137a",
+            "source_revision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
+            "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+            "source_manifest_sha256": "e4bfc19da7c5ca5c0dd95014ef44184e5aeefffbe0c58f386db9cae6aee19f63",
+            "result_bundle": {
+              "role": "selected",
+              "name": "ipad-13-selected-51bd6a93f1b807b9.xcresult",
+              "xcresult_tree_sha256": "51bd6a93f1b807b9f285db41e7a42441e0aa17ed4f032f100459dcf8ea7a6a8f"
+            },
+            "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()",
+            "clock_fixture_id": "dusk-v1",
+            "clock_epoch": "1785577260",
+            "garden_local_date": "2026-08-01",
+            "garden_local_time": "17:41",
+            "timezone": "Asia/Singapore",
+            "garden_phase": "dusk",
+            "captured_at": "2026-09-30T06:07:28.707Z",
+            "system_timezone": "Asia/Singapore",
+            "appearance": "dark"
+          }
+        },
+        "garden-seed": {
+          "path": "public/runtime-ui/en-US/ipad-13/garden-seed.png",
+          "sha256": "aa58679524c3eb455cb7e1028a82924186a06d5845e39f0221a8279cc1428124",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()",
+          "source_evidence": {
+            "device": "ipad-13",
+            "source_commit": "277db0c0a956bd1ead8852bff66f0d26e561fdff",
+            "build_proof_sha256": "3cca9baf2a9bf0b27ca5fabcefb2d0d617e296f8440a915fec0f130c4d2b9ebe",
+            "source_revision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
+            "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+            "source_manifest_sha256": "e4bfc19da7c5ca5c0dd95014ef44184e5aeefffbe0c58f386db9cae6aee19f63",
+            "result_bundle": {
+              "role": "selected",
+              "name": "ipad-13-selected-51bd6a93f1b807b9.xcresult",
+              "xcresult_tree_sha256": "51bd6a93f1b807b9f285db41e7a42441e0aa17ed4f032f100459dcf8ea7a6a8f"
+            },
+            "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()",
+            "clock_fixture_id": "dusk-v1",
+            "clock_epoch": "1785577260",
+            "garden_local_date": "2026-08-01",
+            "garden_local_time": "17:41",
+            "timezone": "Asia/Singapore",
+            "garden_phase": "dusk",
+            "captured_at": "2026-09-30T06:07:19.994Z",
+            "system_timezone": "Asia/Singapore",
+            "appearance": "dark"
+          }
+        },
+        "journey-calendar": {
+          "path": "public/runtime-ui/en-US/ipad-13/journey-calendar.png",
+          "sha256": "49bb3d805a096ad0a3ea52c894724c7b89b1439977a8b2c42838f5c15d5c0e85",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()",
+          "source_evidence": {
+            "device": "ipad-13",
+            "source_commit": "277db0c0a956bd1ead8852bff66f0d26e561fdff",
+            "build_proof_sha256": "27e887d24ebc85d49882247c3075c3a4c2f43603310b1e5de956159c5bf541f3",
+            "source_revision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
+            "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+            "source_manifest_sha256": "e4bfc19da7c5ca5c0dd95014ef44184e5aeefffbe0c58f386db9cae6aee19f63",
+            "result_bundle": {
+              "role": "selected",
+              "name": "ipad-13-selected-51bd6a93f1b807b9.xcresult",
+              "xcresult_tree_sha256": "51bd6a93f1b807b9f285db41e7a42441e0aa17ed4f032f100459dcf8ea7a6a8f"
+            },
+            "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()",
+            "clock_fixture_id": "dusk-v1",
+            "clock_epoch": "1785577260",
+            "garden_local_date": "2026-08-01",
+            "garden_local_time": "17:41",
+            "timezone": "Asia/Singapore",
+            "garden_phase": "dusk",
+            "captured_at": "2026-09-30T06:07:47.255Z",
+            "system_timezone": "Asia/Singapore",
+            "appearance": "light"
+          }
+        },
+        "journey-milestones": {
+          "path": "public/runtime-ui/en-US/ipad-13/journey-milestones.png",
+          "sha256": "e64d26619a98b6a866afcfeff028c6e2ee3fc7ca7daf7e3a0205d9ad653a2154",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()",
+          "source_evidence": {
+            "device": "ipad-13",
+            "source_commit": "277db0c0a956bd1ead8852bff66f0d26e561fdff",
+            "build_proof_sha256": "85f41e8daff96e58998d49003bef30265800ba7658329a578f69805a532c3f1b",
+            "source_revision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
+            "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+            "source_manifest_sha256": "e4bfc19da7c5ca5c0dd95014ef44184e5aeefffbe0c58f386db9cae6aee19f63",
+            "result_bundle": {
+              "role": "selected",
+              "name": "ipad-13-selected-51bd6a93f1b807b9.xcresult",
+              "xcresult_tree_sha256": "51bd6a93f1b807b9f285db41e7a42441e0aa17ed4f032f100459dcf8ea7a6a8f"
+            },
+            "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()",
+            "clock_fixture_id": "dusk-v1",
+            "clock_epoch": "1785577260",
+            "garden_local_date": "2026-08-01",
+            "garden_local_time": "17:41",
+            "timezone": "Asia/Singapore",
+            "garden_phase": "dusk",
+            "captured_at": "2026-09-30T06:08:07.066Z",
+            "system_timezone": "Asia/Singapore",
+            "appearance": "light"
+          }
+        },
+        "journal": {
+          "path": "public/runtime-ui/en-US/ipad-13/journal.png",
+          "sha256": "68eaeccb747f7cb841887dfc9c2ff2fe2de7328ce323aca2179e0dcc2d4265b6",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()",
+          "source_evidence": {
+            "device": "ipad-13",
+            "source_commit": "277db0c0a956bd1ead8852bff66f0d26e561fdff",
+            "build_proof_sha256": "006b53e13af0282908b094006a0d4e5c2b92ee45f4e50b1d2c7ead9c7bf4ed9a",
+            "source_revision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
+            "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+            "source_manifest_sha256": "e4bfc19da7c5ca5c0dd95014ef44184e5aeefffbe0c58f386db9cae6aee19f63",
+            "result_bundle": {
+              "role": "selected",
+              "name": "ipad-13-selected-51bd6a93f1b807b9.xcresult",
+              "xcresult_tree_sha256": "51bd6a93f1b807b9f285db41e7a42441e0aa17ed4f032f100459dcf8ea7a6a8f"
+            },
+            "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureAllRequiredMarketingStatesEnglish()",
+            "clock_fixture_id": "dusk-v1",
+            "clock_epoch": "1785577260",
+            "garden_local_date": "2026-08-01",
+            "garden_local_time": "17:41",
+            "timezone": "Asia/Singapore",
+            "garden_phase": "dusk",
+            "captured_at": "2026-09-30T06:08:25.942Z",
+            "system_timezone": "Asia/Singapore",
+            "appearance": "light"
+          }
+        },
+        "garden-day": {
+          "path": "public/runtime-ui/en-US/ipad-13/garden-day.png",
+          "sha256": "85c88c188db82794d4b73da685ad5ce3b28aff161af2bc445bb2588ab6628173",
+          "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayEnglish()",
+          "source_evidence": {
+            "device": "ipad-13",
+            "source_commit": "277db0c0a956bd1ead8852bff66f0d26e561fdff",
+            "build_proof_sha256": "fa535a4e4302589966949136aa4676cba587a7038b5065f071d7e7090cf15a18",
+            "source_revision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
+            "source_manifest_path": "capture-source-manifest-v1.0.2-build-19.json",
+            "source_manifest_sha256": "e4bfc19da7c5ca5c0dd95014ef44184e5aeefffbe0c58f386db9cae6aee19f63",
+            "result_bundle": {
+              "role": "garden-day",
+              "name": "ipad-13-garden-day-d435ffff74baf6dc.xcresult",
+              "xcresult_tree_sha256": "d435ffff74baf6dc7f7e621c638d510c4d590baecd2ce0877d56a5a050fd286a"
+            },
+            "test_identifier": "ArriveWithinMarketingCaptureUITests/testCaptureGardenDayEnglish()",
+            "clock_fixture_id": "day-v1",
+            "clock_epoch": "1785548460",
+            "garden_local_date": "2026-08-01",
+            "garden_local_time": "09:41",
+            "timezone": "Asia/Singapore",
+            "garden_phase": "day",
+            "captured_at": "2026-09-30T06:21:12.939Z",
+            "system_timezone": "Asia/Singapore",
+            "appearance": "light"
+          }
+        }
+      }
+    },
+    "companionSet": {
+      "locale": "en-US",
+      "device": "iphone-6.9",
+      "model": "iPhone 17 Pro",
+      "os": "iOS 26.5 Simulator"
+    }
+  },
+  "contactSheet": {
+    "filename": "_contact-sheet.jpg",
+    "sha256": "2732a03598b04ce71f2526196a207392a85b054bab620fd6ad5b12518c84d0ab",
+    "width": 1440,
+    "height": 1890,
+    "encoding": "sharp 0.35.3 JPEG quality 92, 4:4:4 chroma subsampling, no metadata"
+  },
+  "items": [
+    {
+      "filename": "01-growth-rhythm-en-us-ipad-13-2064x2752.png",
+      "sha256": "e0881cda88169be56d24acf87378260c66652d81324a7fe2e6089ec5ba29ce0b",
+      "slide": 1,
+      "slideId": "growth-rhythm",
+      "idea": "Browse a private monthly practice rhythm without pressure",
+      "runtimeSurface": "Journey monthly practice calendar in light mode",
+      "width": 2064,
+      "height": 2752,
+      "geometry": {
+        "headlineBounds": {
+          "x": 185.765625,
+          "y": 92.875,
+          "width": 1692.46875,
+          "height": 283.34375
+        },
+        "proofBounds": {
+          "x": 158.921875,
+          "y": 550.390625,
+          "width": 1746.15625,
+          "height": 2308.203125
+        },
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 20,
+          "actualTop": 550.390625,
+          "actualTopPercent": 19.999659338662788,
+          "frameTops": [
+            550.390625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
+        },
+        "headlineToProofGap": 174.171875,
+        "headlineToProofGapRatio": 0.06328919876453488,
+        "proofHeight": 2308.203125,
+        "proofHeightRatio": 0.8387366006540697,
+        "proofLowerEdge": 2858.59375,
+        "proofLowerEdgeRatio": 1.0387331940406976
+      }
+    },
+    {
+      "filename": "02-growth-take-root-en-us-ipad-13-2064x2752.png",
+      "sha256": "091931c205bb94133a956cf6e1505f702bb613ea6bf8150ae9edcd4a53a6771d",
+      "slide": 2,
+      "slideId": "growth-take-root",
+      "idea": "A qualifying practice becomes lasting visible growth",
+      "runtimeSurface": "Dark appearance for a waiting seed beside the mature Garden in light appearance and daylight",
+      "width": 2064,
+      "height": 2752,
+      "geometry": {
+        "headlineBounds": {
+          "x": 185.765625,
+          "y": 92.875,
+          "width": 1692.46875,
+          "height": 283.34375
+        },
+        "proofBounds": {
+          "x": 0,
+          "y": 550.390625,
+          "width": 2064,
+          "height": 2100.34375
+        },
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 20,
+          "actualTop": 550.390625,
+          "actualTopPercent": 19.999659338662788,
+          "frameTops": [
+            550.390625,
+            550.390625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
+        },
+        "headlineToProofGap": 174.171875,
+        "headlineToProofGapRatio": 0.06328919876453488,
+        "proofHeight": 2100.34375,
+        "proofHeightRatio": 0.763206304505814,
+        "proofLowerEdge": 2650.734375,
+        "proofLowerEdgeRatio": 0.9632028978924418
+      }
+    },
+    {
+      "filename": "03-growth-arrive-en-us-ipad-13-2064x2752.png",
+      "sha256": "ee17cdbfa13a245882f1908eca843c44afa14d9399cb37ddca18ca6803f2e0c7",
+      "slide": 3,
+      "slideId": "growth-arrive",
+      "idea": "Arrive in the present through the living Garden",
+      "runtimeSurface": "Selected mature Garden composition",
+      "width": 2064,
+      "height": 2752,
+      "geometry": {
+        "headlineBounds": {
+          "x": 185.765625,
+          "y": 92.875,
+          "width": 1692.46875,
+          "height": 283.34375
+        },
+        "proofBounds": {
+          "x": 158.921875,
+          "y": 550.390625,
+          "width": 1746.15625,
+          "height": 2308.203125
+        },
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 20,
+          "actualTop": 550.390625,
+          "actualTopPercent": 19.999659338662788,
+          "frameTops": [
+            550.390625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
+        },
+        "headlineToProofGap": 174.171875,
+        "headlineToProofGapRatio": 0.06328919876453488,
+        "proofHeight": 2308.203125,
+        "proofHeightRatio": 0.8387366006540697,
+        "proofLowerEdge": 2858.59375,
+        "proofLowerEdgeRatio": 1.0387331940406976
+      }
+    },
+    {
+      "filename": "04-growth-stays-en-us-ipad-13-2064x2752.png",
+      "sha256": "bcf6c94f709d13db2c7ae60fbeb53027fcd5fafde22b7c306faa737382154567",
+      "slide": 4,
+      "slideId": "growth-stays",
+      "idea": "Milestones remain as a nonpunitive record of practice",
+      "runtimeSurface": "Journey milestone history and variants",
+      "width": 2064,
+      "height": 2752,
+      "geometry": {
+        "headlineBounds": {
+          "x": 185.765625,
+          "y": 92.875,
+          "width": 1692.46875,
+          "height": 283.34375
+        },
+        "proofBounds": {
+          "x": 158.921875,
+          "y": 550.390625,
+          "width": 1746.15625,
+          "height": 2308.203125
+        },
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 20,
+          "actualTop": 550.390625,
+          "actualTopPercent": 19.999659338662788,
+          "frameTops": [
+            550.390625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
+        },
+        "headlineToProofGap": 174.171875,
+        "headlineToProofGapRatio": 0.06328919876453488,
+        "proofHeight": 2308.203125,
+        "proofHeightRatio": 0.8387366006540697,
+        "proofLowerEdge": 2858.59375,
+        "proofLowerEdgeRatio": 1.0387331940406976
+      }
+    },
+    {
+      "filename": "05-growth-reflect-en-us-ipad-13-2064x2752.png",
+      "sha256": "c5ee6249dbb4b3a3af8da359965c82f0eeece4fecbd653356ef9c4c006e05954",
+      "slide": 5,
+      "slideId": "growth-reflect",
+      "idea": "Private reflection gives practice personal meaning",
+      "runtimeSurface": "Journal editor with safe synthetic reflection",
+      "width": 2064,
+      "height": 2752,
+      "geometry": {
+        "headlineBounds": {
+          "x": 185.765625,
+          "y": 92.875,
+          "width": 1692.46875,
+          "height": 283.34375
+        },
+        "proofBounds": {
+          "x": 158.921875,
+          "y": 550.390625,
+          "width": 1746.15625,
+          "height": 2308.203125
+        },
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 20,
+          "actualTop": 550.390625,
+          "actualTopPercent": 19.999659338662788,
+          "frameTops": [
+            550.390625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
+        },
+        "headlineToProofGap": 174.171875,
+        "headlineToProofGapRatio": 0.06328919876453488,
+        "proofHeight": 2308.203125,
+        "proofHeightRatio": 0.8387366006540697,
+        "proofLowerEdge": 2858.59375,
+        "proofLowerEdgeRatio": 1.0387331940406976
+      }
+    },
+    {
+      "filename": "06-growth-refuge-en-us-ipad-13-2064x2752.png",
+      "sha256": "608f03db046dfa933a9290fbfc06455e8850a8c537f92717e1cfb04bae9402f2",
+      "slide": 6,
+      "slideId": "growth-refuge",
+      "idea": "The mature Garden remembers consistent practice",
+      "runtimeSurface": "Selected mature Garden with milestone detail",
+      "width": 2064,
+      "height": 2752,
+      "geometry": {
+        "headlineBounds": {
+          "x": 185.765625,
+          "y": 92.875,
+          "width": 1692.46875,
+          "height": 283.34375
+        },
+        "proofBounds": {
+          "x": 158.921875,
+          "y": 550.390625,
+          "width": 1746.15625,
+          "height": 2308.203125
+        },
+        "primaryMockupAnchor": {
+          "expectedTopPercent": 20,
+          "actualTop": 550.390625,
+          "actualTopPercent": 19.999659338662788,
+          "frameTops": [
+            550.390625
+          ],
+          "maxFrameTopDelta": 0,
+          "tolerancePixels": 1
+        },
+        "headlineToProofGap": 174.171875,
+        "headlineToProofGapRatio": 0.06328919876453488,
+        "proofHeight": 2308.203125,
+        "proofHeightRatio": 0.8387366006540697,
+        "proofLowerEdge": 2858.59375,
+        "proofLowerEdgeRatio": 1.0387331940406976
+      }
+    }
+  ],
+  "uploadAuthorization": "candidate-only-human-review-pending-not-upload-authorized"
+}
