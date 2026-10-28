@@ -3,14 +3,14 @@ import {
   OPT_OUT_PATH,
   analyticsConfig,
   preferenceResponse,
-  queueIngest,
 } from "../src/analytics.mjs";
+import { measurementResponse, observeDocument } from "./measurement.mjs";
 
 const SITE_HOSTNAME = "arrivewithin.com";
 const WWW_HOSTNAME = "www.arrivewithin.com";
 
 const SECURITY_HEADERS = {
-  "Content-Security-Policy": "default-src 'none'; img-src 'self'; media-src 'self'; style-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests",
+  "Content-Security-Policy": "default-src 'none'; img-src 'self'; media-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests",
   "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=(), interest-cohort=()",
   "X-Content-Type-Options": "nosniff",
   "X-Frame-Options": "DENY",
@@ -73,6 +73,7 @@ export async function handleRequest(request, env = {}, context = {}) {
 
   if (url.pathname === OPT_OUT_PATH) return preferenceResponse(request, "out", config);
   if (url.pathname === OPT_IN_PATH) return preferenceResponse(request, "in", config);
+  if (url.pathname === "/analytics/signal") return measurementResponse(request, config, context);
 
   if (!env?.ASSETS || typeof env.ASSETS.fetch !== "function") return unavailableResponse();
 
@@ -84,8 +85,7 @@ export async function handleRequest(request, env = {}, context = {}) {
   }
 
   const response = responseWithSecurityHeaders(assetResponse, url);
-  queueIngest(request, context, config, response);
-  return response;
+  return observeDocument(request, response, config, context);
 }
 
 export default { fetch: handleRequest };

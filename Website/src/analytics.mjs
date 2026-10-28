@@ -88,8 +88,8 @@ export function preferenceResponse(request, action, config) {
   );
   return new Response(
     isOptOut
-      ? `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Analytics preference saved</title></head><body><main><h1>Analytics preference saved</h1><p>Future page requests from this browser will be excluded from the website request count.</p><p><a href="${returnPath}">Return to privacy</a></p></main></body></html>`
-      : `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Analytics preference restored</title></head><body><main><h1>Analytics preference restored</h1><p>Future eligible page requests from this browser may be included in the website request count.</p><p><a href="${returnPath}">Return to privacy</a></p></main></body></html>`,
+      ? `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Analytics preference saved</title></head><body><main><h1>Analytics preference saved</h1><p>Future page requests from this browser will be excluded from website activity counts.</p><p><a href="${returnPath}">Return to privacy</a></p></main></body></html>`
+      : `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Analytics preference restored</title></head><body><main><h1>Analytics preference restored</h1><p>Future eligible page requests from this browser may be included in website activity counts.</p><p><a href="${returnPath}">Return to privacy</a></p></main></body></html>`,
     { status: 200, headers },
   );
 }

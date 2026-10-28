@@ -20,6 +20,7 @@ import {
 const BASE_URL = resolvePublicBaseURL();
 if (!/^[a-f\d]{8,128}$/i.test(INDEXNOW_KEY)) throw new Error("IndexNow key must contain 8 to 128 hexadecimal characters");
 const STYLESHEET_VERSION = sha256(await readFile(path.join(ROOT, "src", "site.css")));
+const MEASUREMENT_VERSION = sha256(await readFile(path.join(ROOT, "src", "measurement.js")));
 const ROUTES = [
   { locale: "en", page: "home", route: "/", output: "index.html" },
   { locale: "de", page: "home", route: "/de", output: "de/index.html" },
@@ -118,7 +119,7 @@ function shell(locale, page, metaTitle, metaDescription, body) {
   <meta name="twitter:image" content="${BASE_URL}/assets/social-preview.png">
   <meta name="twitter:image:alt" content="${escapeHtml(socialImageAlt)}">
   <meta name="robots" content="index,follow">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; media-src 'self'; style-src 'self'; base-uri 'none'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; media-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'self'">
   <link rel="canonical" href="${BASE_URL}${route}">
   <link rel="alternate" hreflang="${locale}" href="${BASE_URL}${route}">
   <link rel="alternate" hreflang="${counterpart}" href="${BASE_URL}${alternateRoute}">
@@ -126,6 +127,7 @@ function shell(locale, page, metaTitle, metaDescription, body) {
   <link rel="icon" type="image/png" sizes="40x40" href="/assets/brand-icon-40.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/brand-icon-180.png">
   <link rel="stylesheet" href="/assets/site.css?v=${STYLESHEET_VERSION}">
+  <script type="module" src="/assets/measurement.js?v=${MEASUREMENT_VERSION}"></script>
   <title>${escapeHtml(metaTitle)}</title>
 </head>
 <body class="page-${page}">
@@ -275,6 +277,7 @@ async function main() {
   }
   await mkdir(path.join(DIST, "assets"), { recursive: true });
   await copyFile(path.join(ROOT, "src", "site.css"), path.join(DIST, "assets", "site.css"));
+  await copyFile(path.join(ROOT, "src", "measurement.js"), path.join(DIST, "assets", "measurement.js"));
   const pendingProvenance = JSON.parse(await readFile(path.join(ROOT, "src", "assets", "provenance.json"), "utf8"));
   const excludedPendingAssets = new Set(["provenance.json", ...pendingProvenance.assets.map((asset) => asset.file)]);
   for (const relative of await listFiles(path.join(ROOT, "src", "assets"))) {
@@ -294,7 +297,7 @@ async function main() {
   await writeFile(path.join(DIST, `${INDEXNOW_KEY}.txt`), INDEXNOW_KEY);
   await writeFile(path.join(DIST, "404.html"), shell("en", "home", "Not found — Arrive Within", "The requested Arrive Within page was not found.", `<main id="main" class="article-shell"><header class="article-hero"><p class="eyebrow">404</p><h1>That path has not taken root.</h1><p class="lede">Return to the quiet place we know.</p><a class="primary-action" href="/">Return home</a></header></main>`));
   await writeFile(path.join(DIST, "_headers"), `/*
-  Content-Security-Policy: default-src 'none'; img-src 'self'; media-src 'self'; style-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; img-src 'self'; media-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), interest-cohort=()
   Referrer-Policy: no-referrer
   X-Content-Type-Options: nosniff

@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
 
+import { FixtureRewriter } from "./measurement-fixtures.mjs";
+globalThis.HTMLRewriter = FixtureRewriter;
+
 import worker, { canonicalRedirect, handleRequest } from "./worker.mjs";
 
 const baseEnv = {
@@ -9,7 +12,7 @@ const baseEnv = {
 };
 
 function request(path = "/", headers = {}, method = "GET") {
-  return new Request(`https://arrivewithin.com${path}`, {
+  const result = new Request(`https://arrivewithin.com${path}`, {
     method,
     headers: {
       Host: "arrivewithin.com",
@@ -20,6 +23,8 @@ function request(path = "/", headers = {}, method = "GET") {
       ...headers,
     },
   });
+  Object.defineProperty(result, "cf", { value: { country: "SG" } });
+  return result;
 }
 
 function assetsResponse(status = 200, contentType = "text/html; charset=UTF-8") {
@@ -33,7 +38,7 @@ const originalFetch = globalThis.fetch;
 const seen = [];
 globalThis.fetch = async (input, options) => {
   seen.push({ input: typeof input === "string" ? input : input.url, options });
-  return new Response("accepted", { status: 204 });
+  return new Response(null, { status: 204 });
 };
 
 try {
@@ -49,13 +54,15 @@ try {
   assert.equal(response.status, 200);
   assert.equal(response.headers.get("content-type"), "text/html; charset=UTF-8");
   assert.equal(response.headers.get("referrer-policy"), "same-origin");
-  assert.equal(response.headers.get("content-security-policy"), "default-src 'none'; img-src 'self'; media-src 'self'; style-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests");
+  assert.equal(response.headers.get("content-security-policy"), "default-src 'none'; img-src 'self'; media-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests");
   assert.equal(waits.length, 1);
   await waits[0];
   assert.equal(seen.length, 1);
   assert.equal(seen[0].input, baseEnv.ANALYTICS_INGEST_URL);
-  assert.equal(seen[0].options.headers.Authorization, `Bearer ${baseEnv.ANALYTICS_INGEST_TOKEN}`);
-  assert.deepEqual(JSON.parse(seen[0].options.body), {
+  assert.equal(seen[0].options.headers.authorization, `Bearer ${baseEnv.ANALYTICS_INGEST_TOKEN}`);
+  const body = JSON.parse(seen[0].options.body);
+  assert.match(body.eventId, /^[0-9a-f]{32}$/); delete body.eventId;
+  assert.deepEqual(body, {
     hostname: "arrivewithin.com",
     path: "/privacy",
     referrer: "https://example.test",

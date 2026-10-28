@@ -186,6 +186,10 @@ async function main() {
 
   const outputFiles = await listFiles(DIST);
   const stylesheetVersion = sha256(await readFile(path.join(ROOT, "src", "site.css")));
+  const measurementVersion = sha256(await readFile(path.join(ROOT, "src", "measurement.js")));
+  if (sha256(await readFile(path.join(DIST, "assets", "measurement.js"))) !== measurementVersion) {
+    throw new Error("measurement output differs from reviewed source");
+  }
   const sitemap = await readFile(path.join(DIST, "sitemap.xml"), "utf8");
   if (sitemap.includes("www.arrivewithin.com") || !sitemap.includes(`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`)) {
     throw new Error("sitemap must use the apex origin and the expected XML namespace");
@@ -239,7 +243,9 @@ async function main() {
     if (!html.includes('rel="icon" type="image/png" sizes="40x40" href="/assets/brand-icon-40.png"')) throw new Error(`${route}: missing browser icon`);
     if (!html.includes('rel="apple-touch-icon" sizes="180x180" href="/assets/brand-icon-180.png"')) throw new Error(`${route}: missing Apple touch icon`);
     if ((html.match(/class="brand-mark"/g) ?? []).length !== 2) throw new Error(`${route}: header and footer must use the selected visible brand mark`);
-    if (/<script\b|<iframe\b|<object\b|<embed\b/i.test(html)) throw new Error(`${route}: active content is forbidden`);
+    const measurementTag = `<script type="module" src="/assets/measurement.js?v=${measurementVersion}"></script>`;
+    if (html.split(measurementTag).length !== 2) throw new Error(`${route}: exactly one reviewed measurement module is required`);
+    if (/<script\b|<iframe\b|<object\b|<embed\b/i.test(html.replace(measurementTag, ""))) throw new Error(`${route}: unreviewed active content is forbidden`);
     const forms = [...html.matchAll(/<form\b[^>]*>[\s\S]*?<\/form>/gi)].map((match) => match[0]);
     if (forms.length && !["/privacy", "/de/privacy"].includes(route)) throw new Error(`${route}: forms are limited to the privacy preference controls`);
     if (["/privacy", "/de/privacy"].includes(route)) {
@@ -316,10 +322,10 @@ async function main() {
   }
   const privacyEnglish = await readFile(path.join(DIST, routeFiles["/privacy"]), "utf8");
   const privacyGerman = await readFile(path.join(DIST, routeFiles["/de/privacy"]), "utf8");
-  for (const phrase of ["No third-party analytics", "Cloudflare edge", "HTTP 200", "no account, backend, or cloud sync", "Microphone access", "excluded from backup", "choose a complete archive in Files", "without uploading it", "13-month policy", "30 days after live removal"]) {
+  for (const phrase of ["No third-party analytics", "Cloudflare edge", "HTTP 200", "ten visible seconds", "not verified people", "no visitor fields", "no account, backend, or cloud sync", "Microphone access", "excluded from backup", "choose a complete archive in Files", "without uploading it", "13-month policy", "30 days after live removal"]) {
     if (!privacyEnglish.includes(phrase)) throw new Error(`English privacy page missing: ${phrase}`);
   }
-  for (const phrase of ["Keine Drittanbieter-Analyse", "Cloudflare-Edge", "HTTP 200", "weder Konto, Backend noch Cloud-Synchronisierung", "Mikrofonzugriff", "von Backups ausgeschlossen", "vollständiges Archiv auswählen und lokal wiederherstellen", "ohne sie hochzuladen", "13 Monaten", "30 Tagen nach der Entfernung"]) {
+  for (const phrase of ["Keine Drittanbieter-Analyse", "Cloudflare-Edge", "HTTP 200", "zehn sichtbare Sekunden", "keine verifizierten Personen", "keine Besucherfelder", "weder Konto, Backend noch Cloud-Synchronisierung", "Mikrofonzugriff", "von Backups ausgeschlossen", "vollständiges Archiv auswählen und lokal wiederherstellen", "ohne sie hochzuladen", "13 Monaten", "30 Tagen nach der Entfernung"]) {
     if (!privacyGerman.includes(phrase)) throw new Error(`German privacy page missing: ${phrase}`);
   }
   const generatedHeaders = await readFile(path.join(DIST, "_headers"), "utf8");
@@ -358,7 +364,7 @@ async function main() {
     throw new Error("edge/wrangler.toml must route document and unknown paths before static assets");
   }
   const workerSource = await readFile(path.join(ROOT, "edge", "worker.mjs"), "utf8");
-  for (const required of ["ASSETS.fetch", "queueIngest(request, context, config, response)", "OPT_OUT_PATH", "OPT_IN_PATH"]) {
+  for (const required of ["ASSETS.fetch", "observeDocument(request, response, config, context)", "measurementResponse(request, config, context)", "OPT_OUT_PATH", "OPT_IN_PATH"]) {
     if (!workerSource.includes(required)) throw new Error(`edge/worker.mjs missing required behavior: ${required}`);
   }
 

@@ -32,7 +32,7 @@ export function assertPublishedMedia(candidate) {
   assert.equal(responsive.schema_version, 1);
   assert.equal(responsive.source_selection, binding.selection);
   assert.equal(responsive.assets.length, 31);
-  const allowed = new Set([...names, "brand-icon-40.png", "brand-icon-180.png", "provenance.json", "brand-provenance.json", "responsive-provenance.json", "site.css"]);
+  const allowed = new Set([...names, "brand-icon-40.png", "brand-icon-180.png", "provenance.json", "brand-provenance.json", "responsive-provenance.json", "site.css", "measurement.js"]);
   for (const derivative of responsive.assets) {
     assert.match(derivative.file, /^responsive\/[a-z0-9-]+-\d+\.webp$/);
     const source = published.assets.find((asset) => `published-media/${asset.file}` === derivative.source);
