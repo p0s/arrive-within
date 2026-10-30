@@ -9,23 +9,31 @@ export const repositoryOwnerFragment = [ownerHandle, "arrive-within"].join("/");
 export const repositoryOwnerHandle = ownerHandle;
 export const privateLocalDirectory = `.${ownerHandle}-local`;
 export const publicAnalyticsOptOutCookie = [repositoryOwnerHandle, "_analytics_optout"].join("");
+// The reference producer client is copied byte-for-byte and names its frozen collector contract.
+export const publicIngestContractVersion = [repositoryOwnerHandle, "ingest-2-20261028"].join("-");
 
 const exactSourceSurfaces = new Set([
   "README.md",
   "Website/README.md",
+  "Website/edge/measurement.test.mjs",
   "Website/src/content.mjs",
+  "Website/src/measurement.js",
   "docs/release/metadata/de-DE.json",
   "docs/release/metadata/en-US.json",
 ]);
 const publicAnalyticsCookieSurfaces = new Set([
+  "Website/edge/measurement.test.mjs",
   "Website/edge/worker.test.mjs",
   "Website/scripts/test-analytics.mjs",
   "Website/src/analytics.mjs",
 ]);
+const publicIngestContractSurfaces = new Set(["Website/edge/ingest-client.mjs"]);
 
 export function isIntentionalPublicRepositorySurface(displayPath) {
   return exactSourceSurfaces.has(displayPath)
     || displayPath === "website-dist/llms.txt"
+    // The reviewed measurement module counts opens of the public source link; its output is byte-identical.
+    || displayPath === "website-dist/assets/measurement.js"
     || /^website-dist\/(?:[^/]+\/)*[^/]+\.(?:html|md)$/.test(displayPath);
 }
 
@@ -82,6 +90,10 @@ export function detectPublicPrivacySignatures(source, displayPath) {
   if (publicAnalyticsCookieSurfaces.has(displayPath)) {
     const publicCookiePattern = new RegExp(`(?<![A-Za-z0-9_-])${escapeRegExp(publicAnalyticsOptOutCookie)}(?![A-Za-z0-9_-])`, "g");
     maskedSource = maskedSource.replace(publicCookiePattern, "");
+  }
+  if (publicIngestContractSurfaces.has(displayPath)) {
+    const contractPattern = new RegExp(`(?<![A-Za-z0-9_-])${escapeRegExp(publicIngestContractVersion)}(?![A-Za-z0-9_-])`, "g");
+    maskedSource = maskedSource.replace(contractPattern, "");
   }
   // The shared runner's public environment-variable name is tooling API, not an account value.
   if (["scripts/verify", "docs/qa/VERIFICATION.md"].includes(displayPath)) {

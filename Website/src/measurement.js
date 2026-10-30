@@ -2,11 +2,11 @@
 (() => {
   const doc = document;
   if (location.hostname !== "arrivewithin.com" || doc.prerendering
-      || doc.body?.dataset.siteMeasurement !== "allowed" || window.p0sMeasurementStarted) return;
+      || doc.body?.dataset.siteMeasurement !== "allowed" || window.arriveWithinMeasurementStarted) return;
   const allowed = () => navigator.doNotTrack !== "1" && window.doNotTrack !== "1"
     && !navigator.globalPrivacyControl && doc.body?.dataset.siteMeasurement === "allowed";
   if (!allowed()) return;
-  window.p0sMeasurementStarted = true;
+  window.arriveWithinMeasurementStarted = true;
   let original = new URL(location.href);
   try {
     const navigation = new URL(performance.getEntriesByType("navigation")[0].name);

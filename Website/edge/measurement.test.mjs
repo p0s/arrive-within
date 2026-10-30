@@ -77,7 +77,7 @@ test('signal relay rejects unknown input and private or identifier-bearing paths
   for (const req of [signal('arbitrary'), signal('visible', {}, 'private text'), signal('visible', {}, undefined, '?qa=1'),
     signal('visible', { origin: 'null' }), signal('visible', { 'sec-fetch-site': 'cross-site' }),
     signal('visible', { 'content-length': '2000' }),
-    ...['/private/', '/account/', '/person@example/', '/p/?secret=private', '/p/#private', '//external/',
+    ...['/internal/', '/account/', '/person@example/', '/p/?secret=private', '/p/#private', '//external/',
       '/p/0123456789abcdef0123456789abcdef/', '/p/this%20is%20text/'].map(path => signal('visible', { 'x-analytics-path': path }))]) {
     const result = await send(req); assert.notEqual(result.response.status, 204); assert.equal(result.calls.length, 0);
   }
