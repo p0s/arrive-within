@@ -1,0 +1,9 @@
+# ADR-0013: Offer the public website as agent-readable Markdown
+
+The public website offers each of its eight bilingual pages as Markdown for AI agents and other automated readers. The build renders every Markdown page from the same content source as its HTML page, so text, links, image descriptions, effective dates, and release-status qualifiers stay identical. Validation rejects a Markdown page that omits visible text, a link, or a described image from its HTML page. Each Markdown page also names its canonical HTML URL, language, alternate-language URL, and the repository's license boundaries.
+
+A request for a public page receives Markdown only when its `Accept` header names `text/markdown` at least as strongly as HTML. Browsers and wildcard requests keep the HTML default. Both representations send `Vary: Accept`, and the Markdown response names its stable `/index.md` location. HTML pages send RFC 8288 `Link` headers to their Markdown alternate and to `/llms.txt`, a short reading list of all pages.
+
+`robots.txt` keeps all public pages crawlable and declares the Content Signals `search=yes, ai-input=yes, ai-train=no`. Search indexing and real-time AI input are intended uses of the public first-party pages. AI training is not offered. The pages and Markdown files repeat this preference in a `Content-Signal` header. The signals express preferences only; they do not change the MIT and CC BY 4.0 licenses, third-party notices, or reserved trademark rights. The owner can change the training preference in `Website/src/agent-access.mjs`.
+
+Markdown and `llms.txt` responses are not HTML document views, so website activity counts exclude them. The site publishes no API catalog, OAuth metadata, MCP server card, agent card, agent skills, WebMCP tools, DNS records for agents, or payment endpoints, because it provides none of those capabilities. Requests for those discovery paths return HTTP 404.

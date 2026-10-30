@@ -25,7 +25,8 @@ const publicAnalyticsCookieSurfaces = new Set([
 
 export function isIntentionalPublicRepositorySurface(displayPath) {
   return exactSourceSurfaces.has(displayPath)
-    || /^website-dist\/(?:[^/]+\/)*[^/]+\.html$/.test(displayPath);
+    || displayPath === "website-dist/llms.txt"
+    || /^website-dist\/(?:[^/]+\/)*[^/]+\.(?:html|md)$/.test(displayPath);
 }
 
 export function maskIntentionalPublicRepositoryURLs(source, displayPath) {

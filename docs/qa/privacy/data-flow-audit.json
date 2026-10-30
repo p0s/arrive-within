@@ -3,7 +3,7 @@
   "status": "passed-source-intent",
   "generated_at": null,
   "generation_time_policy": "omitted-for-byte-reproducibility",
-  "source_sha256": "cb7b8decb0c23081160e34aa50bed3580c5090b880a95ffd970ed9eab6fd23c5",
+  "source_sha256": "3c8c52ca97e4afd63b88570ca4fda312319824886def304caeb61ee5fa43692b",
   "checks_total": 40,
   "checks_passed": 40,
   "checks_failed": 0,

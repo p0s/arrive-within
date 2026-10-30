@@ -16,6 +16,6 @@
     "test": "node scripts/validate.mjs",
     "test:analytics": "node scripts/test-analytics.mjs",
     "verify": "node scripts/build.mjs && node scripts/validate.mjs && node --test scripts/test-published-media.mjs scripts/test-indexnow.mjs scripts/test-deployment-config.mjs && node scripts/test-analytics.mjs",
-    "verify:edge": "pnpm verify && node edge/worker.test.mjs && node --test edge/measurement.test.mjs"
+    "verify:edge": "pnpm verify && node edge/worker.test.mjs && node --test edge/measurement.test.mjs edge/agent-content.test.mjs"
   }
 }

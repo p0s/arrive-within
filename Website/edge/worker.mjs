@@ -4,6 +4,7 @@ import {
   analyticsConfig,
   preferenceResponse,
 } from "../src/analytics.mjs";
+import { negotiatedMarkdown, withAgentDiscovery } from "./agent-content.mjs";
 import { measurementResponse, observeDocument } from "./measurement.mjs";
 
 const SITE_HOSTNAME = "arrivewithin.com";
@@ -79,12 +80,15 @@ export async function handleRequest(request, env = {}, context = {}) {
 
   let assetResponse;
   try {
+    // Markdown representations are agent reads, not HTML document views.
+    const markdown = await negotiatedMarkdown(request, url, env.ASSETS);
+    if (markdown) return responseWithSecurityHeaders(markdown, url);
     assetResponse = await env.ASSETS.fetch(request);
   } catch {
     return unavailableResponse();
   }
 
-  const response = responseWithSecurityHeaders(assetResponse, url);
+  const response = responseWithSecurityHeaders(withAgentDiscovery(assetResponse, url), url);
   return observeDocument(request, response, config, context);
 }
 

@@ -13,8 +13,16 @@ import {
 assert.equal(isIntentionalPublicRepositorySurface("README.md"), true);
 assert.equal(isIntentionalPublicRepositorySurface("Website/src/content.mjs"), true);
 assert.equal(isIntentionalPublicRepositorySurface("website-dist/de/open-source/index.html"), true);
+assert.equal(isIntentionalPublicRepositorySurface("website-dist/de/open-source/index.md"), true);
+assert.equal(isIntentionalPublicRepositorySurface("website-dist/llms.txt"), true);
+assert.equal(isIntentionalPublicRepositorySurface("website-dist/assets/llms.txt"), false);
+assert.equal(isIntentionalPublicRepositorySurface("website-dist/assets/measurement.js"), false);
 assert.equal(isIntentionalPublicRepositorySurface("Apps/ArriveWithin/Sources/App.swift"), false);
 assert.equal(isIntentionalPublicRepositorySurface("docs/evidence/INDEX.md"), false);
+for (const surface of ["website-dist/index.md", "website-dist/llms.txt"]) {
+  assert.deepEqual(detectPublicPrivacySignatures(`- [Source on GitHub](${publicRepositoryURL})`, surface), []);
+  assert.equal(detectPublicPrivacySignatures(`[License](${publicRepositoryURL}/blob/main/LICENSE)`, surface).includes("owner-handle"), true);
+}
 
 assert.equal(maskIntentionalPublicRepositoryURLs(publicRepositoryURL, "README.md"), "");
 assert.equal(maskIntentionalPublicRepositoryURLs(publicRepositoryURL, "Website/src/content.mjs"), "");

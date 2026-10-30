@@ -8,6 +8,13 @@ remain asset-first. The Worker counts a request only after the static
 asset binding returns HTTP 200 with an HTML content type. It has no browser
 tracker and does not proxy Vercel.
 
+`agent-content.mjs` serves a public page as Markdown when the `Accept` header
+names `text/markdown` at least as strongly as HTML; browsers and wildcard
+requests keep HTML. Both representations send `Vary: Accept` and the
+`Content-Signal` preference. HTML pages add RFC 8288 `Link` headers to their
+`/index.md` alternate and `/llms.txt`. Markdown responses name their canonical
+HTML page and are never counted as document views.
+
 The committed configuration sets `workers_dev = false` and
 `preview_urls = false`, and binds apex and www as Custom Domains. The Worker
 serves only the exact apex
