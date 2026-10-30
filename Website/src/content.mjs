@@ -21,6 +21,12 @@ export const siteContent = {
       intro: "A guided practice, a dependable timer, or an open-ended sit. Every qualifying practice becomes permanent, visible growth—without streak pressure, accounts, ads, or subscriptions.",
       primaryAction: "Download on the App Store",
       secondaryAction: "See how it grows",
+      imageAlt: {
+        hero: "A mature Arrive Within garden beneath a quiet sky.",
+        gardenPad: "The mature Arrive Within garden in the adaptive iPad layout.",
+        journey: "The private Arrive Within practice calendar shows an honest rhythm without streak pressure.",
+        journal: "The private Arrive Within journal and reflection editor on iPad.",
+      },
       media: {
         kicker: "One garden, faithfully grown",
         title: "See practice become a living world.",
@@ -87,6 +93,7 @@ export const siteContent = {
       eyebrow: "Support",
       title: "Help without asking for your private data.",
       intro: "These answers describe the 1.0.2 release candidate. Version 1.0.1 remains the current App Store release.",
+      feedbackTitle: "Feedback",
       feedbackLabel: "Open Settings, then choose Support",
       feedbackNote: "Neither the live 1.0.1 app nor the 1.0.2 candidate transmits in-app feedback. The Support link opens this page without attaching practice, journal, recording, transcript, screenshot, log, or device data.",
       faqs: [
@@ -135,6 +142,14 @@ export const siteContent = {
       repoLabel: "View source on GitHub",
       repoNote: "Browse the app, renderer, tests, contributor guides, and public evidence, or propose a focused improvement.",
     },
+    markdown: {
+      pagesHeading: "Pages",
+      appStoreLink: "Arrive Within on the App Store",
+      excerptSource: "Source",
+      preferenceControls: "Use one of these two controls on the HTML version of this page:",
+      licensesHeading: "Source and licenses",
+      licensesMarkdown: "This Markdown version is generated from the same public source as the HTML page. Project-owned code, documentation, and build tooling are licensed under MIT. Covered original media is licensed separately under CC BY 4.0; see `docs/legal/MEDIA_LICENSE.md` and each asset’s provenance record. Third-party material keeps its own license and notices in `THIRD_PARTY_NOTICES.md`. These licenses do not grant trademark rights in the Arrive Within name, selected app icon, trade dress, or official identity.",
+    },
   },
   de: {
     lang: "de",
@@ -155,6 +170,12 @@ export const siteContent = {
       intro: "Eine geführte Meditation, ein verlässlicher Timer oder eine offene Stoppuhr. Jede qualifizierende Praxis wird zu dauerhaftem, sichtbarem Wachstum – ohne Streak-Druck, Konto, Werbung oder Abo.",
       primaryAction: "Im App Store laden",
       secondaryAction: "Wachstum ansehen",
+      imageAlt: {
+        hero: "Ein gewachsener Arrive Within Garten unter einem ruhigen Himmel.",
+        gardenPad: "Der gewachsene Arrive Within Garten im angepassten iPad-Layout.",
+        journey: "Der private Praxiskalender in Arrive Within zeigt einen ehrlichen Rhythmus ohne Streak-Druck.",
+        journal: "Das private Arrive Within Journal mit Reflexionseditor auf dem iPad.",
+      },
       media: {
         kicker: "Ein Garten, verlässlich gewachsen",
         title: "Sieh, wie Praxis zu einer lebendigen Welt wird.",
@@ -221,6 +242,7 @@ export const siteContent = {
       eyebrow: "Hilfe",
       title: "Unterstützung, ohne nach deinen privaten Daten zu fragen.",
       intro: "Diese Antworten beschreiben die Release-Kandidatin 1.0.2. Version 1.0.1 ist weiterhin die aktuelle App-Store-Version.",
+      feedbackTitle: "Rückmeldung",
       feedbackLabel: "Öffne Einstellungen und wähle Hilfe",
       feedbackNote: "Weder die veröffentlichte Version 1.0.1 noch die Kandidatin 1.0.2 überträgt Rückmeldungen aus der App. Der Hilfe-Link öffnet diese Seite, ohne Praxis-, Journal-, Aufnahme-, Transkript-, Bildschirmfoto-, Protokoll- oder Gerätedaten anzuhängen.",
       faqs: [
@@ -268,6 +290,14 @@ export const siteContent = {
       ],
       repoLabel: "Quellcode auf GitHub ansehen",
       repoNote: "Durchsuche App, Renderer, Tests, Leitfäden und öffentliche Nachweise oder schlage eine gezielte Verbesserung vor.",
+    },
+    markdown: {
+      pagesHeading: "Seiten",
+      appStoreLink: "Arrive Within im App Store",
+      excerptSource: "Quelle",
+      preferenceControls: "Nutze dafür eine der beiden Schaltflächen in der HTML-Fassung dieser Seite:",
+      licensesHeading: "Quelle und Lizenzen",
+      licensesMarkdown: "Diese Markdown-Fassung wird aus derselben öffentlichen Quelle erzeugt wie die HTML-Seite. Projekteigener Code, Dokumentation und Build-Werkzeuge stehen unter der MIT-Lizenz. Die unter die Medienlizenz fallenden Originalmedien sind gesondert unter CC BY 4.0 lizenziert; siehe `docs/legal/MEDIA_LICENSE.md` und den Herkunftsnachweis des jeweiligen Assets. Material Dritter behält seine eigene Lizenz; Hinweise stehen in `THIRD_PARTY_NOTICES.md`. Diese Lizenzen gewähren keine Markenrechte am Namen Arrive Within, am ausgewählten App-Symbol, an der Aufmachung oder an der offiziellen Identität.",
     },
   },
 };

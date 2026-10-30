@@ -1,9 +1,11 @@
 import { copyFile, lstat, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 
+import { markdownPath, robotsTxt } from "../src/agent-access.mjs";
 import { appStoreURL, repositoryURL, siteContent } from "../src/content.mjs";
 import { INDEXNOW_KEY } from "../src/indexnow-key.mjs";
 import { readProductionWranglerConfig } from "./cloudflare-config.mjs";
+import { renderLlmsTxt, renderPageMarkdown } from "./markdown.mjs";
 import {
   DIST,
   ROOT,
@@ -84,7 +86,7 @@ function footer(locale) {
   </footer>`;
 }
 
-function shell(locale, page, metaTitle, metaDescription, body) {
+function shell(locale, page, metaTitle, metaDescription, body, { indexable = true } = {}) {
   const content = siteContent[locale];
   const counterpart = locale === "en" ? "de" : "en";
   const route = routeFor(locale, page);
@@ -92,6 +94,14 @@ function shell(locale, page, metaTitle, metaDescription, body) {
   const socialImageAlt = locale === "de"
     ? "Arrive Within mit einem gewachsenen Garten und dem Satz Meditation, die wächst."
     : "Arrive Within with a mature garden and the words Meditation that grows.";
+  // Error documents must not claim another page's canonical or language URLs.
+  const pageURL = indexable ? `<meta property="og:url" content="${BASE_URL}${route}">
+  ` : "";
+  const pageLinks = indexable ? `<link rel="canonical" href="${BASE_URL}${route}">
+  <link rel="alternate" hreflang="${locale}" href="${BASE_URL}${route}">
+  <link rel="alternate" hreflang="${counterpart}" href="${BASE_URL}${alternateRoute}">
+  <link rel="alternate" hreflang="x-default" href="${BASE_URL}${routeFor("en", page)}">
+  ` : "";
   return `<!doctype html>
 <html lang="${locale}">
 <head>
@@ -106,8 +116,7 @@ function shell(locale, page, metaTitle, metaDescription, body) {
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Arrive Within">
   <meta property="og:locale" content="${content.locale.replace("-", "_")}">
-  <meta property="og:url" content="${BASE_URL}${route}">
-  <meta property="og:title" content="${escapeHtml(metaTitle)}">
+  ${pageURL}<meta property="og:title" content="${escapeHtml(metaTitle)}">
   <meta property="og:description" content="${escapeHtml(metaDescription)}">
   <meta property="og:image" content="${BASE_URL}/assets/social-preview.png">
   <meta property="og:image:alt" content="${escapeHtml(socialImageAlt)}">
@@ -118,13 +127,9 @@ function shell(locale, page, metaTitle, metaDescription, body) {
   <meta name="twitter:description" content="${escapeHtml(metaDescription)}">
   <meta name="twitter:image" content="${BASE_URL}/assets/social-preview.png">
   <meta name="twitter:image:alt" content="${escapeHtml(socialImageAlt)}">
-  <meta name="robots" content="index,follow">
+  <meta name="robots" content="${indexable ? "index,follow" : "noindex"}">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; media-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'self'">
-  <link rel="canonical" href="${BASE_URL}${route}">
-  <link rel="alternate" hreflang="${locale}" href="${BASE_URL}${route}">
-  <link rel="alternate" hreflang="${counterpart}" href="${BASE_URL}${alternateRoute}">
-  <link rel="alternate" hreflang="x-default" href="${BASE_URL}${routeFor("en", page)}">
-  <link rel="icon" type="image/png" sizes="40x40" href="/assets/brand-icon-40.png">
+  ${pageLinks}<link rel="icon" type="image/png" sizes="40x40" href="/assets/brand-icon-40.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/brand-icon-180.png">
   <link rel="stylesheet" href="/assets/site.css?v=${STYLESHEET_VERSION}">
   <script type="module" src="/assets/measurement.js?v=${MEASUREMENT_VERSION}"></script>
@@ -141,21 +146,7 @@ function shell(locale, page, metaTitle, metaDescription, body) {
 function homePage(locale) {
   const content = siteContent[locale];
   const home = content.home;
-  const alt = locale === "de"
-    ? {
-        hero: "Ein gewachsener Arrive Within Garten unter einem ruhigen Himmel.",
-        gardenPhone: "Arrive Within auf dem iPhone mit einem gewachsenen Garten und der Aktion Meditieren.",
-        gardenPad: "Der gewachsene Arrive Within Garten im angepassten iPad-Layout.",
-        journey: "Der private Praxiskalender in Arrive Within zeigt einen ehrlichen Rhythmus ohne Streak-Druck.",
-        journal: "Das private Arrive Within Journal mit Reflexionseditor auf dem iPad.",
-      }
-    : {
-        hero: "A mature Arrive Within garden beneath a quiet sky.",
-        gardenPhone: "Arrive Within on iPhone showing a mature living garden and the Meditate action.",
-        gardenPad: "The mature Arrive Within garden in the adaptive iPad layout.",
-        journey: "The private Arrive Within practice calendar shows an honest rhythm without streak pressure.",
-        journal: "The private Arrive Within journal and reflection editor on iPad.",
-      };
+  const alt = home.imageAlt;
   const modes = home.modes.items
     .map((item, index) => `<li><span class="mode-number">0${index + 1}</span><h3>${escapeHtml(item.name)}</h3><p>${escapeHtml(item.text)}</p></li>`)
     .join("");
@@ -222,7 +213,7 @@ function homePage(locale) {
 function supportPage(locale) {
   const page = siteContent[locale].support;
   const faqs = page.faqs.map((item) => `<section><h2>${escapeHtml(item.q)}</h2><p>${escapeHtml(item.a)}</p></section>`).join("");
-  const body = `<main id="main" class="article-shell"><header class="article-hero"><p class="eyebrow">${escapeHtml(page.eyebrow)}</p><h1>${escapeHtml(page.title)}</h1><p class="lede">${escapeHtml(page.intro)}</p></header><article class="article-content">${faqs}<section class="support-route"><h2>${locale === "de" ? "Rückmeldung" : "Feedback"}</h2><p>${escapeHtml(page.feedbackNote)}</p><p class="status-note">${escapeHtml(page.feedbackLabel)}</p></section></article></main>`;
+  const body = `<main id="main" class="article-shell"><header class="article-hero"><p class="eyebrow">${escapeHtml(page.eyebrow)}</p><h1>${escapeHtml(page.title)}</h1><p class="lede">${escapeHtml(page.intro)}</p></header><article class="article-content">${faqs}<section class="support-route"><h2>${escapeHtml(page.feedbackTitle)}</h2><p>${escapeHtml(page.feedbackNote)}</p><p class="status-note">${escapeHtml(page.feedbackLabel)}</p></section></article></main>`;
   return shell(locale, "support", page.metaTitle, page.metaDescription, body);
 }
 
@@ -274,7 +265,9 @@ async function main() {
     const output = path.join(DIST, route.output);
     await mkdir(path.dirname(output), { recursive: true });
     await writeFile(output, render(route));
+    await writeFile(path.join(DIST, markdownPath(route.route).slice(1)), renderPageMarkdown({ locale: route.locale, page: route.page, baseURL: BASE_URL, routeFor }));
   }
+  await writeFile(path.join(DIST, "llms.txt"), renderLlmsTxt({ baseURL: BASE_URL, routeFor }));
   await mkdir(path.join(DIST, "assets"), { recursive: true });
   await copyFile(path.join(ROOT, "src", "site.css"), path.join(DIST, "assets", "site.css"));
   await copyFile(path.join(ROOT, "src", "measurement.js"), path.join(DIST, "assets", "measurement.js"));
@@ -293,9 +286,9 @@ async function main() {
 
   const sitemapUrls = ROUTES.map((route) => `  <url><loc>${BASE_URL}${route.route}</loc></url>`).join("\n");
   await writeFile(path.join(DIST, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapUrls}\n</urlset>\n`);
-  await writeFile(path.join(DIST, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${BASE_URL}/sitemap.xml\n`);
+  await writeFile(path.join(DIST, "robots.txt"), robotsTxt(BASE_URL));
   await writeFile(path.join(DIST, `${INDEXNOW_KEY}.txt`), INDEXNOW_KEY);
-  await writeFile(path.join(DIST, "404.html"), shell("en", "home", "Not found — Arrive Within", "The requested Arrive Within page was not found.", `<main id="main" class="article-shell"><header class="article-hero"><p class="eyebrow">404</p><h1>That path has not taken root.</h1><p class="lede">Return to the quiet place we know.</p><a class="primary-action" href="/">Return home</a></header></main>`));
+  await writeFile(path.join(DIST, "404.html"), shell("en", "home", "Not found — Arrive Within", "The requested Arrive Within page was not found.", `<main id="main" class="article-shell"><header class="article-hero"><p class="eyebrow">404</p><h1>That path has not taken root.</h1><p class="lede">Return to the quiet place we know.</p><a class="primary-action" href="/">Return home</a></header></main>`, { indexable: false }));
   await writeFile(path.join(DIST, "_headers"), `/*
   Content-Security-Policy: default-src 'none'; img-src 'self'; media-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), interest-cohort=()

@@ -13,9 +13,11 @@ import {
   resolvePublicBaseURL,
   sha256,
 } from "./lib.mjs";
+import { CONTENT_SIGNAL, LLMS_TXT_PATH, markdownPath, robotsTxt } from "../src/agent-access.mjs";
 import { appStoreURL, repositoryURL, siteContent } from "../src/content.mjs";
 import { INDEXNOW_KEY } from "../src/indexnow-key.mjs";
 import { assertProductionWranglerConfig } from "./cloudflare-config.mjs";
+import { pageMeta } from "./markdown.mjs";
 import { assertPublishedMedia, loadMediaCandidate } from "./published-media.mjs";
 
 const expectedRoutes = ["/", "/de", "/support", "/de/support", "/privacy", "/de/privacy", "/open-source", "/de/open-source"];
@@ -33,6 +35,68 @@ const routeFiles = {
 function localTarget(href) {
   const pathOnly = href.split("#", 1)[0].split("?", 1)[0];
   return pathOnly || null;
+}
+
+function decodeHtml(value) {
+  return value.replaceAll("&lt;", "<").replaceAll("&gt;", ">").replaceAll("&quot;", '"').replaceAll("&#39;", "'").replaceAll("&amp;", "&");
+}
+
+function unescapeMarkdown(value) {
+  return value.replace(/\\([\\`*_[\]<>#+.)-])/g, "$1");
+}
+
+function pageForRoute(route) {
+  const page = { "": "home", "/support": "support", "/privacy": "privacy", "/open-source": "openSource" }[route.replace(/^\/de(?=\/|$)/, "").replace(/^\/$/, "")];
+  if (!page) throw new Error(`${route}: unknown page route`);
+  return page;
+}
+
+// The Markdown representation must carry every visible text segment, link,
+// and described image of its HTML page; only in-page anchors are omitted.
+function assertMarkdownRepresentation({ route, alternate, locale, html, markdown, publicBaseURL, outputFiles }) {
+  const counterpart = locale === "en" ? "de" : "en";
+  const meta = pageMeta(locale, pageForRoute(route));
+  const frontmatter = [
+    "---",
+    `title: ${JSON.stringify(meta.title)}`,
+    `description: ${JSON.stringify(meta.description)}`,
+    `url: ${JSON.stringify(`${publicBaseURL}${route}`)}`,
+    `language: ${JSON.stringify(locale)}`,
+    "alternates:",
+    `  ${counterpart}: ${JSON.stringify(`${publicBaseURL}${alternate}`)}`,
+    `content_signal: ${JSON.stringify(CONTENT_SIGNAL)}`,
+    "---",
+    "",
+  ].join("\n");
+  if (!markdown.startsWith(frontmatter)) throw new Error(`${route}: Markdown frontmatter must bind title, description, canonical URL, language, alternate, and content signal`);
+  if (/(^|[^\\])<\/?[a-z][^>]*>/im.test(markdown)) throw new Error(`${route}: Markdown must not contain raw HTML`);
+  const readable = unescapeMarkdown(markdown);
+  const visible = `${html.match(/<main\b[\s\S]*?<\/main>/)?.[0] ?? ""}${html.match(/<footer\b[\s\S]*?<\/footer>/)?.[0] ?? ""}`;
+  const segments = visible
+    .replace(/<a\b[^>]*\bhref="#[^"]*"[^>]*>[\s\S]*?<\/a>/g, " ")
+    .replace(/<span class="mode-number">[\s\S]*?<\/span>/g, " ")
+    .split(/<[^>]+>/)
+    .map((segment) => decodeHtml(segment).trim())
+    .filter(Boolean);
+  if (segments.length < 8) throw new Error(`${route}: page text extraction found too little content`);
+  for (const segment of segments) {
+    if (!readable.includes(segment)) throw new Error(`${route}: Markdown is missing page text: ${segment.slice(0, 80)}`);
+  }
+  for (const [, href] of visible.matchAll(/\bhref="([^"#][^"]*)"/g)) {
+    const target = href.startsWith("https://") ? href : `${publicBaseURL}${href}`;
+    if (!markdown.includes(`](${target})`)) throw new Error(`${route}: Markdown is missing link ${target}`);
+  }
+  for (const [tag] of visible.matchAll(/<img\b[^>]*>/g)) {
+    const alt = decodeHtml(tag.match(/\balt="([^"]*)"/)?.[1] ?? "");
+    const src = tag.match(/\bsrc="([^"]+)"/)?.[1];
+    if (alt && !readable.includes(`![${alt}](${publicBaseURL}${src})`)) throw new Error(`${route}: Markdown is missing described image ${src}`);
+  }
+  for (const [, target] of markdown.matchAll(/\]\(([^)\s]+)\)/g)) {
+    if (target === repositoryURL || target === appStoreURL) continue;
+    const url = new URL(target);
+    if (url.origin !== publicBaseURL || url.search || url.hash) throw new Error(`${route}: Markdown has an unapproved link ${target}`);
+    if (!expectedRoutes.includes(url.pathname) && !outputFiles.includes(url.pathname.slice(1))) throw new Error(`${route}: Markdown link does not resolve: ${target}`);
+  }
 }
 
 function inspectPng(file, bytes, size) {
@@ -198,8 +262,23 @@ async function main() {
     if (!sitemap.includes(`<loc>${publicBaseURL}${route}</loc>`)) throw new Error(`sitemap missing canonical URL for ${route}`);
   }
   const robots = await readFile(path.join(DIST, "robots.txt"), "utf8");
-  if (robots !== `User-agent: *\nAllow: /\nSitemap: ${publicBaseURL}/sitemap.xml\n`) {
-    throw new Error("robots.txt must point to the canonical apex sitemap");
+  if (robots !== robotsTxt(publicBaseURL) || !robots.includes(`User-agent: *\nContent-Signal: ${CONTENT_SIGNAL}\nAllow: /\nSitemap: ${publicBaseURL}/sitemap.xml\n`)) {
+    throw new Error("robots.txt must allow public pages, declare the reviewed Content Signals, and point to the canonical apex sitemap");
+  }
+  const llms = await readFile(path.join(DIST, LLMS_TXT_PATH.slice(1)), "utf8");
+  const llmsLinks = [...llms.matchAll(/\]\(([^)\s]+)\)/g)].map((match) => match[1]).sort();
+  const expectedLlmsLinks = [...expectedRoutes.map((route) => `${publicBaseURL}${markdownPath(route)}`), repositoryURL, appStoreURL].sort();
+  if (
+    !llms.startsWith(`# Arrive Within\n\n> ${siteContent.en.home.metaDescription}\n\n`)
+    || JSON.stringify(llmsLinks) !== JSON.stringify(expectedLlmsLinks)
+    || !llms.includes("## English\n") || !llms.includes("## Deutsch\n") || !llms.includes("## Optional\n")
+    || !llms.includes(CONTENT_SIGNAL)
+  ) {
+    throw new Error("llms.txt must summarize the site and link exactly to every Markdown page, the App Store listing, and the public source");
+  }
+  const notFound = await readFile(path.join(DIST, "404.html"), "utf8");
+  if (!notFound.includes('<meta name="robots" content="noindex">') || /rel="(?:canonical|alternate)"|property="og:url"/.test(notFound)) {
+    throw new Error("404 page must be noindex and must not claim canonical or language URLs");
   }
   if (!/^[a-f\d]{8,128}$/i.test(INDEXNOW_KEY)) throw new Error("IndexNow key must contain 8 to 128 hexadecimal characters");
   const publicKeyName = `${INDEXNOW_KEY}.txt`;
@@ -239,6 +318,10 @@ async function main() {
     for (const [language, target] of [[expectedLang, route], [counterpart, alternate], ["x-default", english]]) {
       if (!html.includes(`rel="alternate" hreflang="${language}" href="${publicBaseURL}${target}"`)) throw new Error(`${route}: missing reciprocal ${language} alternate`);
     }
+    const markdownFile = markdownPath(route).slice(1);
+    if (!outputFiles.includes(markdownFile)) throw new Error(`${route}: missing Markdown representation ${markdownFile}`);
+    const markdown = await readFile(path.join(DIST, markdownFile), "utf8");
+    assertMarkdownRepresentation({ route, alternate, locale: expectedLang, html, markdown, publicBaseURL, outputFiles });
     if (!html.includes('property="og:site_name" content="Arrive Within"') || !html.includes('property="og:image:alt"')) throw new Error(`${route}: incomplete social metadata`);
     if (!html.includes('rel="icon" type="image/png" sizes="40x40" href="/assets/brand-icon-40.png"')) throw new Error(`${route}: missing browser icon`);
     if (!html.includes('rel="apple-touch-icon" sizes="180x180" href="/assets/brand-icon-180.png"')) throw new Error(`${route}: missing Apple touch icon`);
@@ -304,9 +387,10 @@ async function main() {
     }
   }
 
-  const allHtml = (await Promise.all(Object.values(routeFiles).map((file) => readFile(path.join(DIST, file), "utf8")))).join("\n");
+  const publicTextFiles = [...Object.values(routeFiles), ...expectedRoutes.map((route) => markdownPath(route).slice(1)), LLMS_TXT_PATH.slice(1)];
+  const publicText = (await Promise.all(publicTextFiles.map((file) => readFile(path.join(DIST, file), "utf8")))).join("\n");
   for (const token of ["TODO", "TBD", "lorem ipsum", "App Store badge", "Download now"]) {
-    if (allHtml.toLowerCase().includes(token.toLowerCase())) throw new Error(`website contains forbidden placeholder or release claim: ${token}`);
+    if (publicText.toLowerCase().includes(token.toLowerCase())) throw new Error(`website contains forbidden placeholder or release claim: ${token}`);
   }
   const guidedCopy = {
     "/": ["Three quiet ways to begin.", "42 original English or German practices"],
@@ -364,12 +448,12 @@ async function main() {
     throw new Error("edge/wrangler.toml must route document and unknown paths before static assets");
   }
   const workerSource = await readFile(path.join(ROOT, "edge", "worker.mjs"), "utf8");
-  for (const required of ["ASSETS.fetch", "observeDocument(request, response, config, context)", "measurementResponse(request, config, context)", "OPT_OUT_PATH", "OPT_IN_PATH"]) {
+  for (const required of ["ASSETS.fetch", "observeDocument(request, response, config, context)", "measurementResponse(request, config, context)", "OPT_OUT_PATH", "OPT_IN_PATH", "negotiatedMarkdown(request, url, env.ASSETS)", "withAgentDiscovery(assetResponse, url)"]) {
     if (!workerSource.includes(required)) throw new Error(`edge/worker.mjs missing required behavior: ${required}`);
   }
 
   const fullHash = await hashTree(DIST);
-  process.stdout.write(`Website validation passed: ${expectedRoutes.length} bilingual routes, exact published media, 31 bound responsive images, 2 provenance-bound brand icons, released CTAs, script-bound previews, ${fullHash.files.length} output files; build SHA-256 ${fullHash.sha256}. Pending-review originals are excluded. Production custom-domain configuration is present; this local build is not deployment proof.\n`);
+  process.stdout.write(`Website validation passed: ${expectedRoutes.length} bilingual routes with content-equivalent Markdown, llms.txt, Content Signals, exact published media, 31 bound responsive images, 2 provenance-bound brand icons, released CTAs, script-bound previews, ${fullHash.files.length} output files; build SHA-256 ${fullHash.sha256}. Pending-review originals are excluded. Production custom-domain configuration is present; this local build is not deployment proof.\n`);
 }
 
 main().catch((error) => {

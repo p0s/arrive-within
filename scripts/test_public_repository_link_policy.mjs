@@ -5,6 +5,7 @@ import {
   isIntentionalPublicRepositorySurface,
   maskIntentionalPublicRepositoryURLs,
   publicAnalyticsOptOutCookie,
+  publicIngestContractVersion,
   privateLocalDirectory,
   publicRepositoryURL,
   repositoryOwnerHandle,
@@ -13,8 +14,25 @@ import {
 assert.equal(isIntentionalPublicRepositorySurface("README.md"), true);
 assert.equal(isIntentionalPublicRepositorySurface("Website/src/content.mjs"), true);
 assert.equal(isIntentionalPublicRepositorySurface("website-dist/de/open-source/index.html"), true);
+assert.equal(isIntentionalPublicRepositorySurface("website-dist/de/open-source/index.md"), true);
+assert.equal(isIntentionalPublicRepositorySurface("website-dist/llms.txt"), true);
+assert.equal(isIntentionalPublicRepositorySurface("website-dist/assets/llms.txt"), false);
+assert.equal(isIntentionalPublicRepositorySurface("website-dist/assets/measurement.js"), true);
+assert.equal(isIntentionalPublicRepositorySurface("website-dist/assets/site.js"), false);
+assert.equal(isIntentionalPublicRepositorySurface("website-dist/measurement.js"), false);
+assert.equal(isIntentionalPublicRepositorySurface("Website/edge/measurement.mjs"), false);
 assert.equal(isIntentionalPublicRepositorySurface("Apps/ArriveWithin/Sources/App.swift"), false);
 assert.equal(isIntentionalPublicRepositorySurface("docs/evidence/INDEX.md"), false);
+for (const surface of ["website-dist/index.md", "website-dist/llms.txt"]) {
+  assert.deepEqual(detectPublicPrivacySignatures(`- [Source on GitHub](${publicRepositoryURL})`, surface), []);
+  assert.equal(detectPublicPrivacySignatures(`[License](${publicRepositoryURL}/blob/main/LICENSE)`, surface).includes("owner-handle"), true);
+}
+for (const surface of ["Website/src/measurement.js", "website-dist/assets/measurement.js", "Website/edge/measurement.test.mjs"]) {
+  assert.deepEqual(detectPublicPrivacySignatures(`if (target.href === "${publicRepositoryURL}") send();`, surface), []);
+  for (const forbidden of [`"${publicRepositoryURL}/issues"`, `window.${repositoryOwnerHandle}MeasurementStarted`]) {
+    assert.equal(detectPublicPrivacySignatures(forbidden, surface).includes("owner-handle"), true);
+  }
+}
 
 assert.equal(maskIntentionalPublicRepositoryURLs(publicRepositoryURL, "README.md"), "");
 assert.equal(maskIntentionalPublicRepositoryURLs(publicRepositoryURL, "Website/src/content.mjs"), "");
@@ -61,6 +79,19 @@ assert.equal(
   detectPublicPrivacySignatures(publicAnalyticsOptOutCookie, "docs/example.md").includes("owner-handle"),
   true,
 );
+assert.deepEqual(detectPublicPrivacySignatures(`{ cookie: '${publicAnalyticsOptOutCookie}=1' }`, "Website/edge/measurement.test.mjs"), []);
+
+const contractDeclaration = `export const CONTRACT_VERSION = '${publicIngestContractVersion}';`;
+assert.deepEqual(detectPublicPrivacySignatures(contractDeclaration, "Website/edge/ingest-client.mjs"), []);
+for (const nearMatch of [
+  `${publicIngestContractVersion}-next`, `x${publicIngestContractVersion}`,
+  `${repositoryOwnerHandle}-ingest-3-20270101`, repositoryOwnerHandle,
+]) {
+  assert.equal(detectPublicPrivacySignatures(nearMatch, "Website/edge/ingest-client.mjs").includes("owner-handle"), true);
+}
+for (const surface of ["Website/edge/measurement.mjs", "Website/src/measurement.js", "docs/example.md"]) {
+  assert.equal(detectPublicPrivacySignatures(contractDeclaration, surface).includes("owner-handle"), true);
+}
 const githubSecretFixture = `ghp_${"A".repeat(36)}`;
 const privateIgnoreRule = `${privateLocalDirectory}/`;
 for (const source of [privateIgnoreRule, `# private configuration\n${privateIgnoreRule}\n`, `${privateIgnoreRule}\r\n`]) {
