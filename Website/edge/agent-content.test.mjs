@@ -86,6 +86,34 @@ test('direct Markdown and llms.txt files carry UTF-8 types, canonical page links
   assert.equal(llms.ingest.length, 0);
 });
 
+test('the Agent Skills index and SKILL.md files carry their media types, CORS, revalidation, and content signals', async () => {
+  const json = (status = 200) => new Response(status === 304 ? null : '{"skills":[]}', { status, headers: { 'content-type': 'application/json', etag: '"idx"' } });
+  const index = await send(request('/.well-known/agent-skills/index.json', { accept: '*/*' }), { '/.well-known/agent-skills/index.json': () => json() });
+  assert.equal(index.response.status, 200);
+  assert.equal(index.response.headers.get('content-type'), 'application/json');
+  assert.equal(index.response.headers.get('access-control-allow-origin'), '*');
+  assert.equal(index.response.headers.get('cache-control'), 'public, max-age=0, must-revalidate');
+  assert.equal(index.response.headers.get('content-signal'), SIGNAL);
+  assert.equal(index.response.headers.get('etag'), '"idx"');
+  assert.equal(index.response.headers.get('x-content-type-options'), 'nosniff');
+  assert.equal(index.ingest.length, 0);
+  const skill = await send(request('/.well-known/agent-skills/arrive-within-answers/SKILL.md', {}, 'HEAD'), {
+    '/.well-known/agent-skills/arrive-within-answers/SKILL.md': () => new Response(null, { headers: { 'content-type': 'text/markdown' } }),
+  });
+  assert.equal(skill.response.headers.get('content-type'), 'text/markdown; charset=utf-8');
+  assert.equal(skill.response.headers.get('access-control-allow-origin'), '*');
+  assert.deepEqual(skill.assets, [{ pathname: '/.well-known/agent-skills/arrive-within-answers/SKILL.md', method: 'HEAD' }]);
+  const revalidated = await send(request('/.well-known/agent-skills/index.json', { 'if-none-match': '"idx"' }), { '/.well-known/agent-skills/index.json': () => json(304) });
+  assert.equal(revalidated.response.status, 304);
+  assert.equal(revalidated.response.headers.get('cache-control'), 'public, max-age=0, must-revalidate');
+  for (const path of ['/.well-known/agent-skills/missing/SKILL.md', '/.well-known/agent-skills/', '/.well-known/agent-skills/Bad--Name/SKILL.md']) {
+    const missing = await send(request(path));
+    assert.equal(missing.response.status, 404, path);
+    assert.equal(missing.response.headers.get('access-control-allow-origin'), null, path);
+    assert.equal(missing.ingest.length, 0, path);
+  }
+});
+
 test('negotiation preserves method, validators, and existing Vary dimensions', async () => {
   const head = await send(request('/privacy', { accept: 'text/markdown' }, 'HEAD'), {
     '/privacy/index.md': () => new Response(null, { headers: { 'content-type': 'text/markdown', vary: 'Accept-Encoding' } }),

@@ -1,5 +1,5 @@
 import { appStoreURL, repositoryURL, siteContent } from "../src/content.mjs";
-import { CONTENT_SIGNAL, markdownPath } from "../src/agent-access.mjs";
+import { AGENT_SKILLS_INDEX_PATH, CONTENT_SIGNAL, markdownPath } from "../src/agent-access.mjs";
 
 const PAGES = ["home", "support", "privacy", "openSource"];
 
@@ -179,7 +179,7 @@ export function renderPageMarkdown({ locale, page, baseURL, routeFor }) {
   return `${blocks.join("\n\n")}\n`;
 }
 
-export function renderLlmsTxt({ baseURL, routeFor }) {
+export function renderLlmsTxt({ baseURL, routeFor, skills }) {
   const english = siteContent.en;
   const entry = (locale, page) => {
     const meta = pageMeta(locale, page);
@@ -194,6 +194,9 @@ export function renderLlmsTxt({ baseURL, routeFor }) {
     PAGES.map((page) => entry("en", page)).join("\n"),
     "## Deutsch",
     PAGES.map((page) => entry("de", page)).join("\n"),
+    "## Agent skills",
+    `Task instructions in the Agent Skills format. The ${link("discovery index", `${baseURL}${AGENT_SKILLS_INDEX_PATH}`)} lists each skill with the SHA-256 digest of its file.`,
+    skills.map((skill) => `- ${link(skill.name, `${baseURL}${skill.path}`)}: ${text(skill.description)}`).join("\n"),
     "## Optional",
     list([
       `${link(english.markdown.appStoreLink, appStoreURL)}: ${text(english.footer.status)}`,
