@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { connectVerifiedBrowser } from "../../../scripts/lib/verified-browser.mjs";
 
 import { createHash } from "node:crypto";
 import { spawn, spawnSync } from "node:child_process";
@@ -39,7 +40,7 @@ let browser;
 
 try {
   await waitForRenderer();
-  browser = await playwright.chromium.launch({ headless: true });
+  browser = await connectVerifiedBrowser(playwright.chromium);
   const context = await browser.newContext({
     bypassCSP: true,
     colorScheme: "light",
@@ -155,6 +156,7 @@ try {
     capture: {
       viewport: { width: 1280, height: 720, device_scale_factor: 1 },
       browser: playwright.chromium.name(),
+      browser_version: browser.version(),
       playwright_version: packageVersion(join(projectRoot, "Marketing/AppStoreScreenshots/node_modules/playwright/package.json")),
       external_network: "blocked",
       external_requests_observed: 0,

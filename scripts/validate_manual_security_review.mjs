@@ -9,8 +9,8 @@ const PUBLIC_TEXT = path.join(ROOT, "docs", "qa", "security", "manual-security-r
 const PRIVATE_JSON = path.join(ROOT, ".evidence", "security", "manual-security-review-full.json");
 
 const EXPECTED_LOCKS = {
-  "Renderer/pnpm-lock.yaml": "76275a4e4a738deb91243eff72547d3edab4b3c4444de2a6c442ecdc01cf8ab1",
-  "Marketing/AppStoreScreenshots/pnpm-lock.yaml": "292b8c0d063736b0824e74367270046bf20efc8697b048a924bc6861c59ecc8f",
+  "Renderer/pnpm-lock.yaml": "fd79ddec732c5e3dfe39116a34e8e1b37a7e3fef3c65f15f7840e55af441598a",
+  "Marketing/AppStoreScreenshots/pnpm-lock.yaml": "3045c15ac01d5a8532b227a4579be86a26357109a0a1f43a50c319c57b5536f7",
 };
 
 const checks = [];
@@ -53,6 +53,7 @@ async function main() {
     "Marketing/AppStoreScreenshots/package.json",
     "Marketing/AppStoreScreenshots/pnpm-lock.yaml",
     "Marketing/AppStoreScreenshots/scripts/contracts.ts",
+    "Marketing/AppStoreScreenshots/scripts/connect-browser.ts",
     "Marketing/AppStoreScreenshots/scripts/export-playwright.ts",
     "Marketing/AppStoreScreenshots/scripts/ingest-current-source-xcresults.ts",
     "Marketing/AppStoreScreenshots/scripts/validate-plan.ts",
@@ -76,6 +77,9 @@ async function main() {
     "docs/release/app-privacy-worksheet.json",
     "project.yml",
     "scripts/lib/prospective-public-files.mjs",
+    "scripts/lib/verified-browser.mjs",
+    "scripts/lib/verified-browser.d.mts",
+    "scripts/test_verified_browser.mjs",
     "scripts/test_prospective_public_manifest.mjs",
     "services/feedback-receiver/feedback_receiver.py",
     "services/feedback-receiver/test_feedback_receiver.py",
@@ -93,7 +97,7 @@ async function main() {
   );
 
   for (const [file, expected] of Object.entries(EXPECTED_LOCKS)) {
-    record(`audited-lock:${file}`, sha256(byName.get(file)) === expected, `${file} matches the exact production graph audited on 2026-08-10.`);
+    record(`audited-lock:${file}`, sha256(byName.get(file)) === expected, `${file} matches the reviewed lock: the 2026-08-10 application graph is unchanged, with pnpm 12.16.1 tooling metadata reviewed on 2026-11-03.`);
   }
   const rendererPackage = JSON.parse(byName.get("Renderer/package.json"));
   const marketingPackage = JSON.parse(byName.get("Marketing/AppStoreScreenshots/package.json"));

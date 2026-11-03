@@ -1,3 +1,4 @@
+import { connectVerifiedBrowser } from "../../scripts/lib/verified-browser.mjs";
 import { createRequire } from "node:module";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -341,7 +342,7 @@ async function main() {
   let browser;
   try {
     await mkdir(EVIDENCE, { recursive: true });
-    browser = await chromium.launch({ headless: true });
+    browser = await connectVerifiedBrowser(chromium);
     const cases = [];
     for (const viewport of VIEWPORTS) {
       for (const route of ROUTES) cases.push(await inspectRoute(browser, route, viewport));
@@ -357,7 +358,7 @@ async function main() {
       status: failedCases.length || languageRoundTrip.status !== "passed" || reducedMotion.status !== "passed" || textZoom.some((item) => item.status !== "passed") ? "failed" : "passed",
       generated_at: null,
       generation_time_policy: "omitted-for-byte-reproducibility",
-      browser: "Playwright Chromium 1.61.1",
+      browser: `Chrome ${browser.version()}`,
       served_from: "Playwright route fulfillment from Website/dist without a listening socket",
       external_network_policy: "blocked and treated as failure",
       routes: ROUTES,

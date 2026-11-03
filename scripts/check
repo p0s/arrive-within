@@ -5,12 +5,14 @@ script_directory="${0:A:h}"
 project_root="${script_directory:h}"
 cd "$project_root"
 
-expected_node="v26.7.0"
-expected_pnpm="11.20.0"
-preferred_node_bin="${ARRIVE_WITHIN_NODE_BIN_DIR:-/opt/homebrew/Cellar/node/26.7.0/bin}"
-preferred_pnpm_bin="${ARRIVE_WITHIN_PNPM_BIN_DIR:-/opt/homebrew/Cellar/pnpm/11.20.0/bin}"
-if [[ -x "$preferred_node_bin/node" && -x "$preferred_pnpm_bin/pnpm" ]]; then
-  export PATH="$preferred_pnpm_bin:$preferred_node_bin:$PATH"
+expected_node="v26.13.0"
+expected_pnpm="12.16.1"
+# Optional local overrides never select a machine-specific installation by default.
+if [[ -n "${ARRIVE_WITHIN_PNPM_BIN_DIR:-}" ]]; then
+  export PATH="$ARRIVE_WITHIN_PNPM_BIN_DIR:$PATH"
+fi
+if [[ -n "${ARRIVE_WITHIN_NODE_BIN_DIR:-}" ]]; then
+  export PATH="$ARRIVE_WITHIN_NODE_BIN_DIR:$PATH"
 fi
 if [[ "$(node --version)" != "$expected_node" ]]; then
   print -u2 "Node $expected_node is required; selected $(node --version). Set ARRIVE_WITHIN_NODE_BIN_DIR to its bin directory."
@@ -27,6 +29,7 @@ print "== Guarded XCTest command classification =="
 zsh scripts/test_xcodebuild_runtime_test_preflight.zsh
 
 print "== Public repository boundary =="
+node --test scripts/test_verified_browser.mjs
 node --test scripts/test_public_repository_archive_scanner.mjs
 node scripts/test_public_repository_link_policy.mjs
 node --test scripts/test_private_publication.mjs

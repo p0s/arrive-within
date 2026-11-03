@@ -1,10 +1,10 @@
 #!/usr/bin/env tsx
+import { connectScreenshotBrowser } from "./connect-browser";
 import { createHash } from "node:crypto";
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import JSZip from "jszip";
-import { chromium } from "playwright";
 import sharp from "sharp";
 
 import {
@@ -222,10 +222,8 @@ async function main() {
   const unexpectedPngs = (await readdir(root)).filter((file) => file.endsWith(".png") && !expectedPngNames.includes(file));
   if (unexpectedPngs.length) throw new Error(`refusing output set with stale/unexpected PNGs: ${unexpectedPngs.join(", ")}`);
 
-  // Overlapping device frames must rasterize identically across passes.
-  // SwiftShader's GPU antialiasing can vary by several channel values at the
-  // frame edge, which is larger than the intentional LSB normalization.
-  const browser = await chromium.launch({ args: ["--disable-gpu", "--disable-skia-runtime-opts"] });
+  // Use the host-verified current renderer; keep the existing reproducibility gate.
+  const browser = await connectScreenshotBrowser();
   const items: OutputItem[] = [];
   let blockedExternalRequests = 0;
   let contactSheet = { height: 0, sha256: "", width: 0 };

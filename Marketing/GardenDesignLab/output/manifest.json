@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "state": "local-design-candidates-owner-selection-pending",
-  "generated_at": "2026-09-30T07:30:44.282Z",
+  "generated_at": "2026-11-03T08:13:35.308Z",
   "source": {
     "generator": "Marketing/GardenDesignLab/scripts/generate-garden-design-lab.mjs",
-    "generator_sha256": "ca7fd95170caa4bf0de9aa966f17f9d45b5f185844ddf97c010275f0f0fe6850",
+    "generator_sha256": "80c0034129f6a2c193ae08eb4663331e85c83e31e07babc06a502c97b7494908",
     "files": [
       {
         "path": "Renderer/src/scene.ts",
@@ -41,6 +41,7 @@
     ]
   },
   "capture": {
+    "browser_version": "156.0.8078.79",
     "renderer_authority": "shared-versioned-GardenState-v1",
     "external_network": "blocked",
     "external_requests_observed": 0,
@@ -72,8 +73,8 @@
         "device": "iphone",
         "preset": "empty",
         "path": "output/verdant-atelier/iphone/empty.png",
-        "sha256": "8a81bbc7b3105023cddd35c738b6c97cfdc6349456971c1556ec5e6b014d0fc6",
-        "bytes": 43617,
+        "sha256": "ed85fbd1637bcd98cbf9bb21d77bba4b73bfe82fbeda536700e1e21785636d4c",
+        "bytes": 44468,
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -120,8 +121,8 @@
         "device": "iphone",
         "preset": "first-growth",
         "path": "output/verdant-atelier/iphone/first-growth.png",
-        "sha256": "0816fca085bd19f996d8d8c00294f99a4a7ad23890223d43f1050706cf9b8e21",
-        "bytes": 53491,
+        "sha256": "8f863231b1389fe96f03e61c863f2ae46e5c888bae26d044bfed81ffb82b0471",
+        "bytes": 55255,
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -168,8 +169,8 @@
         "device": "iphone",
         "preset": "milestone-reveal",
         "path": "output/verdant-atelier/iphone/milestone-reveal.png",
-        "sha256": "ee9868663ec3ecddf46dcf7ca4ab211e09238214766d918c5c9e32aba20b7589",
-        "bytes": 92487,
+        "sha256": "84bead7f35ee5da889dec9ce2f6963ea0b183ec0287b3de8a7c6ac047a85fe91",
+        "bytes": 97715,
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -216,8 +217,8 @@
         "device": "iphone",
         "preset": "micro-growth",
         "path": "output/verdant-atelier/iphone/micro-growth.png",
-        "sha256": "45e54976973ff1d65e4e661b5b81cd5cec4847ee5632bb90aabe2e600255adea",
-        "bytes": 116045,
+        "sha256": "08079ba9732c352be360ef15ede3d2218f133b230f554d3777781d52bb83759e",
+        "bytes": 120000,
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -240,7 +241,7 @@
           "triangles": 33951,
           "geometries": 31,
           "textures": 8,
-          "programs": 28,
+          "programs": 27,
           "rebuildCount": 4,
           "context": "available",
           "effectivePixelRatio": 1,
@@ -249,7 +250,7 @@
           "worldDetailCount": 133,
           "worldBirdCount": 3,
           "worldGroundAnimalCount": 2,
-          "revealActive": false,
+          "revealActive": true,
           "surfacePattern": "natural-grain",
           "edgeMode": "none",
           "shadingBands": 2,
@@ -264,8 +265,8 @@
         "device": "iphone",
         "preset": "mature",
         "path": "output/verdant-atelier/iphone/mature.png",
-        "sha256": "8200a1464b500d180d8ec80a74db5ec66c76722a38a62ee0c8479375cbb4fcde",
-        "bytes": 115197,
+        "sha256": "6d22224e66df91d0efbfdd0a610adbb9c63420b61b3177d02a5e62f1da9212f0",
+        "bytes": 120415,
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -312,8 +313,8 @@
         "device": "iphone",
         "preset": "empty",
         "path": "output/paper-sanctuary/iphone/empty.png",
-        "sha256": "0ace4f3d7928eb8afe79653ccecfea8c6f655249e9e0a3ee781dcf550e7afc73",
-        "bytes": 50509,
+        "sha256": "a11f963d38f3bb129968094bec6cf132d940b5ba57db563994a9ddfe0a487c14",
+        "bytes": 49824,
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -360,8 +361,8 @@
         "device": "iphone",
         "preset": "first-growth",
         "path": "output/paper-sanctuary/iphone/first-growth.png",
-        "sha256": "e291901eccc4f1e2e500486d8676fdde2c1cbfd08f9f61cc7c2b114372b5eb94",
-        "bytes": 62951,
+        "sha256": "d34c6a265d7e7eab65546f4d0c6ed1b80da62f61ebff6a13675189ba44be9e44",
+        "bytes": 61593,
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -408,8 +409,8 @@
         "device": "iphone",
         "preset": "milestone-reveal",
         "path": "output/paper-sanctuary/iphone/milestone-reveal.png",
-        "sha256": "fe1f1b122814e5f3ab8e5afbeccfde01421e251652a3a55375a171485ecaf282",
-        "bytes": 104435,
+        "sha256": "96a58fd0f34c9aef936082c9733e6710ecdd72daf99b30f5691d701f3a9625ea",
+        "bytes": 108246,
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -456,8 +457,8 @@
         "device": "iphone",
         "preset": "micro-growth",
         "path": "output/paper-sanctuary/iphone/micro-growth.png",
-        "sha256": "77ebe57f5739ca217b09564cb41ffb55ab026cbcbb4ca30b34888f852acc6d04",
-        "bytes": 132420,
+        "sha256": "ba2dc40854879b7fd20a360613db11dee0a39e99fb4c3021699df0c30d28566c",
+        "bytes": 130143,
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -480,7 +481,7 @@
           "triangles": 42225,
           "geometries": 30,
           "textures": 8,
-          "programs": 30,
+          "programs": 29,
           "rebuildCount": 4,
           "context": "available",
           "effectivePixelRatio": 1,
@@ -489,7 +490,7 @@
           "worldDetailCount": 133,
           "worldBirdCount": 3,
           "worldGroundAnimalCount": 2,
-          "revealActive": false,
+          "revealActive": true,
           "surfacePattern": "natural-grain",
           "edgeMode": "none",
           "shadingBands": 2,
@@ -504,8 +505,8 @@
         "device": "iphone",
         "preset": "mature",
         "path": "output/paper-sanctuary/iphone/mature.png",
-        "sha256": "c16c54e0e656b2ba3b605e5693c3b855143ebb04a2fe133b421173d71e43677f",
-        "bytes": 132573,
+        "sha256": "7810d0318100e662376a9fae4866c229176c5f742ca25c468dc0e38be6f20adb",
+        "bytes": 137629,
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -552,8 +553,8 @@
         "device": "iphone",
         "preset": "empty",
         "path": "output/twilight-refuge/iphone/empty.png",
-        "sha256": "184b261337742e2ffe5ea320a72cea8f055baa48e81159394c722bddedc27f2d",
-        "bytes": 42344,
+        "sha256": "d7f0dd193967809c26419087ad24b56863f931e747baa3eafcd3bfff9805db87",
+        "bytes": 42964,
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -600,8 +601,8 @@
         "device": "iphone",
         "preset": "first-growth",
         "path": "output/twilight-refuge/iphone/first-growth.png",
-        "sha256": "c4ee005d22e1b2c35db2a816f8015ad4b8e6e3bf197b5a6b55068dea65018ce3",
-        "bytes": 50729,
+        "sha256": "d6cac67f171a801ba56e0246f92b9bd3805c99b7e541b1d84ee5f0bcac57d201",
+        "bytes": 51843,
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -648,8 +649,8 @@
         "device": "iphone",
         "preset": "milestone-reveal",
         "path": "output/twilight-refuge/iphone/milestone-reveal.png",
-        "sha256": "1182083c6a7b1f1d26d819600f01cc2adaa4c80a8414e23b49d071dace19b749",
-        "bytes": 86843,
+        "sha256": "ded8325ffa0b77f7391a872d98b5d414846dfbbdd5ed49dadd68a3986a3449ec",
+        "bytes": 90695,
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -696,8 +697,8 @@
         "device": "iphone",
         "preset": "micro-growth",
         "path": "output/twilight-refuge/iphone/micro-growth.png",
-        "sha256": "25a2ce4bfb981f113e3dc4f102c35f3bdd3eed0b228a2c8e36ff471b5a710bd0",
-        "bytes": 106432,
+        "sha256": "6edb87e54068f4fc953edee2b0c2f94a51e269c9be908025f668f6cddcca4918",
+        "bytes": 108885,
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -720,7 +721,7 @@
           "triangles": 10569,
           "geometries": 30,
           "textures": 7,
-          "programs": 25,
+          "programs": 24,
           "rebuildCount": 4,
           "context": "available",
           "effectivePixelRatio": 1,
@@ -729,7 +730,7 @@
           "worldDetailCount": 133,
           "worldBirdCount": 3,
           "worldGroundAnimalCount": 2,
-          "revealActive": false,
+          "revealActive": true,
           "surfacePattern": "natural-grain",
           "edgeMode": "none",
           "shadingBands": 2,
@@ -744,8 +745,8 @@
         "device": "iphone",
         "preset": "mature",
         "path": "output/twilight-refuge/iphone/mature.png",
-        "sha256": "a5b712bdb61534bdc6cc3575384ef3e99989916181b584de823cc5ed6e74d022",
-        "bytes": 105588,
+        "sha256": "9aa4c82a657fb05b81b012e9817e23fc8cce9d6e1c6e094313f443223257daab",
+        "bytes": 108544,
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -792,8 +793,8 @@
         "device": "ipad",
         "preset": "empty",
         "path": "output/verdant-atelier/ipad/empty.png",
-        "sha256": "9b337edd0187fb412501a8dd3765bb23b284dd9b29ad5d0715b8d90b05c81664",
-        "bytes": 95218,
+        "sha256": "ebcfa6a8ac590dac861f870cb61dd8a0a93429bf7443174e3c4a9bd4c66bc9da",
+        "bytes": 96133,
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -840,8 +841,8 @@
         "device": "ipad",
         "preset": "first-growth",
         "path": "output/verdant-atelier/ipad/first-growth.png",
-        "sha256": "fed828432cc44122305a0de24ac1508398c056629d819c165e2a9ab9d1be1182",
-        "bytes": 115357,
+        "sha256": "065a70506a4a2c763e4caa43bcf8c0793b789a1bb705857f470bac80d52da04b",
+        "bytes": 115745,
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -888,8 +889,8 @@
         "device": "ipad",
         "preset": "milestone-reveal",
         "path": "output/verdant-atelier/ipad/milestone-reveal.png",
-        "sha256": "fe2ef1e9d6cbf6e3ea1b710bedfe4375cd8d749364a33d64ed0ac34da4904910",
-        "bytes": 218079,
+        "sha256": "d2187038c0a7bba96168397bb7f39f37b768bfd9565ac139f386753c03b78d81",
+        "bytes": 213695,
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -936,8 +937,8 @@
         "device": "ipad",
         "preset": "micro-growth",
         "path": "output/verdant-atelier/ipad/micro-growth.png",
-        "sha256": "d7236bbf19bbfaff2001c346bff90b5595c80598ad35746f14714378afde3fee",
-        "bytes": 271333,
+        "sha256": "407ebf1f63fe14ff4130fa53b0323ecc436e6448280c61aa282e6398a898e930",
+        "bytes": 261126,
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -960,7 +961,7 @@
           "triangles": 34383,
           "geometries": 32,
           "textures": 8,
-          "programs": 29,
+          "programs": 28,
           "rebuildCount": 4,
           "context": "available",
           "effectivePixelRatio": 1,
@@ -969,7 +970,7 @@
           "worldDetailCount": 133,
           "worldBirdCount": 3,
           "worldGroundAnimalCount": 2,
-          "revealActive": false,
+          "revealActive": true,
           "surfacePattern": "natural-grain",
           "edgeMode": "none",
           "shadingBands": 2,
@@ -984,8 +985,8 @@
         "device": "ipad",
         "preset": "mature",
         "path": "output/verdant-atelier/ipad/mature.png",
-        "sha256": "7ca1fe5283103e47bc36f3f502c920c77011d24e5d3a826bd9658f3a1e9987d3",
-        "bytes": 267337,
+        "sha256": "340b0d52047f81437e981f788e1574ca625b9c60bcb75aa0ad83b774710110b6",
+        "bytes": 264049,
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -1032,8 +1033,8 @@
         "device": "ipad",
         "preset": "empty",
         "path": "output/paper-sanctuary/ipad/empty.png",
-        "sha256": "8ec2ac8db7490705f57b9d9bad8fc83f6e03e59f9a437bd375657cf5fa807519",
-        "bytes": 108723,
+        "sha256": "a907f2747e333fe706368b478235b28ab5facef1851e38719e59f68de42a82c4",
+        "bytes": 106230,
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -1080,8 +1081,8 @@
         "device": "ipad",
         "preset": "first-growth",
         "path": "output/paper-sanctuary/ipad/first-growth.png",
-        "sha256": "955a713846eb1480020cf01c4e79599768fed45931048a88e51ce73ff413b879",
-        "bytes": 134841,
+        "sha256": "a3b3f73bb234ecbdd0c37889cf62f286a7dfc7403cc4e8b813f006bc143c34ee",
+        "bytes": 131702,
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -1128,8 +1129,8 @@
         "device": "ipad",
         "preset": "milestone-reveal",
         "path": "output/paper-sanctuary/ipad/milestone-reveal.png",
-        "sha256": "c9c49359e92617595fa46456787ad6297e94e43256f88eb30edb172362f6296b",
-        "bytes": 248865,
+        "sha256": "c67d4c2e2be1f073a49bd8ae89b8dccd0396d5d73720442df9474a80102324ca",
+        "bytes": 248974,
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -1176,8 +1177,8 @@
         "device": "ipad",
         "preset": "micro-growth",
         "path": "output/paper-sanctuary/ipad/micro-growth.png",
-        "sha256": "1faa945ccbb71a1e4f2c5293999b3e00595ef8670e2934cfce1ed761ee740362",
-        "bytes": 316575,
+        "sha256": "c892349e8fd4d1b359d3d9187184cf8e16f0a6095d420522960db16aa10714cc",
+        "bytes": 293439,
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -1200,7 +1201,7 @@
           "triangles": 42657,
           "geometries": 31,
           "textures": 8,
-          "programs": 31,
+          "programs": 30,
           "rebuildCount": 4,
           "context": "available",
           "effectivePixelRatio": 1,
@@ -1209,7 +1210,7 @@
           "worldDetailCount": 133,
           "worldBirdCount": 3,
           "worldGroundAnimalCount": 2,
-          "revealActive": false,
+          "revealActive": true,
           "surfacePattern": "natural-grain",
           "edgeMode": "none",
           "shadingBands": 2,
@@ -1224,8 +1225,8 @@
         "device": "ipad",
         "preset": "mature",
         "path": "output/paper-sanctuary/ipad/mature.png",
-        "sha256": "0850d499bf64a46c66fc151ef7f8ad02d227759b31a5ebbb60c7ccfcba3bcd71",
-        "bytes": 305181,
+        "sha256": "f5072ccd781d29b0c1ec2999673602d4ae773e241d74b96f3eff076811b0e81f",
+        "bytes": 316081,
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -1272,8 +1273,8 @@
         "device": "ipad",
         "preset": "empty",
         "path": "output/twilight-refuge/ipad/empty.png",
-        "sha256": "8dc96427f8be7e839724478f84cb93986776567f69a39eddf8b419249bf3bf5c",
-        "bytes": 80387,
+        "sha256": "b310000426ea634825265609f10cbcb6be55c3c52def95d80c6f39dbedc32650",
+        "bytes": 80287,
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -1320,8 +1321,8 @@
         "device": "ipad",
         "preset": "first-growth",
         "path": "output/twilight-refuge/ipad/first-growth.png",
-        "sha256": "ff9c6fe31f73d533e277b7d23effa7d4ff3355ae2c62af3aff55b3de407902c0",
-        "bytes": 97668,
+        "sha256": "81a6b3f4949e01fd25ab486cf61f352feae38cdfd83eca361b33cead71e83188",
+        "bytes": 97703,
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -1368,8 +1369,8 @@
         "device": "ipad",
         "preset": "milestone-reveal",
         "path": "output/twilight-refuge/ipad/milestone-reveal.png",
-        "sha256": "b7bda752e047edaed7759043a818e3048429ee8234da7bfae6dce6a0c37f75e4",
-        "bytes": 190839,
+        "sha256": "65b997c7be698c69664f7aa4c0d9baad1fc3b2ed4b3e69fbd1029f5f78dfa784",
+        "bytes": 189742,
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -1416,8 +1417,8 @@
         "device": "ipad",
         "preset": "micro-growth",
         "path": "output/twilight-refuge/ipad/micro-growth.png",
-        "sha256": "bc5b9be27107e80819cfcffe7d257986390f28c7eb4a38dcb75d22d50cdbc00b",
-        "bytes": 240477,
+        "sha256": "478d219e516d513072f573c73518b0dd92d36836e158c8ec7a574edc67373edd",
+        "bytes": 237131,
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -1440,7 +1441,7 @@
           "triangles": 11001,
           "geometries": 31,
           "textures": 7,
-          "programs": 26,
+          "programs": 25,
           "rebuildCount": 4,
           "context": "available",
           "effectivePixelRatio": 1,
@@ -1449,7 +1450,7 @@
           "worldDetailCount": 133,
           "worldBirdCount": 3,
           "worldGroundAnimalCount": 2,
-          "revealActive": false,
+          "revealActive": true,
           "surfacePattern": "natural-grain",
           "edgeMode": "none",
           "shadingBands": 2,
@@ -1464,8 +1465,8 @@
         "device": "ipad",
         "preset": "mature",
         "path": "output/twilight-refuge/ipad/mature.png",
-        "sha256": "ef27bf57f5d0fa3e8f318dbd204abde46c255e75079057c0c26bd8472ac3460b",
-        "bytes": 240437,
+        "sha256": "e16c7b239e66948935adc39eb5472b5d693f5797ee97d74d2c7ce462639926b3",
+        "bytes": 237839,
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -1513,7 +1514,7 @@
         "direction": "verdant-atelier",
         "milestone": 1,
         "path": "output/verdant-atelier/milestones/01.png",
-        "sha256": "00cacf78ee781d11de0cb8e40ac8cf4b81ecac6fc51febb548c87fae913f5e58",
+        "sha256": "92f85fbc2c1207a8a2ca1852ccc030960dcdc639053432af01d64a464135ad9c",
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -1559,7 +1560,7 @@
         "direction": "verdant-atelier",
         "milestone": 2,
         "path": "output/verdant-atelier/milestones/02.png",
-        "sha256": "b1bd318b0fa97c17018ba0411ba7055acc741621b697dd447a22bb156f3a1fd3",
+        "sha256": "d24f0a1588c1705f44781a08cee73809256027ebf1b9afb9c5ad7374ae3c8286",
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -1605,7 +1606,7 @@
         "direction": "verdant-atelier",
         "milestone": 3,
         "path": "output/verdant-atelier/milestones/03.png",
-        "sha256": "350fbbb6d4f6d9e0b90da2e24fdbfa7f473456aa40d924c01e3f1d6755558447",
+        "sha256": "174b8d181eb31f7f89e17ae86e6a1d6c486ba701f4aa4eb8e4fd8cbce360e9da",
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -1651,7 +1652,7 @@
         "direction": "verdant-atelier",
         "milestone": 4,
         "path": "output/verdant-atelier/milestones/04.png",
-        "sha256": "d2bd3fff3cf40a863eb92efe39e110fffe5074bcc7ab1b469f1b162b9f28389c",
+        "sha256": "17578c902ba108de81e32d08e3b3388f275d4bc8ab5efc12e6eb7315eacf336c",
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -1697,7 +1698,7 @@
         "direction": "verdant-atelier",
         "milestone": 5,
         "path": "output/verdant-atelier/milestones/05.png",
-        "sha256": "39218d120e6ec4db179ab2fe8d97add5ecbfc701feef7557c1baf4808b4b3cc6",
+        "sha256": "fceeb0585c436c2289d63418c866424ad464aa1c4dd9ca8091eb9067b70dc882",
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -1743,7 +1744,7 @@
         "direction": "verdant-atelier",
         "milestone": 6,
         "path": "output/verdant-atelier/milestones/06.png",
-        "sha256": "9130e4f8b8878df4cb4b5a052de41d72608bf40df9cb9571654efea06dc51efb",
+        "sha256": "e1bc87de8ce0c874d754a4c384fa9a28504d28583335275be9aa929fde536e15",
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -1789,7 +1790,7 @@
         "direction": "verdant-atelier",
         "milestone": 7,
         "path": "output/verdant-atelier/milestones/07.png",
-        "sha256": "2021fd8fe8aec612824261b23a71b96690f0dfe3b724a39ac2af389c9b8d1370",
+        "sha256": "584fd50fc29f4d47679bc1b2e7d421a9a36d92e76c707657b886112717b9bfd1",
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -1835,7 +1836,7 @@
         "direction": "verdant-atelier",
         "milestone": 8,
         "path": "output/verdant-atelier/milestones/08.png",
-        "sha256": "743c049f92adb9bf328c3c9627646f390463b0768d0da04aebeb74c0ee3ec520",
+        "sha256": "71acaae1072920a6350779a800d0d1fa28ecdc6b2a2a91d228cf4ba19029ac2b",
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -1881,7 +1882,7 @@
         "direction": "verdant-atelier",
         "milestone": 9,
         "path": "output/verdant-atelier/milestones/09.png",
-        "sha256": "74328956b9d832d2f1a9752162e0ffb3d884bf4c62aad75ebf6bb3e85b87d91b",
+        "sha256": "84ab7b721f6f4d10c7f3bacbdd68f5e1937d20a38baf960a8aa750f5beb59256",
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -1927,7 +1928,7 @@
         "direction": "verdant-atelier",
         "milestone": 10,
         "path": "output/verdant-atelier/milestones/10.png",
-        "sha256": "2a5d6b49b0070e7d93281713a73d9f21181675a3cc951e12ec3093c05d6e4c6a",
+        "sha256": "2978783087ab2d55a77a22ec5f907e0d752bff5b50cef95bd02416863c8caedc",
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -1973,7 +1974,7 @@
         "direction": "verdant-atelier",
         "milestone": 11,
         "path": "output/verdant-atelier/milestones/11.png",
-        "sha256": "3cb89e47dd9ce921fad5673a279524c59f67ffe73b77d594afd97b12b08d38e0",
+        "sha256": "c65b5b8fa17f8da5e692eeace789432774e1818f6968193c7ce16cdd54730755",
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -2019,7 +2020,7 @@
         "direction": "verdant-atelier",
         "milestone": 12,
         "path": "output/verdant-atelier/milestones/12.png",
-        "sha256": "85c2fc4f669e090cafc8443b7cd901834444788edd015db0d80b97ef2fc458bb",
+        "sha256": "29a6c23dc86a0a5ecafab49ce978253203c4158e9998eb791b0ca7f06171a264",
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -2065,7 +2066,7 @@
         "direction": "verdant-atelier",
         "milestone": 13,
         "path": "output/verdant-atelier/milestones/13.png",
-        "sha256": "10a99b945f82e5d192435f6a3a1e6495b4e2795b3763c0994ceb903f28df2a93",
+        "sha256": "59635897e945aba8253ddaab326edd49e23ae02217ea8d362960c879c94c5402",
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -2111,7 +2112,7 @@
         "direction": "verdant-atelier",
         "milestone": 14,
         "path": "output/verdant-atelier/milestones/14.png",
-        "sha256": "c8e546996f94e0e564661b2d5af9225cf105ba7cd5b13cca7f76ea35f14a31b1",
+        "sha256": "4a538f3363305d0fff275a36e9e04efe2f5f960535dacc5885473077cc03ad1e",
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -2157,7 +2158,7 @@
         "direction": "verdant-atelier",
         "milestone": 15,
         "path": "output/verdant-atelier/milestones/15.png",
-        "sha256": "0d6457511963cc02fd7dcb0a51f3d4ae64f5c7356485f506cdd04de56bb10f3e",
+        "sha256": "83e7e10884c300e8e0bb242278ae18e88b444e1c4801a597aa035ab58d49dd7b",
         "diagnostics": {
           "direction": "verdant-atelier",
           "dayPhase": "night",
@@ -2203,7 +2204,7 @@
         "direction": "paper-sanctuary",
         "milestone": 1,
         "path": "output/paper-sanctuary/milestones/01.png",
-        "sha256": "509da9e3a79eb1b6deb019b7afc32b8df539b00afde958ca88bd0c8294ba77e1",
+        "sha256": "4cad30a3718a387e78dc1db1b8fb136bb07ba5fec9530874de786959b9e2c821",
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -2249,7 +2250,7 @@
         "direction": "paper-sanctuary",
         "milestone": 2,
         "path": "output/paper-sanctuary/milestones/02.png",
-        "sha256": "7ebaddf045f35cd5d52116e312ac403daf280128301392eb8cba1e36ee9a3fbe",
+        "sha256": "bb12ffce02373ec8db09e28e1cbc6ceca9164e67bc2c2cc89ff99a2f2055aa48",
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -2295,7 +2296,7 @@
         "direction": "paper-sanctuary",
         "milestone": 3,
         "path": "output/paper-sanctuary/milestones/03.png",
-        "sha256": "8f1eba59ca2c17a996d63b12caf601cce2f5e0cab44a8c617c8a8eb3308f05f4",
+        "sha256": "b7b0c6af35b5a0f9e38a40f576aae6bd4b082244a18d6974f9101a27b4bdedfa",
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -2341,7 +2342,7 @@
         "direction": "paper-sanctuary",
         "milestone": 4,
         "path": "output/paper-sanctuary/milestones/04.png",
-        "sha256": "a4a5d59fd2f8b605677401bb4713dc833fe61beb60af77ecc8ce005765c48069",
+        "sha256": "9cabee40ff6f61b27bf72f4bfa4a97c9278a9cebb3058bb85543b33329ef9947",
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -2387,7 +2388,7 @@
         "direction": "paper-sanctuary",
         "milestone": 5,
         "path": "output/paper-sanctuary/milestones/05.png",
-        "sha256": "9b8bdb48e4f16fee7c78bfa79e47d02bf6f88f191116805f7030ab5d9cf5268b",
+        "sha256": "95ef99909eb844c252d31f373ea023b97dce126139557212e18768f15c05dce4",
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -2433,7 +2434,7 @@
         "direction": "paper-sanctuary",
         "milestone": 6,
         "path": "output/paper-sanctuary/milestones/06.png",
-        "sha256": "63b69cf52df6fc1e278d73057a27704902991fb772d90cf53cb5ba5d10e66120",
+        "sha256": "0cd76994b7bf32ae510c2b3e2b506a9e974717de8ae95d7a422e7bfd54f15486",
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -2479,7 +2480,7 @@
         "direction": "paper-sanctuary",
         "milestone": 7,
         "path": "output/paper-sanctuary/milestones/07.png",
-        "sha256": "bb79fd9e1995df13406eb69b3fe211199718b9cc6e556750339882be17ad3661",
+        "sha256": "da5b96bc717450bf66dfc34729b4c8d16bbdcd17b95fbb7b351de6b3441d74b9",
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -2525,7 +2526,7 @@
         "direction": "paper-sanctuary",
         "milestone": 8,
         "path": "output/paper-sanctuary/milestones/08.png",
-        "sha256": "649c6eceb5040f5ce660089d20ec41af8ad53b4b606adc788598f65c3833d5cf",
+        "sha256": "9a1aa5c692915d84c2f2f78a922c8e712b650b737fa41aabbf5d8f4598c8be3c",
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -2571,7 +2572,7 @@
         "direction": "paper-sanctuary",
         "milestone": 9,
         "path": "output/paper-sanctuary/milestones/09.png",
-        "sha256": "cd5a16a2d08f982f7714280e1937f60895226d2ed66590028d97edd2f0ceef39",
+        "sha256": "755de9477abc9c976080b8931fd64b7e9eec409693d408581dc62a7e004f9513",
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -2617,7 +2618,7 @@
         "direction": "paper-sanctuary",
         "milestone": 10,
         "path": "output/paper-sanctuary/milestones/10.png",
-        "sha256": "af21f4855f7ff57ec1e15c2521cc47012f7551a01814d31cb72deea0f067188f",
+        "sha256": "83bb344e624443d8497b36bc1b08b75d951d110fb1a47802952479b1200957e9",
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -2663,7 +2664,7 @@
         "direction": "paper-sanctuary",
         "milestone": 11,
         "path": "output/paper-sanctuary/milestones/11.png",
-        "sha256": "4bf4b59bb7fe9cc9a764778bcd688648018ac3f72f0c0649a86c0e4d636cb015",
+        "sha256": "93a95ed01a6eb91470bba1c018f9c26ecd53f17da7c90ec7b2d9f769569eb8ce",
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -2709,7 +2710,7 @@
         "direction": "paper-sanctuary",
         "milestone": 12,
         "path": "output/paper-sanctuary/milestones/12.png",
-        "sha256": "1e50e58f5b05a940ba74198b943f5bcc71d594a5713325575036e18fd72ae7e9",
+        "sha256": "b1e9055bafd21bb2019b795a1bc931d0d4374eef63c15d014bae4aa02f7c1aa3",
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -2755,7 +2756,7 @@
         "direction": "paper-sanctuary",
         "milestone": 13,
         "path": "output/paper-sanctuary/milestones/13.png",
-        "sha256": "3a23ddb124b5c013c55da33fba81eb65225f9f8dfcb8aea1e2dc410b33c88576",
+        "sha256": "1a0e88f90142b6e03bc38c091f7ad8b258e5d3bf4af189edd25add1023e7d07d",
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -2801,7 +2802,7 @@
         "direction": "paper-sanctuary",
         "milestone": 14,
         "path": "output/paper-sanctuary/milestones/14.png",
-        "sha256": "b3a9818164fb3a88823c9437b52e4a723adb4ced8372e6af5b41f8b625391bd2",
+        "sha256": "190b4f713e1510a5727daa672628efd29b3cec316baf76cd27ef7d15ded9ee1a",
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -2847,7 +2848,7 @@
         "direction": "paper-sanctuary",
         "milestone": 15,
         "path": "output/paper-sanctuary/milestones/15.png",
-        "sha256": "89a505a5b339ca9c7e8fd4eff3bbfa66b861dfc588becd2efc5123e8dd356e75",
+        "sha256": "13fe0deee4608460b5f00960e2e14ceedc8a2fea81a7e168579bc8e805704338",
         "diagnostics": {
           "direction": "paper-sanctuary",
           "dayPhase": "night",
@@ -2893,7 +2894,7 @@
         "direction": "twilight-refuge",
         "milestone": 1,
         "path": "output/twilight-refuge/milestones/01.png",
-        "sha256": "57db5017c556a169ab50030cd1d9aea1e20ecba4db0a9c885cf73180468ea59f",
+        "sha256": "bd374027b4c41bde588d2e2a2e2c478762ab753a5ffaedec0565de9628b37e7d",
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -2939,7 +2940,7 @@
         "direction": "twilight-refuge",
         "milestone": 2,
         "path": "output/twilight-refuge/milestones/02.png",
-        "sha256": "df5b9e7374765c9375f8a13f3b0224624958f99b1179a2bb50ffcb55215a2c3f",
+        "sha256": "19f861f31f4902635fc53231a16ef84d4c7200fbffd9778bfd0c864bdad9141b",
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -2985,7 +2986,7 @@
         "direction": "twilight-refuge",
         "milestone": 3,
         "path": "output/twilight-refuge/milestones/03.png",
-        "sha256": "610e460eccf7ef148e5a10fc8454255a8e6e7d2cfdd8827f5e0342451d130a98",
+        "sha256": "c8207412a88ea33d03dd0dae44419c3ccc21910fdfdb9172a7e629eb35206c89",
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -3031,7 +3032,7 @@
         "direction": "twilight-refuge",
         "milestone": 4,
         "path": "output/twilight-refuge/milestones/04.png",
-        "sha256": "958cffdf17dedc73de3ec8f3a965faff1bb574266f625f36337bec427455d6a8",
+        "sha256": "758ebc6918345ff028d64baf78ee5a5e43baec98a40b88d36f39d9a0a6056051",
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -3077,7 +3078,7 @@
         "direction": "twilight-refuge",
         "milestone": 5,
         "path": "output/twilight-refuge/milestones/05.png",
-        "sha256": "7bc2054f01047b267af37a5de594b21ec422cf3b79ef1533edef2741ac8f02f3",
+        "sha256": "a158ba11e0b8827de708251f0b2d3c02b005236df40060a5d095b36eb02ce0d9",
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -3123,7 +3124,7 @@
         "direction": "twilight-refuge",
         "milestone": 6,
         "path": "output/twilight-refuge/milestones/06.png",
-        "sha256": "1744a84ed2cdd6e9fe57485f6a972353818f2e96b0e1fbdf27c9c45091f89b96",
+        "sha256": "2dd036a9c625453dd3b1b3004c97a3eff08b456bb7f43694cd703f6fa5b9489d",
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -3169,7 +3170,7 @@
         "direction": "twilight-refuge",
         "milestone": 7,
         "path": "output/twilight-refuge/milestones/07.png",
-        "sha256": "8077b8818b5f9fb2f477ce760fa051802714448b44828528c671bba7a46d1229",
+        "sha256": "788e4e8ff0c1ce3d6e2892187cadbd5b44e3b73d3658ef83a9a5d0915938465c",
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -3215,7 +3216,7 @@
         "direction": "twilight-refuge",
         "milestone": 8,
         "path": "output/twilight-refuge/milestones/08.png",
-        "sha256": "57f5a978337b8b7e4995e9ad7d279545083bc669040ce7d2dd14c514cc0117b6",
+        "sha256": "6821285fafa32dc44a7002d63b40c06d16a23aa61e9ec2b679f68aff371a7786",
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -3261,7 +3262,7 @@
         "direction": "twilight-refuge",
         "milestone": 9,
         "path": "output/twilight-refuge/milestones/09.png",
-        "sha256": "4501f9cb29eb60a0551ec04f8a56104f03ff8d5f32946d058a4041a890ee518f",
+        "sha256": "c8e41cd830bdd273cb62923b11dbadb406fb7eefef26d923ba4179356e6786d4",
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -3307,7 +3308,7 @@
         "direction": "twilight-refuge",
         "milestone": 10,
         "path": "output/twilight-refuge/milestones/10.png",
-        "sha256": "76696ae6b77fdb435cc8c291e8db0acc3d89cbfdb5fc1f2e2b5cdf547cd03a5c",
+        "sha256": "31f746a1b38b07ecebc48409095e4c9ab4e7b9536664b1057c9500f0efbdec51",
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -3353,7 +3354,7 @@
         "direction": "twilight-refuge",
         "milestone": 11,
         "path": "output/twilight-refuge/milestones/11.png",
-        "sha256": "9ec98098bdcd7ea9fc665bc5358a3a649b898145156b80ca0786ad1ff2ab26e3",
+        "sha256": "2c21c3bc10f0fc851bf6f8ba32f18a6aa7620127c10eaa884e87b497f2b0260f",
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -3399,7 +3400,7 @@
         "direction": "twilight-refuge",
         "milestone": 12,
         "path": "output/twilight-refuge/milestones/12.png",
-        "sha256": "c6b054a5bbd5d603b19a6d87cfa3d2b43aa8c2fc60ce8d9c68929ec28f146f34",
+        "sha256": "055f3d9705a87f1808669a0bef9349c1a874d493b2145c237f6cd2e9a502028c",
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -3445,7 +3446,7 @@
         "direction": "twilight-refuge",
         "milestone": 13,
         "path": "output/twilight-refuge/milestones/13.png",
-        "sha256": "b43f1f2df4662d07f94d64f311e034c99a9a86c9b416aeb391a7ae455fcbfa87",
+        "sha256": "7ab724b672990f83ff6379600b1fa4aa989fa56be8976372323de277e1b6726f",
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -3491,7 +3492,7 @@
         "direction": "twilight-refuge",
         "milestone": 14,
         "path": "output/twilight-refuge/milestones/14.png",
-        "sha256": "82cbadbc3df74fa503a0db995cd205898bf90d62ba4ad6134e8f80b190ab2d63",
+        "sha256": "5d79c08035fe89a16d21cc2dc0df4e4a95c6659d325e54e7e7648ece53ba1402",
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -3537,7 +3538,7 @@
         "direction": "twilight-refuge",
         "milestone": 15,
         "path": "output/twilight-refuge/milestones/15.png",
-        "sha256": "6e40008eb64c05b17ee596d83b792058e8dbe354ae67216950276181e1767f68",
+        "sha256": "8965888a6c6134ab1457a078414bb2d6bd63f0f8ea4162252aebf68231f254a1",
         "diagnostics": {
           "direction": "twilight-refuge",
           "dayPhase": "night",
@@ -3584,41 +3585,41 @@
       {
         "direction": "verdant-atelier",
         "path": "output/verdant-atelier-contact-sheet.jpg",
-        "sha256": "e3ca025fec0a06e2b6f615f3339fa92de290fc4688b4c5527cabd71cf8ae3572",
-        "bytes": 159558
+        "sha256": "ea1db1e4db477e982ae640461e014f70dd2f224872bee73f971dc9b535980fde",
+        "bytes": 157084
       },
       {
         "direction": "verdant-atelier",
         "kind": "milestones",
         "path": "output/verdant-atelier-milestones.jpg",
-        "sha256": "7454ce683fb7b03377234376cffe94f997272acbf31bc38ec5186142765c22d2",
-        "bytes": 252574
+        "sha256": "51357a7c8cd20bbe0d42b189cf37fa30d1671bb141ae1eca5267f3123c10a754",
+        "bytes": 250391
       },
       {
         "direction": "paper-sanctuary",
         "path": "output/paper-sanctuary-contact-sheet.jpg",
-        "sha256": "320c99bd4eb0c5341c56ebd2ffb092e9b92ebf2416f19f4bfc7a87be31cf165a",
-        "bytes": 180389
+        "sha256": "7ae0efd9b6279b792ee97e070b86320742fe191c034afee0b995a94e3c10f6e1",
+        "bytes": 176941
       },
       {
         "direction": "paper-sanctuary",
         "kind": "milestones",
         "path": "output/paper-sanctuary-milestones.jpg",
-        "sha256": "12d63b633df00cbbee6fdb4d00d947e6f9154ce5334d1d0a2a176cd3aa7cae74",
-        "bytes": 249925
+        "sha256": "f3ab189961522ebe09cde1d0bf6d392ca94ad07adcf9ac61fcb944e39ac05b26",
+        "bytes": 249307
       },
       {
         "direction": "twilight-refuge",
         "path": "output/twilight-refuge-contact-sheet.jpg",
-        "sha256": "48cf070ee4adb48507a81aae1f318fd3ad70337a93354ed69e4e50aa353f6db7",
-        "bytes": 125180
+        "sha256": "d4f2cf9a93ed3ddd1c71ee11b4ec8263e8e58fb17a68487efb9e6210ca315c85",
+        "bytes": 124110
       },
       {
         "direction": "twilight-refuge",
         "kind": "milestones",
         "path": "output/twilight-refuge-milestones.jpg",
-        "sha256": "4a03b77b260083042695f1568b7544ded9c1ae62ceda4bddbfe8be0a225c854b",
-        "bytes": 218839
+        "sha256": "b2bc558e45888380ee2590bafad4fe0db6bac804b7de37a1c04c2873f3b99c34",
+        "bytes": 217032
       }
     ],
     "motion_clips": [
@@ -3633,8 +3634,8 @@
         ],
         "frame_count": 58,
         "path": "output/verdant-atelier/motion-standard.mp4",
-        "sha256": "d7400e23160e7368213044ba10c0ccd557ccea23c3cca23f98e93f22e8a02b9f",
-        "bytes": 141769
+        "sha256": "065c84f0e5893a462b36474f1403cabe38917c4b35204f091c8f5607fe2116b1",
+        "bytes": 135561
       },
       {
         "direction": "verdant-atelier",
@@ -3645,8 +3646,8 @@
         ],
         "frame_count": 26,
         "path": "output/verdant-atelier/motion-reduced.mp4",
-        "sha256": "977618e7856831fda3b873a5b0301245eba98fc37d8cb111a496a6f634983598",
-        "bytes": 63591
+        "sha256": "87dd918e1512048f47d80535b112cdf2f4720d803c25b942d46df7e1e41561eb",
+        "bytes": 55171
       },
       {
         "direction": "paper-sanctuary",
@@ -3659,8 +3660,8 @@
         ],
         "frame_count": 58,
         "path": "output/paper-sanctuary/motion-standard.mp4",
-        "sha256": "fdd60b4d316154fc2ae58a25035ee90e1ac997103df4d7b3e51f2e87756c82b0",
-        "bytes": 159337
+        "sha256": "e339ca1c325723f8299408c8708e2a4fe24d8ffb299b8a659c2fb226beb13bc5",
+        "bytes": 148941
       },
       {
         "direction": "paper-sanctuary",
@@ -3671,8 +3672,8 @@
         ],
         "frame_count": 26,
         "path": "output/paper-sanctuary/motion-reduced.mp4",
-        "sha256": "df7827e7defa84be16d75f731a3811609a10866b7be3ec06b23861ff8236489a",
-        "bytes": 69050
+        "sha256": "019ca6031d0e9236c2fade33247b8e55aa7183a1f4cbf5aa35a318462368f345",
+        "bytes": 60823
       },
       {
         "direction": "twilight-refuge",
@@ -3685,8 +3686,8 @@
         ],
         "frame_count": 58,
         "path": "output/twilight-refuge/motion-standard.mp4",
-        "sha256": "1dae947756ae4dc60ad1df3c061e43dbb19b48e3014b809eb029404a9383e06b",
-        "bytes": 105689
+        "sha256": "8763692ef3fb5f1b2c7e9804909b2030789da8c70529ff16e3c3f0e2388a7333",
+        "bytes": 107377
       },
       {
         "direction": "twilight-refuge",
@@ -3697,8 +3698,8 @@
         ],
         "frame_count": 26,
         "path": "output/twilight-refuge/motion-reduced.mp4",
-        "sha256": "5d4a0a702699fd792cd125652818ef4f7e6344a11da34aa2d0df84d0328277d1",
-        "bytes": 49961
+        "sha256": "1b084be7c573512916c97329e84b72379860fe83f6a34ef969137312c38225b9",
+        "bytes": 49549
       }
     ]
   },

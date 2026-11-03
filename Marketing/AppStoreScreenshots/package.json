@@ -2,9 +2,9 @@
   "name": "@arrive-within/app-store-screenshots",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "pnpm@11.20.0",
+  "packageManager": "pnpm@12.16.1",
   "engines": {
-    "node": "26.7.0"
+    "node": "26.13.0"
   },
   "scripts": {
     "build": "NEXT_TELEMETRY_DISABLED=1 next build",

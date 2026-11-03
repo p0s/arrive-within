@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { connectVerifiedBrowser } from "../../scripts/lib/verified-browser.mjs";
 
 import { spawn } from "node:child_process";
 import { mkdir, readFile } from "node:fs/promises";
@@ -30,7 +31,7 @@ server.stderr.on("data", (chunk) => { serverError += chunk; });
 let browser;
 try {
   await waitForServer(`${origin}/design-lab/`, server, () => serverError);
-  browser = await playwright.chromium.launch({ headless: true });
+  browser = await connectVerifiedBrowser(playwright.chromium);
   for (const style of styles) {
     const context = await browser.newContext({
       viewport: { width, height },

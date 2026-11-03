@@ -37,8 +37,8 @@ Requirements:
 
 - macOS with Xcode and the iOS 18 or later SDK;
 - Swift 6 and XcodeGen 2.46 or later;
-- Node.js 26.7.0 and pnpm 11.20.0, matching the package manifests;
-- XcodeGen, FFmpeg/ffprobe, jq, and Playwright Chromium for the complete local gate;
+- Node.js 26.13.0 and pnpm 12.16.1, matching the package manifests;
+- XcodeGen, FFmpeg/ffprobe, jq, and verified local Chrome for the complete local gate;
 - no paid Apple account for simulator and unsigned local verification.
 
 Install JavaScript dependencies from the pinned lockfiles:
@@ -46,8 +46,9 @@ Install JavaScript dependencies from the pinned lockfiles:
 ```sh
 pnpm --dir Renderer install --frozen-lockfile
 pnpm --dir Marketing/AppStoreScreenshots install --frozen-lockfile
-pnpm --dir Marketing/AppStoreScreenshots exec playwright install chromium
 ```
+
+Browser checks and media exports use a maintained local Chrome instance through the [local verifier interface](Marketing/AppStoreScreenshots/BROWSER.md). Configure it locally before running browser checks; no bundled browser download is required.
 
 Build the renderer before generating the Xcode project, then run the portable checks:
 

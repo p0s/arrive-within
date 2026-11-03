@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { connectVerifiedBrowser } from "../../../scripts/lib/verified-browser.mjs";
 
 import { createHash } from "node:crypto";
 import { spawn } from "node:child_process";
@@ -33,7 +34,7 @@ const server = startRendererServer();
 let browser;
 try {
   await waitForRenderer(server);
-  browser = await playwright.chromium.launch({ headless: true });
+  browser = await connectVerifiedBrowser(playwright.chromium);
   const context = await browser.newContext({
     bypassCSP: true,
     colorScheme: "light",
@@ -131,6 +132,7 @@ try {
       bridge: "shipping window.arriveWithinGarden.receiveSnapshot typed state-snapshot bridge",
       viewport: { width: 1280, height: 720, device_scale_factor: 1 },
       browser: playwright.chromium.name(),
+      browser_version: browser.version(),
       playwright_version: packageVersion(join(playwrightRoot, "playwright/package.json")),
       sharp_version: packageVersion(join(playwrightRoot, "sharp/package.json")),
       external_network: "blocked",

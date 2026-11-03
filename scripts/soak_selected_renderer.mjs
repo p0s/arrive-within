@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { connectVerifiedBrowser } from "./lib/verified-browser.mjs";
 
 import { spawn } from "node:child_process";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -27,7 +28,7 @@ let browser;
 let context;
 try {
   await waitForServer(server);
-  browser = await playwright.chromium.launch({ headless: true });
+  browser = await connectVerifiedBrowser(playwright.chromium);
   context = await browser.newContext({
     viewport: { width: 1024, height: 1366 },
     deviceScaleFactor: 1,

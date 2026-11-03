@@ -3,7 +3,7 @@
   "state": "locally-generated-objectively-validated-human-review-pending",
   "source": {
     "generator": "Marketing/RendererVisualMatrix/scripts/generate-renderer-visual-matrix.mjs",
-    "generator_sha256": "487678149f8a350236dce45a7d9f65e493f2485d1bca66fecac72940f74f7475",
+    "generator_sha256": "fa7331922d28cf61db3c7587bc18c239940ea4e0b559ddd2242af9bc3870a93a",
     "plan": "Marketing/RendererVisualMatrix/matrix-plan.json",
     "plan_sha256": "72993abc97f907bea65a35dff1fc1752d4dff5cd2b73dbe9c677a77c7685c4e0",
     "renderer_source_files": [
@@ -35,14 +35,13 @@
       "device_scale_factor": 1
     },
     "browser": "chromium",
+    "browser_version": "156.0.8078.79",
     "playwright_version": "1.61.1",
     "sharp_version": "0.35.3",
     "external_network": "blocked",
     "external_requests_observed": 0,
     "reduce_motion": true,
-    "browser_notices": [
-      "Chromium GPU readback stall notice caused by deterministic screenshot capture"
-    ],
+    "browser_notices": [],
     "frames": [
       {
         "milestone_id": 1,
@@ -51,7 +50,7 @@
         "selected_variant": "a",
         "selected_variant_title": "Root weave",
         "path": "output/variant-a/01-earth-i.png",
-        "sha256": "311f759f0df9682285ee79c2768a1f47b7811f7aa369809831293e9bddae04f7",
+        "sha256": "b92669761d0fa36a5a6ed1b2a55364f59991d8eb4e16b1288761fce85995ebb9",
         "state_sha256": "fb97b81b6a792d819d9c267898357b16e8c61fe8dfc2dc78e743749867d0ea0c",
         "state": {
           "schemaVersion": 1,
@@ -91,7 +90,7 @@
         "selected_variant": "b",
         "selected_variant_title": "Root fan",
         "path": "output/variant-b/01-earth-i.png",
-        "sha256": "a6ac05b8cb6d4671ddebc44a2ea3d57c3807be469d4e0712b7b3fca7bedb1969",
+        "sha256": "6b90298e893267894d435576663b25cad853750703fa271951f7551ed3c6c8f6",
         "state_sha256": "0245c9b70390911259c664f0f23c0896544162954ee4dc557d23f16613381e0e",
         "state": {
           "schemaVersion": 1,
@@ -131,7 +130,7 @@
         "selected_variant": "a",
         "selected_variant_title": "River stones",
         "path": "output/variant-a/02-earth-ii.png",
-        "sha256": "c48248200e669e1b6d5be5f5bee010a0bb4468352f956be030bed0ba141c8fa3",
+        "sha256": "f4dcada1b49e50c86fa85910d950160cc6a7696fa0fd5188675f61f8649b402b",
         "state_sha256": "721152cd6d5feaecf251d611c7178d6a49f88a0a10f13b46fbe4016221b205b6",
         "state": {
           "schemaVersion": 1,
@@ -174,7 +173,7 @@
         "selected_variant": "b",
         "selected_variant_title": "Slate path",
         "path": "output/variant-b/02-earth-ii.png",
-        "sha256": "9da6f8eed7057c3753d43c357eaf1c6d2593e2cc63dc19ef5c7d6b23cb538c91",
+        "sha256": "f0fef6c4624693ea126c1de701bcd5e63d36b6b91a69641fc77ef5d8d1633bea",
         "state_sha256": "c8fc42cf1e44ae53e3a687bca9ecc8be4dba48e85d41a3677676f537b450b852",
         "state": {
           "schemaVersion": 1,
@@ -217,7 +216,7 @@
         "selected_variant": "a",
         "selected_variant_title": "Fern grove",
         "path": "output/variant-a/03-earth-iii.png",
-        "sha256": "4f68d9959a40e63361b340edc5d4da5bb4e156d509c45cfe55636ea0dd5d33b3",
+        "sha256": "376144be37238f5d22d063ece1d4fd0a550c637d49a489ac7faad9a5a082c556",
         "state_sha256": "2f6629b2dad8b0fdc9e9ebaeab2316c11f6b3ce3bb060275658ecfcbffaa903d",
         "state": {
           "schemaVersion": 1,
@@ -263,7 +262,7 @@
         "selected_variant": "b",
         "selected_variant_title": "Moss grove",
         "path": "output/variant-b/03-earth-iii.png",
-        "sha256": "9db227d46104d28c264a56693390835942f32bc78fe9d322eda25480f811742f",
+        "sha256": "3d2fc34d3a559b595468f0c0afd726d7b2143780007ee8902e111244b467d258",
         "state_sha256": "8141400370d8a6b99e5fec6f3198cddcaaf5a5e6f556fd4b73ba3c94cdcfd5ce",
         "state": {
           "schemaVersion": 1,
@@ -309,7 +308,7 @@
         "selected_variant": "a",
         "selected_variant_title": "Silver dew",
         "path": "output/variant-a/04-water-i.png",
-        "sha256": "606d9a5e1740d758ff7b2ddb276c02b5718e2079a832b9e4383bc567d2ad7bea",
+        "sha256": "0c18d290b97e46a96bc6f613472cafb0314b7735e489519c76cd145efa3ec20b",
         "state_sha256": "1fec72997a39fddc188abcf7c03b99bbb27249a8db72e7631d3ab540eee2a255",
         "state": {
           "schemaVersion": 1,
@@ -358,7 +357,7 @@
         "selected_variant": "b",
         "selected_variant_title": "Warm dew",
         "path": "output/variant-b/04-water-i.png",
-        "sha256": "cde736810aea124b1ac1c7db2f5eb7d0a9399c0f22afe5ff325aa3aebe544fd6",
+        "sha256": "e6a6a02fedf6c5b5bb311efbbb5c8fb39b2aabd757f027ed59be7b4eae686950",
         "state_sha256": "472be40d8c9e6b778c8aef4a49dacfc6cc1911571556d4641487f450363e9830",
         "state": {
           "schemaVersion": 1,
@@ -407,7 +406,7 @@
         "selected_variant": "a",
         "selected_variant_title": "Lily pond",
         "path": "output/variant-a/05-water-ii.png",
-        "sha256": "ebf5657956c5f6adfa114290f72b9efb3c9966ffb74b0af32efbc116794f10fb",
+        "sha256": "a06e5ca9f761cbf8a24e8c8eabaf291b04eacb3718eef75cce9b7848948d3003",
         "state_sha256": "376cb2b1a3b1724f38445731e2658218349372b91362c6280f5a9fac24f4db35",
         "state": {
           "schemaVersion": 1,
@@ -459,7 +458,7 @@
         "selected_variant": "b",
         "selected_variant_title": "Reed pond",
         "path": "output/variant-b/05-water-ii.png",
-        "sha256": "f5ccdc8c0be3d5e731f4f66bc7d41f4d72acfb6740bb1e39ff4ede429e5b858f",
+        "sha256": "f040d6b53ccc0a3b1da4faf522e138211a29df7495ca0c1adbfadffdab2c6d42",
         "state_sha256": "ddeda45a64e510b78e7e1b30724b64799f5fbd856b666050cbfdc3427f8b763d",
         "state": {
           "schemaVersion": 1,
@@ -511,7 +510,7 @@
         "selected_variant": "a",
         "selected_variant_title": "Clear ripple",
         "path": "output/variant-a/06-water-iii.png",
-        "sha256": "c643a0fefe05b1b25fb21daa6c43dc663be3a4652c65dd66c1770c01f483e893",
+        "sha256": "0138cba5816679cdf101f1a4a93f2c028dca4d16bbec10cd9a470a2842c40118",
         "state_sha256": "2c9f472084eca809bda03fde1ef68e7d9703cc17c310a1368e1e9e1a40570fae",
         "state": {
           "schemaVersion": 1,
@@ -566,7 +565,7 @@
         "selected_variant": "b",
         "selected_variant_title": "Shaded ripple",
         "path": "output/variant-b/06-water-iii.png",
-        "sha256": "98f9d520c4bf49bd81f4184496c567efde150284c44f73fdf2fd4bc8fc4e3b54",
+        "sha256": "496968a9abd80d4fd306298024bc62859b9a79ceec87f143dbfaffbd51028829",
         "state_sha256": "5fd4e268ea92d3c8184c454e08707e4d17d10bb28df0f8bfd5cc3fefe92b8974",
         "state": {
           "schemaVersion": 1,
@@ -621,7 +620,7 @@
         "selected_variant": "a",
         "selected_variant_title": "Morning gold",
         "path": "output/variant-a/07-fire-i.png",
-        "sha256": "ec502b7109027a1deeb13dc5d0517630a54842a4e99cc0c033251663cf7df7a9",
+        "sha256": "b20416d464fc9b39e28bc5668467703702d7e3a608fb38bb5d702f6eabb2f90b",
         "state_sha256": "1a0cac246bf363ddc0e4f3991220b2e3774e7ac8035dfcb47d931cc4cb450989",
         "state": {
           "schemaVersion": 1,
@@ -679,7 +678,7 @@
         "selected_variant": "b",
         "selected_variant_title": "Amber canopy",
         "path": "output/variant-b/07-fire-i.png",
-        "sha256": "b21b03719a1992b78395d2c1196bcc4b8c01a93cb74b69042650b78e0218ed12",
+        "sha256": "3249a24e1c96a491e2da1062f1cc88cb938f8556b8dc0f660436db63a09cb3f7",
         "state_sha256": "de4f7c6be7607908fa21b3dafc7ccc0573a4e5d9a82e1dc2095a8128da520396",
         "state": {
           "schemaVersion": 1,
@@ -737,7 +736,7 @@
         "selected_variant": "a",
         "selected_variant_title": "Low lanterns",
         "path": "output/variant-a/08-fire-ii.png",
-        "sha256": "1a0d880d3a5cf254db5256ee8e5bc276de890d037f75759d1e3a6c92f3549825",
+        "sha256": "e75fba31a3f3d3b012edece6f7bc42f8b29fdc695b2fb3e77f9d9c702d09d39b",
         "state_sha256": "a981f88e4f6bfcb9a0ecc008b07f0fc7e740523a93ea185e120089bdfe37eefc",
         "state": {
           "schemaVersion": 1,
@@ -798,7 +797,7 @@
         "selected_variant": "b",
         "selected_variant_title": "High fireflies",
         "path": "output/variant-b/08-fire-ii.png",
-        "sha256": "e5c7927f935a5fdd3b1e144bdcc02def69d42b0dd3d7393943f6afa7080623b2",
+        "sha256": "692330db3e5db74f9ed51c79f3d3a2b23eaee9658e74a301234a37426ea1f1c3",
         "state_sha256": "98f86d9fdb0f6b3fdadd600c2d773c217d6ba2d2a80b371ece38da16af29376d",
         "state": {
           "schemaVersion": 1,
@@ -859,7 +858,7 @@
         "selected_variant": "a",
         "selected_variant_title": "Apricot bloom",
         "path": "output/variant-a/09-fire-iii.png",
-        "sha256": "2ba9b69af9e5e2360fc93af246d8c27c6e2b1ed1a3803b8cc1f31703e5e0a8f7",
+        "sha256": "6bdfd850425dc1771e48177e500e8395aa1427c928b8fcbed7b71154294289e5",
         "state_sha256": "4f401fd1c06c88e40ffe63c464c25c5977dbfc8ed0aa514b21a47ff061cbee30",
         "state": {
           "schemaVersion": 1,
@@ -923,7 +922,7 @@
         "selected_variant": "b",
         "selected_variant_title": "Golden bloom",
         "path": "output/variant-b/09-fire-iii.png",
-        "sha256": "019e4f3107cc18e3dd018feda025d2afc06fe4da852c776af3d0f753a7a7ac73",
+        "sha256": "3e131010b614246949e2cd741871ef86d9b7ca0974243909b2c947596ac0275f",
         "state_sha256": "5542e6a00f63f964e9ccf002f1d47daae55501c1c81904e7a6fe5c3fc9aa667b",
         "state": {
           "schemaVersion": 1,
@@ -987,7 +986,7 @@
         "selected_variant": "a",
         "selected_variant_title": "Meadow breeze",
         "path": "output/variant-a/10-air-i.png",
-        "sha256": "ee7e51ec39a54cc32b06650ada8a6b50d6f1412a2d4081208bf8a7ec4272c5f8",
+        "sha256": "a256fa41d4452c92c4714e212ee0465639277ccce397e86f5887114323d05fc3",
         "state_sha256": "888e6413a62760acaab2192331d57c55ede9db98ca2a9c91ca0dcdb228c0edb7",
         "state": {
           "schemaVersion": 1,
@@ -1054,7 +1053,7 @@
         "selected_variant": "b",
         "selected_variant_title": "Canopy breeze",
         "path": "output/variant-b/10-air-i.png",
-        "sha256": "9ccff677de2a19fe264b772b91ce3c10ad0c0d2d7b56da374c6c059ed6b9c031",
+        "sha256": "91bbefb24f0a86b9a23f8467aa552e3a68b277ab7e40a23f0bf11526ceb09936",
         "state_sha256": "e39af60ee05ce1a0fcc83ed80cf451ac67887a31e43faee7934ff97248e23587",
         "state": {
           "schemaVersion": 1,
@@ -1121,7 +1120,7 @@
         "selected_variant": "a",
         "selected_variant_title": "Swift pair",
         "path": "output/variant-a/11-air-ii.png",
-        "sha256": "a974ed4b487354f7adcb0055ea09c15bd2e1711180200e2cc80830f3a3bde083",
+        "sha256": "c0fa543d8ef3ea1f595ef67dd151c64c42917fe36c571a51f3878468233ab2fd",
         "state_sha256": "e912aea673b27c0d529a85eab07509a0af1fb86e330efc8e3884e1a2a765f80f",
         "state": {
           "schemaVersion": 1,
@@ -1191,7 +1190,7 @@
         "selected_variant": "b",
         "selected_variant_title": "Drifting leaves",
         "path": "output/variant-b/11-air-ii.png",
-        "sha256": "caa8ec09b8179490bcc0e12ed7cd4dbc49404dc066b09adad6b9b533d3cc8de9",
+        "sha256": "7e86962fd4af7eb025f0bfc5cced4f6d483d9167406f09a123092431021bd2cb",
         "state_sha256": "733c3b3419c961ae74bf109fe59d5d93405128dcb96e5082ef626bb483675fdb",
         "state": {
           "schemaVersion": 1,
@@ -1261,7 +1260,7 @@
         "selected_variant": "a",
         "selected_variant_title": "Open sky",
         "path": "output/variant-a/12-air-iii.png",
-        "sha256": "e558863796021d15f1b2ec23ee1ce929f3f0c1e7b2b570cbf8b376db4022b79d",
+        "sha256": "0ab9c2f4a632d63bf32a11d6d52b7fb2986d8d590e6112bfc823ed4bed7cf22c",
         "state_sha256": "f49767f4251715530d3f84e55de4ebe09adce137c113f54cd7741526a22eb9af",
         "state": {
           "schemaVersion": 1,
@@ -1334,7 +1333,7 @@
         "selected_variant": "b",
         "selected_variant_title": "Cloud veil",
         "path": "output/variant-b/12-air-iii.png",
-        "sha256": "76df40f3b57ae08a9cb49b55cabf97c35fb5e403d67553ba31a7c3f6bcfa88f8",
+        "sha256": "911d916de21e84bfd40a47c28666a52055a9ade2f224260fa9e50c0dcfd6b07d",
         "state_sha256": "ae426a4a33e18f34ef92aa6440d78b48ec0b29e63d0114dee50314adfa0e57ad",
         "state": {
           "schemaVersion": 1,
@@ -1407,7 +1406,7 @@
         "selected_variant": "a",
         "selected_variant_title": "Blue twilight",
         "path": "output/variant-a/13-space-i.png",
-        "sha256": "169919aa5259f3982322337da71a50394c563fd8ddc980b64ac9386f2fcb3252",
+        "sha256": "178615da70f7b250195ceb7954126b15dd913c524c3ce82656b641f3459573cf",
         "state_sha256": "2666b4d4552466679ef8f53ef9dffc2845756bb57613ad0a06572519dcf31372",
         "state": {
           "schemaVersion": 1,
@@ -1483,7 +1482,7 @@
         "selected_variant": "b",
         "selected_variant_title": "Violet twilight",
         "path": "output/variant-b/13-space-i.png",
-        "sha256": "59cb422e02d25ee538ba09347577ad4c28eaef7aadc984ce5edad13cea828b80",
+        "sha256": "c6c4b4b3683332676644da34822a2a94767c1099e456fec37a10329fd8c352ec",
         "state_sha256": "f9776688677e3b9dea07e865f4e309671816fab692f2ca4f44144282bb28cd92",
         "state": {
           "schemaVersion": 1,
@@ -1559,7 +1558,7 @@
         "selected_variant": "a",
         "selected_variant_title": "Pearl moon",
         "path": "output/variant-a/14-space-ii.png",
-        "sha256": "d7999be46837071d0318b618673f11bf23b6ab358298187c7a6aa92f7fa3f7ea",
+        "sha256": "7ddd0abdef2d3660bffdbfec08d7acb6d7e1ceccf58309ee69ec01e20c80f45c",
         "state_sha256": "63048aef6f06dae9cc7867af2efb67b0736c8748036beab3344a26e14dd53db7",
         "state": {
           "schemaVersion": 1,
@@ -1638,7 +1637,7 @@
         "selected_variant": "b",
         "selected_variant_title": "Crescent moon",
         "path": "output/variant-b/14-space-ii.png",
-        "sha256": "1abd84f41fe8876c434664e47a0683d244ff496a00b9b260eb9331bdf126b268",
+        "sha256": "658147706e28ac6652ff9b41575d3f8267609ac95b42a8b0285215dd7e82be78",
         "state_sha256": "a3b2883ab83a24c0ec017ec8fe06ac0674dc1fb7037fdf60b3d5281d35a993c1",
         "state": {
           "schemaVersion": 1,
@@ -1717,7 +1716,7 @@
         "selected_variant": "a",
         "selected_variant_title": "Sanctuary bloom",
         "path": "output/variant-a/15-space-iii.png",
-        "sha256": "191ded15b2e51a1be91d49fe3332ee3dd57703c95d99f2db3e471c84c991d532",
+        "sha256": "15936673eec73d55f43747632fd6560eb4fda9e62117dca506daebe6ef6d22d8",
         "state_sha256": "366a554f99941a2eb3f19281a2ed5a3536a46c022579f69f15b253a12cd4e025",
         "state": {
           "schemaVersion": 1,
@@ -1799,7 +1798,7 @@
         "selected_variant": "b",
         "selected_variant_title": "Sanctuary fruit",
         "path": "output/variant-b/15-space-iii.png",
-        "sha256": "146e1ab983870f0f7ef45c820e7cc6bb030ea2fe8a5109349dcf98caeb04c9eb",
+        "sha256": "44625f336c6bd3771c67ad0f1223c4e7f52c85b5f092e4f4110538c45e28d388",
         "state_sha256": "788b27d67be4774c1751557d9832853717d2a574cb26b1cd3f0ca1bbe6eba521",
         "state": {
           "schemaVersion": 1,
@@ -1879,13 +1878,13 @@
   "contact_sheets": {
     "a": {
       "path": "output/contact-sheet-a.jpg",
-      "bytes": 133763,
-      "sha256": "b471706942f7e7b21c5a812d2e4af5fa9e2583077b0be47dab96aae5b6fd6d11"
+      "bytes": 133800,
+      "sha256": "507167b8e4d392b11047062ec49c7efb82231fd74d0ca578dc54d02f2ddb838c"
     },
     "b": {
       "path": "output/contact-sheet-b.jpg",
-      "bytes": 134144,
-      "sha256": "3d0b5242589316bea79de233afdb71163373fc9e46fdac79205060e0a6050bbe"
+      "bytes": 134162,
+      "sha256": "07f3cf9b0cad9144c0f6c3c12439d3579faee1efcee8b26874424d2ae4121f7b"
     }
   },
   "coverage": {
