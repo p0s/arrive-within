@@ -5,7 +5,7 @@
   "checks_failed": 0,
   "human_review": "pending",
   "release_ready": false,
-  "manifest_sha256": "d42862d5b66565fb05f6d01ce6ca34daec172e2bf434197c454caecc8d93b07c",
+  "manifest_sha256": "6054ba14ec3811b2e8542100213ff3202789be4afd8b509837c1528502811437",
   "failures": [],
   "checks": [
     {

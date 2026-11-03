@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { connectVerifiedBrowser } from "./lib/verified-browser.mjs";
 
 // Optional host-integrated visual proof. The credential-free scripts/check and
 // scripts/goal gates deliberately do not invoke this localhost/Chromium helper.
@@ -33,7 +34,7 @@ server.stderr.on("data", (chunk) => { serverError += chunk; });
 let browser;
 try {
   await waitForServer(`http://127.0.0.1:${port}/design-lab/`, server, () => serverError);
-  browser = await playwright.chromium.launch({ headless: true });
+  browser = await connectVerifiedBrowser(playwright.chromium);
 
   const viewports = [
     { id: "iphone", width: 430, height: 932 },

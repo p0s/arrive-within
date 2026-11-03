@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { connectVerifiedBrowser } from "../../../scripts/lib/verified-browser.mjs";
 
 import { createHash } from "node:crypto";
 import { spawn, spawnSync } from "node:child_process";
@@ -38,7 +39,7 @@ const server = startRendererServer();
 let browser;
 try {
   await waitForRenderer(server);
-  browser = await playwright.chromium.launch({ headless: true });
+  browser = await connectVerifiedBrowser(playwright.chromium);
   const results = [];
   const milestoneResults = [];
   const blockedRequests = [];
@@ -179,6 +180,7 @@ try {
       files: sourceFiles.map((path) => ({ path, sha256: sha256File(join(projectRoot, path)) })),
     },
     capture: {
+      browser_version: browser.version(),
       renderer_authority: "shared-versioned-GardenState-v1",
       external_network: "blocked",
       external_requests_observed: 0,

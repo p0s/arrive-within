@@ -3,7 +3,7 @@
   "state": "locally-generated-objectively-validated-human-review-pending",
   "source": {
     "generator": "Marketing/PublicMedia/scripts/generate-public-media.mjs",
-    "generator_sha256": "5375eab74d77fe0545d409a17867300b4e79a53f1fd92b933226d506eaa2e6ff",
+    "generator_sha256": "7e58aa30ac00003be64784e1c5f28c76aada5549fac4a970e78b70a876dfa286",
     "plan": "Marketing/PublicMedia/growth-states.json",
     "plan_sha256": "a80879580949d7c35d3160a3e80da25b65bc363aba18dd1b6bca01f1f97141af",
     "renderer_source_files": [
@@ -35,20 +35,19 @@
       "device_scale_factor": 1
     },
     "browser": "chromium",
+    "browser_version": "156.0.8078.79",
     "playwright_version": "1.61.1",
     "external_network": "blocked",
     "external_requests_observed": 0,
     "reduce_motion": true,
     "csp_execution_mode": "Playwright bypassCSP mirrors the shipping WKUserScript isolated-content-world injection while preserving the page's network/navigation contract for capture",
-    "browser_notices": [
-      "Chromium GPU readback stall notice caused by deterministic screenshot capture"
-    ],
+    "browser_notices": [],
     "frames": [
       {
         "id": "00-seed",
         "label": "Before the first practice",
         "path": "output/frames/01-00-seed.png",
-        "sha256": "7f4f9178ba42dfb093910c932a8e85b7b3f6a275d3f397371831ad28948c9cd1",
+        "sha256": "b5e344c884e3c1e15639873514402edaa8c66f8415fe4de9711dc321aaeeb933",
         "state_sha256": "cc05c4ab40d068396493f6a746b0f137f7b8ce4e4353d550e01090bac0d2fb2f",
         "journey_day": 0,
         "highest_milestone": 0
@@ -57,7 +56,7 @@
         "id": "01-roots",
         "label": "Practice day 1 · first permanent growth",
         "path": "output/frames/02-01-roots.png",
-        "sha256": "620269ce60bd9c1f4c29b0c29838eb0d0aaaf5fe485b75cd67fb043a891e7696",
+        "sha256": "88f656b6306fbaa0164c1818a0c70496f491eb2c3a3144bd441d6542e3d801c1",
         "state_sha256": "d8d09d5960fdefc4979affec6296b10be20b583318b6b5a14997832e9d138efd",
         "journey_day": 1,
         "highest_milestone": 0
@@ -66,7 +65,7 @@
         "id": "05-water",
         "label": "Practice day 5 · Earth II",
         "path": "output/frames/03-05-water.png",
-        "sha256": "bb97d071552690477bfd54a2cc928b53a541042dd6235a5bf387eb9b8f2a3d04",
+        "sha256": "8079d83324df4d8e365aed6a70a4d5737883b9494161c416990acf557217bec7",
         "state_sha256": "c86bccecbaf6e82f17b07fda2ceeaa255bb76eebd03ccfb7785a2b1bd18dddf4",
         "journey_day": 5,
         "highest_milestone": 2
@@ -75,7 +74,7 @@
         "id": "09-warmth",
         "label": "Practice day 9 · Water I",
         "path": "output/frames/04-09-warmth.png",
-        "sha256": "59e00e8123a064617e7e284a1ed52b81c64ea0c6d13177c260203d3badcc4c63",
+        "sha256": "4e6425aeeeb09755ef45e15321bf20f4359dbd03949389d536f42644558c15c1",
         "state_sha256": "e2829345f1b102ae2d9a1e8edca09bc78bebb61b3fdb191026366ca5bb7d7727",
         "journey_day": 9,
         "highest_milestone": 4
@@ -84,7 +83,7 @@
         "id": "15-sanctuary",
         "label": "Practice day 15 · Fire I",
         "path": "output/frames/05-15-sanctuary.png",
-        "sha256": "6c2b78441915b6b2f308bbaa7dbda55bb1e63ddc47f90f466ad35b5b9c0f9592",
+        "sha256": "13fba913e1b3a0eec6545eb41dfddf1af1994fecdaa47a0cc684ebe7c400004f",
         "state_sha256": "c5cec1c8ae690adaacde73a2e63508a02cef518f1412664fb53cf0bf34f47a78",
         "journey_day": 15,
         "highest_milestone": 7
@@ -93,7 +92,7 @@
         "id": "30-living-world",
         "label": "Practice day 30",
         "path": "output/frames/06-30-living-world.png",
-        "sha256": "0f4438642fea4424a295ab72acbe540285614b2f64df21a6378943873baa38db",
+        "sha256": "0ac7193bb1a92b55445c55f07a80b1d673d42143d225505f80179b7d5450cb69",
         "state_sha256": "4e3eb9407b34e676f6b4b040ae77837308e7f6641f9dc848c0164c8ce55186b4",
         "journey_day": 30,
         "highest_milestone": 15
@@ -112,7 +111,7 @@
     "transition": "six real deterministic renderer frames; 2.2 seconds per frame; 0.7-second dissolve; no generated interpolation"
   },
   "toolchain": {
-    "node": "v26.7.0",
+    "node": "v26.13.0",
     "playwright": "1.61.1",
     "sharp": "0.35.3",
     "ffmpeg": "ffmpeg version 9.0.2 Copyright (c) 2000-2026 the FFmpeg developers",
@@ -120,20 +119,20 @@
   },
   "output": {
     "output/garden-growth-v1.mp4": {
-      "bytes": 961797,
-      "sha256": "46e0f4c6ca925f363e33f935b7b1bd07c9a6c111c909154d1b6e284fdd3efdc0"
+      "bytes": 914989,
+      "sha256": "402d99cf3a44a3ab43400d899b7530569521f10b45f3b6c9c94a40a30435a58e"
     },
     "output/garden-growth-poster.png": {
-      "bytes": 199506,
-      "sha256": "455d238b89e1554b078e7db84b0f666139a23b9a735f8c593604b11e9488b50b"
+      "bytes": 185843,
+      "sha256": "9728b50c02b1a968c243d32010aad064116b6d3a82f970a46daa5b60a85aeaad"
     },
     "output/social-preview.png": {
-      "bytes": 207630,
-      "sha256": "fa4571f16e4b15483cd0547720b06828ae60bd31fc7eae93355f4d0b8f643495"
+      "bytes": 206999,
+      "sha256": "9745bcace4b06196db6171229fed0fe97294ed0c480d7805fc24af27c63f2524"
     },
     "output/growth-contact-sheet.jpg": {
-      "bytes": 71472,
-      "sha256": "8ef2bfec42b3af61412fa32a4006325e4ae6b9ecf5a9cd9658f6a6713fd460aa"
+      "bytes": 71638,
+      "sha256": "7f4846f438874fdf1de93432bb7f6f2366cd12f8056c01bc0e437a56058fa244"
     }
   },
   "rights": {

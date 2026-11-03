@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "passed-manual-source-review",
   "review_date": "2026-08-12",
-  "source_sha256": "0fc39821c85ab051623dc75130a65613d1b20f9e24792e351e88226a49e6ed8b",
+  "source_sha256": "0d6a10937c804d7bf205d4b47de505fbd1889bbf04eaaf2b12cf8d099506a4e2",
   "checks_total": 16,
   "checks_passed": 16,
   "checks_failed": 0,
@@ -11,12 +11,12 @@
   "audited_dependency_snapshots": [
     {
       "graph": "renderer-production",
-      "lock_sha256": "76275a4e4a738deb91243eff72547d3edab4b3c4444de2a6c442ecdc01cf8ab1",
+      "lock_sha256": "fd79ddec732c5e3dfe39116a34e8e1b37a7e3fef3c65f15f7840e55af441598a",
       "vulnerabilities": 0
     },
     {
       "graph": "screenshot-tool-production",
-      "lock_sha256": "292b8c0d063736b0824e74367270046bf20efc8697b048a924bc6861c59ecc8f",
+      "lock_sha256": "3045c15ac01d5a8532b227a4579be86a26357109a0a1f43a50c319c57b5536f7",
       "vulnerabilities": 0
     }
   ],

@@ -89,7 +89,7 @@ export async function assertRegularFile(file) {
 }
 
 export function assertToolchain() {
-  if (process.versions.node !== "26.7.0") {
-    throw new Error(`Website build requires Node 26.7.0; found ${process.versions.node}`);
+  if (process.versions.node !== "26.13.0") {
+    throw new Error(`Website build requires Node 26.13.0; found ${process.versions.node}`);
   }
 }

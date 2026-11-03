@@ -9,7 +9,7 @@ import { collectCurrentExportFiles } from "./export-inventory";
 
 const projectRoot = path.resolve(ROOT, "../..");
 const reportPath = path.join(projectRoot, "docs", "qa", "marketing", "app-store-screenshots-reproducibility.json");
-const expectedNode = "v26.7.0";
+const expectedNode = "v26.13.0";
 
 type Artifact = { file: string; bytes: number; sha256: string };
 type Snapshot = { files: number; sha256: string; artifacts: Artifact[] };
