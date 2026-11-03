@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
@@ -13,9 +14,10 @@ import {
   resolvePublicBaseURL,
   sha256,
 } from "./lib.mjs";
-import { CONTENT_SIGNAL, LLMS_TXT_PATH, markdownPath, robotsTxt } from "../src/agent-access.mjs";
+import { AGENT_SKILLS_INDEX_PATH, CONTENT_SIGNAL, LLMS_TXT_PATH, agentSkillPath, markdownPath, robotsTxt } from "../src/agent-access.mjs";
 import { appStoreURL, repositoryURL, siteContent } from "../src/content.mjs";
 import { INDEXNOW_KEY } from "../src/indexnow-key.mjs";
+import { assertAgentSkillsOutput } from "./agent-skills-check.mjs";
 import { assertProductionWranglerConfig } from "./cloudflare-config.mjs";
 import { pageMeta } from "./markdown.mjs";
 import { assertPublishedMedia, loadMediaCandidate } from "./published-media.mjs";
@@ -31,6 +33,7 @@ const routeFiles = {
   "/open-source": "open-source/index.html",
   "/de/open-source": "de/open-source/index.html",
 };
+const englishRoutes = { home: "/", support: "/support", privacy: "/privacy", openSource: "/open-source" };
 
 function localTarget(href) {
   const pathOnly = href.split("#", 1)[0].split("?", 1)[0];
@@ -265,16 +268,32 @@ async function main() {
   if (robots !== robotsTxt(publicBaseURL) || !robots.includes(`User-agent: *\nContent-Signal: ${CONTENT_SIGNAL}\nAllow: /\nSitemap: ${publicBaseURL}/sitemap.xml\n`)) {
     throw new Error("robots.txt must allow public pages, declare the reviewed Content Signals, and point to the canonical apex sitemap");
   }
+  const wellKnownFiles = new Map();
+  for (const file of outputFiles.filter((item) => item.startsWith(".well-known/"))) wellKnownFiles.set(file, await readFile(path.join(DIST, file)));
+  const skills = assertAgentSkillsOutput({
+    files: wellKnownFiles,
+    publicBaseURL,
+    publicPaths: new Set([...expectedRoutes, ...outputFiles.map((file) => `/${file}`)]),
+    sourceText: (claim) => claim.page
+      ? unescapeMarkdown(readFileSync(path.join(DIST, markdownPath(englishRoutes[claim.page]).slice(1)), "utf8"))
+      : readFileSync(path.join(path.resolve(ROOT, ".."), claim.file), "utf8"),
+  });
   const llms = await readFile(path.join(DIST, LLMS_TXT_PATH.slice(1)), "utf8");
   const llmsLinks = [...llms.matchAll(/\]\(([^)\s]+)\)/g)].map((match) => match[1]).sort();
-  const expectedLlmsLinks = [...expectedRoutes.map((route) => `${publicBaseURL}${markdownPath(route)}`), repositoryURL, appStoreURL].sort();
+  const expectedLlmsLinks = [
+    ...expectedRoutes.map((route) => `${publicBaseURL}${markdownPath(route)}`),
+    `${publicBaseURL}${AGENT_SKILLS_INDEX_PATH}`,
+    ...skills.map(({ name }) => `${publicBaseURL}${agentSkillPath(name)}`),
+    repositoryURL,
+    appStoreURL,
+  ].sort();
   if (
     !llms.startsWith(`# Arrive Within\n\n> ${siteContent.en.home.metaDescription}\n\n`)
     || JSON.stringify(llmsLinks) !== JSON.stringify(expectedLlmsLinks)
-    || !llms.includes("## English\n") || !llms.includes("## Deutsch\n") || !llms.includes("## Optional\n")
+    || !llms.includes("## English\n") || !llms.includes("## Deutsch\n") || !llms.includes("## Agent skills\n") || !llms.includes("## Optional\n")
     || !llms.includes(CONTENT_SIGNAL)
   ) {
-    throw new Error("llms.txt must summarize the site and link exactly to every Markdown page, the App Store listing, and the public source");
+    throw new Error("llms.txt must summarize the site and link exactly to every Markdown page, the Agent Skills index and skills, the App Store listing, and the public source");
   }
   const notFound = await readFile(path.join(DIST, "404.html"), "utf8");
   if (!notFound.includes('<meta name="robots" content="noindex">') || /rel="(?:canonical|alternate)"|property="og:url"/.test(notFound)) {
@@ -387,7 +406,7 @@ async function main() {
     }
   }
 
-  const publicTextFiles = [...Object.values(routeFiles), ...expectedRoutes.map((route) => markdownPath(route).slice(1)), LLMS_TXT_PATH.slice(1)];
+  const publicTextFiles = [...Object.values(routeFiles), ...expectedRoutes.map((route) => markdownPath(route).slice(1)), LLMS_TXT_PATH.slice(1), ...wellKnownFiles.keys()];
   const publicText = (await Promise.all(publicTextFiles.map((file) => readFile(path.join(DIST, file), "utf8")))).join("\n");
   for (const token of ["TODO", "TBD", "lorem ipsum", "App Store badge", "Download now"]) {
     if (publicText.toLowerCase().includes(token.toLowerCase())) throw new Error(`website contains forbidden placeholder or release claim: ${token}`);
@@ -453,7 +472,7 @@ async function main() {
   }
 
   const fullHash = await hashTree(DIST);
-  process.stdout.write(`Website validation passed: ${expectedRoutes.length} bilingual routes with content-equivalent Markdown, llms.txt, Content Signals, exact published media, 31 bound responsive images, 2 provenance-bound brand icons, released CTAs, script-bound previews, ${fullHash.files.length} output files; build SHA-256 ${fullHash.sha256}. Pending-review originals are excluded. Production custom-domain configuration is present; this local build is not deployment proof.\n`);
+  process.stdout.write(`Website validation passed: ${expectedRoutes.length} bilingual routes with content-equivalent Markdown, llms.txt, ${skills.length} digest-bound Agent Skills, Content Signals, exact published media, 31 bound responsive images, 2 provenance-bound brand icons, released CTAs, script-bound previews, ${fullHash.files.length} output files; build SHA-256 ${fullHash.sha256}. Pending-review originals are excluded. Production custom-domain configuration is present; this local build is not deployment proof.\n`);
 }
 
 main().catch((error) => {

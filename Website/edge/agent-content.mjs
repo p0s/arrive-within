@@ -1,4 +1,4 @@
-import { CONTENT_SIGNAL, LLMS_TXT_PATH, markdownPath } from "../src/agent-access.mjs";
+import { AGENT_SKILLS_INDEX_PATH, AGENT_SKILL_FILE, CONTENT_SIGNAL, LLMS_TXT_PATH, markdownPath } from "../src/agent-access.mjs";
 import { PUBLIC_HTML_PATHS } from "../src/analytics.mjs";
 
 const MARKDOWN_PAGES = new Map([...PUBLIC_HTML_PATHS].map((page) => [markdownPath(page), page]));
@@ -69,8 +69,19 @@ export async function negotiatedMarkdown(request, url, assets) {
   return markdownResponse(response, url.pathname, url, true);
 }
 
+// The Agent Skills index and SKILL.md files are public, credential-free
+// instructions. Clients compare digests, so caches always revalidate.
+function agentSkillsResponse(response, url) {
+  return withHeaders(response, (headers) => {
+    headers.set("Content-Type", url.pathname === AGENT_SKILLS_INDEX_PATH ? "application/json" : "text/markdown; charset=utf-8");
+    headers.set("Cache-Control", "public, max-age=0, must-revalidate");
+    headers.set("Access-Control-Allow-Origin", "*");
+    headers.set("Content-Signal", CONTENT_SIGNAL);
+  });
+}
+
 // Adds agent discovery headers to public documents and labels the direct
-// Markdown and llms.txt files with their UTF-8 media types.
+// Markdown, llms.txt, and Agent Skills files with their media types.
 export function withAgentDiscovery(response, url) {
   if (response.status !== 200 && response.status !== 304) return response;
   if (PUBLIC_HTML_PATHS.has(url.pathname)) {
@@ -89,5 +100,6 @@ export function withAgentDiscovery(response, url) {
       headers.set("Content-Signal", CONTENT_SIGNAL);
     });
   }
+  if (url.pathname === AGENT_SKILLS_INDEX_PATH || AGENT_SKILL_FILE.test(url.pathname)) return agentSkillsResponse(response, url);
   return response;
 }

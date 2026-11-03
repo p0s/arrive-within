@@ -1,7 +1,8 @@
 import { copyFile, lstat, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { markdownPath, robotsTxt } from "../src/agent-access.mjs";
+import { AGENT_SKILLS_INDEX_PATH, markdownPath, robotsTxt } from "../src/agent-access.mjs";
+import { renderAgentSkills, renderAgentSkillsIndex } from "../src/agent-skills.mjs";
 import { appStoreURL, repositoryURL, siteContent } from "../src/content.mjs";
 import { INDEXNOW_KEY } from "../src/indexnow-key.mjs";
 import { readProductionWranglerConfig } from "./cloudflare-config.mjs";
@@ -267,7 +268,14 @@ async function main() {
     await writeFile(output, render(route));
     await writeFile(path.join(DIST, markdownPath(route.route).slice(1)), renderPageMarkdown({ locale: route.locale, page: route.page, baseURL: BASE_URL, routeFor }));
   }
-  await writeFile(path.join(DIST, "llms.txt"), renderLlmsTxt({ baseURL: BASE_URL, routeFor }));
+  const skills = renderAgentSkills({ baseURL: BASE_URL, routeFor });
+  for (const skill of skills) {
+    const output = path.join(DIST, skill.path.slice(1));
+    await mkdir(path.dirname(output), { recursive: true });
+    await writeFile(output, skill.body);
+  }
+  await writeFile(path.join(DIST, AGENT_SKILLS_INDEX_PATH.slice(1)), renderAgentSkillsIndex(skills, sha256));
+  await writeFile(path.join(DIST, "llms.txt"), renderLlmsTxt({ baseURL: BASE_URL, routeFor, skills }));
   await mkdir(path.join(DIST, "assets"), { recursive: true });
   await copyFile(path.join(ROOT, "src", "site.css"), path.join(DIST, "assets", "site.css"));
   await copyFile(path.join(ROOT, "src", "measurement.js"), path.join(DIST, "assets", "measurement.js"));

@@ -13,7 +13,10 @@ names `text/markdown` at least as strongly as HTML; browsers and wildcard
 requests keep HTML. Both representations send `Vary: Accept` and the
 `Content-Signal` preference. HTML pages add RFC 8288 `Link` headers to their
 `/index.md` alternate and `/llms.txt`. Markdown responses name their canonical
-HTML page and are never counted as document views.
+HTML page and are never counted as document views. The Agent Skills index is
+served as `application/json` and each `SKILL.md` as UTF-8 Markdown, both with
+`Access-Control-Allow-Origin: *`, revalidating caching, and the
+`Content-Signal` preference; they are not counted either.
 
 The committed configuration sets `workers_dev = false` and
 `preview_urls = false`, and binds apex and www as Custom Domains. The Worker
