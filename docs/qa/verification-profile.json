@@ -61,6 +61,26 @@
         "required": true,
         "smoke": false,
         "covered_by_offline": false
+      },
+      {
+        "id": "siri-intent-adapter",
+        "scenario_id": "SCN-021",
+        "family": "iPhone",
+        "target": "ArriveWithinTests",
+        "test": "PracticeIntentControllerTests",
+        "required": true,
+        "smoke": false,
+        "covered_by_offline": false
+      },
+      {
+        "id": "siri-app-intents",
+        "scenario_id": "SCN-021",
+        "family": "iPhone",
+        "target": "ArriveWithinAppIntentsTests",
+        "test": "ArriveWithinAppIntentsSystemTests",
+        "required": true,
+        "smoke": false,
+        "covered_by_offline": false
       }
     ],
     "physical": [

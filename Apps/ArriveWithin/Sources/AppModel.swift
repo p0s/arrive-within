@@ -357,6 +357,14 @@ final class AppModel {
     }
   }
 
+  /// A Siri or Shortcuts start creates the local profile through `startPractice`,
+  /// as the first-use button does; the product shell then shows the practice.
+  func leaveFirstUseAfterSystemStart() {
+    guard launchPhase == .firstUse, profile != nil else { return }
+    launchPhase = .ready
+    selectedSection = .practice
+  }
+
   func startPractice(
     mode: PracticeMode,
     targetMinutes: Int?,
@@ -2263,3 +2271,43 @@ final class AppModel {
     }
   }
 }
+
+#if DEBUG
+  /// Read-only practice facts for the hidden DEBUG system-test inspection intent.
+  struct PracticeVerificationSnapshot: Equatable, Sendable {
+    let sessionID: UUID?
+    let phase: MeditationSession.Phase?
+    let activeMilliseconds: Int64
+    let targetMilliseconds: Int64?
+    let guidedContentID: String?
+    let guidedContentVersion: Int?
+    let practiceEventCount: Int
+  }
+
+  extension AppModel {
+    func practiceVerificationSnapshot() async -> PracticeVerificationSnapshot {
+      let session = activeSession
+      let activeMilliseconds =
+        session.map {
+          (try? $0.elapsedMilliseconds(at: dependencies.clock.now())) ?? $0.activeMilliseconds
+        } ?? 0
+      var practiceEventCount = 0
+      if let profile,
+        let events = try? await dependencies.eventRepository.allEvents(
+          profileGenerationID: profile.profileGenerationID
+        )
+      {
+        practiceEventCount = events.count
+      }
+      return PracticeVerificationSnapshot(
+        sessionID: session?.id,
+        phase: session?.phase,
+        activeMilliseconds: activeMilliseconds,
+        targetMilliseconds: session?.targetDurationMilliseconds,
+        guidedContentID: session?.guidedContentID,
+        guidedContentVersion: session?.guidedContentVersion,
+        practiceEventCount: practiceEventCount
+      )
+    }
+  }
+#endif

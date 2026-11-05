@@ -24,6 +24,7 @@ Version 1.0.1 is currently available at the country-neutral URL above. Any follo
 - Permanent deterministic garden progression, a typed Swift/TypeScript bridge, bounded Three.js rendering, recovery, and a native fallback.
 - Private text and voice journal paths with recoverable local drafts, on-device transcription, search, edit, complete archive export/restore, and deletion.
 - Journey, history, statistics, milestones, selectable variants, reminders, app-local language selection, and adaptive iPad navigation.
+- Source for Siri, Shortcuts, Spotlight, and Action button actions in English and German that start a silent or guided practice and pause or resume the live practice; finishing and private data stay in the app. These actions are not in a released build yet (see [ADR-0015](docs/architecture/ADR-0015-siri-practice-actions.md)).
 - Local-only protected storage in 1.0 and one public-safe, fail-closed adapter for future private CloudKit work.
 - Reproducible website, public-media, app-icon-concept, and 24-image App Store screenshot workstreams.
 
@@ -35,7 +36,7 @@ The app has no account, ads, analytics, attribution, tracking, custom backend, c
 
 Requirements:
 
-- macOS with Xcode and the iOS 18 or later SDK;
+- macOS with Xcode 27.2 or later and its iOS 27 SDK; the app still runs on iOS 18 and later;
 - Swift 6 and XcodeGen 2.46 or later;
 - Node.js 26.13.0 and pnpm 12.16.1, matching the package manifests;
 - XcodeGen, FFmpeg/ffprobe, jq, and verified local Chrome for the complete local gate;

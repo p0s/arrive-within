@@ -1,10 +1,20 @@
+import AppIntents
 import SwiftUI
 
 @main
 @MainActor
 struct ArriveWithinApp: App {
-  @State private var model = AppModel(dependencies: .live())
+  @State private var model: AppModel
   @Environment(\.scenePhase) private var scenePhase
+
+  init() {
+    let model = AppModel(dependencies: .live())
+    _model = State(initialValue: model)
+    // Siri and Shortcuts act on this same model; register before any intent runs.
+    let practiceIntents = PracticeIntentController(model: model)
+    AppDependencyManager.shared.add(dependency: practiceIntents)
+    ArriveWithinShortcuts.updateAppShortcutParameters()
+  }
 
   var body: some Scene {
     WindowGroup {

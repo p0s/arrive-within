@@ -22,6 +22,8 @@ its slot. Do not start raw XCTest or manually reserve simulator capacity.
 ./scripts/verify --strict --lane simulator --scenario reminder-recovery --output .build/verification/reminders.json
 ./scripts/verify --strict --lane simulator --scenario app-integration --output .build/verification/integration.json
 ./scripts/verify --strict --lane simulator --scenario fixture-isolation --output .build/verification/isolation.json
+./scripts/verify --strict --lane simulator --scenario siri-intent-adapter --output .build/verification/siri-adapter.json
+./scripts/verify --strict --lane simulator --scenario siri-app-intents --output .build/verification/siri-app-intents.json
 ```
 
 The default command is an iPhone smoke journey. `--strict` selects all required
@@ -39,6 +41,8 @@ The complete engineering/release gates remain `scripts/check` and `scripts/goal`
 | reminder-recovery (SCN-011) | Practitioner saves one local weekly reminder while notification permission is denied; the same schedule survives relaunch and reconciles after injected authorization. Screenshots record both states. |
 | app-integration | Existing AppModel vertical slices independently exercise persistence, session completion, native fallback, journal and reminder reconciliation using injected dependencies. |
 | fixture-isolation | Namespace validation rejects missing, duplicate and traversal values; separate UUID roots preserve an existing product-store sentinel, alongside directory safety/backup tests. |
+| siri-intent-adapter (SCN-021) | Hosted tests drive the real AppModel through the Siri and Shortcuts adapter with injected repositories and a virtual clock: one practice at a time, repeated starts report the existing practice, remembered timer settings stay unchanged, invalid lengths and unpackaged narration fail with recovery text, paused time is excluded, recovery-pending and unloaded sessions stay untouched, and the practice ledger stays unchanged. |
+| siri-app-intents (SCN-021) | AppIntentsTesting runs the three real intents through the system against the app launched in an isolated namespace and checks the 42-entry guided catalog. A DEBUG-only, hidden, read-only inspection intent reads back session identity, timing, guided identity and ledger count. Needs an iOS 27.0 or later simulator runtime. |
 
 ## Isolation and evidence limits
 
@@ -49,6 +53,10 @@ delete the ordinary product store. Invalid namespaces fail closed. Timer alerts,
 Live Activities and weekly notifications use no-op controllers in this mode.
 Permission state is deliberately injected, so no OS permission setting changes
 or real notification deliveries occur. Release builds do not expose this fixture.
+The Siri system tests add one DEBUG-only inspection intent that is hidden from
+Shortcuts, reads state without changing it, and is not compiled into Release.
+The beta Siri AI preview configuration and its metadata analysis are separate
+non-pool builds described in ADR-0015; they are not part of this profile.
 
 This meditation app has no trip or location acceptance scenario. Physical-device
 notification delivery, real permission changes, background scheduling, audio and

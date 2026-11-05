@@ -28,7 +28,7 @@
     "Marketing/AppStoreScreenshots/scripts/physical-capture-provenance.ts",
     "Marketing/AppStoreScreenshots/scripts/physical-report-validators"
   ],
-  "source_revision": "eb79660f24516da29d88e186cd2fa28967869aa7b00ccd460c1fb278e5404850",
+  "source_revision": "38dc727b56f9eb616d52482f2a6a525bdd70bd0a199d008c3f89f22ec411fa91",
   "files": [
     {
       "path": "Apps/ArriveWithin/Resources/AppIcon.icon/Assets/living-shoot.png",
@@ -126,14 +126,24 @@
       "sha256": "0562b6e4331f1fcffb4d7b7e3e11c240ebbf6dbef84ec1b66318408d9f2d524b"
     },
     {
+      "path": "Apps/ArriveWithin/Resources/de.lproj/AppShortcuts.strings",
+      "bytes": 801,
+      "sha256": "353bd04402fb7c90ef47cd2e221003f3491b1552265e1cff32782e9543f8c916"
+    },
+    {
       "path": "Apps/ArriveWithin/Resources/de.lproj/InfoPlist.strings",
       "bytes": 256,
       "sha256": "0e8919604c049999ce1dda2d62f3133a47650d0ba9f0c7829a1ec853548a423c"
     },
     {
       "path": "Apps/ArriveWithin/Resources/de.lproj/Localizable.strings",
-      "bytes": 27679,
-      "sha256": "0491ba4916e2c5dfdfc8e5ca483a4fc7b2b461617a8d882490585d7cf0d093ba"
+      "bytes": 37462,
+      "sha256": "69b7727581f2476f6161267e1ca45fb67e673409e1fa610c45962f19535cc215"
+    },
+    {
+      "path": "Apps/ArriveWithin/Resources/en.lproj/AppShortcuts.strings",
+      "bytes": 782,
+      "sha256": "1f4a93dfe074510a97d51cd2891fbf402d638924b09cabd960e2bb380fd94347"
     },
     {
       "path": "Apps/ArriveWithin/Resources/en.lproj/InfoPlist.strings",
@@ -142,8 +152,8 @@
     },
     {
       "path": "Apps/ArriveWithin/Resources/en.lproj/Localizable.strings",
-      "bytes": 25074,
-      "sha256": "3a821667907a1c25ebe9aaa71aafb5e1efb030abcc960473f29f50b343d88d88"
+      "bytes": 34312,
+      "sha256": "3054a24b4960f57a363adaaf5caab6b4b824e8157bc4b22cbe502537feba0ce8"
     },
     {
       "path": "Apps/ArriveWithin/Sources/AppDependencies.swift",
@@ -157,8 +167,8 @@
     },
     {
       "path": "Apps/ArriveWithin/Sources/AppModel.swift",
-      "bytes": 77683,
-      "sha256": "d67ca30fe7e25a38942f9c0f92bb062252b210e02be37d55d53e43be58fa37a9"
+      "bytes": 79366,
+      "sha256": "61cb0fb5349a8537c481ff2e446715b7a85be988f766238daa45747eda2083f6"
     },
     {
       "path": "Apps/ArriveWithin/Sources/AppOwnedShareSheet.swift",
@@ -187,8 +197,8 @@
     },
     {
       "path": "Apps/ArriveWithin/Sources/ArriveWithinApp.swift",
-      "bytes": 1399,
-      "sha256": "87b4370eebb74b93c14f49a5f64b96d12cda94c01e9ffd0575f0d9d0aea5775b"
+      "bytes": 1766,
+      "sha256": "f7796c0a8892788a534bd5b03deff31c7ecf60020ed295cc6e2b128d1617c62a"
     },
     {
       "path": "Apps/ArriveWithin/Sources/GardenView.swift",
@@ -261,9 +271,29 @@
       "sha256": "2b662734675a33190ac39392f111bb86d24c119c0d5d16be29557644117cc771"
     },
     {
+      "path": "Apps/ArriveWithin/Sources/PracticeAppIntents.swift",
+      "bytes": 15546,
+      "sha256": "dda12559f14887b1f7b44aa494435b18e90494d868d07471cf8098453185d064"
+    },
+    {
       "path": "Apps/ArriveWithin/Sources/PracticeCalendarView.swift",
       "bytes": 11477,
       "sha256": "027b1266e25a9da4c0553d562a903506b25dacb307256a6ba8f3b98e45ffe8c6"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/PracticeIntentController.swift",
+      "bytes": 7677,
+      "sha256": "a0c5ea7101f9da045d0171500b8b38adcf4ca2e75fa0156afae3854ebbf195d0"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/PracticeToolIntents.swift",
+      "bytes": 516,
+      "sha256": "f1778538d429dd9955a10ad623167dcfb2752e58b4b59318d73c52b3615853b0"
+    },
+    {
+      "path": "Apps/ArriveWithin/Sources/PracticeVerificationIntent.swift",
+      "bytes": 2252,
+      "sha256": "83819ad4da8a02a3c909e368892e13419bce230ff425fd46069b9939b44c76dd"
     },
     {
       "path": "Apps/ArriveWithin/Sources/PracticeView.swift",
@@ -2312,13 +2342,13 @@
     },
     {
       "path": "docs/qa/verification-profile.json",
-      "bytes": 18971,
-      "sha256": "a50f4a1eb6228d980927c81ba411ce44362994e23e99db46a1e0c8b23812da6e"
+      "bytes": 19562,
+      "sha256": "c2dcc759a4dace378a2f88bc9e4680fd70da6b856364fb03671e59970d4fddd0"
     },
     {
       "path": "project.yml",
-      "bytes": 7307,
-      "sha256": "80b65bbfe6ffb3f552e7ae9a46ff26e083bf6ca53834a5a52d28e70971cba809"
+      "bytes": 10251,
+      "sha256": "c76fc6655894ebb13efc5c7a1575961012f6ef715c9bd06ab8f9bcec32508522"
     },
     {
       "path": "scripts/app_store_physical_build_adapter.py",

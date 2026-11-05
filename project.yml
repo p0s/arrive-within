@@ -1,11 +1,11 @@
 name: ArriveWithin
 attributes:
-  LastUpgradeCheck: 2660
+  LastUpgradeCheck: 2720
 options:
   minimumXcodeGenVersion: 2.46.0
   createIntermediateGroups: true
   generateEmptyDirectories: true
-  xcodeVersion: "26.6"
+  xcodeVersion: "27.2"
   deploymentTarget:
     iOS: "18.0"
   developmentLanguage: en
@@ -13,6 +13,8 @@ options:
 configs:
   Debug: debug
   Release: release
+  # Beta-SDK-only Siri AI tool preview (ADR-0015); never archived or shipped.
+  SiriPreview: release
 
 settings:
   base:
@@ -34,6 +36,7 @@ targets:
     configFiles:
       Debug: Config/Base.xcconfig
       Release: Config/Base.xcconfig
+      SiriPreview: Config/Base.xcconfig
     sources:
       - path: Apps/ArriveWithin/Sources
       - path: Apps/ArriveWithin/Resources
@@ -86,8 +89,13 @@ targets:
         SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: NO
         SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: NO
       configs:
+        Debug:
+          EXCLUDED_SOURCE_FILE_NAMES: PracticeToolIntents.swift
         Release:
+          EXCLUDED_SOURCE_FILE_NAMES: MarketingCaptureClockFixtures.json PracticeToolIntents.swift
+        SiriPreview:
           EXCLUDED_SOURCE_FILE_NAMES: MarketingCaptureClockFixtures.json
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: $(inherited) ARRIVE_WITHIN_SIRI_TOOLS_PREVIEW
     dependencies:
       - target: ArriveWithinLiveActivity
         embed: true
@@ -109,6 +117,7 @@ targets:
     configFiles:
       Debug: Config/Base.xcconfig
       Release: Config/Base.xcconfig
+      SiriPreview: Config/Base.xcconfig
     sources:
       - path: Apps/ArriveWithinLiveActivity/Sources
       - path: Apps/ArriveWithin/Sources/MeditationActivityAttributes.swift
@@ -133,6 +142,7 @@ targets:
     configFiles:
       Debug: Config/Base.xcconfig
       Release: Config/Base.xcconfig
+      SiriPreview: Config/Base.xcconfig
     sources:
       - path: Apps/ArriveWithin/Tests/ArriveWithinTests
     settings:
@@ -163,6 +173,7 @@ targets:
     configFiles:
       Debug: Config/Base.xcconfig
       Release: Config/Base.xcconfig
+      SiriPreview: Config/Base.xcconfig
     sources:
       - path: Apps/ArriveWithin/Tests/ArriveWithinUITests
         excludes:
@@ -184,6 +195,7 @@ targets:
     configFiles:
       Debug: Config/Base.xcconfig
       Release: Config/Base.xcconfig
+      SiriPreview: Config/Base.xcconfig
     sources:
       - path: Apps/ArriveWithin/Tests/ArriveWithinUITests/ArriveWithinMarketingCaptureUITests.swift
       - path: Apps/ArriveWithin/Sources/MarketingCaptureClockFixture.swift
@@ -198,6 +210,56 @@ targets:
     dependencies:
       - target: ArriveWithin
 
+  # System tests run the real App Intents through AppIntentsTesting, which ships
+  # with the iOS 27 SDK; the app itself still deploys to iOS 18.
+  ArriveWithinAppIntentsTests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "27.0"
+    configFiles:
+      Debug: Config/Base.xcconfig
+      Release: Config/Base.xcconfig
+      SiriPreview: Config/Base.xcconfig
+    sources:
+      - path: Apps/ArriveWithin/Tests/ArriveWithinAppIntentsTests
+    settings:
+      base:
+        PRODUCT_NAME: $(TARGET_NAME)
+        PRODUCT_BUNDLE_IDENTIFIER: com.philipps.arrivewithin.ios.appintents.uitests
+        # Base.xcconfig pins 18.0, which would otherwise override deploymentTarget.
+        IPHONEOS_DEPLOYMENT_TARGET: "27.0"
+        CODE_SIGN_STYLE: Automatic
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: ArriveWithin
+    dependencies:
+      - target: ArriveWithin
+
+  # Compile-only Siri AI evaluations (ADR-0015): built only by the
+  # ArriveWithinSiriPreview scheme with a beta SDK for a generic iOS device.
+  ArriveWithinSiriEvaluations:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "27.3"
+    configFiles:
+      Debug: Config/Base.xcconfig
+      Release: Config/Base.xcconfig
+      SiriPreview: Config/Base.xcconfig
+    sources:
+      - path: Apps/ArriveWithin/Tests/ArriveWithinSiriEvaluations
+    settings:
+      base:
+        PRODUCT_NAME: $(TARGET_NAME)
+        PRODUCT_BUNDLE_IDENTIFIER: com.philipps.arrivewithin.ios.sirievaluations.uitests
+        IPHONEOS_DEPLOYMENT_TARGET: "27.3"
+        CODE_SIGN_STYLE: Automatic
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: ArriveWithin
+      configs:
+        SiriPreview:
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: $(inherited) ARRIVE_WITHIN_SIRI_TOOLS_PREVIEW
+    dependencies:
+      - target: ArriveWithin
+
 schemes:
   ArriveWithin:
     build:
@@ -205,6 +267,7 @@ schemes:
         ArriveWithin: all
         ArriveWithinTests: [test]
         ArriveWithinUITests: [test]
+        ArriveWithinAppIntentsTests: [test]
     run:
       config: Debug
       storeKitConfiguration: Config/PremiumGardenStyles.storekit
@@ -213,6 +276,7 @@ schemes:
       targets:
         - name: ArriveWithinTests
         - name: ArriveWithinUITests
+        - name: ArriveWithinAppIntentsTests
     profile:
       config: Release
     archive:
@@ -226,3 +290,17 @@ schemes:
       gatherCoverageData: false
       targets:
         - name: ArriveWithinMarketingCaptureUITests
+  # Beta-SDK-only Siri AI preview (ADR-0015): builds the SiriPreview app and the
+  # compile-only evaluations. Never used for archives or releases.
+  ArriveWithinSiriPreview:
+    build:
+      targets:
+        ArriveWithin: all
+        ArriveWithinSiriEvaluations: [test]
+    run:
+      config: SiriPreview
+    test:
+      config: SiriPreview
+      gatherCoverageData: false
+      targets:
+        - name: ArriveWithinSiriEvaluations

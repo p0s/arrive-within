@@ -41,6 +41,9 @@ node scripts/validate_privacy_data_flows.mjs
 print "== Manual security review boundary =="
 node scripts/validate_manual_security_review.mjs
 
+print "== Siri and Shortcuts boundary =="
+node scripts/validate_siri_boundary.mjs
+
 print "== Guided content and localization =="
 python3 scripts/test_narration_pause_contract.py
 guided_gate="${ARRIVE_WITHIN_GUIDED_GATE:-source}"

@@ -1,0 +1,10 @@
+"Begin a silent practice in ${applicationName}" = "Begin a silent practice in ${applicationName}";
+"Start a silent meditation in ${applicationName}" = "Start a silent meditation in ${applicationName}";
+"Start an open-ended meditation in ${applicationName}" = "Start an open-ended meditation in ${applicationName}";
+
+"Start ${practice} in ${applicationName}" = "Start ${practice} in ${applicationName}";
+"Play ${practice} in ${applicationName}" = "Play ${practice} in ${applicationName}";
+"Start a guided practice in ${applicationName}" = "Start a guided practice in ${applicationName}";
+
+"${action} my meditation in ${applicationName}" = "${action} my meditation in ${applicationName}";
+"${action} my practice in ${applicationName}" = "${action} my practice in ${applicationName}";

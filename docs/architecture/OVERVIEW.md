@@ -49,6 +49,10 @@ Native `AVAudioSession`/`AVAudioEngine` orchestration owns bells, ambience, guid
 
 Physical lock, interruption, Bluetooth/route, phone-call, notification, and exact-candidate tests remain separate from deterministic simulator/unit evidence.
 
+## Siri and Shortcuts
+
+`PracticeAppIntents.swift` offers three App Intents: start a silent practice, start a guided practice, and pause or resume the live practice. They call `PracticeIntentController`, which waits for the model's loaded state and then uses the same `AppModel` entry points as the Meditate tab, so the one session state machine and its single duplicate guard stay authoritative. No action finishes a practice, makes the recovery choice, or returns private data. A beta-only `SiriPreview` build configuration adds Siri AI tool conformance; default builds have none. See ADR-0015.
+
 ## Privacy and security boundaries
 
 - no product account, ads, analytics, tracking, attribution SDK, custom backend, or runtime AI; StoreKit is limited to one verified non-consumable entitlement for optional Garden presentation styles;

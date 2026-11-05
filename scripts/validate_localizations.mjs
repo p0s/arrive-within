@@ -88,6 +88,81 @@ assertNonempty("German Info.plist strings", deInfo);
 
 if (Object.keys(enStrings).length < 310) fail("the UI catalogue unexpectedly lost keys");
 
+function formatArguments(value) {
+  const found = [];
+  let position = 0;
+  for (const match of value.matchAll(/%(?:(\d+)\$)?(lld|ld|d|@|\.\d+f|f|%)/gu)) {
+    if (match[2] === "%") continue;
+    position = match[1] ? Number(match[1]) : position + 1;
+    found.push(`${position}:${match[2]}`);
+  }
+  return found.sort().join(",");
+}
+
+for (const [key, value] of Object.entries(enStrings)) {
+  if (formatArguments(value) !== formatArguments(deStrings[key])) {
+    fail(`English and German format arguments differ for ${key}`);
+  }
+}
+
+// Siri and Shortcuts (ADR-0015): phrases, catalog titles, and intent keys.
+const enShortcutsPath = "Apps/ArriveWithin/Resources/en.lproj/AppShortcuts.strings";
+const deShortcutsPath = "Apps/ArriveWithin/Resources/de.lproj/AppShortcuts.strings";
+const enShortcuts = loadPropertyList(enShortcutsPath);
+const deShortcuts = loadPropertyList(deShortcutsPath);
+assertUniqueStringKeys(enShortcutsPath, enShortcuts);
+assertUniqueStringKeys(deShortcutsPath, deShortcuts);
+assertParity("App Shortcut phrase", enShortcuts, deShortcuts);
+assertNonempty("English App Shortcut phrases", enShortcuts);
+assertNonempty("German App Shortcut phrases", deShortcuts);
+
+function placeholders(value) {
+  return [...value.matchAll(/\$\{([A-Za-z]+)\}/gu)].map((match) => match[1]).sort().join(",");
+}
+
+for (const [phrase, english] of Object.entries(enShortcuts)) {
+  if ([...phrase.matchAll(/\$\{applicationName\}/gu)].length !== 1) {
+    fail(`App Shortcut phrase "${phrase}" must name the app exactly once`);
+  }
+  for (const [locale, value] of [["English", english], ["German", deShortcuts[phrase]]]) {
+    if (placeholders(value) !== placeholders(phrase)) {
+      fail(`${locale} App Shortcut phrase for "${phrase}" changes its placeholders`);
+    }
+  }
+}
+
+const catalog = JSON.parse(readFileSync(resolve(projectRoot, "Content/guided/catalog.json"), "utf8"));
+for (const practice of catalog.practices) {
+  const englishTitle = practice.localized.en.title;
+  if (enStrings[englishTitle] !== englishTitle || deStrings[englishTitle] !== practice.localized.de.title) {
+    fail(`the Siri title for ${practice.id} does not match the guided catalogue in English and German`);
+  }
+}
+
+const intentSourcePath = "Apps/ArriveWithin/Sources/PracticeAppIntents.swift";
+let intentKeyCount = 0;
+for (const line of readFileSync(resolve(projectRoot, intentSourcePath), "utf8").split(/\r?\n/u)) {
+  const code = line.trim();
+  if (code.startsWith("//") || code.includes("systemImageName:") || code.includes("defaultValue:")) continue;
+  for (const match of code.matchAll(/"((?:[^"\\]|\\.)*)"/gu)) {
+    const literal = match[1];
+    if (literal.includes("\\(.applicationName)")) {
+      const phrase = literal
+        .replaceAll("\\(.applicationName)", "${applicationName}")
+        .replace(/\\\(\\\.\$(\w+)\)/gu, "${$1}");
+      if (!(phrase in enShortcuts)) fail(`App Shortcut phrase "${phrase}" has no localized entry`);
+      continue;
+    }
+    const key = literal.replace(/\\\(minutes\)/gu, "%lld").replace(/\\\((?:title|purpose)\)/gu, "%@");
+    if (key.includes("\\(")) fail(`${intentSourcePath} interpolates an unmapped value in "${literal}"`);
+    if (!(key in enStrings) || !(key in deStrings)) {
+      fail(`${intentSourcePath} key "${key}" lacks an English or German value`);
+    }
+    intentKeyCount += 1;
+  }
+}
+if (intentKeyCount < 60) fail(`${intentSourcePath} unexpectedly exposes only ${intentKeyCount} localized keys`);
+
 const requiredInfoKeys = new Set([
   "CFBundleDisplayName",
   "NSMicrophoneUsageDescription",
@@ -114,5 +189,5 @@ if (
 }
 
 process.stdout.write(
-  `Localization gate passed: ${Object.keys(enStrings).length} UI keys and ${Object.keys(enInfo).length} Info.plist keys per locale.\n`,
+  `Localization gate passed: ${Object.keys(enStrings).length} UI keys, ${Object.keys(enInfo).length} Info.plist keys, and ${Object.keys(enShortcuts).length} App Shortcut phrases per locale; ${intentKeyCount} Siri intent strings resolved.\n`,
 );
