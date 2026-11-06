@@ -5,7 +5,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
-import { assertCaptureSourceCommit } from "./capture-source-commit";
+import { assertCaptureProducerHead, assertCaptureSourceCommit } from "./capture-source-commit";
 
 async function main(): Promise<void> {
   const root = await mkdtemp(path.join(os.tmpdir(), "arrive-within-capture-source-git-"));
@@ -55,6 +55,26 @@ async function main(): Promise<void> {
       /changed a captured app source input/,
       "signed descendants that change app inputs must invalidate the capture evidence",
     );
+
+    // A pool producer HEAD is the capture commit or a signed, input-preserving descendant in history.
+    const appSourceC = runGit(["rev-parse", "HEAD"]).trim();
+    assert.doesNotThrow(() => assertCaptureProducerHead(repository, sourceA, sourceA, sourcePaths));
+    assert.doesNotThrow(() => assertCaptureProducerHead(repository, sourceA, evidenceB, sourcePaths));
+    assert.throws(() => assertCaptureProducerHead(repository, sourceA, appSourceC, sourcePaths), /changed a captured app source input/);
+    assert.throws(() => assertCaptureProducerHead(repository, evidenceB, sourceA, sourcePaths), /does not descend from the capture source commit/);
+    assert.throws(() => assertCaptureProducerHead(repository, sourceA, "HEAD", sourcePaths), /producer HEAD is invalid/);
+    runGit(["checkout", "--quiet", "-b", "producer-side", sourceA]);
+    await writeFile(path.join(repository, "side-evidence.json"), "{}\n");
+    runGit(["add", "side-evidence.json"]);
+    runGit(["commit", "--quiet", "-m", "signed evidence outside current history"]);
+    const sideD = runGit(["rev-parse", "HEAD"]).trim();
+    runGit(["checkout", "--quiet", "-"]);
+    assert.throws(() => assertCaptureProducerHead(repository, sourceA, sideD, sourcePaths), /not part of the current signed history/);
+    await writeFile(path.join(repository, "unsigned-evidence.json"), "{}\n");
+    runGit(["add", "unsigned-evidence.json"]);
+    runGit(["-c", "commit.gpgsign=false", "commit", "--quiet", "-m", "unsigned evidence descendant"]);
+    const unsignedE = runGit(["rev-parse", "HEAD"]).trim();
+    assert.throws(() => assertCaptureProducerHead(repository, evidenceB, unsignedE, sourcePaths), /does not verify as signed/);
 
     runGit(["checkout", "--quiet", "--orphan", "snapshot"]);
     runGit(["rm", "--quiet", "--cached", "-r", "."]);

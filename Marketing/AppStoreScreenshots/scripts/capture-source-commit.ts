@@ -106,3 +106,36 @@ export function assertCaptureSourceCommit(
 
   return head;
 }
+
+/**
+ * Accepts the checkout HEAD that a native pool producer recorded for a capture
+ * bound to captureCommit: that commit itself, or a signed descendant in the
+ * current history that changed no captured app source input.
+ */
+export function assertCaptureProducerHead(
+  projectRoot: string,
+  captureCommit: string,
+  producerHead: string,
+  sourcePaths: ReadonlySet<string>,
+): void {
+  if (!COMMIT.test(captureCommit) || !COMMIT.test(producerHead)) throw new Error("capture producer HEAD is invalid");
+  if (producerHead === captureCommit) return;
+  if (git(projectRoot, ["log", "-1", "--format=%G?", producerHead]).trim() !== "G") {
+    throw new Error(`capture producer HEAD does not verify as signed: ${producerHead}`);
+  }
+  const lineage: Array<[string, string, string]> = [
+    [captureCommit, producerHead, "capture producer HEAD does not descend from the capture source commit"],
+    [producerHead, "HEAD", "capture producer HEAD is not part of the current signed history"],
+  ];
+  for (const [ancestor, descendant, message] of lineage) {
+    try {
+      git(projectRoot, ["merge-base", "--is-ancestor", ancestor, descendant]);
+    } catch {
+      throw new Error(message);
+    }
+  }
+  const changed = git(projectRoot, ["diff", "--name-only", "-z", `${captureCommit}..${producerHead}`, "--"])
+    .split("\0")
+    .find((filename) => sourcePaths.has(filename));
+  if (changed) throw new Error(`capture producer HEAD changed a captured app source input: ${changed}`);
+}

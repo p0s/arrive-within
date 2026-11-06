@@ -40,7 +40,8 @@ import {
 } from "./capture-evidence";
 import { validateOpaqueRgbPng } from "./image-validation";
 import { computeCaptureSourceManifest } from "./source-provenance";
-import { APPROVED_SIMULATOR_RESULTS_ROOT, assertTrustedSimulatorResultsRoot } from "./simulator-result-paths";
+import { assertCaptureProducerHead, assertCaptureSourceCommit } from "./capture-source-commit";
+import { assertDurableProducerDevice, resolveSimulatorPoolResult } from "./simulator-result-paths";
 import {
   expectedClockFixtureID,
   MARKETING_STATUS_BAR_DECLARATION,
@@ -126,39 +127,24 @@ function parseInputs(): BundleInput {
   };
 }
 
-function requireSignedCaptureSource(manifestPaths: string[]): string {
-  const sourcePaths = new Set(manifestPaths);
-  const status = execFileSync("git", ["status", "--porcelain", "--untracked-files=all", "-z"], {
-    cwd: PROJECT_ROOT,
-    encoding: "utf8",
-  });
-  const changedSource = status.split("\0").filter(Boolean).map((entry) => entry.slice(3)).find((filename) => sourcePaths.has(filename));
-  if (changedSource) throw new Error(`capture source input is dirty and must be committed before capture: ${changedSource}`);
-  const commit = execFileSync("git", ["rev-parse", "HEAD"], { cwd: PROJECT_ROOT, encoding: "utf8" }).trim();
-  const signature = execFileSync("git", ["log", "-1", "--format=%G?", commit], { cwd: PROJECT_ROOT, encoding: "utf8" }).trim();
-  if (!/^[a-f0-9]{40}$/.test(commit) || signature !== "G") {
-    throw new Error("current app capture source must be a validly signed commit");
-  }
-  return commit;
+function optionalArg(flag: string): string | undefined {
+  const index = process.argv.indexOf(flag);
+  if (index < 0) return undefined;
+  if (!process.argv[index + 1]) throw new Error(`missing ${flag}`);
+  return process.argv[index + 1];
 }
 
-async function assertPoolResult(input: string): Promise<string> {
-  const configuredRoot = process.env.ARRIVE_WITHIN_SIMULATOR_RESULTS_ROOT ?? APPROVED_SIMULATOR_RESULTS_ROOT;
-  const trustedRoot = await realpath(APPROVED_SIMULATOR_RESULTS_ROOT);
-  const root = await realpath(configuredRoot);
-  assertTrustedSimulatorResultsRoot(root, trustedRoot);
-  const rootStat = await lstat(trustedRoot);
-  if (!rootStat.isDirectory() || rootStat.isSymbolicLink()) throw new Error("simulator-pool result root is not a regular directory");
-  const absolute = path.resolve(PROJECT_ROOT, input);
-  const inputStat = await lstat(absolute);
-  if (!inputStat.isDirectory() || inputStat.isSymbolicLink()) throw new Error(`xcresult is not a regular directory: ${input}`);
-  const result = await realpath(absolute);
-  if (!result.startsWith(`${root}${path.sep}`) || !result.endsWith(".xcresult")) {
-    throw new Error(`xcresult must be under the approved simulator-pool results root: ${input}`);
-  }
-  const stat = await lstat(result);
-  if (!stat.isDirectory() || stat.isSymbolicLink()) throw new Error(`xcresult is not a regular directory: ${input}`);
-  return result;
+/**
+ * The signed commit the captures were built from: --source-commit, or HEAD.
+ * Later signed commits may add evidence or tooling only; none may change or
+ * dirty a captured app source input.
+ */
+function requireSignedCaptureSource(sourcePaths: ReadonlySet<string>): string {
+  const commit = optionalArg("--source-commit")
+    ?? execFileSync("git", ["rev-parse", "HEAD"], { cwd: PROJECT_ROOT, encoding: "utf8" }).trim();
+  if (!/^[a-f0-9]{40}$/.test(commit)) throw new Error("capture source commit must be a full commit hash");
+  assertCaptureSourceCommit(PROJECT_ROOT, commit, sourcePaths);
+  return commit;
 }
 
 async function hashTree(root: string): Promise<string> {
@@ -212,8 +198,10 @@ async function readBundle(
   device: DeviceId,
   role: CaptureRole,
   currentSource: { source_commit: string; source_revision: string },
+  sourcePaths: ReadonlySet<string>,
 ): Promise<CaptureBundleResult> {
-  const result = await assertPoolResult(input);
+  const pool = await resolveSimulatorPoolResult(input, PROJECT_ROOT);
+  const result = pool.result;
   const testResults = JSON.parse(execFileSync("xcrun", [
     "xcresulttool", "get", "test-results", "tests", "--path", result, "--compact",
   ], { encoding: "utf8", maxBuffer: 16 * 1024 * 1024 })) as TestResults;
@@ -226,6 +214,10 @@ async function readBundle(
     || simulator.osVersion !== "26.5"
     || !/^[A-F0-9-]{36}$/.test(simulator.deviceId)
   ) throw new Error(`${device}/${role}: result metadata does not match the configured simulator route`);
+  if (pool.layout === "durable") {
+    assertDurableProducerDevice(pool.receipt, device === "iphone-6.9" ? "iPhone" : "iPad", simulator.deviceId);
+    assertCaptureProducerHead(PROJECT_ROOT, currentSource.source_commit, pool.receipt.producer.head, sourcePaths);
+  }
 
   const expectedTests = Object.values(role === "selected" ? SELECTED_TESTS : DAY_TESTS).sort();
   const testCases = readTestCases(testResults);
@@ -417,9 +409,10 @@ async function ingestDevice(
   inputs: BundleInput,
   device: DeviceId,
   currentSource: { source_commit: string; source_revision: string; source_manifest_path: string; source_manifest_sha256: string },
+  sourcePaths: ReadonlySet<string>,
 ): Promise<DeviceResult> {
-  const selected = await readBundle(inputs[device].selected, device, "selected", currentSource);
-  const gardenDay = await readBundle(inputs[device]["garden-day"], device, "garden-day", currentSource);
+  const selected = await readBundle(inputs[device].selected, device, "selected", currentSource, sourcePaths);
+  const gardenDay = await readBundle(inputs[device]["garden-day"], device, "garden-day", currentSource, sourcePaths);
   if (selected.name === gardenDay.name || selected.treeSha256 === gardenDay.treeSha256) {
     throw new Error(`${device}: selected and Garden-day evidence must be separate exact result bundles`);
   }
@@ -496,15 +489,16 @@ async function ingestDevice(
 async function main(): Promise<void> {
   const inputs = parseInputs();
   const currentManifest = await computeCaptureSourceManifest();
-  const sourceCommit = requireSignedCaptureSource(currentManifest.files.map((record) => record.path));
+  const sourcePaths: ReadonlySet<string> = new Set(currentManifest.files.map((record) => record.path));
+  const sourceCommit = requireSignedCaptureSource(sourcePaths);
   const currentSource = {
     source_commit: sourceCommit,
     source_revision: currentManifest.source_revision,
     source_manifest_path: SOURCE_MANIFEST_PATH,
     source_manifest_sha256: sha256(Buffer.from(`${JSON.stringify(currentManifest, null, 2)}\n`)),
   };
-  const phone = await ingestDevice(inputs, "iphone-6.9", currentSource);
-  const ipad = await ingestDevice(inputs, "ipad-13", currentSource);
+  const phone = await ingestDevice(inputs, "iphone-6.9", currentSource, sourcePaths);
+  const ipad = await ingestDevice(inputs, "ipad-13", currentSource, sourcePaths);
   const finalManifest = await computeCaptureSourceManifest();
   if (JSON.stringify(finalManifest) !== JSON.stringify(currentManifest)) {
     throw new Error("App source changed during four-bundle ingestion; refusing to bind captures across revisions");

@@ -56,6 +56,7 @@ async function main() {
     "Marketing/AppStoreScreenshots/scripts/connect-browser.ts",
     "Marketing/AppStoreScreenshots/scripts/export-playwright.ts",
     "Marketing/AppStoreScreenshots/scripts/ingest-current-source-xcresults.ts",
+    "Marketing/AppStoreScreenshots/scripts/simulator-result-paths.ts",
     "Marketing/AppStoreScreenshots/scripts/validate-plan.ts",
     "Packages/ArriveWithinCore/Sources/ArriveWithinFeedback/FeedbackClient.swift",
     "Packages/ArriveWithinCore/Sources/ArriveWithinDomain/JournalEntry.swift",
@@ -146,6 +147,7 @@ async function main() {
   const contracts = byName.get("Marketing/AppStoreScreenshots/scripts/contracts.ts");
   const exporter = byName.get("Marketing/AppStoreScreenshots/scripts/export-playwright.ts");
   const ingest = byName.get("Marketing/AppStoreScreenshots/scripts/ingest-current-source-xcresults.ts");
+  const poolResults = byName.get("Marketing/AppStoreScreenshots/scripts/simulator-result-paths.ts");
   const planTests = byName.get("Marketing/AppStoreScreenshots/scripts/validate-plan.ts");
   record(
     "marketing-origin-and-path-boundary",
@@ -154,11 +156,18 @@ async function main() {
       && exporter.includes("isAllowedCaptureRequest(requestUrl, target.origin)")
       && ingest.includes("capturePath.startsWith(`${exportedRealRoot}${path.sep}`)")
       && ingest.includes("!stat.isFile() || stat.isSymbolicLink()")
-      && ingest.includes("assertTrustedSimulatorResultsRoot(root, trustedRoot)")
+      && ingest.includes("resolveSimulatorPoolResult(input, PROJECT_ROOT)")
+      && ingest.includes("assertDurableProducerDevice(pool.receipt")
+      && ingest.includes("assertCaptureProducerHead(PROJECT_ROOT")
+      && poolResults.includes("assertTrustedSimulatorResultsRoot(await realpath(configuredTemporaryRoot), await realpath(roots.temporaryRoot))")
+      && poolResults.includes("os.userInfo().homedir")
+      && poolResults.includes("constants.O_RDONLY | constants.O_NOFOLLOW")
+      && poolResults.includes("if (absolute !== result)")
+      && poolResults.includes("receipt.inode !== resultStat.ino")
       && planTests.includes("String.fromCharCode(64)")
       && planTests.includes("external.invalid")
       && planTests.includes("../outside.png"),
-    "Local capture traffic uses exact parsed-origin equality and imported attachment paths remain within a real regular-file root.",
+    "Local capture traffic uses exact parsed-origin equality, imported attachment paths remain within a real regular-file root, and only pool-original xcresults are ingested: the older temporary results root, or a canonical durable original whose private producer receipt binds its device/inode, checkout, signed lineage and simulator.",
   );
 
   const gardenWebView = byName.get("Apps/ArriveWithin/Sources/GardenWebView.swift");

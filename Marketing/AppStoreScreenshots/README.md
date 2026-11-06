@@ -28,7 +28,7 @@ The shared `Apps/ArriveWithin/Resources/MarketingCaptureClockFixtures.json` supp
 
 The app clock is injected independently of the simulator system clock. The status bar is captured as the simulator rendered it; the capture run applies no status-bar override. Per-capture proof records the fixture ID, epoch, timezone, Garden phase, actual XCTest `captured_at`, and observed `system_timezone`. Fixture date/time comes from the shared JSON, not from manually entered evidence. The validator checks fixture identity and phase without waiting for a real day or dusk window.
 
-Ingestion verifies the signed source commit and its exact capture-source manifest revision, four result-tree hashes, simulator product model/platform/OS, exact passing test names, warning lists, attachment paths and names, and each screenshot's paired proof from that same result bundle. Public provenance stores safe bundle names, device model/platform/OS, timestamps, clock fixtures, and hashes. It does not store pool UDIDs, custom pool host names, or private result paths. Simulator captures supply App Store composition input; separate physical hardware, TestFlight, and release checks retain their own contracts.
+Ingestion verifies the signed source commit and its exact capture-source manifest revision, each durable original's pool producer receipt, four result-tree hashes, simulator product model/platform/OS, exact passing test names, warning lists, attachment paths and names, and each screenshot's paired proof from that same result bundle. Public provenance stores safe bundle names, device model/platform/OS, timestamps, clock fixtures, and hashes. It does not store pool UDIDs, custom pool host names, or private result paths. Simulator captures supply App Store composition input; separate physical hardware, TestFlight, and release checks retain their own contracts.
 
 The selected six-slide story uses Garden growth, Journey rhythm/milestones, and private reflection. Non-shipping alternatives reuse only compatible Garden, Journey, and Journal captures. Obsolete guided-library and iCloud captures are excluded.
 
@@ -58,17 +58,17 @@ The selected six-slide story uses Garden growth, Journey rhythm/milestones, and 
 
    Set `IOS_TEST_POOL_COMMAND`, `SOURCE_COMMIT`, and `SOURCE_REVISION` from the local pool configuration and signed source manifest. Use the pool's result paths directly; do not boot/select a simulator manually, move result bundles into the checkout, or copy them to a different root for ingestion.
 
-3. Ingest the four original pool bundles only after all four use the same signed source revision. Set `POOL_RESULTS_ROOT` to the installed pool results root. The ingester verifies that configured root against the approved pool location, and public provenance stores no input path or pool identity:
+3. Ingest the four original pool bundles only after all four use the same signed source commit and revision. Pass each bundle path exactly as the pool returned it. The installed pool keeps each durable original as `<run token>/original.xcresult` beside its log. The ingester accepts one only by its canonical path, without symbolic links, when the pool's private producer completion receipt matches the bundle and container identity, this checkout, the simulator and its family, and a signed producer HEAD that is the capture commit or a later signed commit that changed no capture input. Older pool installs that write `<run token>.xcresult` under the temporary results root stay supported; set `ARRIVE_WITHIN_SIMULATOR_RESULTS_ROOT` only to confirm that root. The durable layout rejects copies, renamed bundles and failed producer receipts. Both layouts require passing source-bound capture proofs, and public provenance stores no input path or pool identity:
 
    ```sh
-   ARRIVE_WITHIN_SIMULATOR_RESULTS_ROOT="$POOL_RESULTS_ROOT" pnpm ingest:current-captures -- \
-     --iphone-selected-result "$POOL_RESULTS_ROOT/<iphone-selected-result>.xcresult" \
-     --iphone-day-result "$POOL_RESULTS_ROOT/<iphone-day-result>.xcresult" \
-     --ipad13-selected-result "$POOL_RESULTS_ROOT/<ipad13-selected-result>.xcresult" \
-     --ipad13-day-result "$POOL_RESULTS_ROOT/<ipad13-day-result>.xcresult"
+   pnpm ingest:current-captures -- --source-commit "$SOURCE_COMMIT" \
+     --iphone-selected-result "<pool result: iPhone selected>" \
+     --iphone-day-result "<pool result: iPhone Garden-day>" \
+     --ipad13-selected-result "<pool result: iPad selected>" \
+     --ipad13-day-result "<pool result: iPad Garden-day>"
    ```
 
-   The ingester reads all app-clock proof directly from each xcresult. There is no separate manual time-evidence file. It writes schema 6 source records and the original opaque RGB simulator screenshots; it does not produce final marketing canvases.
+   `--source-commit` names the signed capture commit from step 1 and defaults to HEAD. Later signed commits may add evidence or tooling; none may change or dirty a capture input. The ingester reads all app-clock proof directly from each xcresult. There is no separate manual time-evidence file. It writes schema 6 source records and the original opaque RGB simulator screenshots; it does not produce final marketing canvases.
 
 4. Validate the plan, simulator bundles, source evidence, and export contracts:
 
